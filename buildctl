@@ -1,0 +1,68 @@
+#!/bin/bash
+
+PREFIX="/usr/local/adam"
+
+function bctl_cleanup() {
+  make clean
+  if  [ -f install_manifest.txt ] ;then
+    rm install_manifest.txt
+  fi
+
+  rm CMakeCache.txt
+  rm -rf CMakeFiles
+  rm cmake_install.cmake
+  rm Makefile
+}
+
+function bctl_cmake() {
+  cmake -DCMAKE_INSTALL_PREFIX=$PREFIX
+}
+
+
+function bctl_compile() {
+  make
+}
+
+function bctl_compile_all() {
+  make
+  cd cfiles
+  ./compile.sh
+  cd ..
+}
+
+function bctl_release() {
+  cd cfiles
+  ./release.sh
+  cd ..
+}
+
+function bctl_install() {
+  make install
+}
+
+if [ $# -ge 2 ]
+then
+  PREFIX=$2
+fi
+
+case $1 in
+
+  cleanup)
+    bctl_cleanup
+  ;;
+
+  buildall)
+    bctl_cmake
+    bctl_compile_all
+    bctl_release
+  ;;
+
+  install)
+    bctl_install
+    if [ $# -ge 3 ]
+    then
+      tar -xvzf $3 -C$2
+    fi
+  ;;
+
+esac

@@ -1,0 +1,59 @@
+#include "store.h"
+
+void* store_push(store* s,char* name,uint32_t data)  {
+
+  int exists = store_exists(s,name);
+
+  if (exists == ERR) {
+    s->data[s->size] = data;
+    strncpy(s->name[s->size],name,MAX_STORENAME_LEN * sizeof(char));
+    s->size++;
+  }
+
+  else {
+    s->data[exists] = data;
+  }
+}
+
+
+int store_exists(store* s,char* name) {
+
+  int i;
+  for (i=0;i<s->size;i++) {
+    if (strcmp(s->name[i],name) == 0 ) {
+      return i;
+    } 
+  }
+  return ERR;
+}
+
+
+uint32_t store_get(store* s,char* name) {
+
+  int i;
+  for (i=0;i<s->size;i++) {
+    if (strcmp(s->name[i],name) == 0 ) {
+      return s->data[i];
+    }
+  }
+  return ERR;
+}
+
+
+void* store_init(store* s,int size) {
+
+  int i = 0;
+
+  //s->data = (void**) malloc(size * sizeof(void*)) ;
+  s->name = (char**) malloc(128 * sizeof(char*));
+
+  for (i=0;i< size;i++) {
+    s->name[i] = (char*) malloc( MAX_STORENAME_LEN * sizeof(char) );
+    //s->data[i] = (void*) malloc( 1 * sizeof(char) );
+  }
+
+  s->size = 0;
+  s->msize = 128;
+
+}
+

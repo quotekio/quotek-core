@@ -1,0 +1,15 @@
+===========
+PRIORITAIRE
+===========
+
+* Regler les problemes de vitesse pour les backtests ( queing avec mutexes )
+* creer une interface de gestion.
+* trouver une librairie neuralnet sous lic lgpl/bsd et l'inserer dans le projet
+
+==========
+SECONDAIRE
+==========
+
+* Finir le module deepthroat pour le news analysis
+* Completer la doc
+

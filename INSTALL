@@ -1,0 +1,32 @@
+DEPENDANCIES
+============
+
+Adam Dependancies
+-----------------
+* libc++
+
+Vstore Module Dependancies
+--------------------------
+ * unixodbc
+ * libodbc
+ * sqlite odbc driver
+
+
+SETUP
+=====
+
+/etc/sudoers:
+-------------
+
+www-data ALL=(ALL) NOPASSWD: /usr/bin/pkill, NOPASSWD: /usr/local/adam/bin/adam, NOPASSWD: /bin/kill, NOPASSWD: /bin/echo, NOPASSWD: /usr/local/adam/tools/vstore2dump
+
+/etc/odbc.ini (vstore)
+----------------------
+
+[vstore_sqlite]
+Description=Adam/Visible Hand Vstore database
+Driver=SQLite3
+Database=/usr/local/adam/admin/data/vstore.sqlite
+# optional lock timeout in milliseconds
+Timeout=2000
+

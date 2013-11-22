@@ -1,0 +1,10 @@
+*.o
+admin/data/dumps/*
+admin/data/vstore.sqlite
+CMakeCache.txt
+CMakeFiles
+./adam
+./csv2dump
+./libigmgw.so
+./signal
+
