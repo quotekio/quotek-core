@@ -21,10 +21,12 @@
 #include "store.h"
 #include "moneymanager.h"
 #include "igmlogger.h"
+#include "results.h"
 #include "genetics.h"
 #include "indice.h"
 #include <iostream>
 #include <fstream>
+
 
 #define REMPOS_STOP 0x01
 #define REMPOS_VSTOP 0x02

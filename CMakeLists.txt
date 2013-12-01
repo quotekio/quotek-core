@@ -47,6 +47,7 @@ add_executable(
   src/lib/igmlogger.cpp
   src/lib/queue_c.cpp
   src/lib/indice.cpp
+  src/lib/results.h
   src/lib/genetics.cpp
   src/lib/network.cpp
   src/lib/aep.cpp
