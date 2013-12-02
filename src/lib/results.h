@@ -79,7 +79,7 @@ class adamresult {
     int remainingpos;
   	vector<geneticresult> genetics;
     vector<snappos> positions;
-    vector<assetstats> astats;
+    vector<assetstats*> astats;
 
   	string json_encode() {
 
@@ -99,7 +99,7 @@ class adamresult {
 
       res+="\"positions\": [";
       for(int i=0;i<astats.size();i++) {
-        res += astats[i].json_encode() + ",";
+        res += astats[i]->json_encode() + ",";
       }
       res +="]";
 

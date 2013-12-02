@@ -497,6 +497,11 @@ void* poll_backtest(void* arg ) {
   iarray* tstamps = t0->getTimeStamps();
   igmLogger* logger = t0->getLogger();
 
+  adamresult* result = new adamresult();
+  result->start = time(0);
+  result->from = tstamps->values[0]; 
+  result->to = tstamps->values[tstamps->size -1];
+  
   char bt_status[128];
 
   int bt_adv = 0;
@@ -520,6 +525,14 @@ void* poll_backtest(void* arg ) {
     usleep(t0->getSpeed());
 
   }
+
+  //completes end timestamp
+  result->stop = time(0);
+
+  //adds CFD/whatever assets statistics like
+  //highest, lowest,variance, etc..
+  t0->addAStats(result); 
+
   cout << endl;
   cout << "=================" << endl;
   cout << "BACKTEST FINISHED" << endl;
@@ -527,12 +540,12 @@ void* poll_backtest(void* arg ) {
 
   moneyManager* mm = t0->getMoneyManager();
 
-
+  
   if (t0->getAdamConfig()->getBTResultFile() != "") {
     ofstream ofh (t0->getAdamConfig()->getBTResultFile());
     if (ofh.is_open()) {
-      string s = "";
-      mm->getStats(&s);
+      string s = result->json_encode();
+      //mm->getStats(&s);
       ofh << s << endl;
       ofh.close();
     }
@@ -1127,6 +1140,26 @@ int tsEngine::dumpAll() {
  
 }
 
+
+void tsEngine::addAStats(adamresult* result) {
+
+  for(int i=0;i< values.Size();i++ ) {
+
+    assetstats* a1 = new assetstats();
+    a1->name = values.GetItemName(i);
+    a1->variation = percentDelta(values[a1->name]);
+    a1->deviation = stdDeviation(values[a1->name]);
+    a1->highest = max(values[i]);
+    a1->lowest = min(values[i]);
+
+    result->astats.push_back(a1);
+
+
+  }
+
+}
+
+
 int tsEngine::eval_running(indice* idx,time_t t) {
 
   int start_hour,end_hour;
@@ -1150,3 +1183,4 @@ int tsEngine::eval_running(indice* idx,time_t t) {
  return 0;
 
 } 
+

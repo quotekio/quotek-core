@@ -31,6 +31,10 @@ void farray_push(farray* f,float value) {
   f->size++;
 }
 
+void farray_destroy(farray* f) {
+  free(f->values);
+}
+
 void iarray_push(iarray* i,uint32_t value) {
 
   if (i == NULL) {

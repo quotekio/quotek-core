@@ -22,8 +22,11 @@ typedef struct iarray {
 void farray_init(farray* f,int size);
 void iarray_init(iarray* i,int size);
 void farray_push(farray* f,float value);
+void farray_destroy(farray* f);
+
 void iarray_push(iarray* i,uint32_t value);
 float farray_last(farray* f);
 uint32_t iarray_last(iarray* i);
+
 
 #endif

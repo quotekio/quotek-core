@@ -24,6 +24,7 @@
 #include "results.h"
 #include "genetics.h"
 #include "indice.h"
+#include "finmath.h"
 #include <iostream>
 #include <fstream>
 
@@ -121,6 +122,7 @@ class tsEngine{
     void setBacktestProgress(int);
     int eval_running(indice*,time_t);
 
+    void addAStats(adamresult*);
   private:
 
     adamCfg* cfg;
