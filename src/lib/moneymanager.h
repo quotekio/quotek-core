@@ -8,6 +8,7 @@
 #include "assoc.h"
 #include "utils.h"
 #include "indice.h"
+#include "results.h"
 
 #define MM_ERR_NBPOS 0x01
 #define MM_ERR_TRADERISK_2HIGH 0x02
@@ -98,6 +99,7 @@ class moneyManager {
     void displayPositions();
     void getPositionsString(string*);
     void getStats(string*);
+    void addStats(adamresult*);
     void displayStats();
 
     void clear();

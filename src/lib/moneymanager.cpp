@@ -385,6 +385,14 @@ float moneyManager::getEndResult() {
 
 
 
+void moneyManager::addStats(adamresult* result) {
+
+  computeWholePNL();
+  result->pnl = cumulative_pnl + cur_pnl;
+  result->remainingpos = positions.size();
+  
+}
+
 void moneyManager::getStats(string* s) {
 
   computeWholePNL();

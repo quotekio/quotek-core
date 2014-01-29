@@ -539,8 +539,8 @@ void* poll_backtest(void* arg ) {
   cout << "=================" << endl << endl;
 
   moneyManager* mm = t0->getMoneyManager();
+  mm->addStats(result);
 
-  
   if (t0->getAdamConfig()->getBTResultFile() != "") {
     ofstream ofh (t0->getAdamConfig()->getBTResultFile());
     if (ofh.is_open()) {

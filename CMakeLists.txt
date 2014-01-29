@@ -82,6 +82,11 @@ add_library(
         src/lib/brokers/igmgw.cpp
 )
 
+add_library(
+        igmgw2 SHARED
+        src/lib/brokers/broker.h
+        src/lib/brokers/igmgw2.cpp
+)
 
 find_library (PTHREAD pthread) 
 find_library (CURL curl)
@@ -100,6 +105,12 @@ target_link_libraries(
 )
 
 target_link_libraries(
+  igmgw2
+  curl
+)
+
+
+target_link_libraries(
   signal 
   ${GTK3_LIBRARIES}
   goocanvas-2.0
@@ -113,6 +124,8 @@ install (TARGETS csv2dump DESTINATION tools)
 #install (TARGETS nntrain DESTINATION tools)
 
 install (TARGETS igmgw DESTINATION lib)
+install (TARGETS igmgw2 DESTINATION lib)
+
 
 install (FILES "install/clanglibs/libc++.so" DESTINATION lib)
 install (FILES "install/clanglibs/librt.so" DESTINATION lib)
