@@ -594,10 +594,10 @@ void* poll(void* arg) {
       for (int i=0;i<d.Capacity();i++) {
 
         epic = d[SizeType(i)]["epic"].GetString();
-        buy =  d[SizeType(i)]["buy"].GetDouble();
-        sell =  d[SizeType(i)]["sell"].GetDouble();
-        //buy = atof(buystr.c_str());
-        //sell = atof(sellstr.c_str());
+        buy =  d[SizeType(i)]["buy"].GetString();
+        sell =  d[SizeType(i)]["sell"].GetString();
+        buy = atof(buystr.c_str());
+        sell = atof(sellstr.c_str());
         spreadless_val = (buy + sell) / 2;
 
         indice* idx = iResolve(ilist,epic);
