@@ -2,6 +2,8 @@
 PRIORITAIRE
 ===========
 
+* Réparer le module vstore et les problemes de stockage de timestamp !
+* Inclure la donnée de spread à la fois dans le vstore, et dans les evaluations !
 * Regler les problemes de vitesse pour les backtests ( queing avec mutexes )
 * trouver une librairie neuralnet sous lic lgpl/bsd et l'inserer dans le projet
 * Finir le format de backtests JSON
