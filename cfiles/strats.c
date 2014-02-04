@@ -52,6 +52,21 @@ uint8_t __is_time(const char* timestr,uint32_t t) {
 
 }
 
+const char* __week_day(int t) {
+
+  const char* weekdays[] = { "monday", "tuesday","weddnesday","thursday","friday","saturday","sunday" };
+  int cweekday = 1;
+  time_t curtime = (time_t) t;
+  cweekday = localtime(&curtime)->tm_wday;
+  return weekdays[cweekday];
+}
+
+uint8_t __month_day(int t) {
+  int cmday = 1;
+  time_t curtime = (time_t) t;
+  cmday = localtime(&curtime)->tm_mday;
+  return cmday;
+}
 
 uint8_t __trade_hours(const char* h1,const char* h2,uint32_t t) {
 

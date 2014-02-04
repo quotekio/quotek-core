@@ -90,6 +90,10 @@ int ___log (const char* log_input, char* log_s);
 #define trade_hours(h1_str,h2_str) {  if (__trade_hours(h1_str,h2_str,t) == 0) { return NULL ; } }
 #define is_time(_tstr) (__is_time(_tstr,t))
 
+#define week_day() ( __week_day(t) )
+#define month_day() (__month_day(t))
+
+
 #define absolute(_fval) ( ( _fval * _fval ) / _fval )
 
 #define sup(_fval) ( v > _fval )
@@ -121,6 +125,5 @@ int ___log (const char* log_input, char* log_s);
 #define fplot(_tinf,_tsup) (  __fplot(&fplot_stack,_tinf,_tsup,t) )
 
 #define log(_log_input) ( ___log(_log_input,io->log_s) )
-
 
 #endif
