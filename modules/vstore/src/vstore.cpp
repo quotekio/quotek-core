@@ -79,9 +79,12 @@ void* module_fct(module_io mio) {
 
     if (tstamps->size >=10) {
       
+         int start = tstamps->size - 10;
+         int stop = tstamps->size; 
+
+         for (int j=start;j<stop;j++) {
          for (int i=0; i< mio.values->keys().size();i++) {
             string idx = mio.values->keys().at(i);      
-            for (int j=tstamps->size - 10;j<tstamps->size;j++) {
             
                SQLHSTMT stmt3;
                float v;
@@ -91,7 +94,7 @@ void* module_fct(module_io mio) {
                else v = 0;
                string insert_q = "INSERT INTO " + idx + 
                                  " VALUES ('" + 
-                                  int2string(tstamps->values[i]) +
+                                  int2string(tstamps->values[j]) +
                                   "','" +
                                   float2string(v) +
                                   "');";
