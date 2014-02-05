@@ -1,4 +1,5 @@
 #include "odbc.h"
+#include <iostream>
 
 odbc::odbc() {
   connected = false;
@@ -66,8 +67,11 @@ int odbc::getTables(SQLHSTMT* stmt,vector<string>* tables) {
                               buf, sizeof(buf), &indicator);
              if (SQL_SUCCEEDED(ret)) {
                  /* Handle null columns */
-                 if (indicator == SQL_NULL_DATA) strcpy(buf, "NULL");
-                 tables->push_back(string(buf));
+                 if (indicator == SQL_NULL_DATA ) strcpy(buf, "NULL");
+                 string tname = string(buf);
+                 if (tname != "NULL" && tname != "TABLE") {
+                   tables->push_back(tname);
+                 }
              }
          }
      }

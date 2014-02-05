@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 
-project(alert)
+project(vstore)
 
 SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++")
 SET (CMAKE_CXX_FLAGS                "-std=c++11 -stdlib=libc++ -fPIC")
@@ -21,6 +21,12 @@ add_library(
        ../../src/lib/utils.cpp
        ../../src/lib/narrays.cpp
        ../../src/lib/queue_c.cpp
+       src/odbc.cpp
+)
+
+add_executable (
+       vstorectl
+       src/vstorectl.cpp
        src/odbc.cpp
 )
 
@@ -59,5 +65,10 @@ target_link_libraries(
 
 target_link_libraries(
  dump2vstore
+ odbc
+)
+
+target_link_libraries(
+ vstorectl
  odbc
 )

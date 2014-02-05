@@ -137,6 +137,19 @@ vstore2dump/fast:
 	$(MAKE) -f CMakeFiles/vstore2dump.dir/build.make CMakeFiles/vstore2dump.dir/build
 .PHONY : vstore2dump/fast
 
+#=============================================================================
+# Target rules for targets named vstorectl
+
+# Build rule for target.
+vstorectl: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 vstorectl
+.PHONY : vstorectl
+
+# fast build rule for target.
+vstorectl/fast:
+	$(MAKE) -f CMakeFiles/vstorectl.dir/build.make CMakeFiles/vstorectl.dir/build
+.PHONY : vstorectl/fast
+
 src/dump2vstore.o: src/dump2vstore.cpp.o
 .PHONY : src/dump2vstore.o
 
@@ -169,6 +182,7 @@ src/odbc.cpp.o:
 	$(MAKE) -f CMakeFiles/dump2vstore.dir/build.make CMakeFiles/dump2vstore.dir/src/odbc.cpp.o
 	$(MAKE) -f CMakeFiles/vstore.dir/build.make CMakeFiles/vstore.dir/src/odbc.cpp.o
 	$(MAKE) -f CMakeFiles/vstore2dump.dir/build.make CMakeFiles/vstore2dump.dir/src/odbc.cpp.o
+	$(MAKE) -f CMakeFiles/vstorectl.dir/build.make CMakeFiles/vstorectl.dir/src/odbc.cpp.o
 .PHONY : src/odbc.cpp.o
 
 src/odbc.i: src/odbc.cpp.i
@@ -179,6 +193,7 @@ src/odbc.cpp.i:
 	$(MAKE) -f CMakeFiles/dump2vstore.dir/build.make CMakeFiles/dump2vstore.dir/src/odbc.cpp.i
 	$(MAKE) -f CMakeFiles/vstore.dir/build.make CMakeFiles/vstore.dir/src/odbc.cpp.i
 	$(MAKE) -f CMakeFiles/vstore2dump.dir/build.make CMakeFiles/vstore2dump.dir/src/odbc.cpp.i
+	$(MAKE) -f CMakeFiles/vstorectl.dir/build.make CMakeFiles/vstorectl.dir/src/odbc.cpp.i
 .PHONY : src/odbc.cpp.i
 
 src/odbc.s: src/odbc.cpp.s
@@ -189,6 +204,7 @@ src/odbc.cpp.s:
 	$(MAKE) -f CMakeFiles/dump2vstore.dir/build.make CMakeFiles/dump2vstore.dir/src/odbc.cpp.s
 	$(MAKE) -f CMakeFiles/vstore.dir/build.make CMakeFiles/vstore.dir/src/odbc.cpp.s
 	$(MAKE) -f CMakeFiles/vstore2dump.dir/build.make CMakeFiles/vstore2dump.dir/src/odbc.cpp.s
+	$(MAKE) -f CMakeFiles/vstorectl.dir/build.make CMakeFiles/vstorectl.dir/src/odbc.cpp.s
 .PHONY : src/odbc.cpp.s
 
 src/vstore.o: src/vstore.cpp.o
@@ -238,6 +254,30 @@ src/vstore2dump.s: src/vstore2dump.cpp.s
 src/vstore2dump.cpp.s:
 	$(MAKE) -f CMakeFiles/vstore2dump.dir/build.make CMakeFiles/vstore2dump.dir/src/vstore2dump.cpp.s
 .PHONY : src/vstore2dump.cpp.s
+
+src/vstorectl.o: src/vstorectl.cpp.o
+.PHONY : src/vstorectl.o
+
+# target to build an object file
+src/vstorectl.cpp.o:
+	$(MAKE) -f CMakeFiles/vstorectl.dir/build.make CMakeFiles/vstorectl.dir/src/vstorectl.cpp.o
+.PHONY : src/vstorectl.cpp.o
+
+src/vstorectl.i: src/vstorectl.cpp.i
+.PHONY : src/vstorectl.i
+
+# target to preprocess a source file
+src/vstorectl.cpp.i:
+	$(MAKE) -f CMakeFiles/vstorectl.dir/build.make CMakeFiles/vstorectl.dir/src/vstorectl.cpp.i
+.PHONY : src/vstorectl.cpp.i
+
+src/vstorectl.s: src/vstorectl.cpp.s
+.PHONY : src/vstorectl.s
+
+# target to generate assembly for a file
+src/vstorectl.cpp.s:
+	$(MAKE) -f CMakeFiles/vstorectl.dir/build.make CMakeFiles/vstorectl.dir/src/vstorectl.cpp.s
+.PHONY : src/vstorectl.cpp.s
 
 var/www/hexosam/adam/src/lib/narrays.o: var/www/hexosam/adam/src/lib/narrays.cpp.o
 .PHONY : var/www/hexosam/adam/src/lib/narrays.o
@@ -334,6 +374,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... vstore"
 	@echo "... vstore2dump"
+	@echo "... vstorectl"
 	@echo "... src/dump2vstore.o"
 	@echo "... src/dump2vstore.i"
 	@echo "... src/dump2vstore.s"
@@ -346,6 +387,9 @@ help:
 	@echo "... src/vstore2dump.o"
 	@echo "... src/vstore2dump.i"
 	@echo "... src/vstore2dump.s"
+	@echo "... src/vstorectl.o"
+	@echo "... src/vstorectl.i"
+	@echo "... src/vstorectl.s"
 	@echo "... var/www/hexosam/adam/src/lib/narrays.o"
 	@echo "... var/www/hexosam/adam/src/lib/narrays.i"
 	@echo "... var/www/hexosam/adam/src/lib/narrays.s"
