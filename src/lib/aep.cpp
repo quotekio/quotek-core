@@ -19,6 +19,9 @@ std::string aep_answer(std::string data,tsEngine* t0) {
     res = aep_btprogress(t0);
   }
 
+  else if (data == "version\r\n") {
+    res = aep_version(t0);
+  }
 
   else {
 
@@ -48,6 +51,19 @@ std::string aep_corestats(tsEngine* t0) {
 
   return ret;
 }
+
+std::string aep_version(tsEngine* t0) {
+  
+  std::string ret;
+
+  ret = "{";
+  ret += "\"version\":\"" +  std::string(ADAM_VERSION)  + "\"";
+  ret += "}"; 
+
+  return ret;
+
+}
+
 
 std::string aep_poslist(tsEngine* t0) {
 

@@ -3,6 +3,7 @@
 
 #include "network.h"
 #include "tsengine.h"
+#include "constants.h"
 
 #include <string>
 #include <iostream>
@@ -19,6 +20,7 @@ std::string aep_corestats(tsEngine*);
 std::string aep_poslist(tsEngine*);
 std::string aep_lastlogs(tsEngine*,int);
 std::string aep_btprogress(tsEngine*);
+std::string aep_version(tsEngine*);
 
 
 
