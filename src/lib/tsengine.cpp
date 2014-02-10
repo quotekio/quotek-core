@@ -568,6 +568,7 @@ void* poll(void* arg) {
 
   AssocArray<indice*> ilist = t0->getIndicesList();
   iarray* tstamps = t0->getTimeStamps();
+  igmLogger* logger = t0->getLogger();
 
   uint32_t time_ms;
 
@@ -599,11 +600,16 @@ void* poll(void* arg) {
         buy = atof(buystr.c_str());
         sell = atof(sellstr.c_str());
         spreadless_val = (buy + sell) / 2;
-
+        
         indice* idx = iResolve(ilist,epic);
         if (idx != NULL) {
           mepic = idx->name;
-          t0->pushValues(mepic,spreadless_val);
+          if (spreadless_val != 0) {
+            t0->pushValues(mepic,spreadless_val);
+          }
+          else {
+            logger->log("*ERROR: " + mepic +  " Value = 0, skipping data*");
+          }
         }
 
       }

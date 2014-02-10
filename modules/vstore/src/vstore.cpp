@@ -79,35 +79,36 @@ void* module_fct(module_io mio) {
 
     if (tstamps->size >=10) {
       
-         int start = tstamps->size - 10;
-         int stop = tstamps->size; 
+      int start = tstamps->size - 10;
+      int stop = tstamps->size; 
 
-         for (int j=start;j<stop;j++) {
-         for (int i=0; i< mio.values->keys().size();i++) {
-            string idx = mio.values->keys().at(i);      
-            
-               SQLHSTMT stmt3;
-               float v;
-               if (mio.values->get(idx)->size >= 10) {
-                  v = mio.values->get(idx)->values[j];
-               }
-               else v = 0;
-               string insert_q = "INSERT INTO " + idx + 
-                                 " VALUES ('" + 
-                                  int2string(tstamps->values[j]) +
-                                  "','" +
-                                  float2string(v) +
-                                  "');";
-               dbconn->query(&stmt3,insert_q);
-               dbconn->freeStatement(&stmt3);
+      for (int j=start;j<stop;j++) {
+        for (int i=0; i< mio.values->keys().size();i++) {
 
-            }
-         }
+          string idx = mio.values->keys().at(i);      
+          SQLHSTMT stmt3;
+          float v;
+          if (mio.values->get(idx)->size >= 10) {
+            v = mio.values->get(idx)->values[j];
+          }
+          else v = 0;
+
+          string insert_q = "INSERT INTO " + idx + 
+                          " VALUES ('" + 
+                          int2string(tstamps->values[j]) +
+                          "','" +
+                          float2string(v) +
+                          "');";
+
+          dbconn->query(&stmt3,insert_q);
+          dbconn->freeStatement(&stmt3);
+
+        }
       }
-        sleep(10);
     }
+    sleep(10);
   }
-
+}
 
 extern "C" void* module(module_io mio) {
   module_fct(mio);

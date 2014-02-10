@@ -2,6 +2,8 @@
 PRIORITAIRE
 ===========
 
+* Inclure une option safe_signal dans les backtests qui verifie le delta en secondes entre v[t] et v[t-1], et qui jump si le delta est trop grand ( > 5s)
+
 * Inclure la donnée de spread à la fois dans le vstore, et dans les evaluations !
 * Regler les problemes de vitesse pour les backtests ( queing avec mutexes )
 * trouver une librairie neuralnet sous lic lgpl/bsd et l'inserer dans le projet
