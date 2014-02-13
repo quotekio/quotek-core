@@ -878,6 +878,10 @@ tsEngine::tsEngine(adamCfg* conf,
 
   vector<string> si = iGetNames(indices_list);
 
+
+  //initializing values ptr
+  values_ptr = &values;
+
   for(int i=0;i<si.size();i++) {
 
     //initializing values structure for each found indice
@@ -1031,8 +1035,8 @@ farray* tsEngine::getValues(string mepic) {
   return values[mepic];
 }
 
-AssocArray<farray*>* tsEngine::getAllValues() {
-  return &values;
+AssocArray<farray*>** tsEngine::getAllValues() {
+  return &values_ptr;
 }
 
 igmLogger* tsEngine::getLogger() {

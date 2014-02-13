@@ -5,7 +5,7 @@
 typedef struct module_io {
   int mode;
   iarray** tstamps;
-  AssocArray<farray*>* values;
+  AssocArray<farray*>** values;
   float* cur_pnl;
   float* cumulative_pnl;
   Queue_c* input;

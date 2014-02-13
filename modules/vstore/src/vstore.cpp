@@ -73,6 +73,8 @@ void* module_fct(module_io mio) {
     }
 
     iarray* tstamps = *(mio.tstamps);
+    AssocArray<farray*>* values = *(mio.values);
+
     if (tstamps == NULL) {
       cout << "*ERROR: Invalid tstamps pointer ! *" << endl;
       return NULL;
@@ -84,13 +86,13 @@ void* module_fct(module_io mio) {
          int stop = tstamps->size; 
 
          for (int j=start;j<stop;j++) {
-         for (int i=0; i< mio.values->keys().size();i++) {
-            string idx = mio.values->keys().at(i);      
+         for (int i=0; i< values->keys().size();i++) {
+            string idx = values->keys().at(i);      
             
                SQLHSTMT stmt3;
                float v;
-               if (mio.values->get(idx)->size >= 10) {
-                  v = mio.values->get(idx)->values[j];
+               if (values->get(idx)->size >= 10) {
+                  v = values->get(idx)->values[j];
                }
                else v = 0;
 
