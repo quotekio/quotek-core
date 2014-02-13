@@ -60,7 +60,7 @@ int odbc::getTables(SQLHSTMT* stmt,vector<string>* tables) {
          SQLUSMALLINT i;
          /* Loop through the columns */
          for (i = 1; i <= columns; i++) {
-             SQLINTEGER indicator;
+             SQLLEN indicator;
              char buf[512];
              /* retrieve column data as a string */
              ret = SQLGetData(*stmt, i, SQL_C_CHAR,
@@ -89,7 +89,7 @@ int odbc::fetch(SQLHSTMT* stmt,vector<string>* result) {
 
   if  ( SQL_SUCCEEDED( ( ret = SQLFetch(*stmt) ) ) ) {
     for (int i = 1; i <= columns; i++) {
-      SQLINTEGER indicator;
+      SQLLEN indicator;
       char buf[1024];
       /* retrieve column data as a string */
       ret = SQLGetData(*stmt, i, SQL_C_CHAR,
