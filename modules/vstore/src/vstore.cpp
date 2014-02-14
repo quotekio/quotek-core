@@ -37,7 +37,7 @@ void* module_fct(module_io mio) {
   dbconn->getTables(&stmt0,&tables);
 
   AssocArray<farray*>* values = *(mio.values);
-
+  
   for (int i=0;i<values->keys().size();i++) {
       
       bool exists = false;
@@ -75,25 +75,25 @@ void* module_fct(module_io mio) {
     }
 
     iarray* tstamps = *(mio.tstamps);
-    
+    values = *(mio.values);
+
     if (tstamps == NULL) {
       cout << "*ERROR: Invalid tstamps pointer ! *" << endl;
       return NULL;
     }
 
-    values = *(mio.values);
     
+    float v ;
+    SQLHSTMT stmt3;
     if (tstamps->size >=10) {
       
          int start = tstamps->size - 10;
-         int stop = tstamps->size; 
+         int stop = tstamps->size;
 
          for (int j=start;j<stop;j++) {
          for (int i=0; i< values->keys().size();i++) {
             string idx = values->keys().at(i);      
-            
-               SQLHSTMT stmt3;
-               float v ;
+             
                if (values->get(idx)->size >= 10) {
                   v = values->get(idx)->values[j];
                }
@@ -107,6 +107,11 @@ void* module_fct(module_io mio) {
                  dbconn->query(&stmt3,insert_q.str());
                  dbconn->freeStatement(&stmt3);
               }
+              else {
+                stringstream lss;
+                lss << "[VSTORE] ERROR: INVALID RANGE FOR " << idx << "(" << v << ")" ; 
+                mio.logger->log(lss.str());
+              } 
 
               v = 0;
 

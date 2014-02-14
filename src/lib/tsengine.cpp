@@ -25,6 +25,7 @@ void* modulethread_wrapper(void* arg) {
   mio.mode = t0->getMode();
   mio.tstamps = &tstamps;
   mio.values =  t0->getAllValues();
+  mio.logger = t0->getLogger();
   mio.cur_pnl = mm->getCurPNL();
   mio.cumulative_pnl = mm->getCumulativePNL();
 
