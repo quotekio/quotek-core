@@ -90,18 +90,23 @@ void* module_fct(module_io mio) {
             string idx = values->keys().at(i);      
             
                SQLHSTMT stmt3;
-               float v;
+               float v ;
                if (values->get(idx)->size >= 10) {
                   v = values->get(idx)->values[j];
                }
                else v = 0;
 
                //std::cout << "TSTAMP:" << tstamps->values[j] <<", VALUE:" << v << endl;
+               //conditionate insert to non crirical values.
+               if (v > 0  && v < 10000000 ) {
+                 stringstream insert_q ;
+                 insert_q << "INSERT INTO " << idx << " VALUES ('" << tstamps->values[j] << "','" << v << "');";
+                 dbconn->query(&stmt3,insert_q.str());
+                 dbconn->freeStatement(&stmt3);
+              }
 
-               stringstream insert_q ;
-               insert_q << "INSERT INTO " << idx << " VALUES ('" << tstamps->values[j] << "','" << v << "');";
-               dbconn->query(&stmt3,insert_q.str());
-               dbconn->freeStatement(&stmt3);
+              v = 0;
+
             }
          }
       }
