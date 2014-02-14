@@ -605,11 +605,11 @@ void* poll(void* arg) {
         indice* idx = iResolve(ilist,epic);
         if (idx != NULL) {
           mepic = idx->name;
-          if (spreadless_val != 0) {
+          if (spreadless_val > 0 && spreadless_val < 10000000) {
             t0->pushValues(mepic,spreadless_val);
           }
           else {
-            logger->log("*ERROR: " + mepic +  " Value = 0, skipping data*");
+            logger->log("*ERROR: " + mepic +  " Value out of range, skipping data*");
           }
         }
 
