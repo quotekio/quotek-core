@@ -1,6 +1,7 @@
 #include "assoc.h"
 #include "narrays.h"
 #include "queue_c.h"
+#include "igmlogger.h"
 
 typedef struct module_io {
   int mode;

@@ -71,6 +71,7 @@ class moneyManager {
   public:
 
   	moneyManager(float,int,int,int,int,float,float,float,AssocArray<indice*>);
+
   	float computeVAR();
   	void computePNLs(string,float);
   	float computeWholePNL();

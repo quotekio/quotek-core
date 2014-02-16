@@ -84,6 +84,7 @@ void* module_fct(module_io mio) {
 
     
     float v ;
+    string idx;
     SQLHSTMT stmt3;
     if (tstamps->size >=10) {
       
@@ -91,11 +92,11 @@ void* module_fct(module_io mio) {
          int stop = tstamps->size;
 
          for (int j=start;j<stop;j++) {
-         for (int i=0; i< values->keys().size();i++) {
-            string idx = values->keys().at(i);      
-             
-               if (values->get(idx)->size >= 10) {
-                  v = values->get(idx)->values[j];
+         for (int i=0; i < values->Size();i++) {
+ 
+               if (values->at(i)->size >= 10) {
+                  v = values->at(i)->values[j];
+                  idx = values->GetItemName(i);
                }
                else v = 0;
 
