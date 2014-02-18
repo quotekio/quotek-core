@@ -24,7 +24,14 @@ void* modulethread_wrapper(void* arg) {
 
   mio.mode = t0->getMode();
   mio.tstamps = &tstamps;
-  mio.values =  t0->getAllValues();
+
+  AssocArray<farray*>* tvals = t0->getAllValues();
+
+  //Puts farray pointers of pointers inside of module_io struct
+  for (int i=0;i<tvals->Size();i++) {
+    mio.values[tvals->GetItemName(i)] = &(tvals->at(i));
+  }
+
   mio.logger = t0->getLogger();
   mio.cur_pnl = mm->getCurPNL();
   mio.cumulative_pnl = mm->getCumulativePNL();
@@ -879,10 +886,6 @@ tsEngine::tsEngine(adamCfg* conf,
 
   vector<string> si = iGetNames(indices_list);
 
-
-  //initializing values ptr
-  values_ptr = &values;
-
   for(int i=0;i<si.size();i++) {
 
     //initializing values structure for each found indice
@@ -1036,8 +1039,8 @@ farray* tsEngine::getValues(string mepic) {
   return values[mepic];
 }
 
-AssocArray<farray*>** tsEngine::getAllValues() {
-  return &values_ptr;
+AssocArray<farray*>* tsEngine::getAllValues() {
+  return &values;
 }
 
 igmLogger* tsEngine::getLogger() {

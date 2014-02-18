@@ -97,7 +97,7 @@ class tsEngine{
     genetics* getGE();
 
     farray* getValues(string);
-    AssocArray<farray*>** getAllValues();
+    AssocArray<farray*>* getAllValues();
     int pushValues(string mepic,float v);
     int dumpAll();
     int loadDump();
@@ -144,7 +144,6 @@ class tsEngine{
     Queue <std::string> orders_queue;
     iarray timestamps;
     AssocArray<farray*> values;
-    AssocArray<farray*>* values_ptr;
 
     AssocArray<void*> eval_ptrs;
     igmLogger* logger;
@@ -201,7 +200,7 @@ typedef struct eval_thread {
 typedef struct module_io {
   int mode;
   iarray** tstamps;
-  AssocArray<farray*>** values;
+  AssocArray<farray**> values;
   igmLogger* logger;
   float* cur_pnl;
   float* cumulative_pnl;

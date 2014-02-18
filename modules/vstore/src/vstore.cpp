@@ -36,12 +36,11 @@ void* module_fct(module_io mio) {
   SQLHSTMT stmt0;
   dbconn->getTables(&stmt0,&tables);
 
-  AssocArray<farray*>* values = *(mio.values);
-  
-  for (int i=0;i<values->keys().size();i++) {
+
+  for (int i=0;i<mio.values.Size();i++) {
       
       bool exists = false;
-      string idx =  values->keys().at(i);
+      string idx =  mio.values.keys().at(i);
       string create_vstore_table_query = "CREATE TABLE " + 
                                     idx + 
                                     "(tstamp INTEGER, value float);";
@@ -75,7 +74,6 @@ void* module_fct(module_io mio) {
     }
 
     iarray* tstamps = *(mio.tstamps);
-    values = *(mio.values);
 
     if (tstamps == NULL) {
       cout << "*ERROR: Invalid tstamps pointer ! *" << endl;
@@ -92,11 +90,13 @@ void* module_fct(module_io mio) {
          int stop = tstamps->size;
 
          for (int j=start;j<stop;j++) {
-         for (int i=0; i < values->Size();i++) {
+         for (int i=0; i < mio.values.Size();i++) {
  
-               if (values->at(i)->size >= 10) {
-                  v = values->at(i)->values[j];
-                  idx = values->GetItemName(i);
+               farray* f = *(mio.values[i]);
+               
+               if (  f->size >= 10) {
+                  v = f->values[j];
+                  idx = mio.values.GetItemName(i);
                }
                else v = 0;
 
