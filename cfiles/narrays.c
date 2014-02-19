@@ -26,8 +26,8 @@ void* farray_push(farray* f,float value) {
 
   int pos = f->size;
   if (pos == f->msize - 1) {
-    f->values = (float*) realloc(f->values, sizeof(float) * (f->msize+100));
-    f->msize+=100;
+    f->values = (float*) realloc(f->values, sizeof(float) * 2 * f->msize);
+    f->msize= 2 * f->msize;
   }
 
   f->values[pos] = value;
@@ -42,8 +42,8 @@ void* iarray_push(iarray* i,uint32_t value) {
 
   int pos = i->size;
   if (pos == i->msize - 1) {
-    i->values = (uint32_t*) realloc(i->values, sizeof(uint32_t) * (i->msize+100));
-    i->msize+=100;
+    i->values = (uint32_t*) realloc(i->values, sizeof(uint32_t) * 2 * i->msize);
+    i->msize = 2 * i->msize;
   }
 
   i->values[pos] = value;
