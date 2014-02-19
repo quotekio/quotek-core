@@ -890,12 +890,11 @@ tsEngine::tsEngine(adamCfg* conf,
 
     //initializing values structure for each found indice
     values[si[i]] = (farray*) malloc(1*sizeof(farray));
-    farray_init(values[si[i]],10);
+    farray_init(values[si[i]],10000);
   }
-  
-  //timestamps array init
-  iarray_init(&timestamps,10);
 
+  //timestamps array init
+  iarray_init(&timestamps,10000);
 
   //Si dump backtest fourni en argument => on charge
   if (tse_dump != "") loadDump(tse_dump);
@@ -1118,7 +1117,7 @@ int tsEngine::loadDump(string dump_file) {
         else {
           if (! values.IsItem(sline.at(0))) {
             values[sline.at(0)] = (farray*) malloc(1*sizeof(farray));
-            farray_init(values[sline.at(0)],100);
+            farray_init(values[sline.at(0)],1000);
           }
           farray_push(values[sline.at(0)], atof(sline.at(1).c_str()) );
         }
