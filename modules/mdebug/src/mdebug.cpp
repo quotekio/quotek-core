@@ -66,11 +66,17 @@ void* module_fct(module_io mio) {
   ofstream dbgfh;
   dbgfh.open("/var/log/adam.mdebug.log",ios::out | ios::app);
 
+  int nb_iter = 0;
 
   while(1) {
+    nb_iter++;
     log_mem_addrs(&mio,dbgfh);
-    log_last_values(&mio,dbgfh);   
+    log_last_values(&mio,dbgfh);
+
+    dbgfh << "[" << currentDateTime() << "] Adam Uptime:" << ( nb_iter *10 ) << "seconds" << endl; 
+
     sleep(10);
+
   }
 
 }
