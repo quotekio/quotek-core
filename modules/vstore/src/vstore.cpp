@@ -80,48 +80,36 @@ void* module_fct(module_io mio) {
       return NULL;
     }
 
-    
-    float v ;
-    string idx;
     SQLHSTMT stmt3;
-    if (tstamps->size >=10) {
-      
-         int start = tstamps->size - 10;
-         int stop = tstamps->size;
+    
+    for (int i=0;i<mio.values.Size();i++) {
+
+       farray* f = *(mio.values[i]);
+       string idx = mio.values.GetItemName(i);
+
+       if (f->size > 10 ) {
+         int start = f->size - 10;
+         int stop = f->size;
 
          for (int j=start;j<stop;j++) {
-         for (int i=0; i < mio.values.Size();i++) {
- 
-               farray* f = *(mio.values[i]);
-               
-               if (  f->size >= 10) {
-                  v = f->values[j];
-                  idx = mio.values.GetItemName(i);
-               }
-               else v = 0;
-
-               //std::cout << "TSTAMP:" << tstamps->values[j] <<", VALUE:" << v << endl;
-               //conditionate insert to non crirical values.
-               if (v > 0  && v < 10000000 ) {
-                 stringstream insert_q ;
-                 insert_q << "INSERT INTO " << idx << " VALUES ('" << tstamps->values[j] << "','" << v << "');";
-                 dbconn->query(&stmt3,insert_q.str());
-                 dbconn->freeStatement(&stmt3);
-              }
-              else {
-                stringstream lss;
-                lss << "[VSTORE] ERROR: INVALID RANGE FOR " << idx << "(" << v << ")" ; 
-                mio.logger->log(lss.str());
-              } 
-
-              v = 0;
-
+            float v = f->values[j];
+            if (v > 0  && v < 10000000 ) {
+              stringstream insert_q ;
+              insert_q << "INSERT INTO " << idx << " VALUES ('" << tstamps->values[j] << "','" << v << "');";
+              dbconn->query(&stmt3,insert_q.str());
+              dbconn->freeStatement(&stmt3);
             }
-         }
-      }
-        sleep(10);
+            else {
+              stringstream lss;
+              lss << "[VSTORE] ERROR: INVALID RANGE FOR " << idx << "(" << v << ")" ; 
+              mio.logger->log(lss.str());
+            } 
+         } 
+       }
     }
+    sleep(10);
   }
+}
 
 
 extern "C" void* module(module_io mio) {
