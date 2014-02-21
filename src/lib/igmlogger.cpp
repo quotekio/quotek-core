@@ -20,6 +20,11 @@ void igmLogger::log(string logstr) {
 }
 
 
+vector<log_entry>* igmLogger::getAllEntries() {
+  return &entries;
+}
+
+
 vector<log_entry> igmLogger::getLastEntries(int nb_entries) {
 
   int start = 0;

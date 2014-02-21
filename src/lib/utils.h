@@ -54,6 +54,6 @@ time_t str2time2(std::string s);
 bool vector_in(std::vector<int>*,int);
 bool vector_in_str(std::vector<std::string>*,std::string);
 
-
+std::string json_escape(const std::string& input);
 
 #endif

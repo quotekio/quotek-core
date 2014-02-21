@@ -540,7 +540,8 @@ void* poll_backtest(void* arg ) {
   //adds CFD/whatever assets statistics like
   //highest, lowest,variance, etc..
   t0->addAStats(result); 
-
+  t0->addLogStats(result);
+  
   cout << endl;
   cout << "=================" << endl;
   cout << "BACKTEST FINISHED" << endl;
@@ -1168,6 +1169,13 @@ void tsEngine::addAStats(adamresult* result) {
     result->astats.push_back(a1);
 
 
+  }
+}
+
+void tsEngine::addLogStats(adamresult* result) {
+  vecor<log_entry>* lentries = logger->getAllEntries();
+  for (int i=0:i<lentries->size();i++) {
+    result->loglines.push_back(lentries->at(i).entry);
   }
 
 }

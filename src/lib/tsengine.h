@@ -123,6 +123,7 @@ class tsEngine{
     int eval_running(indice*,time_t);
 
     void addAStats(adamresult*);
+    void addLogStats(adamresult*);
   private:
 
     adamCfg* cfg;

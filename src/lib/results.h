@@ -85,6 +85,7 @@ class adamresult {
   	vector<geneticresult> genetics;
     vector<snappos> positions;
     vector<assetstats*> astats;
+    vector<string> loglines;
 
   	string json_encode() {
 
@@ -112,8 +113,17 @@ class adamresult {
         if (i< astats.size()-1) ss << ",\n";
         else ss << "\n";
       }
-      ss << "]";
+      ss << "],";
 
+      ss << "\"logs\" : [";
+
+      for (int i=0;i<loglines.size();i++) {
+        ss << "\"" << json_escape(loglines[i]) << "\"";
+        if (i< astats.size()-1) ss << ",\n";
+        else ss << "\n";
+      }
+      
+      ss << "]";
       ss <<  "}";
       return ss.str();
 

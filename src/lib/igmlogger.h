@@ -25,6 +25,7 @@ class igmLogger {
     void log(string);
     ofstream* getStream();
     vector<log_entry> getLastEntries(int);
+    vector<log_entry>* getAllEntries();
   private:
   ofstream out;
   vector<log_entry> entries;
