@@ -541,7 +541,7 @@ void* poll_backtest(void* arg ) {
   //highest, lowest,variance, etc..
   t0->addAStats(result); 
   t0->addLogStats(result);
-  
+
   cout << endl;
   cout << "=================" << endl;
   cout << "BACKTEST FINISHED" << endl;
@@ -1173,8 +1173,8 @@ void tsEngine::addAStats(adamresult* result) {
 }
 
 void tsEngine::addLogStats(adamresult* result) {
-  vecor<log_entry>* lentries = logger->getAllEntries();
-  for (int i=0:i<lentries->size();i++) {
+  vector<log_entry>* lentries = logger->getAllEntries();
+  for (int i=0;i<lentries->size();i++) {
     result->loglines.push_back(lentries->at(i).entry);
   }
 

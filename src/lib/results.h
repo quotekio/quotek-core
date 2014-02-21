@@ -119,10 +119,10 @@ class adamresult {
 
       for (int i=0;i<loglines.size();i++) {
         ss << "\"" << json_escape(loglines[i]) << "\"";
-        if (i< astats.size()-1) ss << ",\n";
+        if (i< loglines.size()-1) ss << ",\n";
         else ss << "\n";
       }
-      
+
       ss << "]";
       ss <<  "}";
       return ss.str();
