@@ -15,17 +15,6 @@ SET (CMAKE_RANLIB  "/usr/bin/llvm-ranlib")
 
 add_definitions(-DADAM_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
 
-
-### GTK3 ###
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
-include_directories(${GTK3_INCLUDE_DIRS})
-link_directories(${GTK3_LIBRARY_DIRS})
-add_definitions(${GTK3_CFLAGS_OTHER})
-
-### GOOCANVAS ###
-include_directories(/usr/include/goocanvas-2.0)
-
 add_executable(
 	adam
 	src/adam.cpp
@@ -67,15 +56,6 @@ add_executable(
 #  src/nntrain.cpp
 #)
 
-add_executable(
-  signal
-  src/signal/signal.cpp
-  src/signal/dump.cpp
-  src/signal/graph.cpp
-  src/lib/narrays.cpp
-  src/lib/utils.cpp
-)
-
 add_library(
         igmgw SHARED
         src/lib/brokers/broker.h
@@ -109,16 +89,6 @@ target_link_libraries(
   curl
 )
 
-
-target_link_libraries(
-  signal 
-  ${GTK3_LIBRARIES}
-  goocanvas-2.0
-  pthread
-
-)
-
-
 install (TARGETS adam DESTINATION bin)
 install (TARGETS csv2dump DESTINATION tools)
 #install (TARGETS nntrain DESTINATION tools)
@@ -130,6 +100,7 @@ install (TARGETS igmgw2 DESTINATION lib)
 install (FILES "install/clanglibs/libc++.so" DESTINATION lib)
 install (FILES "install/clanglibs/librt.so" DESTINATION lib)
 install (FILES "install/tools/cbackup.sh" DESTINATION tools)
+install (FILES "install/tools/cleanall.sh" DESTINATION tools)
 
 install (DIRECTORY "install/compile" DESTINATION .)
 install (DIRECTORY "install/etc" DESTINATION .)
