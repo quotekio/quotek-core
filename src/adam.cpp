@@ -212,7 +212,13 @@ int main(int argc,char** argv) {
   s->dlibOpen(0);
 
   broker* b = create_broker();
-  t = new tsEngine(c,b,ilist,s,mm,ge,mlist);
+
+  if ( c->getMode() == ADAM_MODE_BACKTEST || c->getMode() == ADAM_MODE_GENETICS ) {
+    //t = new btEngine(c,b,ilist,s,mm,ge,mlist);
+  }
+  else {
+    t = new tsEngine(c,b,ilist,s,mm,ge,mlist);
+  }
 
   signal(SIGINT, signal_callback_handler);
   signal(SIGHUP, signal_callback_handler);

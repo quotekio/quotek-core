@@ -112,14 +112,8 @@ class tsEngine{
     store* getStore();
     store* getGeneticsStore();
     void setGeneticsStore(store*);
-
+    
     int getMode();
-    float getSpeed();
-    int getBacktestPos();
-    int getBacktestProgress();
-
-    void setBacktestPos(int);
-    void setBacktestProgress(int);
     int eval_running(indice*,time_t);
 
     void addAStats(adamresult*);
@@ -127,12 +121,7 @@ class tsEngine{
   private:
 
     adamCfg* cfg;
-    float tse_speed;
     int tse_mode;
-    string tse_dump;
-    int tse_backtest_pos;
-    int tse_backtest_progress;
-
     evmio_array evmio_a;
 
     broker* tse_broker;

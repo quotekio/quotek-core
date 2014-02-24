@@ -184,141 +184,6 @@ void* broker_force_close(void* arg) {
 }
 
 
-void* moneyman_backtest(void* arg) {
-
-  tsEngine *t0 = (tsEngine*) arg;
-  float mm_speed = t0->getSpeed();
-
-  moneyManager* mm = t0->getMoneyManager();
-  strategy* s = t0->getStrategy();
-
-  AssocArray<indice*> ilist = t0->getIndicesList();
-  vector<string> si = iGetNames(ilist);
-
-  igmLogger* logger = t0->getLogger();
-  Queue<std::string> *orders_queue = t0->getOrdersQueue();
-
-  //TRADELIFE struct for fctptr
-  typedef void* (*tl_fct)(pos_c*,tradelife_io*);
-  void* tl_fct_fref = s->getTLFct(); 
-  vector<position>* poslist = mm->getPositions();
-
-  farray* fav;
-  float v;
-  
-  tradelife_io tl_io;
-
-  tl_io.ans = (char*) malloc(1024* sizeof(char));
-  tl_io.log_s = (char*) malloc(1024* sizeof(char));
-  tl_io.s = t0->getStore();
-
-  while(1) {
-
-    if ( tl_fct_fref != NULL) {
-
-      tl_fct tl = (tl_fct) tl_fct_fref;
-      for (int i=0;i<poslist->size();i++) {
-
-        tl_io.ans[0] = '\0';
-        tl_io.log_s[0] = '\0';
-
-        pos_c pos_io;
-        pos_io.indice = poslist->at(i).indice.c_str();
-        pos_io.dealid = poslist->at(i).dealid.c_str();
-        pos_io.pnl = poslist->at(i).pnl;
-        pos_io.open = poslist->at(i).open;
-        pos_io.size = poslist->at(i).size;
-        pos_io.stop = poslist->at(i).stop;
-        pos_io.vstop = poslist->at(i).vstop;
-        pos_io.nb_inc = poslist->at(i).nb_inc;
-        pos_io.limit = poslist->at(i).limit;
-        pos_io.status = poslist->at(i).status;
-
-        (*tl)(&pos_io,&tl_io);
-
-        poslist->at(i).vstop = pos_io.vstop ;
-        poslist->at(i).nb_inc = pos_io.nb_inc;    
-    
-        if (std::string(tl_io.ans) != "" ) {
-          orders_queue->push(tl_io.ans);
-        }
-
-        if (std::string(tl_io.log_s) != "" ) {
-          logger->log(tl_io.log_s);
-        }
-
-      }
-
-    }
-    
-
-    for(int j=0;j<si.size();j++) {
-      fav = t0->getValues(si.at(j));
-      v = fav->values[t0->getBacktestPos()];
-      mm->computePNLs(si.at(j),v);
-
-      //close positions where limit/stop is reached
-      for(std::vector<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
-
-        if ( poslist->size() == 0 ) break;
-
-        position p0 = *iter;
-        position* p = &p0;
-
-        if  (p->indice == si.at(j)) {
-
-          int rmpos = 0;
-
-          if (p->size > 0 &&  v <= p->stop) {
-            rmpos = REMPOS_STOP;
-          }
- 
-          else if (p->size > 0 && v <= p->vstop) {
-            rmpos = REMPOS_VSTOP;
-          }
-
-          else if (p->size > 0 && v >= p->limit) {
-            rmpos = REMPOS_LIMIT;
-          }
-
-          else if (p->size < 0 && v >= p->stop ) {
-            rmpos = REMPOS_STOP;
-          }
-
-          else if (p->size < 0 && v >= p->vstop ) {
-            rmpos = REMPOS_VSTOP;
-          }
-
-          else if (p->size < 0 && v <= p->limit ) {
-            rmpos = REMPOS_LIMIT;
-          }
-
-          if (rmpos > 0) {
-
-            iter = mm->remPosition(iter);
-            string logstr = "POS " + p->indice + " Removed";
-
-            if (rmpos == REMPOS_STOP) logstr = logstr + " (STOP)";
-            else if (rmpos == REMPOS_VSTOP) logstr = logstr + " (VSTOP)";
-            else if (rmpos == REMPOS_LIMIT) logstr = logstr + " (LIMIT)";
-
-            logger->log(logstr);
-            if (iter == poslist->end() ) break;
-
-          }
-
-      }
-    }
-
-    }
-
-    usleep(mm_speed);
-  }
-
-}
-
-
-
 void* moneyman(void* arg) {
 
   tsEngine *t0 = (tsEngine*) arg;
@@ -415,160 +280,6 @@ return NULL;
 
 }
 
-/* Main Thread callback for the run of genetic algorithms */
-/* Is also in charge of fake polling during backtest */
-
-void* genetics_run(void* arg) {
-
-  tsEngine* t0 = (tsEngine*) arg;
-  iarray* tstamps = t0->getTimeStamps();
-  igmLogger* logger = t0->getLogger();
-  genetics* ge = t0->getGE();
-  moneyManager* mm = t0->getMoneyManager();
-
-  cout << "Initializing Population.." << endl;
-  ge->initPopulation();
-
-  int gen = 0;
-
-  char bt_status[128];
-  int bt_adv;
-  int bt_adv_dlock;
-
-
-  while(1) {
-
-    for (int i=0;i<ge->getPopulationSize();i++) {
-
-      individual* iv = ge->getIndividualFromPopulation(i);
-
-      if ( ge->mustCompute(iv) ) {
-
-        cout << "Processing Generation #" << gen << ", individual #" << i << ".." <<endl; 
-        store* gstore = &(iv->attributes);
-        t0->setGeneticsStore(gstore);
-
-        bt_adv = 0;
-        bt_adv_dlock = 0;
-
-        for(int j=0;j<tstamps->size;j++) {
-          t0->setBacktestPos(j);
-
-          if ( j % ( tstamps->size / 100 )  == 0) {
-            bt_adv++;
-            bt_adv_dlock = 0;
-          }
-
-          if (bt_adv % 10 == 0 && bt_adv_dlock == 0) {
-            sprintf(bt_status,"Backtest Status: %d%%", bt_adv); 
-            logger->log(bt_status);
-            bt_adv_dlock = 1;
-          }
-
-          usleep(t0->getSpeed());
-        }
-      
-        iv->result = mm->getEndResult();
-        store_clear(t0->getStore());
-        mm->clear();
-      }
-    }
-
-
-    gen++;
-    if (  ge->getMaxGenerations() != 0 &&  gen >= ge->getMaxGenerations()  ) {
-      cout << "Genetics Maximum number of generations reached" << endl;
-      ge->dumpWinner();
-      exit(0);
-    }
-
-    else if (ge->converges() ) {
-      cout << "Genetics Convergence achieved !" << endl;
-      ge->dumpWinner();
-      exit(0);
-    }
-
-    ge->dumpPopulation();
-    ge->newgen();
-
-
-  }
-
-  return NULL;
-
-}
-
-
-void* poll_backtest(void* arg ) {
-
-  tsEngine* t0 = (tsEngine*) arg;
-  iarray* tstamps = t0->getTimeStamps();
-  igmLogger* logger = t0->getLogger();
-
-  adamresult* result = new adamresult();
-  result->start = time(0);
-  result->from = tstamps->values[0]; 
-  result->to = tstamps->values[tstamps->size -1];
-  
-  char bt_status[128];
-
-  int bt_adv = 0;
-  int bt_adv_dlock = 0;
-  
-  for(int i=0;i<tstamps->size;i++) {
-    t0->setBacktestPos(i);
-
-    if ( i % ( tstamps->size / 100 )  == 0) {
-      bt_adv++;
-      t0->setBacktestProgress(bt_adv);
-      bt_adv_dlock = 0;
-    }
-
-    if (bt_adv % 10 == 0 && bt_adv_dlock == 0) {
-      sprintf(bt_status,"Backtest Status: %d%%", bt_adv); 
-      logger->log(bt_status);
-      bt_adv_dlock = 1;
-    }
-
-    usleep(t0->getSpeed());
-
-  }
-
-  //completes end timestamp
-  result->stop = time(0);
-
-  //adds CFD/whatever assets statistics like
-  //highest, lowest,variance, etc..
-  t0->addAStats(result); 
-  t0->addLogStats(result);
-
-  cout << endl;
-  cout << "=================" << endl;
-  cout << "BACKTEST FINISHED" << endl;
-  cout << "=================" << endl << endl;
-
-  moneyManager* mm = t0->getMoneyManager();
-  mm->addStats(result);
-
-  if (t0->getAdamConfig()->getBTResultFile() != "") {
-    ofstream ofh (t0->getAdamConfig()->getBTResultFile());
-    if (ofh.is_open()) {
-      string s = result->json_encode();
-      //mm->getStats(&s);
-      ofh << s << endl;
-      ofh.close();
-    }
-  }
-  else {
-    mm->displayStats();
-  }
-
-  exit(0);
-
-  return NULL;
-}
-
-
 void* poll(void* arg) {
 
   tsEngine *t0 = (tsEngine*) arg; 
@@ -631,7 +342,6 @@ void* poll(void* arg) {
 
 
 // ### VALUES EVALUATIONS ALGORITHM #######
-
 void* evaluate(void* arg) {
 
   typedef void* (*eval_fct)(uint32_t,float,evaluate_io*);
@@ -644,7 +354,7 @@ void* evaluate(void* arg) {
   Queue<std::string> *orders_queue = t0->getOrdersQueue();
   igmLogger* logger = t0->getLogger();
 
-  float eval_speed = t0->getSpeed();
+  
   int eval_mode = t0->getMode();
 
   //######## EVALUATION-NEEDED VALUES
@@ -685,16 +395,8 @@ void* evaluate(void* arg) {
 
     ev_io.values = t0->getValues(eval_name);
 
-    if (eval_mode == ADAM_MODE_BACKTEST || eval_mode == ADAM_MODE_GENETICS) {
-      int i = t0->getBacktestPos();
-      t = ev_io.tstamps->values[i];
-      v = ev_io.values->values[i];
-    }
-
-    else {
-      t = iarray_last(ev_io.tstamps);
-      v = farray_last(ev_io.values);
-    }
+    t = iarray_last(ev_io.tstamps);
+    v = farray_last(ev_io.values);
 
     if ( t0->eval_running(idx,t) == 1) {
       //execution of found eval function
@@ -711,9 +413,7 @@ void* evaluate(void* arg) {
         orders_queue->push(ans_str);
       }
     }
-
-    if (eval_mode == ADAM_MODE_BACKTEST || eval_mode == ADAM_MODE_GENETICS ) usleep(eval_speed);
-    else sleep(1);
+    sleep(1);
 
   }
 
@@ -731,8 +431,7 @@ void* execute(void* arg) {
   AssocArray<indice*> ilist = t0->getIndicesList();
   
   int exec_mode = t0->getMode();
-  float exec_speed = t0->getSpeed();
-
+  
   std::string order;
   vector<std::string> order_params;
   
@@ -787,36 +486,6 @@ void* execute(void* arg) {
            for (int k=0;k<reverse_dealids.size();k++) b0->closePos(reverse_dealids[k]);
          }
 
-
-         if (exec_mode == ADAM_MODE_BACKTEST || exec_mode == ADAM_MODE_GENETICS) {
-           position p;
-           p.epic = epic;
-           p.indice = indice;
-           p.dealid = randstring(8);
-           p.nb_inc = 1;
-           
-           if (way == "sell") {
-             //-1 is for spread
-             p.open = t0->getValues(indice)->values[ t0->getBacktestPos() ] -1 ;
-             p.size = -1 * nbc;
-             p.stop = p.open + stop;
-             p.vstop = p.stop;
-             p.limit = p.open - limit;
-           }
-
-           else {
-             //+1 is for spread
-             p.open = t0->getValues(indice)->values[ t0->getBacktestPos() ] +1 ;
-             p.size = nbc;
-             p.stop = p.open - stop;
-             p.vstop = p.stop;
-             p.limit = p.open + limit;
-           }
-           p.pnl = 0;
-           p.status = POS_OPEN;
-           mm->addPosition(p);
-         }
-
          else b0->openPos(epic,way,nbc,stop,limit) ;
 
         }
@@ -824,35 +493,22 @@ void* execute(void* arg) {
         else {
           logger->log("Position refused by moneymanager (" + mm->resolveError(mm_answer) + ")");
         }
-
-
       }    
 
       else if (order_params.at(0) == "closepos") {
         std::string dealid = order_params.at(1);
-        if (exec_mode == ADAM_MODE_BACKTEST || exec_mode == ADAM_MODE_GENETICS) {
-          mm->remPosition(dealid); 
-        }
-
-        else {
-          position* cpos  = mm->getPositionByDealid(dealid);
-          if (cpos != NULL) {
-            cpos->status = POS_PENDING_CLOSE;
-            b0->closePos(dealid);
-          }
+        position* cpos  = mm->getPositionByDealid(dealid);
+        if (cpos != NULL) {
+          cpos->status = POS_PENDING_CLOSE;
+          b0->closePos(dealid);
         }
       }
     }
 
-    if (exec_mode == ADAM_MODE_BACKTEST || exec_mode == ADAM_MODE_GENETICS) usleep(exec_speed);
-    else sleep(1);
+    sleep(1);
   }
 
 }
-
-
-
-
 
 tsEngine::tsEngine(adamCfg* conf,
                    broker* b,
@@ -864,13 +520,7 @@ tsEngine::tsEngine(adamCfg* conf,
 
   cout << "Initializing TS Engine.." << endl;
 
-  cfg = conf;
-  tse_mode = conf->getMode();
-
-  tse_speed = (float) 1 / (float) conf->getBSpeed() * 1000000;
-  tse_dump = conf->getBDump();
-  tse_backtest_pos = 0;
-  tse_backtest_progress = 0;
+  
 
   //initializing store
   store_init(&tse_store,256);
@@ -897,11 +547,8 @@ tsEngine::tsEngine(adamCfg* conf,
   //timestamps array init
   iarray_init(&timestamps,10000);
 
-  //Si dump backtest fourni en argument => on charge
-  if (tse_dump != "") loadDump(tse_dump);
-  else loadDump();
-    
-
+  loadDump();
+  
   evmio_a.evmio = (eval_module_io*) malloc(modules_list.size() * sizeof(eval_module_io) );
   evmio_a.size = modules_list.size();
 
@@ -934,23 +581,9 @@ tsEngine::tsEngine(adamCfg* conf,
     pthread_create(cur_pthread,NULL,modulethread_wrapper,(void*) cur_mi);
   }
 
-
+  printf ("initializing poller..\n");
+  pthread_create(&poller,NULL,poll,(void*)this);
   
-  if (tse_mode == ADAM_MODE_BACKTEST ) {
-    printf ("initializing poller (backtest mode)..\n");
-    pthread_create(&poller,NULL,poll_backtest,(void*)this); 
-  }
-
-  else if (tse_mode == ADAM_MODE_GENETICS) {
-    printf("Starting Genetics (backtest mode)..\n");
-    pthread_create(&poller,NULL,genetics_run,(void*)this);
-  }
-
-  else {
-    printf ("initializing poller..\n");
-    pthread_create(&poller,NULL,poll,(void*)this);
-  }
-
   printf ("initializing evaluators..\n");
   vector<string> evnames = iGetNames(getIndicesList());
 
@@ -970,24 +603,15 @@ tsEngine::tsEngine(adamCfg* conf,
     pthread_create(&(eval_threads[i].th) ,NULL,evaluate,(void*)&(eval_threads[i]) );
   }
 
-
   printf ("initializing executor..\n");
   pthread_create(&executor,NULL,execute,(void*)this);
 
-  if (tse_mode == ADAM_MODE_BACKTEST || tse_mode == ADAM_MODE_GENETICS ) {
-    printf ("initializing money manager (backtest mode)..\n");
-    pthread_create(&mmth,NULL,moneyman_backtest,(void*)this);
-  }
-  else {
-    printf ("initializing money manager..\n");
-    pthread_create(&mmth,NULL,moneyman,(void*)this);
-  }
+  printf ("initializing money manager..\n");
+  pthread_create(&mmth,NULL,moneyman,(void*)this);
 
-  if (tse_mode != ADAM_MODE_BACKTEST && tse_mode != ADAM_MODE_GENETICS  ) {
-    printf ("initializing broker sync threads..\n");
-    pthread_create(&bsync,NULL,broker_pos_sync,(void*)this);
-    pthread_create(&bfclose,NULL,broker_force_close,(void*)this);
-  }
+  printf ("initializing broker sync threads..\n");
+  pthread_create(&bsync,NULL,broker_pos_sync,(void*)this);
+  pthread_create(&bfclose,NULL,broker_force_close,(void*)this);
 
 }
 
@@ -1060,27 +684,6 @@ store* tsEngine::getStore() {
 int tsEngine::getMode() {
   return tse_mode;
 }
-
-float tsEngine::getSpeed() {
-  return tse_speed;
-}
-
-int tsEngine::getBacktestPos() {
-  return tse_backtest_pos;
-}
-
-int tsEngine::getBacktestProgress() {
-  return tse_backtest_progress;
-}
-
-void tsEngine::setBacktestPos(int bpos) {
-  tse_backtest_pos = bpos;
-}
-
-void tsEngine::setBacktestProgress(int bprogress) {
-  tse_backtest_progress = bprogress;
-}
-
 
 store* tsEngine::getGeneticsStore() {
   return tse_genes;
