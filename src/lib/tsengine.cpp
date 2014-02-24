@@ -1,7 +1,7 @@
 #include "tsengine.h"
 
 
-void* modulethread_wrapper(void* arg) {
+void* tsEngine::modulethread_wrapper(void* arg) {
 
   if (!arg) {
     cout << "Fatal error: Null pointer as module argument" << endl;
@@ -184,7 +184,7 @@ void* broker_force_close(void* arg) {
 }
 
 
-void* moneyman(void* arg) {
+void* tsEngine::moneyman(void* arg) {
 
   tsEngine *t0 = (tsEngine*) arg;
   broker* b0 = t0->getBroker();
@@ -280,7 +280,7 @@ return NULL;
 
 }
 
-void* poll(void* arg) {
+void* tsEngine::poll(void* arg) {
 
   tsEngine *t0 = (tsEngine*) arg; 
   string val;
@@ -342,7 +342,7 @@ void* poll(void* arg) {
 
 
 // ### VALUES EVALUATIONS ALGORITHM #######
-void* evaluate(void* arg) {
+void* tsEngine::evaluate(void* arg) {
 
   typedef void* (*eval_fct)(uint32_t,float,evaluate_io*);
 
@@ -421,7 +421,7 @@ void* evaluate(void* arg) {
 
 // ############
 
-void* execute(void* arg) {
+void* tsEngine::execute(void* arg) {
 
   tsEngine *t0 = (tsEngine*) arg; 
   Queue<std::string> *orders_queue = t0->getOrdersQueue();
@@ -510,6 +510,10 @@ void* execute(void* arg) {
 
 }
 
+tsEngine::tsEngine() {
+
+}
+
 tsEngine::tsEngine(adamCfg* conf,
                    broker* b,
                    AssocArray<indice*> ilist,
@@ -548,7 +552,7 @@ tsEngine::tsEngine(adamCfg* conf,
   iarray_init(&timestamps,10000);
 
   loadDump();
-  
+
   evmio_a.evmio = (eval_module_io*) malloc(modules_list.size() * sizeof(eval_module_io) );
   evmio_a.size = modules_list.size();
 

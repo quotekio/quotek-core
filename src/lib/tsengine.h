@@ -33,16 +33,6 @@
 #define REMPOS_VSTOP 0x02
 #define REMPOS_LIMIT 0x03
 
-
-
- void* poll(void*);
- void* poll_backtest(void*);
-
- void* evaluate(void*);
- void* execute(void*);
- void* moneyman(void*);
- void* modulethread_wrapper(void*);
-
 using namespace rapidjson;
 
 typedef struct eval_module_io {
@@ -80,6 +70,7 @@ typedef struct evaluate_io {
 class tsEngine{
 
   public:
+    tsEngine();
     tsEngine(adamCfg*,
              broker*, 
              AssocArray<indice*>,
@@ -112,13 +103,22 @@ class tsEngine{
     store* getStore();
     store* getGeneticsStore();
     void setGeneticsStore(store*);
-    
+
     int getMode();
     int eval_running(indice*,time_t);
 
     void addAStats(adamresult*);
     void addLogStats(adamresult*);
-  private:
+
+    //#### STATIC,THREADED FUNCTIONS
+    static void* poll(void*);
+    static void* evaluate(void*);
+    static void* execute(void*);
+    static void* moneyman(void*);
+    static void* modulethread_wrapper(void*);
+
+
+  protected:
 
     adamCfg* cfg;
     int tse_mode;

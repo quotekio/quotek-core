@@ -45,7 +45,6 @@ tsEngine() removed
     pthread_create(&poller,NULL,poll_backtest,(void*)this); 
   }
 
-  /*
   if (tse_mode == ADAM_MODE_BACKTEST || tse_mode == ADAM_MODE_GENETICS ) {
     printf ("initializing money manager (backtest mode)..\n");
     pthread_create(&mmth,NULL,moneyman_backtest,(void*)this);
@@ -372,15 +371,16 @@ btEngine::btEngine(adamCfg* conf,
 
 }
 
-btEngine::run() {
+/*
+void btEngine::run() {
 
 }
 
 
-btEngine::runGenetics() {
+void btEngine::runGenetics() {
 
 }
-
+*/
 
 int btEngine::getBacktestPos() {
   return backtest_pos;

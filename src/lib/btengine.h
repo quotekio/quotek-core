@@ -1,15 +1,15 @@
 #ifndef BTENGINE_H
 #define BTENGINE_H
 
-#include "tsengine.cpp"
+#include "tsengine.h"
+
 /*
 btEngine class defines the behaviour of adam while in backtest mode.
 The threading model is given away for serial processing in a single loop.
 btengine inherits from tsEngine.
-
 */
 
-class btEngine: public tsEngine {
+class btEngine: tsEngine {
 
   public:
   	btEngine(adamCfg*,
