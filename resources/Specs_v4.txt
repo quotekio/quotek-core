@@ -1,0 +1,15 @@
+ADAM 4.0 SPECIFICATIONS
+=======================
+
+* Inclusion of spread data inside both storage and evaluations.
+
+* Replacement of AssocArrays by std::map structures.
+
+* Change sequencial processing of values for evaluation functions: 
+  needs something more robust involving usage of thread-safe queues (may only appy to backtests, seems correct in real mode)
+
+* When in real mode, make the eval threads wait (1 - processing time) instead of one pure second, 
+  nowait if processing time > 1s
+
+* Implementation of Neural network functions inside the strat lib ( develop a special backtest mode ?)
+

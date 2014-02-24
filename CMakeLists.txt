@@ -23,6 +23,7 @@ add_executable(
   src/lib/adamcfg.cpp
 	src/lib/tsengine.h
 	src/lib/tsengine.cpp
+  src/lib/btengine.cpp
   src/lib/utils.h
   src/lib/utils.cpp
   src/lib/brokers/broker.h
