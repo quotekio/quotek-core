@@ -4,7 +4,6 @@ const string adamCfg::path = std::string(ADAM_PREFIX) + "/etc/adam.conf";
 
 adamCfg::adamCfg() {
 
-  backtest_speed = 1;
   backtest_dump_path = "";
   npath = "";
 }
@@ -44,10 +43,6 @@ int adamCfg::getMode() {
   return mode;
 }
 
-int adamCfg::getBSpeed() {
-  return backtest_speed;
-}
-
 string adamCfg::getBDump() {
   return backtest_dump_path;
 }
@@ -70,9 +65,6 @@ void adamCfg::setBDump(string dump_path) {
   backtest_dump_path = dump_path;
 }
 
-void adamCfg::setBSpeed(int speed) {
-  backtest_speed = speed;
-}
 
 void adamCfg::setAEPPort(int p) {
 

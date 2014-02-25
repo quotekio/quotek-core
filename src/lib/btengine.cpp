@@ -4,32 +4,7 @@
 removed from executor()
 //openpos
 if (exec_mode == ADAM_MODE_BACKTEST || exec_mode == ADAM_MODE_GENETICS) {
-           position p;
-           p.epic = epic;
-           p.indice = indice;
-           p.dealid = randstring(8);
-           p.nb_inc = 1;
            
-           if (way == "sell") {
-             //-1 is for spread
-             p.open = t0->getValues(indice)->values[ t0->getBacktestPos() ] -1 ;
-             p.size = -1 * nbc;
-             p.stop = p.open + stop;
-             p.vstop = p.stop;
-             p.limit = p.open - limit;
-           }
-
-           else {
-             //+1 is for spread
-             p.open = t0->getValues(indice)->values[ t0->getBacktestPos() ] +1 ;
-             p.size = nbc;
-             p.stop = p.open - stop;
-             p.vstop = p.stop;
-             p.limit = p.open + limit;
-           }
-           p.pnl = 0;
-           p.status = POS_OPEN;
-           mm->addPosition(p);
          }
 
 //closepos
@@ -37,169 +12,7 @@ if (exec_mode == ADAM_MODE_BACKTEST || exec_mode == ADAM_MODE_GENETICS) {
           mm->remPosition(dealid); 
         }
 
-
-
-tsEngine() removed
-  if (tse_mode == ADAM_MODE_BACKTEST ) {
-    printf ("initializing poller (backtest mode)..\n");
-    pthread_create(&poller,NULL,poll_backtest,(void*)this); 
-  }
-
-  if (tse_mode == ADAM_MODE_BACKTEST || tse_mode == ADAM_MODE_GENETICS ) {
-    printf ("initializing money manager (backtest mode)..\n");
-    pthread_create(&mmth,NULL,moneyman_backtest,(void*)this);
-  }
-  else {
-
-  else if (tse_mode == ADAM_MODE_GENETICS) {
-    printf("Starting Genetics (backtest mode)..\n");
-    pthread_create(&poller,NULL,genetics_run,(void*)this);
-  }
-
-EVAL() REMOVED
-if (eval_mode == ADAM_MODE_BACKTEST || eval_mode == ADAM_MODE_GENETICS) {
-      int i = t0->getBacktestPos();
-      t = ev_io.tstamps->values[i];
-      v = ev_io.values->values[i];
-    }
-
-
-////####################################
-
-void* btEngine::moneyman(void* arg) {
-
-  tsEngine *t0 = (tsEngine*) arg;
-  float mm_speed = t0->getSpeed();
-
-  moneyManager* mm = t0->getMoneyManager();
-  strategy* s = t0->getStrategy();
-
-  AssocArray<indice*> ilist = t0->getIndicesList();
-  vector<string> si = iGetNames(ilist);
-
-  igmLogger* logger = t0->getLogger();
-  Queue<std::string> *orders_queue = t0->getOrdersQueue();
-
-  //TRADELIFE struct for fctptr
-  typedef void* (*tl_fct)(pos_c*,tradelife_io*);
-  void* tl_fct_fref = s->getTLFct(); 
-  vector<position>* poslist = mm->getPositions();
-
-  farray* fav;
-  float v;
-  
-  tradelife_io tl_io;
-
-  tl_io.ans = (char*) malloc(1024* sizeof(char));
-  tl_io.log_s = (char*) malloc(1024* sizeof(char));
-  tl_io.s = t0->getStore();
-
-  while(1) {
-
-    if ( tl_fct_fref != NULL) {
-
-      tl_fct tl = (tl_fct) tl_fct_fref;
-      for (int i=0;i<poslist->size();i++) {
-
-        tl_io.ans[0] = '\0';
-        tl_io.log_s[0] = '\0';
-
-        pos_c pos_io;
-        pos_io.indice = poslist->at(i).indice.c_str();
-        pos_io.dealid = poslist->at(i).dealid.c_str();
-        pos_io.pnl = poslist->at(i).pnl;
-        pos_io.open = poslist->at(i).open;
-        pos_io.size = poslist->at(i).size;
-        pos_io.stop = poslist->at(i).stop;
-        pos_io.vstop = poslist->at(i).vstop;
-        pos_io.nb_inc = poslist->at(i).nb_inc;
-        pos_io.limit = poslist->at(i).limit;
-        pos_io.status = poslist->at(i).status;
-
-        (*tl)(&pos_io,&tl_io);
-
-        poslist->at(i).vstop = pos_io.vstop ;
-        poslist->at(i).nb_inc = pos_io.nb_inc;    
-    
-        if (std::string(tl_io.ans) != "" ) {
-          orders_queue->push(tl_io.ans);
-        }
-
-        if (std::string(tl_io.log_s) != "" ) {
-          logger->log(tl_io.log_s);
-        }
-
-      }
-
-    }
-    
-
-    for(int j=0;j<si.size();j++) {
-      fav = t0->getValues(si.at(j));
-      v = fav->values[t0->getBacktestPos()];
-      mm->computePNLs(si.at(j),v);
-
-      //close positions where limit/stop is reached
-      for(std::vector<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
-
-        if ( poslist->size() == 0 ) break;
-
-        position p0 = *iter;
-        position* p = &p0;
-
-        if  (p->indice == si.at(j)) {
-
-          int rmpos = 0;
-
-          if (p->size > 0 &&  v <= p->stop) {
-            rmpos = REMPOS_STOP;
-          }
  
-          else if (p->size > 0 && v <= p->vstop) {
-            rmpos = REMPOS_VSTOP;
-          }
-
-          else if (p->size > 0 && v >= p->limit) {
-            rmpos = REMPOS_LIMIT;
-          }
-
-          else if (p->size < 0 && v >= p->stop ) {
-            rmpos = REMPOS_STOP;
-          }
-
-          else if (p->size < 0 && v >= p->vstop ) {
-            rmpos = REMPOS_VSTOP;
-          }
-
-          else if (p->size < 0 && v <= p->limit ) {
-            rmpos = REMPOS_LIMIT;
-          }
-
-          if (rmpos > 0) {
-
-            iter = mm->remPosition(iter);
-            string logstr = "POS " + p->indice + " Removed";
-
-            if (rmpos == REMPOS_STOP) logstr = logstr + " (STOP)";
-            else if (rmpos == REMPOS_VSTOP) logstr = logstr + " (VSTOP)";
-            else if (rmpos == REMPOS_LIMIT) logstr = logstr + " (LIMIT)";
-
-            logger->log(logstr);
-            if (iter == poslist->end() ) break;
-
-          }
-
-      }
-    }
-
-    }
-
-    usleep(mm_speed);
-  }
-
-}
-
-
  //Main Thread callback for the run of genetic algorithms
  ///Is also in charge of fake polling during backtest.
 
@@ -319,40 +132,12 @@ void* btEngine::poll_backtest(void* arg ) {
 
   }
 
-  //completes end timestamp
-  result->stop = time(0);
-
-  //adds CFD/whatever assets statistics like
-  //highest, lowest,variance, etc..
-  t0->addAStats(result); 
-  t0->addLogStats(result);
-
-  cout << endl;
-  cout << "=================" << endl;
-  cout << "BACKTEST FINISHED" << endl;
-  cout << "=================" << endl << endl;
-
-  moneyManager* mm = t0->getMoneyManager();
-  mm->addStats(result);
-
-  if (t0->getAdamConfig()->getBTResultFile() != "") {
-    ofstream ofh (t0->getAdamConfig()->getBTResultFile());
-    if (ofh.is_open()) {
-      string s = result->json_encode();
-      //mm->getStats(&s);
-      ofh << s << endl;
-      ofh.close();
-    }
-  }
-  else {
-    mm->displayStats();
-  }
-
-  exit(0);
+  
 
   return NULL;
 }
 */
+
 
 btEngine::btEngine(adamCfg* conf,
                    broker* b,
@@ -362,6 +147,14 @@ btEngine::btEngine(adamCfg* conf,
                    genetics* ge,
                    vector<string> mlist) {
 
+
+  tse_broker = b;
+  tse_strat = s;
+  tse_mm = mm;
+  tse_ge = ge;
+  indices_list = ilist;
+  modules_list = mlist;
+
   cfg = conf;
   tse_mode = conf->getMode();
   backtest_dump = conf->getBDump();
@@ -369,6 +162,8 @@ btEngine::btEngine(adamCfg* conf,
   backtest_progress = 0;
   loadDump(backtest_dump);
 
+  
+  
 
   printf ("loading evaluators..\n");
   vector<string> evnames = iGetNames(getIndicesList());
@@ -445,18 +240,145 @@ void btEngine::moneyman_() {
 
 void btEngine::execute_() {
 
+  std::string order;
+  vector<std::string> order_params;
+
+  if (orders_queue.pop(order,false) ) {
+      logger->log("Processing Order " + order);
+      order_params = split(order,':');
+  }
+
+  if (order_params.at(0) == "openpos" || order_params.at(0) == "smartpos"){
+
+    std::string indice = order_params.at(1);
+    std::string epic = iResolve(indices_list,indice)->bmapping;
+    std::string way = order_params.at(2);
+
+    int nbc = 0;
+    int stop = 0;
+    int limit =0;
+
+    if (order_params.at(0) == "openpos") {
+      nbc= atoi(order_params.at(3).c_str());
+      stop = atoi(order_params.at(4).c_str());
+      limit = atoi(order_params.at(5).c_str());
+    }
+
+    else {
+
+      int* smartval = (int*) malloc(2*sizeof(int));
+      tse_mm->smartAsk(smartval,indice);
+      nbc= smartval[0];
+      stop = smartval[1];
+      limit = atoi(order_params.at(3).c_str());
+      free(smartval);
+    }
+
+    logger->log("Opening Position on " + epic);
+
+    int mm_answer = tse_mm->ask(indice,way,nbc,stop);
+  
+    if (mm_answer == 0) {
+
+     if (tse_mm->getReversePosForceClose() == 1 ) {
+
+       string reverse_way = ""; 
+       vector<string> reverse_dealids;
+
+       if (way == "sell") reverse_way = "buy";
+       else reverse_way = "sell";
+
+       reverse_dealids = tse_mm->findPos(indice,reverse_way);
+       for (int k=0;k<reverse_dealids.size();k++) {
+         //* TO_IMPLEMENT closepos_reverse
+       }
+     }
+
+     else { 
+
+       position p;
+       p.epic = epic;
+       p.indice = indice;
+       p.dealid = randstring(8);
+       p.nb_inc = 1;
+       
+       if (way == "sell") {
+         p.open = getValues(indice)->values[backtest_pos];
+         p.size = -1 * nbc;
+         p.stop = p.open + stop;
+         p.vstop = p.stop;
+         p.limit = p.open - limit;
+       }
+
+       else {
+         p.open = getValues(indice)->values[backtest_pos];
+         p.size = nbc;
+         p.stop = p.open - stop;
+         p.vstop = p.stop;
+         p.limit = p.open + limit;
+       }
+
+       p.pnl = 0;
+       p.status = POS_OPEN;
+       tse_mm->addPosition(p);
+
+     }
+
+    }
+
+    else {
+      logger->log("Position refused by moneymanager (" + tse_mm->resolveError(mm_answer) + ")");
+    }
+  } 
 }
+
 
 void btEngine::run() {
 
+  adamresult* result = new adamresult();
+  result->start = time(0);
+  result->from = timestamps.values[0]; 
+  result->to = iarray_last(&timestamps);
+
   for(int i=0;i<timestamps.size;i++) {
     backtest_pos++;
-
-    evaluate_("",NULL);
+    for (int j=0;j<eval_pointers.Size();j++) {
+      evaluate_(eval_pointers.GetItemName(j), eval_pointers[j] );
+    }
 
     moneyman_();
     execute_();
   }
+
+  //completes end timestamp
+  result->stop = time(0);
+
+  //adds CFD/whatever assets statistics like
+  //highest, lowest,variance, etc..
+  addAStats(result); 
+  addLogStats(result);
+
+  cout << endl;
+  cout << "=================" << endl;
+  cout << "BACKTEST FINISHED" << endl;
+  cout << "=================" << endl << endl;
+
+  tse_mm->addStats(result);
+
+  if (cfg->getBTResultFile() != "") {
+    ofstream ofh (cfg->getBTResultFile());
+    if (ofh.is_open()) {
+      string s = result->json_encode();
+      ofh << s << endl;
+      ofh.close();
+    }
+  }
+  else {
+    tse_mm->displayStats();
+  }
+
+  exit(0);
+
 }
 
 void btEngine::runGenetics() {

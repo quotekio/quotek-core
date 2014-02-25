@@ -55,7 +55,6 @@ void parse_cmdline(adamCfg* conf,int argc,char** argv) {
              {
                
                {"backtest", no_argument,0,'b'},
-               {"backtest-speed", required_argument,0,'t'},
                {"backtest-dump",required_argument ,0 ,'x'},
                {"backtest-result",required_argument,0,'r'},
                {"strategy", required_argument,0, 's'},
@@ -95,19 +94,6 @@ void parse_cmdline(adamCfg* conf,int argc,char** argv) {
       case 'r':
         conf->setBTResultFile(std::string(optarg));
         break;
-      case 't':
-
-        if ( std::string(optarg) == "real" ) {
-          conf->setBSpeed(1);
-        }
-        else if (std::string(optarg) == "max") {
-          conf->setBSpeed(0xffff);
-        }
-        else {
-          conf->setBSpeed(atoi(optarg));
-        }
-        break;
-
     }
   }
 }

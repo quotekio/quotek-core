@@ -41,7 +41,7 @@ class btEngine: tsEngine {
     int backtest_pos;
     int backtest_progress;
 
-    std::map<string, void*> eval_pointers; 
+    AssocArray<void*> eval_pointers; 
 
 };
 
