@@ -10,7 +10,7 @@ The threading model is given away for serial processing in a single loop.
 btengine inherits from tsEngine.
 */
 
-class btEngine: tsEngine {
+class btEngine: public tsEngine {
 
   public:
   	btEngine(adamCfg*,

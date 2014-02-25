@@ -77,6 +77,8 @@ void moneyManager::computePNLs(string indice_name,float cur_value) {
     if (positions.at(i).indice == indice_name) {
       position* p = &(positions.at(i));
       p->pnl = (cur_value - p->open) * pnl_coef * unit_coef * p->size;
+      
+
     }
   }
 }
@@ -164,10 +166,11 @@ string moneyManager::cleanPositions(vector<string> alive_pos) {
 
 
 vector<position>::iterator moneyManager::remPosition(vector<position>::iterator iter) {
-
+  
       position* p = &*iter;
       cumulative_pnl += p->pnl;
       return positions.erase(iter);
+
 }
 
 void moneyManager::remPosition(string dealid) {
@@ -387,7 +390,7 @@ float moneyManager::getEndResult() {
 
 void moneyManager::addStats(adamresult* result) {
 
-  computeWholePNL();
+  computeWholePNLNoSec();
   result->pnl = cumulative_pnl + cur_pnl;
   result->remainingpos = positions.size();
   
@@ -395,7 +398,7 @@ void moneyManager::addStats(adamresult* result) {
 
 void moneyManager::getStats(string* s) {
 
-  computeWholePNL();
+  computeWholePNLNoSec();
 
   *s = "TOTAL PNL OVER SIMULATION: " + float2string(cumulative_pnl + cur_pnl) + "\n";
   *s += "REMAINING OPEN POSITIONS:"  + int2string(positions.size()) + "\n";
@@ -414,7 +417,7 @@ void moneyManager::getStats(string* s) {
 
 void moneyManager::displayStats() {
 
-  computeWholePNL();
+  computeWholePNLNoSec();
 
   cout << "TOTAL PNL OVER SIMULATION: " << float2string(cumulative_pnl + cur_pnl) << endl;
   cout << "REMAINING OPEN POSITIONS:" << positions.size() << endl;

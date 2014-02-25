@@ -1,5 +1,10 @@
 #include "btengine.h"
 
+/* REMAINS TO IMPLEMENT:
+ 3) Tradelife analysis in moneyman()
+ 4) All genetics handling !
+*/
+
 btEngine::btEngine(adamCfg* conf,
                    broker* b,
                    AssocArray<indice*> ilist,
@@ -21,6 +26,16 @@ btEngine::btEngine(adamCfg* conf,
   backtest_dump = conf->getBDump();
   backtest_pos = 0;
   backtest_progress = 0;
+
+  //timestamps array init
+  iarray_init(&timestamps,10000);
+
+  //initializes logger
+  logger = new igmLogger();
+
+  //initializes store
+  store_init(&tse_store,256);
+
   loadDump(backtest_dump);
   
   printf ("loading evaluators..\n");
@@ -74,6 +89,9 @@ void btEngine::evaluate_(string eval_name,void* eval_ptr) {
   t = ev_io.tstamps->values[backtest_pos];
   v = ev_io.values->values[backtest_pos];
 
+  //debug
+  //cout << "SIMUTIME:" << epochToDateTime(t) << endl;
+
   if ( eval_running(idx,t) == 1) {
     //execution of found eval function
     (*f)(t,v,&ev_io);
@@ -125,7 +143,7 @@ void btEngine::moneyman_() {
           rmpos = REMPOS_VSTOP;
         }
 
-        else if (p->size > 0 && v >= p->limit) {
+        else if (p->size > 0 && v >= p->limit && p->limit != p->open ) {
           rmpos = REMPOS_LIMIT;
         }
 
@@ -137,7 +155,7 @@ void btEngine::moneyman_() {
           rmpos = REMPOS_VSTOP;
         }
 
-        else if (p->size < 0 && v <= p->limit ) {
+        else if (p->size < 0 && v <= p->limit && p->limit != p->open ) {
           rmpos = REMPOS_LIMIT;
         }
 
@@ -170,6 +188,7 @@ void btEngine::execute_() {
       logger->log("Processing Order " + order);
       order_params = split(order,':');
   }
+  else return;
 
   if (order_params.at(0) == "openpos" || order_params.at(0) == "smartpos"){
 
@@ -213,7 +232,7 @@ void btEngine::execute_() {
 
        reverse_dealids = tse_mm->findPos(indice,reverse_way);
        for (int k=0;k<reverse_dealids.size();k++) {
-         //* TO_IMPLEMENT closepos_reverse
+         tse_mm->remPosition(reverse_dealids[k]);
        }
      }
 
@@ -252,7 +271,12 @@ void btEngine::execute_() {
     else {
       logger->log("Position refused by moneymanager (" + tse_mm->resolveError(mm_answer) + ")");
     }
-  } 
+  }
+
+  else if (order_params.at(0) == "closepos") {
+    std::string dealid = order_params.at(1);
+    tse_mm->remPosition(dealid);       
+  }
 }
 
 
@@ -263,7 +287,7 @@ void btEngine::run() {
   result->from = timestamps.values[0]; 
   result->to = iarray_last(&timestamps);
 
-  for(int i=0;i<timestamps.size;i++) {
+  for(int i=0;i<timestamps.size -1 ;i++) {
     backtest_pos++;
     for (int j=0;j<eval_pointers.Size();j++) {
       evaluate_(eval_pointers.GetItemName(j), eval_pointers[j] );

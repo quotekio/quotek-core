@@ -1,20 +1,21 @@
 #include "adam.h"
 
-tsEngine* t;
+tsEngine* tse;
+btEngine* bte;
 int so_iter = 0;
 
 void signal_callback_handler(int signum) {
 
   if (signum == SIGINT) {
        
-       if (t->getMode() != ADAM_MODE_BACKTEST && t->getMode() != ADAM_MODE_GENETICS) {
+       if (tse) {
          cout << "dumping data to file.." << endl;
-         t->dumpAll(); 
+         tse->dumpAll(); 
        }
        exit(signum);
   }
 
-  else if (signum == SIGHUP) {
+  else if (signum == SIGHUP && tse != NULL) {
 
     int i;
     string iname;
@@ -23,14 +24,14 @@ void signal_callback_handler(int signum) {
 
     chdir(ADAM_PREFIX);
 
-    strategy* s = t->getStrategy();
+    strategy* s = tse->getStrategy();
     s->prepareCompile();
     cout << "recompiling strategy.." << endl;
     s->compile(so_iter);
     cout << "reloading compiled strategy.."<<endl;
     s->dlibOpen(so_iter);
 
-    AssocArray<void*>* eval_ptrs = t->getEvalPointers();
+    AssocArray<void*>* eval_ptrs = tse->getEvalPointers();
 
     for (i=0;i<(*eval_ptrs).Size();i++) {
 
@@ -42,10 +43,7 @@ void signal_callback_handler(int signum) {
       }
     }
   }
-
 }
-
-
 
 void parse_cmdline(adamCfg* conf,int argc,char** argv) {
 
@@ -199,11 +197,21 @@ int main(int argc,char** argv) {
 
   broker* b = create_broker();
 
-  if ( c->getMode() == ADAM_MODE_BACKTEST || c->getMode() == ADAM_MODE_GENETICS ) {
-    //t = new btEngine(c,b,ilist,s,mm,ge,mlist);
-  }
-  else {
-    t = new tsEngine(c,b,ilist,s,mm,ge,mlist);
+  switch (c->getMode()) {
+
+    case ADAM_MODE_REAL:
+      tse = new tsEngine(c,b,ilist,s,mm,ge,mlist);
+      break;
+    case ADAM_MODE_BACKTEST:
+      bte = new btEngine(c,b,ilist,s,mm,ge,mlist);
+      bte->run();
+      break;
+
+    case ADAM_MODE_GENETICS:
+      bte = new btEngine(c,b,ilist,s,mm,ge,mlist);
+      bte->runGenetics();
+      break;
+
   }
 
   signal(SIGINT, signal_callback_handler);
@@ -226,7 +234,7 @@ int main(int argc,char** argv) {
         pthread_t cth;
         int presult;
         aep_handle_io aio;
-        aio.t0 = t;
+        aio.t0 = tse;
         aio.nsession = nsession;
         if ((presult = pthread_create(&cth,NULL,aep_handler,(void*)&aio)) == 0) {
           pthread_detach(cth);

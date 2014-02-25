@@ -38,6 +38,7 @@ void sreplaceAll(std::string&,
 
 
 std::string currentDateTime();
+std::string epochToDateTime(time_t t);
 std::string float2string(float);
 std::string int2string(int);
 bool contains(std::vector<std::string>,std::string);

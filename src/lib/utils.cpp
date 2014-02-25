@@ -94,6 +94,15 @@ std::string currentDateTime() {
 }
 
 
+std::string epochToDateTime(time_t t) {
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&t);
+    strftime(buf, sizeof(buf), "%Y-%m-%d %X", &tstruct);
+    return buf;
+}
+
+
 std::string float2string(float f) {
   std::ostringstream os;
   os << f;
