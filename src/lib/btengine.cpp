@@ -1,144 +1,5 @@
 #include "btengine.h"
 
-/*
-removed from executor()
-//openpos
-if (exec_mode == ADAM_MODE_BACKTEST || exec_mode == ADAM_MODE_GENETICS) {
-           
-         }
-
-//closepos
-if (exec_mode == ADAM_MODE_BACKTEST || exec_mode == ADAM_MODE_GENETICS) {
-          mm->remPosition(dealid); 
-        }
-
- 
- //Main Thread callback for the run of genetic algorithms
- ///Is also in charge of fake polling during backtest.
-
-void* btEngine::genetics_run(void* arg) {
-
-  tsEngine* t0 = (tsEngine*) arg;
-  iarray* tstamps = t0->getTimeStamps();
-  igmLogger* logger = t0->getLogger();
-  genetics* ge = t0->getGE();
-  moneyManager* mm = t0->getMoneyManager();
-
-  cout << "Initializing Population.." << endl;
-  ge->initPopulation();
-
-  int gen = 0;
-
-  char bt_status[128];
-  int bt_adv;
-  int bt_adv_dlock;
-
-
-  while(1) {
-
-    for (int i=0;i<ge->getPopulationSize();i++) {
-
-      individual* iv = ge->getIndividualFromPopulation(i);
-
-      if ( ge->mustCompute(iv) ) {
-
-        cout << "Processing Generation #" << gen << ", individual #" << i << ".." <<endl; 
-        store* gstore = &(iv->attributes);
-        t0->setGeneticsStore(gstore);
-
-        bt_adv = 0;
-        bt_adv_dlock = 0;
-
-        for(int j=0;j<tstamps->size;j++) {
-          t0->setBacktestPos(j);
-
-          if ( j % ( tstamps->size / 100 )  == 0) {
-            bt_adv++;
-            bt_adv_dlock = 0;
-          }
-
-          if (bt_adv % 10 == 0 && bt_adv_dlock == 0) {
-            sprintf(bt_status,"Backtest Status: %d%%", bt_adv); 
-            logger->log(bt_status);
-            bt_adv_dlock = 1;
-          }
-
-          usleep(t0->getSpeed());
-        }
-      
-        iv->result = mm->getEndResult();
-        store_clear(t0->getStore());
-        mm->clear();
-      }
-    }
-
-
-    gen++;
-    if (  ge->getMaxGenerations() != 0 &&  gen >= ge->getMaxGenerations()  ) {
-      cout << "Genetics Maximum number of generations reached" << endl;
-      ge->dumpWinner();
-      exit(0);
-    }
-
-    else if (ge->converges() ) {
-      cout << "Genetics Convergence achieved !" << endl;
-      ge->dumpWinner();
-      exit(0);
-    }
-
-    ge->dumpPopulation();
-    ge->newgen();
-
-
-  }
-
-  return NULL;
-
-}
-
-
-void* btEngine::poll_backtest(void* arg ) {
-
-  tsEngine* t0 = (tsEngine*) arg;
-  iarray* tstamps = t0->getTimeStamps();
-  igmLogger* logger = t0->getLogger();
-
-  adamresult* result = new adamresult();
-  result->start = time(0);
-  result->from = tstamps->values[0]; 
-  result->to = tstamps->values[tstamps->size -1];
-  
-  char bt_status[128];
-
-  int bt_adv = 0;
-  int bt_adv_dlock = 0;
-  
-  for(int i=0;i<tstamps->size;i++) {
-    t0->setBacktestPos(i);
-
-    if ( i % ( tstamps->size / 100 )  == 0) {
-      bt_adv++;
-      t0->setBacktestProgress(bt_adv);
-      bt_adv_dlock = 0;
-    }
-
-    if (bt_adv % 10 == 0 && bt_adv_dlock == 0) {
-      sprintf(bt_status,"Backtest Status: %d%%", bt_adv); 
-      logger->log(bt_status);
-      bt_adv_dlock = 1;
-    }
-
-    usleep(t0->getSpeed());
-
-  }
-
-  
-
-  return NULL;
-}
-*/
-
-
 btEngine::btEngine(adamCfg* conf,
                    broker* b,
                    AssocArray<indice*> ilist,
@@ -161,10 +22,7 @@ btEngine::btEngine(adamCfg* conf,
   backtest_pos = 0;
   backtest_progress = 0;
   loadDump(backtest_dump);
-
   
-  
-
   printf ("loading evaluators..\n");
   vector<string> evnames = iGetNames(getIndicesList());
 
@@ -236,6 +94,71 @@ void btEngine::evaluate_(string eval_name,void* eval_ptr) {
 
 void btEngine::moneyman_() {
 
+  vector<string> si = iGetNames(indices_list);
+  farray* fav;
+  float v;
+
+  vector<position>* poslist = tse_mm->getPositions();
+
+  for(int j=0;j<si.size();j++) {
+    fav = getValues(si.at(j));
+    v = fav->values[backtest_pos];
+    tse_mm->computePNLs(si.at(j),v);
+
+    //close positions where limit/stop is reached
+    for(std::vector<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
+
+      if ( poslist->size() == 0 ) break;
+
+      position p0 = *iter;
+      position* p = &p0;
+
+      if  (p->indice == si.at(j)) {
+
+        int rmpos = 0;
+
+        if (p->size > 0 &&  v <= p->stop) {
+          rmpos = REMPOS_STOP;
+        }
+  
+        else if (p->size > 0 && v <= p->vstop) {
+          rmpos = REMPOS_VSTOP;
+        }
+
+        else if (p->size > 0 && v >= p->limit) {
+          rmpos = REMPOS_LIMIT;
+        }
+
+        else if (p->size < 0 && v >= p->stop ) {
+          rmpos = REMPOS_STOP;
+        }
+
+        else if (p->size < 0 && v >= p->vstop ) {
+          rmpos = REMPOS_VSTOP;
+        }
+
+        else if (p->size < 0 && v <= p->limit ) {
+          rmpos = REMPOS_LIMIT;
+        }
+
+        if (rmpos > 0) {
+
+          iter = tse_mm->remPosition(iter);
+          string logstr = "POS " + p->indice + " Removed";
+
+          if (rmpos == REMPOS_STOP) logstr = logstr + " (STOP)";
+          else if (rmpos == REMPOS_VSTOP) logstr = logstr + " (VSTOP)";
+          else if (rmpos == REMPOS_LIMIT) logstr = logstr + " (LIMIT)";
+
+          logger->log(logstr);
+          if (iter == poslist->end() ) break;
+
+        }
+
+      }
+    }
+
+  }
 }
 
 void btEngine::execute_() {
