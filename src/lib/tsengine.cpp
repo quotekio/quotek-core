@@ -22,7 +22,7 @@ void* tsEngine::modulethread_wrapper(void* arg) {
 
   iarray* tstamps = t0->getTimeStamps(); 
 
-  mio.mode = t0->getMode();
+  mio.mode = ADAM_MODE_REAL;
   mio.tstamps = &tstamps;
 
   AssocArray<farray*>* tvals = t0->getAllValues();
@@ -354,9 +354,6 @@ void* tsEngine::evaluate(void* arg) {
   Queue<std::string> *orders_queue = t0->getOrdersQueue();
   igmLogger* logger = t0->getLogger();
 
-  
-  int eval_mode = t0->getMode();
-
   //######## EVALUATION-NEEDED VALUES
   uint32_t t;
   float v;
@@ -366,15 +363,7 @@ void* tsEngine::evaluate(void* arg) {
   ev_io.log_s = (char*) malloc(1024 * sizeof(char) +1);
   ev_io.evmio_a = t0->getEVMIOArray();
   ev_io.s = t0->getStore();
-
   ev_io.genes = NULL;
-
-  //waits for genes store to be filled before doing anything
-  if (t0->getMode() == ADAM_MODE_GENETICS) {
-    while (ev_io.genes == NULL) {
-      ev_io.genes = t0->getGeneticsStore();
-    }
-  }
 
   ev_io.tstamps = t0->getTimeStamps();
 
@@ -429,9 +418,7 @@ void* tsEngine::execute(void* arg) {
   moneyManager* mm = t0->getMoneyManager();
   igmLogger* logger = t0->getLogger();
   AssocArray<indice*> ilist = t0->getIndicesList();
-  
-  int exec_mode = t0->getMode();
-  
+    
   std::string order;
   vector<std::string> order_params;
   
@@ -682,11 +669,6 @@ evmio_array* tsEngine::getEVMIOArray() {
 
 store* tsEngine::getStore() {
   return &tse_store;
-}
-
-
-int tsEngine::getMode() {
-  return tse_mode;
 }
 
 store* tsEngine::getGeneticsStore() {

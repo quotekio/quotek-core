@@ -1,8 +1,10 @@
 #include "btengine.h"
 
 /* REMAINS TO IMPLEMENT:
- 3) Tradelife analysis in moneyman()
- 4) All genetics handling !
+ 1) Backtest Porgress
+ 2) Tradelife analysis in moneyman()
+ 3) All genetics handling !
+
 */
 
 btEngine::btEngine(adamCfg* conf,
@@ -295,6 +297,13 @@ void btEngine::run() {
 
     moneyman_();
     execute_();
+ 
+    //Computes backtest Progress.
+    backtest_progress = (backtest_pos / (timestamps.size-1) ) * 100;
+    if (backtest_progress % 10 == 0) {
+      logger->log("Backtest Progress: " + int2string(backtest_progress) );
+    }
+
   }
 
   //completes end timestamp

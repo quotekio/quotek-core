@@ -104,9 +104,7 @@ class tsEngine{
     store* getGeneticsStore();
     void setGeneticsStore(store*);
 
-    int getMode();
     int eval_running(indice*,time_t);
-
     void addAStats(adamresult*);
     void addLogStats(adamresult*);
 
@@ -121,7 +119,6 @@ class tsEngine{
   protected:
 
     adamCfg* cfg;
-    int tse_mode;
     evmio_array evmio_a;
 
     broker* tse_broker;
