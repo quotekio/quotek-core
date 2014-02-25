@@ -369,18 +369,99 @@ btEngine::btEngine(adamCfg* conf,
   backtest_progress = 0;
   loadDump(backtest_dump);
 
+
+  printf ("loading evaluators..\n");
+  vector<string> evnames = iGetNames(getIndicesList());
+
+  for (int i=0;i<evnames.size();i++) {
+    void* evptr = tse_strat->resolveFunction(evnames.at(i),"EVAL");
+    if (evptr) {
+      eval_pointers[evnames.at(i)] = evptr;
+    }
+  }
+
 }
 
-/*
+
+void btEngine::evaluate_(string eval_name,void* eval_ptr) {
+
+  typedef void* (*eval_fct)(uint32_t,float,evaluate_io*);
+
+  uint32_t t;
+  float v;
+  evaluate_io ev_io;
+
+  eval_fct f = (eval_fct) eval_ptr;
+
+  ev_io.ans = (char*) malloc(256 * sizeof(char) +1);
+  ev_io.log_s = (char*) malloc(1024 * sizeof(char) +1);
+  ev_io.evmio_a = &evmio_a;
+  ev_io.s = &tse_store;
+  ev_io.genes = NULL;
+
+  /*
+  //waits for genes store to be filled before doing anything
+  if (t0->getMode() == ADAM_MODE_GENETICS) {
+    while (ev_io.genes == NULL) {
+      ev_io.genes = t0->getGeneticsStore();
+    }
+  }
+  */
+
+  ev_io.tstamps = &timestamps;
+  string ans_str;
+  string log_str;
+  indice* idx = iResolve(indices_list,eval_name);
+
+  ev_io.indice_name = eval_name.c_str();
+  ev_io.ans[0] = '\0';
+  ev_io.log_s[0] = '\0';
+  ev_io.values = values[eval_name];
+
+  t = ev_io.tstamps->values[backtest_pos];
+  v = ev_io.values->values[backtest_pos];
+
+  if ( eval_running(idx,t) == 1) {
+    //execution of found eval function
+    (*f)(t,v,&ev_io);
+
+    ans_str = std::string(ev_io.ans);
+    log_str = std::string(ev_io.log_s);
+
+    if (log_str != "") {
+         logger->log(log_str);
+    }
+
+    if ( ans_str != "") {
+      orders_queue.push(ans_str);
+    }
+  }
+
+}
+
+void btEngine::moneyman_() {
+
+}
+
+void btEngine::execute_() {
+
+}
+
 void btEngine::run() {
 
-}
+  for(int i=0;i<timestamps.size;i++) {
+    backtest_pos++;
 
+    evaluate_("",NULL);
+
+    moneyman_();
+    execute_();
+  }
+}
 
 void btEngine::runGenetics() {
 
 }
-*/
 
 int btEngine::getBacktestPos() {
   return backtest_pos;

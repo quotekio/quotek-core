@@ -2,6 +2,7 @@
 #define BTENGINE_H
 
 #include "tsengine.h"
+#include <map>
 
 /*
 btEngine class defines the behaviour of adam while in backtest mode.
@@ -20,19 +21,27 @@ class btEngine: tsEngine {
              genetics*,
              vector<string>);
 
+    void evaluate_(string,void*);
+    void moneyman_();
+    void execute_();
+    void run();
+    void runGenetics();
+
     float getSpeed();
     int getBacktestPos();
     int getBacktestProgress();
     void setBacktestPos(int);
     void setBacktestProgress(int);
 
-  private:
+  protected:
 
     float backtest_speed;
     int tse_mode;
     string backtest_dump;
     int backtest_pos;
     int backtest_progress;
+
+    std::map<string, void*> eval_pointers; 
 
 };
 
