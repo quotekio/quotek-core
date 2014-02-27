@@ -32,7 +32,9 @@ class btEngine: public tsEngine {
     int getBacktestProgress();
     void setBacktestPos(int);
     void setBacktestProgress(int);
-
+    void addAStats(adamresult*);
+    void addLogStats(adamresult*);
+    
   protected:
 
     float backtest_speed;
@@ -40,6 +42,7 @@ class btEngine: public tsEngine {
     string backtest_dump;
     int backtest_pos;
     int backtest_progress;
+    vector<position> positions_history;
 
     AssocArray<void*> eval_pointers; 
 

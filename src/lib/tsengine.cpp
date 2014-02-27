@@ -743,33 +743,6 @@ int tsEngine::dumpAll() {
  
 }
 
-
-void tsEngine::addAStats(adamresult* result) {
-
-  for(int i=0;i< values.Size();i++ ) {
-
-    assetstats* a1 = new assetstats();
-    a1->name = values.GetItemName(i);
-    a1->variation = percentDelta(values[a1->name]);
-    a1->deviation = stdDeviation(values[a1->name]);
-    a1->highest = max(values[i]);
-    a1->lowest = min(values[i]);
-
-    result->astats.push_back(a1);
-
-
-  }
-}
-
-void tsEngine::addLogStats(adamresult* result) {
-  vector<log_entry>* lentries = logger->getAllEntries();
-  for (int i=0;i<lentries->size();i++) {
-    result->loglines.push_back(lentries->at(i).entry);
-  }
-
-}
-
-
 int tsEngine::eval_running(indice* idx,time_t t) {
 
   int start_hour,end_hour;

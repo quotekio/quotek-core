@@ -105,9 +105,7 @@ class tsEngine{
     void setGeneticsStore(store*);
 
     int eval_running(indice*,time_t);
-    void addAStats(adamresult*);
-    void addLogStats(adamresult*);
-
+    
     //#### STATIC,THREADED FUNCTIONS
     static void* poll(void*);
     static void* evaluate(void*);

@@ -1,10 +1,8 @@
 #include "btengine.h"
 
 /* REMAINS TO IMPLEMENT:
- 1) Backtest Porgress
- 2) Tradelife analysis in moneyman()
- 3) All genetics handling !
-
+ 1) Tradelife analysis in moneyman()
+ 2) All genetics handling !
 */
 
 btEngine::btEngine(adamCfg* conf,
@@ -162,8 +160,11 @@ void btEngine::moneyman_() {
         }
 
         if (rmpos > 0) {
-
+ 
+          p->close_time = timestamps.values[backtest_pos];
+          positions_history.push_back(p0);
           iter = tse_mm->remPosition(iter);
+
           string logstr = "POS " + p->indice + " Removed";
 
           if (rmpos == REMPOS_STOP) logstr = logstr + " (STOP)";
@@ -234,6 +235,12 @@ void btEngine::execute_() {
 
        reverse_dealids = tse_mm->findPos(indice,reverse_way);
        for (int k=0;k<reverse_dealids.size();k++) {
+
+         //Store pos to be removed to the postions history.
+         position* pinv = tse_mm->getPositionByDealid(reverse_dealids[k]);
+         pinv->close_time = timestamps.values[backtest_pos];
+         positions_history.push_back(*pinv);
+         //removes inverse pos.
          tse_mm->remPosition(reverse_dealids[k]);
        }
      }
@@ -264,8 +271,10 @@ void btEngine::execute_() {
 
        p.pnl = 0;
        p.status = POS_OPEN;
+       //adds position to the backtest history.
+       p.open_time = timestamps.values[backtest_pos];
        tse_mm->addPosition(p);
-
+      
      }
 
     }
@@ -277,6 +286,12 @@ void btEngine::execute_() {
 
   else if (order_params.at(0) == "closepos") {
     std::string dealid = order_params.at(1);
+
+    //stores position to be removed to the positions history.
+    position* pinv = tse_mm->getPositionByDealid(dealid);
+    pinv->close_time = timestamps.values[backtest_pos];
+    positions_history.push_back(*pinv);
+
     tse_mm->remPosition(dealid);       
   }
 }
@@ -289,6 +304,8 @@ void btEngine::run() {
   result->from = timestamps.values[0]; 
   result->to = iarray_last(&timestamps);
 
+  int bpp = 0;
+
   for(int i=0;i<timestamps.size -1 ;i++) {
     backtest_pos++;
     for (int j=0;j<eval_pointers.Size();j++) {
@@ -299,9 +316,11 @@ void btEngine::run() {
     execute_();
  
     //Computes backtest Progress.
-    backtest_progress = (backtest_pos / (timestamps.size-1) ) * 100;
-    if (backtest_progress % 10 == 0) {
-      logger->log("Backtest Progress: " + int2string(backtest_progress) );
+    backtest_progress =  ( (float) backtest_pos / (float) (timestamps.size-1) ) * 100;
+    //cout << backtest_progress << endl;
+    if (backtest_progress % 10 == 0 && backtest_progress > bpp) {
+      bpp = backtest_progress;
+      logger->log("Backtest Progress: " + int2string(backtest_progress) + "%");
     }
 
   }
@@ -309,10 +328,20 @@ void btEngine::run() {
   //completes end timestamp
   result->stop = time(0);
 
+  //Adds remaining pos to history
+  vector<position>* rpos = tse_mm->getPositions();
+  result->remainingpos = rpos->size();
+
+  for (int i=0;i<result->remainingpos;i++) {
+    rpos->at(i).close_time = timestamps.values[backtest_pos];
+    positions_history.push_back(rpos->at(i));
+  }
+
   //adds CFD/whatever assets statistics like
   //highest, lowest,variance, etc..
   addAStats(result); 
   addLogStats(result);
+  result->positions_history = positions_history;  
 
   cout << endl;
   cout << "=================" << endl;
@@ -353,4 +382,30 @@ void btEngine::setBacktestPos(int bpos) {
 
 void btEngine::setBacktestProgress(int bprogress) {
   backtest_progress = bprogress;
+}
+
+
+void btEngine::addAStats(adamresult* result) {
+
+  for(int i=0;i< values.Size();i++ ) {
+
+    assetstats* a1 = new assetstats();
+    a1->name = values.GetItemName(i);
+    a1->variation = percentDelta(values[a1->name]);
+    a1->deviation = stdDeviation(values[a1->name]);
+    a1->highest = max(values[i]);
+    a1->lowest = min(values[i]);
+
+    result->astats.push_back(a1);
+
+
+  }
+}
+
+void btEngine::addLogStats(adamresult* result) {
+  vector<log_entry>* lentries = logger->getAllEntries();
+  for (int i=0;i<lentries->size();i++) {
+    result->loglines.push_back(lentries->at(i).entry);
+  }
+
 }

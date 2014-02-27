@@ -4,8 +4,38 @@
 #include <string>
 #include <vector>
 #include "utils.h"
+#include "position.h"
 
 using namespace std;
+
+inline string pos2json(position* p) {
+
+  stringstream ss;
+
+  ss << "{";
+  ss << "\"asset\":\"" << p->indice << "\",\n";
+  ss << "\"epic\":\"" << p->epic << "\",\n";
+  ss << "\"dealid\":\"" << p->dealid << "\",\n";
+  ss << "\"name\":\"" << p->name << "\",\n";
+  
+  if (  p->size > 0 ) {
+    ss << "\"way\":\"buy\",\n"; 
+  }
+  else ss << "\"way\":\"sell\",\n"; 
+
+  ss << "\"nbc\":" << p->size * p->size / p->size << ",\n";
+
+  ss << "\"stop\":" << p->stop << ",\n";
+  ss << "\"limit\":" << p->limit << ",\n";
+  ss << "\"pnl\":" << p->pnl << ",\n";
+  ss << "\"open_time\":" << p->open_time << ",\n";
+  ss << "\"close_time\":" << p->close_time << "\n";
+  ss << "}";
+
+  return ss.str();
+}
+
+
 
 class geneticresult {
 
@@ -74,7 +104,6 @@ class adamresult {
 
   public:
   	adamresult() {
-
   	}
   	int start;
   	int stop;
@@ -83,9 +112,9 @@ class adamresult {
     float pnl;
     int remainingpos;
   	vector<geneticresult> genetics;
-    vector<snappos> positions;
     vector<assetstats*> astats;
     vector<string> loglines;
+    vector<position> positions_history;
 
   	string json_encode() {
 
@@ -100,9 +129,9 @@ class adamresult {
       ss <<  "\"remainingpos\": " << remainingpos << ",\n";
 
       ss << "\"positions\": [";
-      for(int i=0;i<positions.size();i++) {
-        ss <<  positions[i].json_encode();
-        if (i< positions.size()-1) ss << ",\n";
+      for(int i=0;i<positions_history.size();i++) {
+        ss <<  pos2json(&positions_history[i]);
+        if (i < positions_history.size()-1) ss << ",\n";
         else ss << "\n";
       }
       ss << "],\n";

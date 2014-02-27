@@ -9,6 +9,7 @@
 #include "utils.h"
 #include "indice.h"
 #include "results.h"
+#include "position.h"
 
 #define MM_ERR_NBPOS 0x01
 #define MM_ERR_TRADERISK_2HIGH 0x02
@@ -28,22 +29,6 @@ using namespace std;
 #define POS_OPEN 0x00
 #define POS_PENDING_CLOSE 0x01
 #define POS_CLOSED 0x02
-
-typedef struct position {
-  string indice;
-  string epic;
-  string dealid;
-  string name;
-  int size;
-  float stop;
-  float vstop;
-  int nb_inc;
-  float limit;
-  float open;
-  float pnl;
-  int status;
-} position;
-
 
 typedef struct pos_c {
   const char* indice;
