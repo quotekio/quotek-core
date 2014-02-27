@@ -234,7 +234,9 @@ int main(int argc,char** argv) {
         pthread_t cth;
         int presult;
         aep_handle_io aio;
-        aio.t0 = tse;
+        if (tse != NULL) aio.t0 = tse;
+        else aio.t0 = bte;
+        
         aio.nsession = nsession;
         if ((presult = pthread_create(&cth,NULL,aep_handler,(void*)&aio)) == 0) {
           pthread_detach(cth);

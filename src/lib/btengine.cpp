@@ -361,7 +361,7 @@ void btEngine::run() {
   else {
     tse_mm->displayStats();
   }
-  exit(0);
+  //exit(0);
 }
 
 void btEngine::runGenetics() {

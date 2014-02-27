@@ -3,6 +3,7 @@
 
 #include "network.h"
 #include "tsengine.h"
+#include "btengine.h"
 #include "constants.h"
 
 #include <string>

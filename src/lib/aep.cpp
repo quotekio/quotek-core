@@ -15,11 +15,11 @@ std::string aep_answer(std::string data,tsEngine* t0) {
     res = aep_poslist(t0);
   }
 
-  /*
+  
   else if (data == "btprogress\r\n") {
     res = aep_btprogress(t0);
   }
-  */
+
 
   else if (data == "version\r\n") {
     res = aep_version(t0);
@@ -121,22 +121,22 @@ std::string aep_lastlogs(tsEngine* t0,int nb_entries) {
 
 }
 
-/*
-std::string aep_btprogress(btEngine* bt0) {
+
+std::string aep_btprogress(tsEngine* t0) {
   std::string ret;
-  ret = "{ \"btprogress\":\"" + int2string( t0->getBacktestProgress() ) + "\" }";
+  btEngine* bt0 = (btEngine*) t0;
+  ret = "{ \"btprogress\":\"" + int2string( bt0->getBacktestProgress() ) + "\" }";
   return ret;
 }
-*/
 
 
 void* aep_handler(void* ptr) {
 
   aep_handle_io* aio = (aep_handle_io*) ptr;
   networkSession* nsession = aio->nsession;
-  tsEngine* t0 = aio->t0;
- 
 
+  tsEngine* t0 = aio->t0 ;
+  
   while(nsession->isAlive()) {
 
     std::string data = nsession->recv_data();
