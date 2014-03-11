@@ -61,8 +61,7 @@ class genetics {
 
 
     individual* getWinner();
-    int dumpWinner();
-    int dumpPopulation();
+    
 
     string serializeIV(individual*);
 

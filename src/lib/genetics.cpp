@@ -123,27 +123,15 @@ void genetics::genPopulation(int size) {
 void genetics::newgen() {
 
   vector <individual> newpop;
-
-  cout << "1ST INDIVIDUAL RESULT (PPRE SELECT): " << population[0].result << endl; 
-
   select(&newpop);
 
-  cout << "1ST INDIVIDUAL RESULT (POST SELECT): " << newpop[0].result << endl; 
+  cout << "POST SELECTION POP SIZE:" << newpop.size() <<  endl;
 
   reproduce(&newpop);
-  cout << "1ST INDIVIDUAL RESULT (POST REPRODUCE): " << newpop[0].result << endl; 
-
   mutate(&newpop);
-  cout << "1ST INDIVIDUAL RESULT (POST MUTATE): " << newpop[0].result << endl; 
   
   population = newpop;
-
-  cout << "1ST INDIVIDUAL RESULT (POST REASSIGN): " << population[0].result << endl;
-
-  genPopulation(newcomers);
-
-  cout << "1ST INDIVIDUAL RESULT (POST NEWCOMERS): " << population[0].result << endl;  
-
+  genPopulation(  population_size - newpop.size() );
   generation++;
 
 }
@@ -172,10 +160,11 @@ void genetics::select(vector<individual>* p) {
 
   survivors_indices.clear();
 
+  //here we select <genetics_survivors> from the best
+  //individuals.
   for(int i=0;i<survivors;i++) {
     int s_idx = getCurMaxResult();
     p->push_back( population[s_idx]);
-    cout << "SELECTED INDIVIDUAL RESULT:" << population[s_idx].result << endl;
   }
 }
 
@@ -318,44 +307,3 @@ string genetics::serializeIV(individual* iv) {
   return result;
 }
 
-
-int genetics::dumpWinner() {
-
-  string fpath = ddir + "winner.agf";
-  ofstream of (fpath.c_str());
-  if ( ! of.good() ) { 
-    cerr << "* CRITICAL: Cannot dump genetics winner, file error *" << endl;
-    return 0;
-  }
-
-  individual* winner = getWinner();
-
-  of << "INDIVIDUAL 0" << endl;
-  of << "RESULT " << winner->result << endl;
-  of << serializeIV(winner);
-  of.close();
-
-  return 1;
-}
-
-int genetics::dumpPopulation() {
-
-  
-  string fpath = ddir + "generation_" + int2string(generation) + ".agf";
-  ofstream of (fpath.c_str());
-  if ( ! of.good() ) { 
-    cerr << "* CRITICAL: Cannot dump genetics population, file error *" << endl;
-    return 0;
-  }
-  
-  for (int i=0;i<population.size();i++) {
-    individual* iv = &(population[i]);
-    of << "INDIVIDUAL " << i << endl;
-    of << "RESULT " << iv->result << endl;
-    of << serializeIV(iv);
-    of << endl;
-  }
-
-  of.close();
-  return 1;
-}

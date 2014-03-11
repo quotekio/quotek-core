@@ -5,6 +5,7 @@
 #include <vector>
 #include "utils.h"
 #include "position.h"
+#include <fstream>
 
 using namespace std;
 
@@ -35,16 +36,6 @@ inline string pos2json(position* p) {
   return ss.str();
 }
 
-
-
-class geneticresult {
-
-  public:
-    geneticresult() {
-
-    }
-    
-};
 
 class snappos {
 
@@ -111,7 +102,7 @@ class adamresult {
   	int to;
     float pnl;
     int remainingpos;
-  	vector<geneticresult> genetics;
+    
     vector<assetstats*> astats;
     vector<string> loglines;
     vector<position> positions_history;
@@ -120,7 +111,7 @@ class adamresult {
 
       stringstream ss;
 
-      ss << "{";
+      ss <<  "{";
       ss <<  "\"start\": " << start << ",\n";
       ss <<  "\"stop\": " << stop << ",\n";
       ss <<  "\"from\": " << from << ",\n";
@@ -157,7 +148,67 @@ class adamresult {
       return ss.str();
 
   	}
-    
+   
+    int saveToFile(string fname) {
+
+      ofstream ofh (fname.c_str());
+      
+      if (! ofh.good()) return -1;
+      
+      ofh << json_encode();
+      ofh.close();
+
+      return 0;
+    }
+
 };
+
+
+//class made to store each genetics iteration.
+class adamGeneticsResultEntry: public adamresult {
+
+  public:
+    int generation_id;
+    int individual_id;
+    vector<string> genes_repr;
+
+};
+
+
+//class made to store all the iterations.
+class adamGeneticsResult {
+  public:
+    vector<adamGeneticsResultEntry*> entries;
+
+    string json_encode() {
+      stringstream res;
+      res << "[";
+
+      for (int i=0;i<entries.size();i++) {
+        res << entries[i]->json_encode();
+        if (i < entries.size() - 1 ) res << ",";
+      }
+
+      res << "]";
+
+      return res.str();
+
+    }
+
+    int saveToFile(string fname) {
+
+      ofstream ofh (fname.c_str());
+
+      if (! ofh.good()) return -1;
+      
+      ofh << json_encode();
+      ofh.close();
+
+      return 0;
+    }
+
+};
+
+
 
 #endif

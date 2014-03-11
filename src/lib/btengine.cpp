@@ -365,6 +365,7 @@ void btEngine::runGenetics() {
   int bt_adv;
   int bt_adv_dlock;
 
+
   while(1) {
 
     for (int i=0;i < tse_ge->getPopulationSize();i++) {
@@ -400,17 +401,14 @@ void btEngine::runGenetics() {
     gen++;
     if (  tse_ge->getMaxGenerations() != 0 &&  gen >= tse_ge->getMaxGenerations()  ) {
       cout << "Genetics Maximum number of generations reached" << endl;
-      tse_ge->dumpWinner();
       exit(0);
     }
 
     else if (tse_ge->converges() ) {
       cout << "Genetics Convergence achieved !" << endl;
-      tse_ge->dumpWinner();
       exit(0);
     }
 
-    tse_ge->dumpPopulation();
     tse_ge->newgen();
 
   }
