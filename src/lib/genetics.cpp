@@ -340,13 +340,14 @@ int genetics::dumpWinner() {
 
 int genetics::dumpPopulation() {
 
+  
   string fpath = ddir + "generation_" + int2string(generation) + ".agf";
   ofstream of (fpath.c_str());
   if ( ! of.good() ) { 
     cerr << "* CRITICAL: Cannot dump genetics population, file error *" << endl;
     return 0;
   }
-
+  
   for (int i=0;i<population.size();i++) {
     individual* iv = &(population[i]);
     of << "INDIVIDUAL " << i << endl;

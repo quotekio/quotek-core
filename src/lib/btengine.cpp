@@ -65,16 +65,7 @@ void btEngine::evaluate_(string eval_name,void* eval_ptr) {
   ev_io.log_s = (char*) malloc(1024 * sizeof(char) +1);
   ev_io.evmio_a = &evmio_a;
   ev_io.s = &tse_store;
-  ev_io.genes = NULL;
-
-  /*
-  //waits for genes store to be filled before doing anything
-  if (t0->getMode() == ADAM_MODE_GENETICS) {
-    while (ev_io.genes == NULL) {
-      ev_io.genes = t0->getGeneticsStore();
-    }
-  }
-  */
+  ev_io.genes = tse_genes;
 
   ev_io.tstamps = &timestamps;
   string ans_str;
@@ -366,7 +357,6 @@ void btEngine::run() {
 
 void btEngine::runGenetics() {
   
-
   cout << "Initializing Population.." << endl;
   tse_ge->initPopulation();
 
@@ -390,6 +380,16 @@ void btEngine::runGenetics() {
         bt_adv = 0;
         bt_adv_dlock = 0;
 
+        //reinit backtest variables
+        backtest_pos = 0;
+        backtest_progress = 0;
+
+        //clear logs
+        logger->clear();
+        
+        //runs backtest with current genes store
+        run();
+        
         iv->result = tse_mm->getEndResult();
         store_clear(getStore());
         tse_mm->clear();
@@ -410,9 +410,8 @@ void btEngine::runGenetics() {
       exit(0);
     }
 
-    ge->dumpPopulation();
-    ge->newgen();
-
+    tse_ge->dumpPopulation();
+    tse_ge->newgen();
 
   }
 

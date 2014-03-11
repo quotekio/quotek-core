@@ -10,6 +10,7 @@ igmLogger::igmLogger() {
   } 
  }
 
+
 void igmLogger::log(string logstr) {
 
   log_entry le;
@@ -46,3 +47,6 @@ ofstream* igmLogger::getStream() {
   return &out;
 }
 
+void igmLogger::clear() {
+  entries.clear();
+}
