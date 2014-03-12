@@ -105,12 +105,12 @@ void genetics::genPopulation(int size) {
       strncpy(gname,genes[j].name.c_str(),512*sizeof(char));
 
       if ( genes[j].dataType == "int" ) {
-        int val = genes[j].ilimit_inf + rand() % genes[j].ilimit_sup ;
+        int val = randint(genes[j].ilimit_inf,genes[j].ilimit_sup);
         store_push( &(iv.attributes), gname, val);
       }
 
       else if (genes[j].dataType == "float") {
-        float val =  genes[j].limit_inf + (float) rand() / ((float)RAND_MAX/(genes[j].limit_sup - genes[j].limit_inf ));
+        float val = randfloat(genes[j].limit_inf,genes[j].limit_sup);
         store_push( &(iv.attributes), gname, val);
       }
     }
@@ -286,9 +286,10 @@ individual* genetics::getWinner() {
 }
 
 
-string genetics::serializeIV(individual* iv) {
+vector <string> genetics::serializeIV(individual* iv) {
 
-  string result = "";
+  vector <string> result;
+
   gene* linked_gene;
   for(int i=0;i<iv->attributes.size;i++) {
     char* gname = store_item_at( &(iv->attributes), i);
@@ -296,11 +297,11 @@ string genetics::serializeIV(individual* iv) {
     linked_gene = getGene( std::string(gname) );
 
     if ( linked_gene->dataType == "int"  ) {
-      result += linked_gene->name + " int " + int2string(gval) + "\n";
+      result.push_back(linked_gene->name + " int " + int2string(gval));
     }
 
     else if (linked_gene->dataType == "float") {
-      result += linked_gene->name + " float " + float2string((float)gval) + "\n"; 
+      result.push_back(linked_gene->name + " float " + float2string((float)gval));
     }
   }
 

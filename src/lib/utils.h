@@ -57,4 +57,8 @@ bool vector_in_str(std::vector<std::string>*,std::string);
 
 std::string json_escape(const std::string& input);
 
+float randfloat(float min, float max);
+int randint(int min,int max);
+
+
 #endif

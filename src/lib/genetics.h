@@ -63,7 +63,7 @@ class genetics {
     individual* getWinner();
     
 
-    string serializeIV(individual*);
+    vector <string> serializeIV(individual*);
 
     
     

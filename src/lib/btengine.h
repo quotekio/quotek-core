@@ -24,8 +24,8 @@ class btEngine: public tsEngine {
     void evaluate_(string,void*);
     void moneyman_();
     void execute_();
-    void run();
-    void runGenetics();
+    adamresult* run();
+    adamGeneticsResult* runGenetics();
 
     float getSpeed();
     int getBacktestPos();

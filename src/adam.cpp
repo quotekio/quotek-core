@@ -197,6 +197,10 @@ int main(int argc,char** argv) {
 
   broker* b = create_broker();
 
+  adamGeneticsResult* gres;
+  adamresult* res;
+
+
   switch (c->getMode()) {
 
     case ADAM_MODE_REAL:
@@ -204,12 +208,22 @@ int main(int argc,char** argv) {
       break;
     case ADAM_MODE_BACKTEST:
       bte = new btEngine(c,b,ilist,s,mm,ge,mlist);
-      bte->run();
+      res = bte->run();
+
+      if ( c->getBTResultFile() != "" ) {
+        res->saveToFile(c->getBTResultFile());
+      }
+
       break;
 
     case ADAM_MODE_GENETICS:
       bte = new btEngine(c,b,ilist,s,mm,ge,mlist);
-      bte->runGenetics();
+      gres = bte->runGenetics();
+
+      if ( c->getBTResultFile() != "" ) {
+        gres->saveToFile(c->getBTResultFile());
+      }
+
       break;
 
   }

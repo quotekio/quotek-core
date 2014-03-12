@@ -288,7 +288,7 @@ void btEngine::execute_() {
 }
 
 
-void btEngine::run() {
+adamresult* btEngine::run() {
 
   adamresult* result = new adamresult();
   result->start = time(0);
@@ -340,23 +340,13 @@ void btEngine::run() {
   cout << "=================" << endl << endl;
 
   tse_mm->addStats(result);
-
-  if (cfg->getBTResultFile() != "") {
-    ofstream ofh (cfg->getBTResultFile());
-    if (ofh.is_open()) {
-      string s = result->json_encode();
-      ofh << s << endl;
-      ofh.close();
-    }
-  }
-  else {
-    tse_mm->displayStats();
-  }
-  //exit(0);
+  return result;
 }
 
-void btEngine::runGenetics() {
+adamGeneticsResult* btEngine::runGenetics() {
   
+  adamGeneticsResult* result = new adamGeneticsResult();
+
   cout << "Initializing Population.." << endl;
   tse_ge->initPopulation();
 
@@ -371,6 +361,7 @@ void btEngine::runGenetics() {
     for (int i=0;i < tse_ge->getPopulationSize();i++) {
 
       individual* iv = tse_ge->getIndividualFromPopulation(i);
+      adamresult* grentry;
 
       if ( tse_ge->mustCompute(iv) ) {
 
@@ -388,12 +379,20 @@ void btEngine::runGenetics() {
         //clear logs
         logger->clear();
         
-        //runs backtest with current genes store
-        run();
-        
+        //runs backtest with current genes store and fetch back result
+        grentry = run();
+        grentry->generation_id = gen;
+        grentry->individual_id = i;
+        grentry->genes_repr = tse_ge->serializeIV(iv);
+
+        result->entries.push_back(grentry);
         iv->result = tse_mm->getEndResult();
+
+        //Clean components for next iteration
         store_clear(getStore());
         tse_mm->clear();
+        positions_history.clear();
+
       }
     }
 
@@ -401,17 +400,19 @@ void btEngine::runGenetics() {
     gen++;
     if (  tse_ge->getMaxGenerations() != 0 &&  gen >= tse_ge->getMaxGenerations()  ) {
       cout << "Genetics Maximum number of generations reached" << endl;
-      exit(0);
+      return result;
     }
 
     else if (tse_ge->converges() ) {
       cout << "Genetics Convergence achieved !" << endl;
-      exit(0);
+      return result;
     }
 
     tse_ge->newgen();
 
   }
+
+  return result;
 
 }
 

@@ -60,6 +60,19 @@ std::string randstring(int len)
    return str;
 }
 
+float randfloat(float min,float max) {
+
+    float random = ((float) rand()) / (float) RAND_MAX;
+    float range = max - min;  
+    return (random*range) + min;
+
+}
+
+int randint(int min,int max) {
+  return min + ( rand() % ((max - min) + 1) );
+}
+
+
 std::string sreplace(std::string &s,
                       std::string toReplace,
                       std::string replaceWith) {

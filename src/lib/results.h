@@ -102,6 +102,11 @@ class adamresult {
   	int to;
     float pnl;
     int remainingpos;
+
+    /* for genetic results */
+    int generation_id;
+    int individual_id;
+    vector<string> genes_repr;
     
     vector<assetstats*> astats;
     vector<string> loglines;
@@ -112,12 +117,27 @@ class adamresult {
       stringstream ss;
 
       ss <<  "{";
+      ss <<  "\"generation\": " << generation_id << ",\n";
+      ss <<  "\"individual\": " << individual_id << ",\n";
       ss <<  "\"start\": " << start << ",\n";
       ss <<  "\"stop\": " << stop << ",\n";
       ss <<  "\"from\": " << from << ",\n";
       ss <<  "\"to\": " << to << ",\n";
       ss <<  "\"pnl\": " << pnl << ",\n";
       ss <<  "\"remainingpos\": " << remainingpos << ",\n";
+
+    
+      if ( genes_repr.size() > 0 ) {
+        
+        ss << "\"genes\": [";
+        for(int i=0;i < genes_repr.size();i++) {
+          ss <<  "\"" << genes_repr[i] << "\"" ;
+          if (i < genes_repr.size()-1) ss << ",\n";
+          else ss << "\n";
+        }
+        ss << "],\n";
+
+      }
 
       ss << "\"positions\": [";
       for(int i=0;i<positions_history.size();i++) {
@@ -164,21 +184,10 @@ class adamresult {
 };
 
 
-//class made to store each genetics iteration.
-class adamGeneticsResultEntry: public adamresult {
-
-  public:
-    int generation_id;
-    int individual_id;
-    vector<string> genes_repr;
-
-};
-
-
 //class made to store all the iterations.
 class adamGeneticsResult {
   public:
-    vector<adamGeneticsResultEntry*> entries;
+    vector<adamresult*> entries;
 
     string json_encode() {
       stringstream res;
