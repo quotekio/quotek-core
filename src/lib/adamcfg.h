@@ -8,6 +8,8 @@
 #include "utils.h"
 #include "assoc.h"
 #include "indice.h"
+#include "constants.h"
+
 
 using namespace std;
 

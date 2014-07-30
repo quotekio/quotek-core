@@ -23,8 +23,9 @@ moneyManager::moneyManager(float cap,
 
   indices_list = ilist;
   cur_pnl = 0;
-  cumulative_pnl = 0;
   var = 0;
+
+  cumulative_pnl = 0;
 
 }
 
@@ -343,6 +344,7 @@ float moneyManager::getCurResult() {
   return cur_pnl + cumulative_pnl;
 }
 
+
 int moneyManager::getReversePosForceClose() {
   return reverse_pos_force_close;
 }
@@ -430,5 +432,32 @@ void moneyManager::displayStats() {
     displayPositions();
 
   }
+
+}
+
+//loads a previous state of Cumulative PNL
+void moneyManager::loadCPNL() {
+
+  ifstream fh (CPNL_FILE);
+  string data;
+  if (fh.is_open()) {
+    getline(fh,data);
+    if (data != "") {
+      cumulative_pnl = atof(data.c_str() );
+    }
+  }
+
+  fh.close();
+
+}
+
+//saves current state of cumulative PNL for later use
+void moneyManager::saveCPNL() {
+
+  ofstream fh (CPNL_FILE);
+  if (fh.is_open()) {
+    fh << cumulative_pnl;
+  }
+  fh.close();
 
 }

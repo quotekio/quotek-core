@@ -204,9 +204,11 @@ int main(int argc,char** argv) {
   switch (c->getMode()) {
 
     case ADAM_MODE_REAL:
+      cout << "starting Engine in real mode.." << endl;
       tse = new tsEngine(c,b,ilist,s,mm,ge,mlist);
       break;
     case ADAM_MODE_BACKTEST:
+      cout << "starting Engine in backtest mode.." << endl;
       bte = new btEngine(c,b,ilist,s,mm,ge,mlist);
       res = bte->run();
 
@@ -217,6 +219,7 @@ int main(int argc,char** argv) {
       break;
 
     case ADAM_MODE_GENETICS:
+      cout << "starting Engine in genetics mode.." << endl;
       bte = new btEngine(c,b,ilist,s,mm,ge,mlist);
       gres = bte->runGenetics();
 
@@ -226,6 +229,11 @@ int main(int argc,char** argv) {
 
       break;
 
+    default:
+      cerr << "*CRITICAL: Unknown/unsupported mode for ADAM, closing program" << endl;
+      exit(1);
+      break;
+      
   }
 
   signal(SIGINT, signal_callback_handler);

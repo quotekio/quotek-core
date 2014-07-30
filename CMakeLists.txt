@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.6)
 project(adam)
 
 SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++")
-SET (CMAKE_CXX_FLAGS                "-g -std=c++11 -stdlib=libc++ -fPIC")
+SET (CMAKE_CXX_FLAGS                "-std=c++11 -stdlib=libc++ -fPIC")
 
 SET (CMAKE_LINKER_FLAGS    "-rdynamic")
 

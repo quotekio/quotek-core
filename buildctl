@@ -15,7 +15,11 @@ function bctl_cleanup() {
 }
 
 function bctl_cmake() {
-  cmake -DCMAKE_INSTALL_PREFIX=$PREFIX
+  cmake -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -DCMAKE_CXX_FLAGS="-std=c++11 -stdlib=libc++ -fPIC" -DCMAKE_INSTALL_PREFIX=$PREFIX
+}
+
+function bctl_cmake_debug() {
+  cmake -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -DCMAKE_CXX_FLAGS="-g -std=c++11 -stdlib=libc++ -fPIC" -DCMAKE_INSTALL_PREFIX=$PREFIX
 }
 
 
@@ -56,6 +60,13 @@ case $1 in
     bctl_compile_all
     bctl_release
   ;;
+
+  buildall-debug)
+    bctl_cmake_debug
+    bctl_compile_all
+    bctl_release
+  ;;
+  
 
   install)
     bctl_install

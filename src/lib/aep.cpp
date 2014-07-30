@@ -43,12 +43,27 @@ std::string aep_answer(std::string data,tsEngine* t0) {
 }
 
 std::string aep_corestats(tsEngine* t0) {
-  moneyManager* mm = t0->getMoneyManager();
-  std::string ret;
   
+  std::string ret;
+  moneyManager* mm; 
+
+  if (!t0) {
+    cerr << "*CRITICAL: cannot get tsEngine, pointer is NULL!" << endl;
+    return ret; 
+  }
+
+  mm = t0->getMoneyManager();
+
+  if (!mm) {
+    cerr << "*CRITICAL: cannot get moneyManager!" << endl;
+    return ret;
+  }
+
   ret = "{";
   ret += "\"pnl\":\"" + float2string(mm->getCurResult())  + "\",";
-  ret += "\"nbpos\":\"" + int2string( mm->getPositions()->size() ) + "\"";
+  ret += "\"cumulative_pnl\":\"" + float2string(*(mm->getCumulativePNL()))  + "\",";
+  ret += "\"nbpos\":\"" + int2string( mm->getPositions()->size() ) + "\",";
+  ret += "\"uptime\":\"" + int2string( t0->getUptime() ) + "\"";
   ret += "}"; 
 
   return ret;
@@ -137,6 +152,11 @@ void* aep_handler(void* ptr) {
 
   tsEngine* t0 = aio->t0 ;
   
+  if (!t0) {
+    cerr << "*CRITICAL: tsEngine provided to AEP handler is null" << endl;
+    return NULL;
+  }
+
   while(nsession->isAlive()) {
 
     std::string data = nsession->recv_data();

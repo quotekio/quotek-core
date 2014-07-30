@@ -23,6 +23,8 @@
 #define MM_ERR_NOSTOP_STR "No stop provided"
 #define MM_ERR_REVERSE_POS_LOCK_STR "An opposite position is already open"
 
+#define CPNL_FILE "/tmp/adam/adam.cpnl"
+
 using namespace std;
 
 
@@ -89,6 +91,9 @@ class moneyManager {
     void displayStats();
 
     void clear();
+
+    void loadCPNL();
+    void saveCPNL();
     
   private:
   	float capital;

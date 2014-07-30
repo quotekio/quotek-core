@@ -8,7 +8,7 @@ void* tsEngine::modulethread_wrapper(void* arg) {
     exit(1);
   }
 
-  
+
   typedef void* (*fctptr)(module_io);
   
   module_initializer* mi = (module_initializer*) arg;
@@ -59,7 +59,6 @@ void* tsEngine::modulethread_wrapper(void* arg) {
   return NULL;
 
 } 
-
 
 
 void* broker_pos_sync(void* arg) {
@@ -184,6 +183,15 @@ void* broker_force_close(void* arg) {
 }
 
 
+void* tsEngine::aclock(void* arg) {
+  tsEngine *t0 = (tsEngine*) arg;
+
+  while(1) {
+    t0->tick();
+    sleep(1);
+  }
+}
+
 void* tsEngine::moneyman(void* arg) {
 
   tsEngine *t0 = (tsEngine*) arg;
@@ -269,6 +277,7 @@ void* tsEngine::moneyman(void* arg) {
 
     if (inc == 10) {
       logger->log("Current PNL:" + float2string(mm->computeWholePNL()) );
+      mm->saveCPNL();
       inc = 0;
     }
     
@@ -535,8 +544,14 @@ tsEngine::tsEngine(adamCfg* conf,
     farray_init(values[si[i]],10000);
   }
 
+  //uptime init
+  uptime = 0;
+
   //timestamps array init
   iarray_init(&timestamps,10000);
+
+  //loads potential previous cumulative PNL
+  mm->loadCPNL();
 
   loadDump();
 
@@ -593,6 +608,9 @@ tsEngine::tsEngine(adamCfg* conf,
   for (int i=0;i<eval_threads.size();i++) {
     pthread_create(&(eval_threads[i].th) ,NULL,evaluate,(void*)&(eval_threads[i]) );
   }
+
+  printf ("starting clock..\n");
+  pthread_create(&clkth,NULL,aclock,(void*)this);  
 
   printf ("initializing executor..\n");
   pthread_create(&executor,NULL,execute,(void*)this);
@@ -767,3 +785,10 @@ int tsEngine::eval_running(indice* idx,time_t t) {
 
 } 
 
+int tsEngine::getUptime() {
+  return uptime;
+}
+
+void tsEngine::tick() {
+  uptime++;
+}

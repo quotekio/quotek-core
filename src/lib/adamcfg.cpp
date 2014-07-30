@@ -6,6 +6,7 @@ adamCfg::adamCfg() {
 
   backtest_dump_path = "";
   npath = "";
+  mode = ADAM_MODE_REAL;
 }
 
 string adamCfg::getBroker() {

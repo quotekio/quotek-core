@@ -106,12 +106,16 @@ class tsEngine{
 
     int eval_running(indice*,time_t);
     
+    int getUptime();
+    void tick();
+
     //#### STATIC,THREADED FUNCTIONS
     static void* poll(void*);
     static void* evaluate(void*);
     static void* execute(void*);
     static void* moneyman(void*);
     static void* modulethread_wrapper(void*);
+    static void* aclock(void*);
 
 
   protected:
@@ -142,6 +146,7 @@ class tsEngine{
     pthread_t mmth;
     pthread_t bsync;
     pthread_t bfclose;
+    pthread_t clkth;
 
     //struct defined to pass data to modulethread_wrapper
     typedef struct module_initializer {
@@ -162,6 +167,8 @@ class tsEngine{
     vector<pthread_t> modules_threads_list;
     vector<module_initializer> modules_init_list;
     vector<eval_thread> eval_threads;
+
+    int uptime;
 
 };
 
