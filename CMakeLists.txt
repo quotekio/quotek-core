@@ -58,16 +58,18 @@ add_executable(
 #)
 
 add_library(
-        igmgw SHARED
-        src/lib/brokers/broker.h
-        src/lib/brokers/igmgw.cpp
-)
-
-add_library(
         igmgw2 SHARED
         src/lib/brokers/broker.h
         src/lib/brokers/igmgw2.cpp
 )
+
+add_library(
+       influxdbbe SHARED
+       src/lib/backends/backend.h
+       src/lib/backends/influxdb.cpp
+
+)
+
 
 find_library (PTHREAD pthread) 
 find_library (CURL curl)
@@ -81,11 +83,6 @@ target_link_libraries(
 )
 
 target_link_libraries(
-  igmgw
-  curl
-)
-
-target_link_libraries(
   igmgw2
   curl
 )
@@ -94,9 +91,8 @@ install (TARGETS adam DESTINATION bin)
 install (TARGETS csv2dump DESTINATION tools)
 #install (TARGETS nntrain DESTINATION tools)
 
-install (TARGETS igmgw DESTINATION lib)
 install (TARGETS igmgw2 DESTINATION lib)
-
+install (TARGETS influxdbbe DESTINATION lib)
 
 install (FILES "install/clanglibs/libc++.so" DESTINATION lib)
 install (FILES "install/clanglibs/librt.so" DESTINATION lib)

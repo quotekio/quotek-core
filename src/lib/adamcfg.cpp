@@ -13,6 +13,10 @@ string adamCfg::getBroker() {
   return broker;
 }
 
+string adamCfg::getBackend() {
+  return backend;
+}
+
 AssocArray<indice*> adamCfg::getIndicesList() {
   return indices_list;
 }
@@ -108,7 +112,8 @@ int adamCfg::read() {
         arg = trim(sline.at(1));
 
         if (param == "ticks") ticks = atoi(arg.c_str());
-        else if (param == "broker") broker = arg;  
+        else if (param == "broker") broker = arg; 
+        else if (param == "backend") backend = arg; 
 
         else if (param == "indice") {
           vector<string> ilist = split(arg,' ');
