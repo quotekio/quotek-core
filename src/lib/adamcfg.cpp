@@ -7,6 +7,7 @@ adamCfg::adamCfg() {
   backtest_dump_path = "";
   npath = "";
   mode = ADAM_MODE_REAL;
+  inmem_history = 0;
 }
 
 string adamCfg::getBroker() {
@@ -113,7 +114,9 @@ int adamCfg::read() {
 
         if (param == "ticks") ticks = atoi(arg.c_str());
         else if (param == "broker") broker = arg; 
-        else if (param == "backend") backend = arg; 
+        else if (param == "backend") backend = arg;
+
+        else if (param == "inmem_history") inmem_history = atoi(arg.c_str());
 
         else if (param == "indice") {
           vector<string> ilist = split(arg,' ');

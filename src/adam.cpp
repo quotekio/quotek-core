@@ -5,13 +5,8 @@ btEngine* bte;
 int so_iter = 0;
 
 void signal_callback_handler(int signum) {
-
+  
   if (signum == SIGINT) {
-       
-       if (tse) {
-         cout << "dumping data to file.." << endl;
-         tse->dumpAll(); 
-       }
        exit(signum);
   }
 
@@ -97,6 +92,53 @@ void parse_cmdline(adamCfg* conf,int argc,char** argv) {
 }
 
 
+create_t* load_broker(string bname)  {
+
+  cout << "loading broker module..." << endl;
+  string lib_broker = "lib" + bname + ".so";
+  void* handle = dlopen(lib_broker.c_str(),RTLD_LAZY);
+
+  if(handle == NULL){
+    cerr << dlerror() << endl;
+    exit(1);
+  }
+
+  create_t* create_broker = (create_t*) dlsym(handle, "create");
+
+  const char* dlsym_error = dlerror();
+    if (dlsym_error) {
+        cerr << "Cannot load symbol create: " << dlsym_error << endl;
+        exit(1);
+  }
+
+  return create_broker;
+}
+
+
+create_be* load_backend(string bename) {
+
+  cout << "loading backend module..." << endl;
+  string lib_backend = "lib" + bename + ".so";
+  void* handle = dlopen(lib_backend.c_str(),RTLD_LAZY);
+
+  if(handle == NULL){
+    cerr << dlerror() << endl;
+    exit(1);
+  }
+
+  create_be* create_backend = (create_be*) dlsym(handle, "create");
+
+  const char* dlsym_error = dlerror();
+    if (dlsym_error) {
+        cerr << "Cannot load symbol create: " << dlsym_error << endl;
+        exit(1);
+  }
+
+  return create_backend;
+}
+
+
+
 int main(int argc,char** argv) {
 
   extern tsEngine* t;
@@ -131,23 +173,6 @@ int main(int argc,char** argv) {
   
 
   AssocArray<indice*> ilist = c->getIndicesList();
-
-  cout << "loading broker module..." << endl;
-  string lib_broker = "lib" + c->getBroker() + ".so";
-  void* handle = dlopen(lib_broker.c_str(),RTLD_LAZY);
-
-  if(handle == NULL){
-    cerr << dlerror() << endl;
-    exit(1);
-  }
-
-  create_t* create_broker = (create_t*) dlsym(handle, "create");
-
-  const char* dlsym_error = dlerror();
-    if (dlsym_error) {
-        cerr << "Cannot load symbol create: " << dlsym_error << endl;
-        exit(1);
-  }
 
 
   //moneymanager
@@ -187,6 +212,8 @@ int main(int argc,char** argv) {
   }
 
 
+  broker* b = load_broker(c->getBroker())();
+  backend* back = load_backend(c->getBackend())();
 
   cout << "preparing strategy compilation.." << endl;
   s->prepareCompile();
@@ -194,8 +221,6 @@ int main(int argc,char** argv) {
   s->compile(0);
   cout << "loading compiled strategy.."<<endl;
   s->dlibOpen(0);
-
-  broker* b = create_broker();
 
   adamGeneticsResult* gres;
   adamresult* res;
@@ -205,7 +230,7 @@ int main(int argc,char** argv) {
 
     case ADAM_MODE_REAL:
       cout << "starting Engine in real mode.." << endl;
-      tse = new tsEngine(c,b,ilist,s,mm,ge,mlist);
+      tse = new tsEngine(c,b,back,ilist,s,mm,ge,mlist);
       break;
     case ADAM_MODE_BACKTEST:
       cout << "starting Engine in backtest mode.." << endl;

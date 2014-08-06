@@ -2,11 +2,10 @@
 #include <stdlib.h>
 
 
-class influxdb : public backend {
+class dummydb : public backend {
 public:
 
     virtual int connect() {
-      cout << "CONNECT" << endl;
       return 0;
     }
 
@@ -26,18 +25,16 @@ public:
       return 0;
     }
 
-   
-
 
 private:
 
 };
 
 // the class factories
-extern "C" backend* create() {
-    return new backend;
+extern "C" dummydb* create() {
+    return new dummydb;
 }
 
-extern "C" void destroy(backend* p) {
+extern "C" void destroy(dummydb* p) {
     delete p;
 }

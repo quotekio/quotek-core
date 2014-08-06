@@ -512,6 +512,7 @@ tsEngine::tsEngine() {
 
 tsEngine::tsEngine(adamCfg* conf,
                    broker* b,
+                   backend* back,
                    AssocArray<indice*> ilist,
                    strategy* s,
                    moneyManager* mm,
@@ -553,7 +554,6 @@ tsEngine::tsEngine(adamCfg* conf,
   //loads potential previous cumulative PNL
   mm->loadCPNL();
 
-  loadDump();
 
   evmio_a.evmio = (eval_module_io*) malloc(modules_list.size() * sizeof(eval_module_io) );
   evmio_a.size = modules_list.size();
@@ -697,69 +697,6 @@ void tsEngine::setGeneticsStore(store* gs) {
   tse_genes = gs;
 }
 
-
-int tsEngine::loadDump() {
-  cout << "loading previous dump.." << endl;
-  return loadDump("/tmp/adam/adam.vdump");
-}
-
-int tsEngine::loadDump(string dump_file) {
-
-  ifstream dumpfh (dump_file);
-
-  if (dumpfh.is_open() ) {
-  
-    string line;
-    vector<string> sline;
-
-    while(dumpfh.good()) {
-      getline(dumpfh,line);
-      sline = split(line,':');
-
-      if (sline.size() == 2) {
-
-        if (sline.at(0) == "T" ) {
-          iarray_push(&timestamps,atoi(sline.at(1).c_str()));
-        }
-
-        else {
-          if (! values.IsItem(sline.at(0))) {
-            values[sline.at(0)] = (farray*) malloc(1*sizeof(farray));
-            farray_init(values[sline.at(0)],1000);
-          }
-          farray_push(values[sline.at(0)], atof(sline.at(1).c_str()) );
-        }
-      }
-    }  
-
-  }
-
-  dumpfh.close();
-  return 0;
-
-}
-
-
-int tsEngine::dumpAll() {
-  
-  ofstream dumpfh ("/tmp/adam/adam.vdump");
-  int i,j;
-  vector<string> si = iGetNames(indices_list);
-
-  for (i=0;i<timestamps.size;i++ ) {
-
-    dumpfh << "T:"  << timestamps.values[i] << endl ;
-
-    for (j=0;j<si.size();j++) {
-      dumpfh << si.at(j) << ":" << values[si.at(j)]->values[i] << endl;
-    }
-
-  }
-  dumpfh.close();
-
-  return 0;
- 
-}
 
 int tsEngine::eval_running(indice* idx,time_t t) {
 

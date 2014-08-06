@@ -9,7 +9,9 @@
 #include "constants.h"
 #include "adamcfg.h"
 #include "brokers/broker.h"
+#include "backends/backend.h"
 #include "queue_c.h"
+
 
 #include "rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
@@ -72,7 +74,8 @@ class tsEngine{
   public:
     tsEngine();
     tsEngine(adamCfg*,
-             broker*, 
+             broker*,
+             backend*, 
              AssocArray<indice*>,
              strategy*,
              moneyManager*,
@@ -90,10 +93,7 @@ class tsEngine{
     farray* getValues(string);
     AssocArray<farray*>* getAllValues();
     int pushValues(string mepic,float v);
-    int dumpAll();
-    int loadDump();
-    int loadDump(string);
-
+    
     adamCfg* getAdamConfig();
 
     AssocArray<void*>* getEvalPointers();

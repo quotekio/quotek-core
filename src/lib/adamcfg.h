@@ -54,6 +54,7 @@ class adamCfg {
     int ticks;
     string broker;
     string backend;
+    int inmem_history;
     AssocArray<indice*> indices_list;
     string strat;
     vector<string> modules_list;

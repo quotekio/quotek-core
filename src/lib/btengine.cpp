@@ -35,8 +35,6 @@ btEngine::btEngine(adamCfg* conf,
 
   //initializes store
   store_init(&tse_store,256);
-
-  loadDump(backtest_dump);
   
   printf ("loading evaluators..\n");
   vector<string> evnames = iGetNames(getIndicesList());

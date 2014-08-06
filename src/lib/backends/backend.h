@@ -39,7 +39,7 @@ public:
 };
 
 // the types of the class factories
-typedef backend* create_t();
-typedef void destroy_t(backend*);
+typedef backend* create_be();
+typedef void destroy_be(backend*);
 
 #endif
