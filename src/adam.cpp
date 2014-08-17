@@ -215,6 +215,10 @@ int main(int argc,char** argv) {
   broker* b = load_broker(c->getBroker())();
   backend* back = load_backend(c->getBackend())();
 
+  cout << "initializing backend connection.." << endl;
+  back->init(c->getBackendParams());
+  back->connect();
+
   cout << "preparing strategy compilation.." << endl;
   s->prepareCompile();
   cout << "compiling strategy.." << endl;

@@ -43,6 +43,7 @@ add_executable(
   src/lib/aep.cpp
   src/lib/finmath.cpp
   src/lib/narrays.cpp
+  src/lib/records.cpp
 )
 
 add_executable(
@@ -70,11 +71,17 @@ add_library(
 
 )
 
+add_library(
+      dummydb SHARED
+      src/lib/backends/backend.h
+      src/lib/backends/dummy.cpp
+
+)
 
 find_library (PTHREAD pthread) 
 find_library (CURL curl)
 find_library (FAAN fann)
-
+find_library (INFLUXDB influxdb)
 
 target_link_libraries(
         adam
@@ -87,12 +94,19 @@ target_link_libraries(
   curl
 )
 
+target_link_libraries(
+  influxdbbe
+  influxdb
+)
+
+
 install (TARGETS adam DESTINATION bin)
 install (TARGETS csv2dump DESTINATION tools)
 #install (TARGETS nntrain DESTINATION tools)
 
 install (TARGETS igmgw2 DESTINATION lib)
 install (TARGETS influxdbbe DESTINATION lib)
+install (TARGETS dummydb DESTINATION lib)
 
 install (FILES "install/clanglibs/libc++.so" DESTINATION lib)
 install (FILES "install/clanglibs/librt.so" DESTINATION lib)

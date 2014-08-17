@@ -5,36 +5,21 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include "../narrays.h"
+#include "../records.h"
 
 using namespace std;
-
-
-typedef struct __brec {
-
-  float value;
-  float spread;
-
-} brec;
-
-typedef struct __bdata {
-
-  iarray* timestamps;
-  brec* records; 
-
-} bdata;
-
 
 class backend {
 
 public:
     backend() {}
     virtual ~backend() {}
+    virtual int init(string) {return 0;}
     virtual int connect() {return 0;}
-    virtual bdata* query(string) {return NULL;}
-    virtual bdata* query(string, int, int) {return NULL;}
-    virtual int store(string,bdata*) {return 0;}
-    virtual int store(string,brec*) {return 0;}
+    virtual records* query(string) {return NULL;}
+    virtual records* query(string, int, int) {return NULL;}
+    virtual int store(string,records*) {return 0;}
+    virtual int store(string,record*) {return 0;}
 
 };
 

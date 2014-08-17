@@ -5,12 +5,12 @@ Adam Dependancies
 -----------------
 * libc++
 
-Vstore Module Dependancies
+backend Modules Dependancies
 --------------------------
  * unixodbc
  * libodbc
  * sqlite odbc driver
-
+ * influxdb-c (https://github.com/influxdb/influxdb-c.git)
 
 SETUP
 =====

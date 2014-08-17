@@ -18,6 +18,10 @@ string adamCfg::getBackend() {
   return backend;
 }
 
+string adamCfg::getBackendParams() {
+  return backend_params;
+}
+
 AssocArray<indice*> adamCfg::getIndicesList() {
   return indices_list;
 }
@@ -115,6 +119,7 @@ int adamCfg::read() {
         if (param == "ticks") ticks = atoi(arg.c_str());
         else if (param == "broker") broker = arg; 
         else if (param == "backend") backend = arg;
+        else if (param == "backend_params") backend_params = arg;
 
         else if (param == "inmem_history") inmem_history = atoi(arg.c_str());
 

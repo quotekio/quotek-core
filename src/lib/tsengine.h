@@ -10,6 +10,7 @@
 #include "adamcfg.h"
 #include "brokers/broker.h"
 #include "backends/backend.h"
+#include "records.h"
 #include "queue_c.h"
 
 
@@ -61,6 +62,7 @@ typedef struct evaluate_io {
   const char* indice_name;
   farray* values;
   iarray* tstamps;
+  records* recs;
   char* ans;
   char* log_s;
   store* s;
@@ -91,8 +93,10 @@ class tsEngine{
     genetics* getGE();
 
     farray* getValues(string);
+    records* getIndiceRecords(string);
     AssocArray<farray*>* getAllValues();
     int pushValues(string mepic,float v);
+    int pushRecord(string,record*);
     
     adamCfg* getAdamConfig();
 
@@ -133,6 +137,8 @@ class tsEngine{
     Queue <std::string> orders_queue;
     iarray timestamps;
     AssocArray<farray*> values;
+    AssocArray<records*> records;
+
 
     AssocArray<void*> eval_ptrs;
     igmLogger* logger;

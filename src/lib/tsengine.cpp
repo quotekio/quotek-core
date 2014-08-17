@@ -289,6 +289,17 @@ return NULL;
 
 }
 
+
+
+void* backend_store(void* arg) {
+
+  tsEngine *t0 = (tsEngine*) arg; 
+  
+  return NULL;
+
+}
+
+
 void* tsEngine::poll(void* arg) {
 
   tsEngine *t0 = (tsEngine*) arg; 
@@ -307,6 +318,7 @@ void* tsEngine::poll(void* arg) {
   string sellstr;
   float buy;
   float sell;
+  float spread;
 
   float spreadless_val;
 
@@ -323,18 +335,23 @@ void* tsEngine::poll(void* arg) {
 
       for (int i=0;i<d.Capacity();i++) {
 
+        record r;
         epic = d[SizeType(i)]["epic"].GetString();
         buystr =  d[SizeType(i)]["buy"].GetString();
         sellstr =  d[SizeType(i)]["sell"].GetString();
         buy = atof(buystr.c_str());
         sell = atof(sellstr.c_str());
-        spreadless_val = (buy + sell) / 2;
+        r.timestamp = time_ms;
+        r.value = (buy + sell) / 2;
+        r.spread = (buy - sell) / 2;
         
         indice* idx = iResolve(ilist,epic);
         if (idx != NULL) {
           mepic = idx->name;
           if (spreadless_val > 0 && spreadless_val < 10000000) {
             t0->pushValues(mepic,spreadless_val);
+            t0->pushRecord(mepic,&r);
+
           }
           else {
             logger->log("*ERROR: " + mepic +  " Value out of range, skipping data*");
@@ -392,6 +409,7 @@ void* tsEngine::evaluate(void* arg) {
     ev_io.log_s[0] = '\0';
 
     ev_io.values = t0->getValues(eval_name);
+    ev_io.recs = t0->getIndiceRecords(eval_name);
 
     t = iarray_last(ev_io.tstamps);
     v = farray_last(ev_io.values);
@@ -668,9 +686,19 @@ int tsEngine::pushValues(string mepic,float v) {
   return 0;
 }
 
+int tsEngine::pushRecord(string mepic,record* r) {
+  records_push(records[mepic],*r);
+  return 0;
+}
+
 farray* tsEngine::getValues(string mepic) {
   return values[mepic];
 }
+
+records* tsEngine::getIndiceRecords(string mepic) {
+  return records[mepic];
+}
+
 
 AssocArray<farray*>* tsEngine::getAllValues() {
   return &values;

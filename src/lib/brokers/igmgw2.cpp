@@ -25,7 +25,7 @@ public:
    
       string temp = "";
       CURL* ch = curl_easy_init();
-      curl_easy_setopt(ch,CURLOPT_URL,"http://127.0.0.1:8090/get/values");
+      curl_easy_setopt(ch,CURLOPT_URL,"http://127.0.0.1:9090/get/values");
       curl_easy_setopt(ch,CURLOPT_WRITEFUNCTION,curl_wh);
       curl_easy_setopt(ch,CURLOPT_WRITEDATA,&temp);
       curl_easy_perform(ch);
@@ -39,7 +39,7 @@ public:
     
       string temp = "";
       CURL* ch = curl_easy_init();
-      curl_easy_setopt(ch,CURLOPT_URL,"http://127.0.0.1:8090/get/positions");
+      curl_easy_setopt(ch,CURLOPT_URL,"http://127.0.0.1:9090/get/positions");
       curl_easy_setopt(ch,CURLOPT_WRITEFUNCTION,curl_wh);
       curl_easy_setopt(ch,CURLOPT_WRITEDATA,&temp);
       curl_easy_perform(ch);
@@ -54,7 +54,7 @@ public:
     string temp = "";
 
     char* url_and_params = (char*) malloc(1024);
-    sprintf(url_and_params,"http://127.0.0.1:8090/action/openpos?epic=%s&way=%s&nbc=%d&stop=%d&limit=%d",epic.c_str(),way.c_str(),nbc,stop,limit);
+    sprintf(url_and_params,"http://127.0.0.1:9090/action/openpos?epic=%s&way=%s&nbc=%d&stop=%d&limit=%d",epic.c_str(),way.c_str(),nbc,stop,limit);
 
     CURL* ch = curl_easy_init();
     curl_easy_setopt(ch,CURLOPT_URL,url_and_params);
@@ -74,7 +74,7 @@ public:
     string temp = "";
     char*  url_and_params = (char*) malloc(1024);
 
-    sprintf(url_and_params,"http://127.0.0.1:8090/action/closepos?dealid=%s",dealid.c_str());
+    sprintf(url_and_params,"http://127.0.0.1:9090/action/closepos?dealid=%s",dealid.c_str());
     CURL* ch = curl_easy_init();
     curl_easy_setopt(ch,CURLOPT_URL,url_and_params);
     curl_easy_setopt(ch,CURLOPT_WRITEFUNCTION,curl_wh);
