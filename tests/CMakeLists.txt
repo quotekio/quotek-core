@@ -21,3 +21,21 @@ add_executable(
         ../src/lib/records.cpp
         ../src/lib/narrays.cpp
 )
+
+add_executable(
+	test_backend_influxdb
+	../src/lib/records.cpp
+	../src/lib/narrays.cpp
+	../src/lib/http.cpp
+	../src/lib/utils.cpp
+	unit/test_backend_influxdb.cpp
+)
+
+
+find_library (CURL curl)
+
+target_link_libraries(
+  test_backend_influxdb
+  curl
+)
+

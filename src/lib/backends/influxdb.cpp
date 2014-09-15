@@ -39,6 +39,37 @@ public:
 
     }
 
+    virtual int init(std::string ihost, 
+                     int iport, 
+                     std::string iusername, 
+                     std::string ipassword, 
+                     std::string idatabase ) {
+      
+      host = ihost;
+      port = int2string(iport);
+      username = iusername;
+      password = ipassword;
+      database = idatabase;
+
+      pre_url = "http://" + 
+                 host + ":" + 
+                 port + 
+                 "/db/" +
+                 database + 
+                 "/series" + 
+                 "?u=" + 
+                 username + 
+                 "&p=" + 
+                 password + 
+                 "&time_precision=s";
+
+      hhdl = new http();
+      hhdl->add_header("Content: Application/Json");
+      hhdl->add_header("Accept: Application/Json");
+      return 0;
+
+    }
+
     virtual int connect() {
       //influx doesn't need to maintain connection
       return 0;
@@ -70,29 +101,65 @@ public:
       d.Parse<0>(res.c_str());
 
       // 
-
       return recs;
 
     }
 
     virtual int store(string indice, records* recs) {
+
+      std::ostringstream sdata;
+      sdata << "[\n";
+      sdata << "\t{ \"name\": \"" << indice << "\",\n";
+      sdata << "\t  \"columns\" : [ \"time\", \"value\", \"spread\" ],\n";
+      sdata << "\t  \"points\" : [" << records2json(recs) << "]\n"; 
+      sdata << "\t}\n";
+      sdata << "]";
+      
+      cout << sdata.str() << endl;
+
+      string outp = hhdl->post(pre_url,sdata.str());
+
+      cout << "OUT:" << outp << endl;
+
       return 0;
     }
 
     virtual int store(string indice, record* rec) {
+
+      std::ostringstream sdata;
+      sdata << "[{ \"name\": \"" << indice << ",";
+      sdata << "\"columns\" : [ \"time\", \"value\", \"spread\" ],";
+      sdata << "\"points\" : [" << record2json(rec) << "]}]";
+      hhdl->post(pre_url,sdata.str());
       return 0;
     }
 
 private:
-  s_influxdb_client* client;
   string host;
   string port;
   string username;
   string password;
   string database;
   string pre_url;
-
   http* hhdl;
+
+  std::string record2json(record* rec)  {
+
+    std::ostringstream jstream;
+    jstream << "[" << rec->timestamp << ", " << rec->value << ", " << rec->spread << "]";
+    return jstream.str();
+  };
+
+  std::string records2json(records* recs) {
+
+    std::ostringstream jstream;    
+    for (int i=0;i<recs->size;i++)  {
+      jstream << record2json(&(recs->data[i]));
+      if (i !=  (recs->size - 1 ) ) jstream << ",";
+
+    }
+    return jstream.str();
+  };
 
 };
 
