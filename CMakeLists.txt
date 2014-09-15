@@ -68,6 +68,7 @@ add_library(
        influxdbbe SHARED
        src/lib/backends/backend.h
        src/lib/backends/influxdb.cpp
+       src/lib/http.cpp
 
 )
 

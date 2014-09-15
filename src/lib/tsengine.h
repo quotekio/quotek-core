@@ -97,7 +97,7 @@ class tsEngine{
     AssocArray<farray*>* getAllValues();
     int pushValues(string mepic,float v);
     int pushRecord(string,record*);
-    
+
     adamCfg* getAdamConfig();
 
     AssocArray<void*>* getEvalPointers();
@@ -108,6 +108,8 @@ class tsEngine{
     store* getGeneticsStore();
     void setGeneticsStore(store*);
 
+    int loadHistory();
+    
     int eval_running(indice*,time_t);
     
     int getUptime();
@@ -128,6 +130,7 @@ class tsEngine{
     evmio_array evmio_a;
 
     broker* tse_broker;
+    backend* tse_back;
     strategy* tse_strat;
     moneyManager* tse_mm;
     genetics* tse_ge;
@@ -137,7 +140,7 @@ class tsEngine{
     Queue <std::string> orders_queue;
     iarray timestamps;
     AssocArray<farray*> values;
-    AssocArray<records*> records;
+    AssocArray<records*> inmem_records;
 
 
     AssocArray<void*> eval_ptrs;

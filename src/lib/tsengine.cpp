@@ -539,13 +539,11 @@ tsEngine::tsEngine(adamCfg* conf,
 
   cout << "Initializing TS Engine.." << endl;
 
-  
-
   //initializing store
   store_init(&tse_store,256);
   tse_genes = NULL;
-
   tse_broker = b;
+  tse_back = back;
   tse_strat = s;
   tse_mm = mm;
   tse_ge = ge;
@@ -560,7 +558,11 @@ tsEngine::tsEngine(adamCfg* conf,
 
     //initializing values structure for each found indice
     values[si[i]] = (farray*) malloc(1*sizeof(farray));
+    inmem_records[si[i]] = (records*) malloc(sizeof(records));
     farray_init(values[si[i]],10000);
+    //initializing records structures for each found indice
+    records_init(inmem_records[si[i]],10000);
+
   }
 
   //uptime init
@@ -571,7 +573,6 @@ tsEngine::tsEngine(adamCfg* conf,
 
   //loads potential previous cumulative PNL
   mm->loadCPNL();
-
 
   evmio_a.evmio = (eval_module_io*) malloc(modules_list.size() * sizeof(eval_module_io) );
   evmio_a.size = modules_list.size();
@@ -687,7 +688,7 @@ int tsEngine::pushValues(string mepic,float v) {
 }
 
 int tsEngine::pushRecord(string mepic,record* r) {
-  records_push(records[mepic],*r);
+  records_push(inmem_records[mepic],*r);
   return 0;
 }
 
@@ -696,9 +697,26 @@ farray* tsEngine::getValues(string mepic) {
 }
 
 records* tsEngine::getIndiceRecords(string mepic) {
-  return records[mepic];
+  return inmem_records[mepic];
 }
 
+// Loads indices history from backend to memory
+int tsEngine::loadHistory()  {
+
+    if (cfg->getInMemHistory() == 0) return 0;
+
+    int t_start = time(0) - cfg->getInMemHistory();
+    vector<string> inames = iGetNames(indices_list);
+    for (int i=0;i<inames.size();i++) {
+
+      string q = "select * from " + inames[i] + "where timestamp >=" + int2string(t_start) +  ";";
+      records* recs = tse_back->query(q);
+      inmem_records[inames[i]] = recs;
+
+    }
+
+  return 0;
+}
 
 AssocArray<farray*>* tsEngine::getAllValues() {
   return &values;

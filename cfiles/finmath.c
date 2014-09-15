@@ -1,7 +1,7 @@
 #include "finmath.h"
 
 
-int above(farray* values, float val,float thold) {
+int above_f(farray* values, float val,float thold) {
 
   int nb_above = 0;
   int i;
@@ -21,7 +21,7 @@ int above(farray* values, float val,float thold) {
 }
 
 
-int below(farray* values, float val,float thold) {
+int below_f(farray* values, float val,float thold) {
 
   int nb_below = 0;
   int i;
@@ -42,7 +42,7 @@ int below(farray* values, float val,float thold) {
 
 
 
-float min(farray* values) {
+float min_f(farray* values) {
 
   float min = 300000000;
   float cur = 0;
@@ -58,7 +58,7 @@ float min(farray* values) {
 }
 
 
-float max(farray* values) {
+float max_f(farray* values) {
 
   float max = -300000000;
   float cur = 0;
@@ -74,7 +74,7 @@ float max(farray* values) {
 }
 
 
-float avg(farray* values) {
+float avg_f(farray* values) {
   float sum = 0;
   int i;
 
@@ -85,13 +85,13 @@ float avg(farray* values) {
 }
 
 
-float cavg(float point,float average,int count) {
+float cavg_f(float point,float average,int count) {
   return (float) (average + ((point - average) / count));
 }
 
 
 
-float variance(farray* values, uint8_t sample) {
+float variance_f(farray* values, uint8_t sample) {
   float mean = avg(values);
   float variance = 0;
   int i;
@@ -109,7 +109,7 @@ float variance(farray* values, uint8_t sample) {
   return variance;
 }
 
-float variance_q(farray* values, uint8_t sample,float avg1) {
+float variance_q_f(farray* values, uint8_t sample,float avg1) {
   float mean = avg1;
   float variance = 0;
   int i;
@@ -130,7 +130,7 @@ float variance_q(farray* values, uint8_t sample,float avg1) {
 
 
 
-float covariance(farray* v1,farray* v2) {
+float covariance_f(farray* v1,farray* v2) {
 
   float v1_a = avg(v1);
   float v2_a = avg(v2);
@@ -145,7 +145,7 @@ float covariance(farray* v1,farray* v2) {
  return covariance;
 }
 
-float covariance_q(farray* v1,farray* v2,float avg1,float avg2) {
+float covariance_q_f(farray* v1,farray* v2,float avg1,float avg2) {
 
   float covariance = 0;
   int i;
@@ -158,7 +158,7 @@ float covariance_q(farray* v1,farray* v2,float avg1,float avg2) {
 }
 
 
-farray* lreg(farray* v2) {
+farray* lreg_f(farray* v2) {
 
   farray v1;
   farray* results = (farray*) malloc(sizeof(farray));
@@ -191,7 +191,7 @@ farray* lreg(farray* v2) {
 }
 
 
-farray* lreg_coefs(farray* v2) {
+farray* lreg_coefs_f(farray* v2) {
 
   farray v1;
   farray* results = (farray*) malloc(sizeof(farray));
@@ -222,12 +222,12 @@ farray* lreg_coefs(farray* v2) {
 }
 
 
-float stdDeviation(farray* values) {
+float stdDeviation_f(farray* values) {
   return (float) sqrt(variance(values,0));
 }
 
 
-farray* cmavg(farray* values) {
+farray* cmavg_f(farray* values) {
 
   int i = 0;
   float lastav = 0;
@@ -243,7 +243,7 @@ farray* cmavg(farray* values) {
 }
 
 
-float percentDelta(farray* values) {
+float percentDelta_f(farray* values) {
   float v0 = values->values[0];
   float v1 = farray_last(values);
   return ( (v1 - v0) / v0 ) * 100 ;

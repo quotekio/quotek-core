@@ -90,8 +90,7 @@ class adamCfg {
     string getBDump();
     string getBTResultFile();
     void chconf(char*);
-
-
+    int getInMemHistory();
 
     /* Setters */
 

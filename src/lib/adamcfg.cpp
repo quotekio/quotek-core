@@ -22,6 +22,10 @@ string adamCfg::getBackendParams() {
   return backend_params;
 }
 
+int adamCfg::getInMemHistory() {
+  return inmem_history;
+}
+
 AssocArray<indice*> adamCfg::getIndicesList() {
   return indices_list;
 }

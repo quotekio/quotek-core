@@ -1,30 +1,27 @@
 #include "narrays.h"
 #include <math.h>
 
-int above(farray* values, float val,float thold);
-int below(farray* values, float val,float thold);
+int above_f(farray* values, float val,float thold);
+int below_f(farray* values, float val,float thold);
 
 
-float min(farray*);
-float max(farray*);
+float min_f(farray*);
+float max_f(farray*);
 
-float avg(farray*);
-float cavg(float,float,int);
+float avg_f(farray*);
+float cavg_f(float,float,int);
 
+float variance_f(farray*,uint8_t);
+float variance_q_f(farray*, uint8_t,float);
 
+float covariance_f(farray*,farray*);
+float covariance_q_f(farray*,farray*,float,float);
 
-float variance(farray*,uint8_t);
-float variance_q(farray*, uint8_t,float);
+float stdDeviation_f(farray*);
+float percentDelta_f(farray*);
 
-float covariance(farray*,farray*);
-float covariance_q(farray*,farray*,float,float);
-
-float stdDeviation(farray*);
-float percentDelta(farray*);
-
-
-farray* cmavg(farray*);
-farray* lreg(farray*);
-farray* lreg_coefs(farray*);
+farray* cmavg_f(farray*);
+farray* lreg_f(farray*);
+farray* lreg_coefs_f(farray*);
 
 
