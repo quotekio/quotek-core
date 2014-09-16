@@ -72,14 +72,15 @@ public:
       http* hhdl = prepare_http_handler();
       std::string url = pre_url;
       std::string outp;
+      record r;
+
       records_init(result,10000);
       url += "&q=" + hhdl->escape(q);
+
       // Perform http request to influxdb backend and get result.
       outp = hhdl->get(url);
       // Destroy http handler to free memory.
       hhdl->destroy();
-
-      cout << outp ;
 
       // Effectively parse result
       rapidjson::Document d;
@@ -88,13 +89,10 @@ public:
       if (d.IsArray())  {
 
         for ( int i=0; i< d[0u]["points"].Size(); i++  ) {
-
-           cout << "points element" <<endl;
-           record r;
-           //needs opti
-           r.timestamp = d[0u]["points"][i][0u].GetInt();
-           r.value = d[0u]["points"][i][2].GetDouble();
-           r.spread = d[0u]["points"][i][3].GetDouble();
+           rapidjson::Value& points = d[0u]["points"][i];           
+           r.timestamp = points[0u].GetInt();
+           r.value = points[2].GetDouble();
+           r.spread = points[3].GetDouble();
            records_push(result,r);
         }
       }
@@ -110,21 +108,32 @@ public:
       records_init(result,10000);
       std::ostringstream qstream;
       std::string outp;
+      record r;
       //construct query;
       qstream << "select value, spread from " << indice <<
-                 " where time >= " << tinf << 
-                 " and time <=" << tsup;
-
+                 " where time > " << tinf << 
+                 "s and time <" << tsup << "s order asc";
+    
       url += "&q=" + hhdl->escape(qstream.str());
       // Perform http request to influxdb backend and get result.
       outp = hhdl->get(url);
       // Destroy http handler to free memory.
       hhdl->destroy();
-
+      
       // Effectively parse result
-      //rapidjson::Document d;
-      //d.Parse<0>(res.c_str());
-      //
+      rapidjson::Document d;
+      d.Parse<0>(outp.c_str());
+
+      if (d.IsArray())  {
+
+        for ( int i=0; i< d[0u]["points"].Size(); i++  ) {
+           rapidjson::Value& points = d[0u]["points"][i];           
+           r.timestamp = points[0u].GetInt();
+           r.value = points[2].GetDouble();
+           r.spread = points[3].GetDouble();
+           records_push(result,r);
+        }
+      }
 
       return result;
 

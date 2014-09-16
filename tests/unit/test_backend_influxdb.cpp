@@ -30,9 +30,13 @@ int main(int argc, char** argv) {
   idb->init("127.0.0.1",8086, "root","root","adam");
   idb->store("CAC_MINI",&recs);
 
-  records* recs2 = idb->query("SELECT * FROM CAC_MINI;");
-
+  records* recs2 = idb->query("SELECT value,spread FROM CAC_MINI order asc");
   cout << "RECS2_SIZE:" << recs2->size << endl;
+
+  records* recs3 = idb->query("CAC_MINI",  recs2->data[0].timestamp , recs2->data[9].timestamp );
+  cout << "RECS3_SIZE:" << recs3->size << endl;
+
+  
 
 
   
