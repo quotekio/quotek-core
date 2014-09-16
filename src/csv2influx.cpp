@@ -1,3 +1,5 @@
+// PREVIOUS CSV2DUMP CODE, NEEDS COMPLETE REWRITE !!
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -7,7 +9,6 @@
 #include "lib/utils.h"
 
 using namespace std;
-
 
 AssocArray<int> findOffsets(vector<string> header) {
 

@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 2.6)
 project(adam)
 
 SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++")
-SET (CMAKE_CXX_FLAGS                "-std=c++11 -stdlib=libc++ -fPIC")
+SET (CMAKE_C_COMPILER		    "/usr/bib/clang")
+SET (CMAKE_CXX_FLAGS                "-O3 -std=c++11 -stdlib=libc++ -fPIC")
 
 SET (CMAKE_LINKER_FLAGS    "-rdynamic")
 
@@ -47,8 +48,8 @@ add_executable(
 )
 
 add_executable(
-  csv2dump
-  src/csv2dump.cpp
+  csv2influx
+  src/csv2influx.cpp
   src/lib/utils.cpp
 
 )
@@ -102,7 +103,7 @@ target_link_libraries(
 
 
 install (TARGETS adam DESTINATION bin)
-install (TARGETS csv2dump DESTINATION tools)
+install (TARGETS csv2influx DESTINATION tools)
 #install (TARGETS nntrain DESTINATION tools)
 
 install (TARGETS igmgw2 DESTINATION lib)
