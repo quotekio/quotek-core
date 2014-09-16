@@ -31,10 +31,6 @@ public:
                  "&p=" + 
                  password + 
                  "&time_precision=s";
-
-      hhdl = new http();
-      hhdl->add_header("Content: Application/Json");
-      hhdl->add_header("Accept: Application/Json");
       return 0;
 
     }
@@ -62,10 +58,6 @@ public:
                  "&p=" + 
                  password + 
                  "&time_precision=s";
-
-      hhdl = new http();
-      hhdl->add_header("Content: Application/Json");
-      hhdl->add_header("Accept: Application/Json");
       return 0;
 
     }
@@ -76,61 +68,101 @@ public:
     }
 
     virtual records* query(string q) {
-      return NULL;
+      records* result = (records*) malloc(sizeof(records));
+      http* hhdl = prepare_http_handler();
+      std::string url = pre_url;
+      std::string outp;
+      records_init(result,10000);
+      url += "&q=" + hhdl->escape(q);
+      // Perform http request to influxdb backend and get result.
+      outp = hhdl->get(url);
+      // Destroy http handler to free memory.
+      hhdl->destroy();
+
+      cout << outp ;
+
+      // Effectively parse result
+      rapidjson::Document d;
+      d.Parse<0>(outp.c_str());
+
+      if (d.IsArray())  {
+
+        for ( int i=0; i< d[0u]["points"].Size(); i++  ) {
+
+           cout << "points element" <<endl;
+           record r;
+           //needs opti
+           r.timestamp = d[0u]["points"][i][0u].GetInt();
+           r.value = d[0u]["points"][i][2].GetDouble();
+           r.spread = d[0u]["points"][i][3].GetDouble();
+           records_push(result,r);
+        }
+      }
+
+      return result;
     }
 
     virtual records* query(string indice, int tinf, int tsup) {
 
-      records* recs;
-      records_init(recs,10000);
+      records* result = (records*) malloc(sizeof(records));
+      http* hhdl = prepare_http_handler();
       std::string url = pre_url;
-
-      //construct query;
+      records_init(result,10000);
       std::ostringstream qstream;
+      std::string outp;
+      //construct query;
       qstream << "select value, spread from " << indice <<
                  " where time >= " << tinf << 
                  " and time <=" << tsup;
 
       url += "&q=" + hhdl->escape(qstream.str());
-
       // Perform http request to influxdb backend and get result.
-      std::string res = hhdl->get(url);
+      outp = hhdl->get(url);
+      // Destroy http handler to free memory.
+      hhdl->destroy();
 
       // Effectively parse result
-      rapidjson::Document d;
-      d.Parse<0>(res.c_str());
+      //rapidjson::Document d;
+      //d.Parse<0>(res.c_str());
+      //
 
-      // 
-      return recs;
+      return result;
 
     }
 
     virtual int store(string indice, records* recs) {
 
       std::ostringstream sdata;
+      http* hhdl = prepare_http_handler();
+      string outp;
+
       sdata << "[\n";
       sdata << "\t{ \"name\": \"" << indice << "\",\n";
       sdata << "\t  \"columns\" : [ \"time\", \"value\", \"spread\" ],\n";
       sdata << "\t  \"points\" : [" << records2json(recs) << "]\n"; 
       sdata << "\t}\n";
       sdata << "]";
-      
-      cout << sdata.str() << endl;
 
-      string outp = hhdl->post(pre_url,sdata.str());
-
-      cout << "OUT:" << outp << endl;
-
+      outp = hhdl->post(pre_url,sdata.str());
+      hhdl->destroy();
       return 0;
     }
 
     virtual int store(string indice, record* rec) {
 
       std::ostringstream sdata;
-      sdata << "[{ \"name\": \"" << indice << ",";
-      sdata << "\"columns\" : [ \"time\", \"value\", \"spread\" ],";
-      sdata << "\"points\" : [" << record2json(rec) << "]}]";
-      hhdl->post(pre_url,sdata.str());
+      http* hhdl = prepare_http_handler();
+      string outp;
+
+      sdata << "[\n";
+      sdata << "\t{ \"name\": \"" << indice << "\",\n";
+      sdata << "\t  \"columns\" : [ \"time\", \"value\", \"spread\" ],\n";
+      sdata << "\t  \"points\" : [" << record2json(rec) << "]\n"; 
+      sdata << "\t}\n";
+      sdata << "]";
+
+      outp = hhdl->post(pre_url,sdata.str());
+      hhdl->destroy();
       return 0;
     }
 
@@ -141,7 +173,6 @@ private:
   string password;
   string database;
   string pre_url;
-  http* hhdl;
 
   std::string record2json(record* rec)  {
 
@@ -160,6 +191,14 @@ private:
     }
     return jstream.str();
   };
+
+  http* prepare_http_handler() {
+    http* hhdl = new http();
+    hhdl->add_header("Content: Application/Json");
+    hhdl->add_header("Accept: Application/Json");
+    return hhdl;
+  };
+
 
 };
 
