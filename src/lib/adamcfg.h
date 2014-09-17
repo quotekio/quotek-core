@@ -64,8 +64,11 @@ class adamCfg {
     aep_params aepp;
     int mode;
     int backtest_speed;
+    int backtest_from;
+    int backtest_to;
+    
     string backtest_result_path;
-    string backtest_dump_path;
+
 
   public:
 
@@ -84,7 +87,9 @@ class adamCfg {
     genetics_params* getGP();
     aep_params* getAEPP();
     string getStrat();
-    
+
+    int getBFrom();
+    int getBTo();
     int getMode();
     int getBSpeed();
     string getBDump();
@@ -102,6 +107,8 @@ class adamCfg {
     void setBDump(string);
     void setBSpeed(int);
     void setBTResultFile(string);
+    void setBFrom(int);
+    void setBTo(int);
 
 
   private:

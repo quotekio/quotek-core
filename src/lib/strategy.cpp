@@ -69,9 +69,9 @@ int strategy::decorate() {
   std::regex subeval ("subeval\\(\"(.*?)\"\\)");
 
   deco.push_back("_EVAL()");
-  deco.push_back("_EVAL(uint32_t t, float v, evaluate_io* io)");
+  deco.push_back("_EVAL(uint32_t t, float v, float spread, evaluate_io* io)");
   deco.push_back("_SUBEVAL()");
-  deco.push_back("_SUBEVAL(uint32_t t, float v, evaluate_io* io)");  
+  deco.push_back("_SUBEVAL(uint32_t t, float v, float spread, evaluate_io* io)");  
   deco.push_back("TRADE_LIFE()");
   deco.push_back("TRADE_LIFE(position* pos, tradelife_io* io)");
 

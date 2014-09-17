@@ -4,7 +4,6 @@ const string adamCfg::path = std::string(ADAM_PREFIX) + "/etc/adam.conf";
 
 adamCfg::adamCfg() {
 
-  backtest_dump_path = "";
   npath = "";
   mode = ADAM_MODE_REAL;
   inmem_history = 0;
@@ -57,15 +56,19 @@ int adamCfg::getMode() {
   return mode;
 }
 
-string adamCfg::getBDump() {
-  return backtest_dump_path;
-}
 
 string adamCfg::getBTResultFile() {
   return backtest_result_path;
 }
 
 
+int adamCfg::getBFrom() {
+  return backtest_from;
+}
+
+int adamCfg::getBTo() {
+  return backtest_to;
+}
 
 void adamCfg::setMode(int md) {
   mode = md;
@@ -75,15 +78,16 @@ void adamCfg::setStrat(string st) {
   strat = st;
 }
 
-void adamCfg::setBDump(string dump_path) {
-  backtest_dump_path = dump_path;
+void adamCfg::setBFrom(int from) {
+  backtest_from = from;
 }
 
+void adamCfg::setBTo(int to) {
+  backtest_to = to;  
+}
 
 void adamCfg::setAEPPort(int p) {
-
   aepp.listen_port = p;
-
 }
 
 void adamCfg::setBTResultFile(string f ) {

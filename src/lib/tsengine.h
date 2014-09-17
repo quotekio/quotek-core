@@ -87,7 +87,6 @@ class tsEngine{
     broker* getBroker();
     Queue <std::string>* getOrdersQueue();
     AssocArray<indice*> getIndicesList();
-    iarray* getTimeStamps();
     strategy* getStrategy();
     moneyManager* getMoneyManager();
     genetics* getGE();
@@ -138,7 +137,6 @@ class tsEngine{
     AssocArray<indice*> indices_list;    
 
     Queue <std::string> orders_queue;
-    iarray timestamps;
     AssocArray<farray*> values;
     AssocArray<records*> inmem_records;
 

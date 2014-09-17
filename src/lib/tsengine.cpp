@@ -20,11 +20,8 @@ void* tsEngine::modulethread_wrapper(void* arg) {
 
   module_io mio;
 
-  iarray* tstamps = t0->getTimeStamps(); 
-
   mio.mode = ADAM_MODE_REAL;
-  mio.tstamps = &tstamps;
-
+  
   AssocArray<farray*>* tvals = t0->getAllValues();
 
   //Puts farray pointers of pointers inside of module_io struct
@@ -307,7 +304,6 @@ void* tsEngine::poll(void* arg) {
   rapidjson::Document d;
 
   AssocArray<indice*> ilist = t0->getIndicesList();
-  iarray* tstamps = t0->getTimeStamps();
   igmLogger* logger = t0->getLogger();
 
   uint32_t time_ms;
@@ -327,7 +323,6 @@ void* tsEngine::poll(void* arg) {
     val = t0->getBroker()->getValues();
 
     time_ms = time(0);
-    iarray_push(tstamps,time_ms);
     
     if (val != "") {
 
@@ -370,7 +365,7 @@ void* tsEngine::poll(void* arg) {
 // ### VALUES EVALUATIONS ALGORITHM #######
 void* tsEngine::evaluate(void* arg) {
 
-  typedef void* (*eval_fct)(uint32_t,float,evaluate_io*);
+  typedef void* (*eval_fct)(uint32_t,float,float, evaluate_io*);
 
   eval_thread* et = (eval_thread*) arg;
   tsEngine *t0 = et->engine;
@@ -383,6 +378,7 @@ void* tsEngine::evaluate(void* arg) {
   //######## EVALUATION-NEEDED VALUES
   uint32_t t;
   float v;
+  float spread;
   evaluate_io ev_io;
 
   ev_io.ans = (char*) malloc(256 * sizeof(char) +1);
@@ -391,7 +387,7 @@ void* tsEngine::evaluate(void* arg) {
   ev_io.s = t0->getStore();
   ev_io.genes = NULL;
 
-  ev_io.tstamps = t0->getTimeStamps();
+  ev_io.recs = t0->getIndiceRecords(eval_name);
 
   string ans_str;
   string log_str;
@@ -409,14 +405,16 @@ void* tsEngine::evaluate(void* arg) {
     ev_io.log_s[0] = '\0';
 
     ev_io.values = t0->getValues(eval_name);
-    ev_io.recs = t0->getIndiceRecords(eval_name);
 
-    t = iarray_last(ev_io.tstamps);
-    v = farray_last(ev_io.values);
+    record* last_rec = records_last(ev_io.recs);
+
+    t = last_rec->timestamp;
+    v = last_rec->value;
+    spread = last_rec->spread;
 
     if ( t0->eval_running(idx,t) == 1) {
       //execution of found eval function
-      (*f)(t,v,&ev_io);
+      (*f)(t,v, spread, &ev_io);
 
       ans_str = std::string(ev_io.ans);
       log_str = std::string(ev_io.log_s);
@@ -568,14 +566,15 @@ tsEngine::tsEngine(adamCfg* conf,
   //uptime init
   uptime = 0;
 
-  //timestamps array init
-  iarray_init(&timestamps,10000);
-
   //loads potential previous cumulative PNL
   mm->loadCPNL();
 
+  //loads history
+  loadHistory();
+
   evmio_a.evmio = (eval_module_io*) malloc(modules_list.size() * sizeof(eval_module_io) );
   evmio_a.size = modules_list.size();
+
 
   for(int i=0;i<modules_list.size();i++) {
 
@@ -611,6 +610,7 @@ tsEngine::tsEngine(adamCfg* conf,
   
   printf ("initializing evaluators..\n");
   vector<string> evnames = iGetNames(getIndicesList());
+
 
   for (int i=0;i<evnames.size();i++) {
     eval_thread et;
@@ -656,11 +656,6 @@ AssocArray<indice*> tsEngine::getIndicesList() {
   return indices_list;
 }
 
-iarray* tsEngine::getTimeStamps() {
-  return &timestamps;
-}
-
-
 Queue<std::string>* tsEngine::getOrdersQueue() {
   return &orders_queue;
 }
@@ -701,7 +696,7 @@ records* tsEngine::getIndiceRecords(string mepic) {
 }
 
 // Loads indices history from backend to memory
-int tsEngine::loadHistory()  {
+int tsEngine::loadHistory() {
 
     if (cfg->getInMemHistory() == 0) return 0;
 
@@ -709,7 +704,7 @@ int tsEngine::loadHistory()  {
     vector<string> inames = iGetNames(indices_list);
     for (int i=0;i<inames.size();i++) {
 
-      string q = "select * from " + inames[i] + "where timestamp >=" + int2string(t_start) +  ";";
+      string q = "select * from " + inames[i] + "where time >" + int2string(t_start) +  "s";
       records* recs = tse_back->query(q);
       inmem_records[inames[i]] = recs;
 

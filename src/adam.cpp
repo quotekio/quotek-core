@@ -48,7 +48,8 @@ void parse_cmdline(adamCfg* conf,int argc,char** argv) {
              {
                
                {"backtest", no_argument,0,'b'},
-               {"backtest-dump",required_argument ,0 ,'x'},
+               {"backtest-from",required_argument ,0 ,'f'},
+               {"backtest-to", required_argument, 0, 't'},
                {"backtest-result",required_argument,0,'r'},
                {"strategy", required_argument,0, 's'},
                {"genetics", no_argument,0,'g'},
@@ -81,8 +82,11 @@ void parse_cmdline(adamCfg* conf,int argc,char** argv) {
       case 's':
         conf->setStrat(std::string(optarg));
         break;
-      case 'x':
-        conf->setBDump(std::string(optarg));
+      case 'f':
+        conf->setBFrom(atoi(optarg));
+        break;
+      case 't':
+        conf->setBTo(atoi(optarg));
         break;
       case 'r':
         conf->setBTResultFile(std::string(optarg));
@@ -146,7 +150,7 @@ int main(int argc,char** argv) {
   //seeds prandom generator
   srand(time(NULL));
   
-  printf("ADAM TRADING BOT %s, (c) 2013 Clément Gamé\n", ADAM_VERSION);
+  printf("ADAM TRADING BOT %s, (c) 2013-2014 Clément Gamé\n", ADAM_VERSION);
 
   chdir(ADAM_PREFIX);
 
@@ -238,7 +242,7 @@ int main(int argc,char** argv) {
       break;
     case ADAM_MODE_BACKTEST:
       cout << "starting Engine in backtest mode.." << endl;
-      bte = new btEngine(c,b,ilist,s,mm,ge,mlist);
+      bte = new btEngine(c,b,back,ilist,s,mm,ge,mlist);
       res = bte->run();
 
       if ( c->getBTResultFile() != "" ) {
@@ -249,7 +253,7 @@ int main(int argc,char** argv) {
 
     case ADAM_MODE_GENETICS:
       cout << "starting Engine in genetics mode.." << endl;
-      bte = new btEngine(c,b,ilist,s,mm,ge,mlist);
+      bte = new btEngine(c,b,back,ilist,s,mm,ge,mlist);
       gres = bte->runGenetics();
 
       if ( c->getBTResultFile() != "" ) {

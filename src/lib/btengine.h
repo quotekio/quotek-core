@@ -14,7 +14,8 @@ class btEngine: public tsEngine {
 
   public:
   	btEngine(adamCfg*,
-             broker*, 
+             broker*,
+             backend*,
              AssocArray<indice*>,
              strategy*,
              moneyManager*,
@@ -24,6 +25,7 @@ class btEngine: public tsEngine {
     void evaluate_(string,void*);
     void moneyman_();
     void execute_();
+    int loadHistory_();
     adamresult* run();
     adamGeneticsResult* runGenetics();
 
@@ -39,9 +41,10 @@ class btEngine: public tsEngine {
 
     float backtest_speed;
     int tse_mode;
-    string backtest_dump;
     int backtest_pos;
     int backtest_progress;
+    int backtest_from;
+    int backtest_to; 
     vector<position> positions_history;
 
     AssocArray<void*> eval_pointers; 
