@@ -49,6 +49,9 @@ add_executable(
 
 add_executable(
   csv2influx
+  src/lib/http.cpp
+  src/lib/records.cpp
+  src/lib/narrays.cpp
   src/csv2influx.cpp
   src/lib/utils.cpp
 
@@ -95,6 +98,12 @@ target_link_libraries(
   igmgw2
   curl
 )
+
+target_link_libraries(
+  csv2influx
+  curl
+)
+
 
 target_link_libraries(
   influxdbbe

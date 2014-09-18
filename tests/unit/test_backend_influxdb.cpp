@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
   }
 
   influxdb* idb = new influxdb();
-  idb->init("127.0.0.1",8086, "root","root","adam");
+  idb->init("127.0.0.1",8086, "root","root","test");
   idb->store("CAC_MINI",&recs);
 
   records* recs2 = idb->query("SELECT value,spread FROM CAC_MINI order asc");

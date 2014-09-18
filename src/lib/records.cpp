@@ -8,6 +8,16 @@ void records_init(records* recs,int msize) {
 
 }
 
+void records_clear(records* recs) {
+
+  free(recs->data);
+  recs->size=0;
+  recs->msize=0;
+  
+
+}
+
+
 void records_push(records* recs, record r) {
 
   if (!recs->data) {
