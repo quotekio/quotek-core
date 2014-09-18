@@ -3,6 +3,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <unistd.h>
+#include <assert.h>
 
 using namespace std;
 
@@ -25,11 +26,15 @@ int main(int argc, char** argv) {
     
   }
 
+  assert(recs.size == 10);
+
   t = time(0);
-  records* recs2 = records_sample(&recs,"dicho",t,-6,-5);
+  records* recs2 = records_sample(&recs,"dicho",t,-10,-5);
   cout << "RECS2_SIZE:" << recs2->size << endl;
+  assert(recs2->size == 5);
   record* r2 = records_last(recs2);
   cout << "RECS2_LAST_ELEMENT:" << r2->value << endl;
+  assert( r2->value ==  4);
   return 0;
 
 }
