@@ -131,14 +131,16 @@ void btEngine::evaluate_(string eval_name,void* eval_ptr) {
 void btEngine::moneyman_() {
 
   vector<string> si = iGetNames(indices_list);
-  farray* fav;
+  records* recs;
   float v;
 
   vector<position>* poslist = tse_mm->getPositions();
 
   for(int j=0;j<si.size();j++) {
-    fav = getValues(si.at(j));
-    v = fav->values[backtest_pos];
+    
+    recs = getIndiceRecords(si.at(j));
+    v = recs->data[backtest_pos].value;
+
     tse_mm->computePNLs(si.at(j),v);
 
     //close positions where limit/stop is reached
@@ -272,7 +274,7 @@ void btEngine::execute_() {
        p.nb_inc = 1;
        
        if (way == "sell") {
-         p.open = getValues(indice)->values[backtest_pos];
+         p.open = getIndiceRecords(indice)->data[backtest_pos].value;
          p.size = -1 * nbc;
          p.stop = p.open + stop;
          p.vstop = p.stop;
@@ -280,7 +282,7 @@ void btEngine::execute_() {
        }
 
        else {
-         p.open = getValues(indice)->values[backtest_pos];
+         p.open = getIndiceRecords(indice)->data[backtest_pos].value;
          p.size = nbc;
          p.stop = p.open - stop;
          p.vstop = p.stop;
@@ -462,15 +464,15 @@ void btEngine::setBacktestProgress(int bprogress) {
 
 void btEngine::addAStats(adamresult* result) {
 
-  for(int i=0;i< values.Size();i++ ) {
+  for(int i=0;i< inmem_records.Size();i++ ) {
 
     assetstats* a1 = new assetstats();
-    a1->name = values.GetItemName(i);
-    a1->variation = percentDelta(values[a1->name]);
-    a1->deviation = stdDeviation(values[a1->name]);
-    a1->highest = max(values[i]);
-    a1->lowest = min(values[i]);
-
+    a1->name = inmem_records.GetItemName(i);
+    a1->variation = percentDelta(inmem_records[a1->name]);
+    a1->deviation = stdDeviation(inmem_records[a1->name]);
+    a1->highest = max(inmem_records[i]);
+    a1->lowest = min(inmem_records[i]);
+    
     result->astats.push_back(a1);
 
 

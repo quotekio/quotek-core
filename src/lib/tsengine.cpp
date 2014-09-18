@@ -17,18 +17,8 @@ void* tsEngine::modulethread_wrapper(void* arg) {
   moneyManager* mm = t0->getMoneyManager();
 
   string module_so = "lib" + mi->name + ".so";
-
   module_io mio;
-
   mio.mode = ADAM_MODE_REAL;
-  
-  AssocArray<farray*>* tvals = t0->getAllValues();
-
-  //Puts farray pointers of pointers inside of module_io struct
-  for (int i=0;i<tvals->Size();i++) {
-    mio.values[tvals->GetItemName(i)] = &(tvals->at(i));
-  }
-
   mio.logger = t0->getLogger();
   mio.cur_pnl = mm->getCurPNL();
   mio.cumulative_pnl = mm->getCumulativePNL();
@@ -198,15 +188,14 @@ void* tsEngine::moneyman(void* arg) {
   vector<string> si = iGetNames(ilist);
   igmLogger* logger = t0->getLogger();
   Queue<std::string> *orders_queue = t0->getOrdersQueue();
-  strategy* s = t0->getStrategy();
+  strategy* st = t0->getStrategy();
 
   //TRADELIFE struct for fctptr
   typedef void* (*tl_fct)(pos_c*,tradelife_io*);
-  void* tl_fct_fref = s->getTLFct(); 
+  void* tl_fct_fref = st->getTLFct(); 
   vector<position>* poslist = mm->getPositions();
 
   //pnl-needed vars
-  farray* fav;
   float v;
 
   tradelife_io tl_io;
@@ -219,9 +208,11 @@ void* tsEngine::moneyman(void* arg) {
 
   while (1) {
 
+    //plays tradelife callback inside strategy.
     if ( tl_fct_fref != NULL) {
 
       tl_fct tl = (tl_fct) tl_fct_fref;
+
       for (int i=0;i<poslist->size();i++) {
 
         tl_io.ans[0] = '\0';
@@ -253,7 +244,7 @@ void* tsEngine::moneyman(void* arg) {
 
         
         //code de value fetching + close if vpos_limit
-        float cval = farray_last( t0->getValues(poslist->at(i).indice));
+        float cval = records_last(t0->getIndiceRecords(poslist->at(i).indice))->value;
         if ( poslist->at(i).size < 0  &&  cval >= poslist->at(i).vstop ) {
           orders_queue->push("closepos:" + poslist->at(i).dealid );
         }
@@ -267,9 +258,16 @@ void* tsEngine::moneyman(void* arg) {
     }
 
     for(int j=0;j<si.size();j++) {
-      fav = t0->getValues(si.at(j));
-      v = farray_last(fav);
-      mm->computePNLs(si.at(j),v);
+      
+      records* mrecs = t0->getIndiceRecords(si.at(j));
+      if (mrecs != NULL) {
+        record* mr = records_last(mrecs);
+        if (mr!= NULL) { 
+          v = mr->value;
+          cout << v << endl;
+          mm->computePNLs(si.at(j),v);
+        }
+      }
     }
 
     if (inc == 10) {
@@ -389,13 +387,14 @@ void* tsEngine::evaluate(void* arg) {
 
   ev_io.recs = t0->getIndiceRecords(eval_name);
 
+
   string ans_str;
   string log_str;
 
   indice* idx = iResolve(t0->getIndicesList(),eval_name);
 
   //waits for some data to be collected before starting to process;
-  while(ev_io.tstamps->size == 0) sleep(1);
+  while(ev_io.recs->size == 0) sleep(1);
 
   while(1) {
 
@@ -403,8 +402,6 @@ void* tsEngine::evaluate(void* arg) {
 
     ev_io.ans[0] = '\0';
     ev_io.log_s[0] = '\0';
-
-    ev_io.values = t0->getValues(eval_name);
 
     record* last_rec = records_last(ev_io.recs);
 
@@ -415,6 +412,7 @@ void* tsEngine::evaluate(void* arg) {
     if ( t0->eval_running(idx,t) == 1) {
       //execution of found eval function
       (*f)(t,v, spread, &ev_io);
+      
 
       ans_str = std::string(ev_io.ans);
       log_str = std::string(ev_io.log_s);
@@ -554,10 +552,7 @@ tsEngine::tsEngine(adamCfg* conf,
 
   for(int i=0;i<si.size();i++) {
 
-    //initializing values structure for each found indice
-    values[si[i]] = (farray*) malloc(1*sizeof(farray));
     inmem_records[si[i]] = (records*) malloc(sizeof(records));
-    farray_init(values[si[i]],10000);
     //initializing records structures for each found indice
     records_init(inmem_records[si[i]],10000);
 
@@ -570,6 +565,7 @@ tsEngine::tsEngine(adamCfg* conf,
   mm->loadCPNL();
 
   //loads history
+  cout << "Loading history from backend.." << endl;
   loadHistory();
 
   evmio_a.evmio = (eval_module_io*) malloc(modules_list.size() * sizeof(eval_module_io) );
@@ -677,18 +673,10 @@ AssocArray<void*>* tsEngine::getEvalPointers() {
 }
 
 
-int tsEngine::pushValues(string mepic,float v) {
-  farray_push(values[mepic],v);
-  return 0;
-}
 
 int tsEngine::pushRecord(string mepic,record* r) {
   records_push(inmem_records[mepic],*r);
   return 0;
-}
-
-farray* tsEngine::getValues(string mepic) {
-  return values[mepic];
 }
 
 records* tsEngine::getIndiceRecords(string mepic) {
@@ -713,9 +701,6 @@ int tsEngine::loadHistory() {
   return 0;
 }
 
-AssocArray<farray*>* tsEngine::getAllValues() {
-  return &values;
-}
 
 igmLogger* tsEngine::getLogger() {
   return logger;

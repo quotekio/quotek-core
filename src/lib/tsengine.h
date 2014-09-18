@@ -27,7 +27,7 @@
 #include "results.h"
 #include "genetics.h"
 #include "indice.h"
-#include "finmath.h"
+#include "quant.h"
 #include <iostream>
 #include <fstream>
 
@@ -60,8 +60,6 @@ typedef struct tradelife_io {
 
 typedef struct evaluate_io {
   const char* indice_name;
-  farray* values;
-  iarray* tstamps;
   records* recs;
   char* ans;
   char* log_s;
@@ -91,9 +89,7 @@ class tsEngine{
     moneyManager* getMoneyManager();
     genetics* getGE();
 
-    farray* getValues(string);
     records* getIndiceRecords(string);
-    AssocArray<farray*>* getAllValues();
     int pushValues(string mepic,float v);
     int pushRecord(string,record*);
 
@@ -137,7 +133,6 @@ class tsEngine{
     AssocArray<indice*> indices_list;    
 
     Queue <std::string> orders_queue;
-    AssocArray<farray*> values;
     AssocArray<records*> inmem_records;
 
 
