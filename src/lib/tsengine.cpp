@@ -565,8 +565,10 @@ tsEngine::tsEngine(adamCfg* conf,
   mm->loadCPNL();
 
   //loads history
-  cout << "Loading history from backend.." << endl;
-  loadHistory();
+  if (tse_back != NULL) {
+    cout << "Loading history from backend.." << endl;
+    loadHistory();
+  }
 
   evmio_a.evmio = (eval_module_io*) malloc(modules_list.size() * sizeof(eval_module_io) );
   evmio_a.size = modules_list.size();

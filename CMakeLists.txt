@@ -76,13 +76,6 @@ add_library(
 
 )
 
-add_library(
-      dummydb SHARED
-      src/lib/backends/backend.h
-      src/lib/backends/dummy.cpp
-
-)
-
 find_library (PTHREAD pthread) 
 find_library (CURL curl)
 find_library (FAAN fann)
@@ -117,7 +110,6 @@ install (TARGETS csv2influx DESTINATION tools)
 
 install (TARGETS igmgw2 DESTINATION lib)
 install (TARGETS influxdbbe DESTINATION lib)
-install (TARGETS dummydb DESTINATION lib)
 
 install (FILES "install/clanglibs/libc++.so" DESTINATION lib)
 install (FILES "install/clanglibs/librt.so" DESTINATION lib)

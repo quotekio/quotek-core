@@ -156,7 +156,6 @@ int main(int argc,char** argv) {
 
   cout << "loading configuration..." << endl;
 
-
   genetics* ge = NULL;
   strategy* s;
   adamCfg* c = new adamCfg();
@@ -217,11 +216,23 @@ int main(int argc,char** argv) {
 
 
   broker* b = load_broker(c->getBroker())();
-  backend* back = load_backend(c->getBackend())();
 
-  cout << "initializing backend connection.." << endl;
-  back->init(c->getBackendParams());
-  back->connect();
+  backend* back;
+
+  if (c->getBackend() != "none" && c->getBackend() != "" ) {
+    back = load_backend(c->getBackend())();
+  }
+
+  else  {
+    cout << "* WARNING: No backend is configured: cannot save history, cannot perform backtests ! *" << endl;
+    back = NULL;
+  }
+
+  if (back != NULL) {
+    cout << "initializing backend connection.." << endl;
+    back->init(c->getBackendParams());
+    back->connect();
+  }
 
   cout << "preparing strategy compilation.." << endl;
   s->prepareCompile();
@@ -232,7 +243,6 @@ int main(int argc,char** argv) {
 
   adamGeneticsResult* gres;
   adamresult* res;
-
 
   switch (c->getMode()) {
 

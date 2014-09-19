@@ -12,6 +12,11 @@ function bctl_cleanup() {
   rm -rf CMakeFiles
   rm cmake_install.cmake
   rm Makefile
+  rm tests/test_*
+  rm tests/CMakeCache.txt
+  rm tests/cmake_install.cmake
+  rm -rf tests/CMakeFiles
+
 }
 
 function bctl_cmake() {
