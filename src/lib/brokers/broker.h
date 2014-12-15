@@ -8,17 +8,37 @@
 
 using namespace std;
 
+//Adam broker connector value exchange
+typedef struct bvex {
+  string epic;
+  float buy;
+  float sell;
+} bvex;
+
 
 class broker {
 
 public:
     broker() {}
     virtual ~broker() {}
+    virtual int init(string params) {return 0;}
+    virtual int requiresIndicesList() {return 0;}
     virtual int connect() {return 0;}
-    virtual string getValues() {return "";}
+    virtual int setIndicesList(vector<string> il) { return 0;}
+    virtual vector<bvex> getValues() {vector<bvex> v1; return v1; }
     virtual string getPositions() {return "";}
     virtual string closePos(string dealid) {return "";};
     virtual string openPos(string epic,string way,int nbc,int stop,int limit) {return "";}
+
+private:
+
+protected:
+    vector<string> ilist;
+    string username;
+    string password;
+    string api_key;
+    string api_url;
+    int requires_indices_list;
 
 };
 

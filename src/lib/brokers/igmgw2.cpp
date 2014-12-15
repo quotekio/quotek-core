@@ -15,9 +15,11 @@ size_t curl_wh(void *ptr, size_t size, size_t nmemb, string stream)
 class igmGw : public broker {
 public:
 
-  
+    virtual int init(string params) {
+      return 0;
+    }
+
     virtual int connect() {
-      cout << "CONNECT" << endl;
       return 0;
     }
 

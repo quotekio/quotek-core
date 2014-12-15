@@ -53,6 +53,7 @@ class adamCfg {
 
     int ticks;
     string broker;
+    string broker_params;
     string backend;
     string backend_params;
     int inmem_history;
@@ -79,6 +80,7 @@ class adamCfg {
     /* getters */
 
     string getBroker();
+    string getBrokerParams();
     string getBackend();
     string getBackendParams();
     AssocArray<indice*> getIndicesList();

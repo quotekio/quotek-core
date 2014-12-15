@@ -63,9 +63,10 @@ add_executable(
 #)
 
 add_library(
-        igmgw2 SHARED
+        igconnector SHARED
         src/lib/brokers/broker.h
-        src/lib/brokers/igmgw2.cpp
+        src/lib/brokers/igconnector.cpp
+        src/lib/utils.cpp
 )
 
 add_library(
@@ -88,7 +89,7 @@ target_link_libraries(
 )
 
 target_link_libraries(
-  igmgw2
+  igconnector
   curl
 )
 
@@ -108,7 +109,7 @@ install (TARGETS adam DESTINATION bin)
 install (TARGETS csv2influx DESTINATION tools)
 #install (TARGETS nntrain DESTINATION tools)
 
-install (TARGETS igmgw2 DESTINATION lib)
+install (TARGETS igconnector DESTINATION lib)
 install (TARGETS influxdbbe DESTINATION lib)
 
 install (FILES "install/clanglibs/libc++.so" DESTINATION lib)

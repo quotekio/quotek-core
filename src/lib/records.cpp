@@ -14,9 +14,7 @@ void records_clear(records* recs) {
   recs->size=0;
   recs->msize=0;
   
-
 }
-
 
 void records_push(records* recs, record r) {
 

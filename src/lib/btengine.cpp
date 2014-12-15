@@ -30,6 +30,11 @@ btEngine::btEngine(adamCfg* conf,
   backtest_pos = 0;
   backtest_progress = 0;
 
+  if (tse_back == NULL) {
+    cout << "*ERROR: Cannot run adam in Backtest or genetics mode without a working backend, leaving ! *" << endl;
+    exit(1);
+  }
+
   //loads backtest history
   loadHistory_();
 

@@ -80,8 +80,6 @@ float cavg(float point,float average,int count) {
   return (float) (average + ((point - average) / count));
 }
 
-
-
 float variance(records* recs, uint8_t sample) {
   float mean = avg(recs);
   float variance = 0;

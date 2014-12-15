@@ -13,6 +13,10 @@ string adamCfg::getBroker() {
   return broker;
 }
 
+string adamCfg::getBrokerParams() {
+  return broker_params;
+}
+
 string adamCfg::getBackend() {
   return backend;
 }
@@ -125,7 +129,8 @@ int adamCfg::read() {
         arg = trim(sline.at(1));
 
         if (param == "ticks") ticks = atoi(arg.c_str());
-        else if (param == "broker") broker = arg; 
+        else if (param == "broker") broker = arg;
+        else if (param == "broker_params") broker_params = arg;
         else if (param == "backend") backend = arg;
         else if (param == "backend_params") backend_params = arg;
 

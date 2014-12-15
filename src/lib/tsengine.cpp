@@ -264,7 +264,7 @@ void* tsEngine::moneyman(void* arg) {
         record* mr = records_last(mrecs);
         if (mr!= NULL) { 
           v = mr->value;
-          cout << v << endl;
+          //cout << v << endl;
           mm->computePNLs(si.at(j),v);
         }
       }
@@ -298,8 +298,7 @@ void* backend_store(void* arg) {
 void* tsEngine::poll(void* arg) {
 
   tsEngine *t0 = (tsEngine*) arg; 
-  string val;
-  rapidjson::Document d;
+  vector<bvex> values;
 
   AssocArray<indice*> ilist = t0->getIndicesList();
   igmLogger* logger = t0->getLogger();
@@ -314,45 +313,34 @@ void* tsEngine::poll(void* arg) {
   float sell;
   float spread;
 
-  float spreadless_val;
-
   while(1) {
 
-    val = t0->getBroker()->getValues();
+    values = t0->getBroker()->getValues();
 
     time_ms = time(0);
-    
-    if (val != "") {
 
-      d.Parse<0>(val.c_str());
+    if (values.size() != 0 ) {
 
-      for (int i=0;i<d.Capacity();i++) {
+      for (int i=0;i<values.size();i++) {
 
         record r;
-        epic = d[SizeType(i)]["epic"].GetString();
-        buystr =  d[SizeType(i)]["buy"].GetString();
-        sellstr =  d[SizeType(i)]["sell"].GetString();
-        buy = atof(buystr.c_str());
-        sell = atof(sellstr.c_str());
-        r.timestamp = time_ms;
+        epic = values[i].epic;
+        buy = values[i].buy;
+        sell = values[i].sell;
+
+        r.timestamp = time(0);
         r.value = (buy + sell) / 2;
         r.spread = (buy - sell) / 2;
         
-        indice* idx = iResolve(ilist,epic);
+        indice* idx = iResolve(ilist, epic);
         if (idx != NULL) {
           mepic = idx->name;
-          if (spreadless_val > 0 && spreadless_val < 10000000) {
-            t0->pushValues(mepic,spreadless_val);
-            t0->pushRecord(mepic,&r);
+          t0->pushRecord(mepic,&r);
 
-          }
-          else {
-            logger->log("*ERROR: " + mepic +  " Value out of range, skipping data*");
-          }
         }
-
       }
     }
+
     sleep(1);
   }
 
@@ -394,7 +382,10 @@ void* tsEngine::evaluate(void* arg) {
   indice* idx = iResolve(t0->getIndicesList(),eval_name);
 
   //waits for some data to be collected before starting to process;
-  while(ev_io.recs->size == 0) sleep(1);
+  while(ev_io.recs->size == 0) { 
+    cout << "Waiting for data population.." << endl;
+    sleep(1);
+  }
 
   while(1) {
 
@@ -404,7 +395,7 @@ void* tsEngine::evaluate(void* arg) {
     ev_io.log_s[0] = '\0';
 
     record* last_rec = records_last(ev_io.recs);
-
+    
     t = last_rec->timestamp;
     v = last_rec->value;
     spread = last_rec->spread;
@@ -413,7 +404,6 @@ void* tsEngine::evaluate(void* arg) {
       //execution of found eval function
       (*f)(t,v, spread, &ev_io);
       
-
       ans_str = std::string(ev_io.ans);
       log_str = std::string(ev_io.log_s);
 
@@ -547,6 +537,13 @@ tsEngine::tsEngine(adamCfg* conf,
   modules_list = mlist;
 
   logger = new igmLogger();
+
+  //initializes and connect to broker;
+  tse_broker->init(conf->getBrokerParams());
+  if (tse_broker->requiresIndicesList() == 1)  {
+    tse_broker->setIndicesList(iGetEpics(indices_list));
+  }
+  tse_broker->connect();
 
   vector<string> si = iGetNames(indices_list);
 
