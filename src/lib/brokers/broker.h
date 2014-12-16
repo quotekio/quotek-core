@@ -15,6 +15,17 @@ typedef struct bvex {
   float sell;
 } bvex;
 
+//Adam broker connector position exchange
+typedef struct bpex
+{
+  string dealid;
+  string epic;
+  int size;
+  float stop;
+  float limit;
+
+} bpex;
+
 
 class broker {
 
@@ -26,7 +37,7 @@ public:
     virtual int connect() {return 0;}
     virtual int setIndicesList(vector<string> il) { return 0;}
     virtual vector<bvex> getValues() {vector<bvex> v1; return v1; }
-    virtual string getPositions() {return "";}
+    virtual vector<bpex> getPositions() {vector<bpex> p1; return p1; }
     virtual string closePos(string dealid) {return "";};
     virtual string openPos(string epic,string way,int nbc,int stop,int limit) {return "";}
 

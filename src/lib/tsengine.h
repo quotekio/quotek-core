@@ -83,6 +83,7 @@ class tsEngine{
              vector<string>);
 
     broker* getBroker();
+    int getTicks();
     Queue <std::string>* getOrdersQueue();
     AssocArray<indice*> getIndicesList();
     strategy* getStrategy();
@@ -93,7 +94,7 @@ class tsEngine{
     int pushValues(string mepic,float v);
     int pushRecord(string,record*);
 
-    adamCfg* getAdamConfig();
+    adamCfg** getAdamConfig();
 
     AssocArray<void*>* getEvalPointers();
     igmLogger* getLogger();
@@ -125,6 +126,7 @@ class tsEngine{
     evmio_array evmio_a;
 
     broker* tse_broker;
+    int tse_ticks;
     backend* tse_back;
     strategy* tse_strat;
     moneyManager* tse_mm;

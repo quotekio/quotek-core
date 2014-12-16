@@ -98,7 +98,7 @@ public:
         }
 
       }
-      
+
       return 0;
     }
 
@@ -155,17 +155,48 @@ public:
       return result;
     }
 
-    virtual string getPositions() {
+    virtual vector<bpex> getPositions() {
     
+      vector<bpex> result;
+
       string temp = "";
       CURL* ch = curl_easy_init();
-      curl_easy_setopt(ch,CURLOPT_URL,"http://127.0.0.1:9090/get/positions");
+      string c_url = api_url + "/gateway/deal/positions";
+      curl_slist *headers = NULL;
+      rapidjson::Document d;
+ 
+      //Adds API Key to header;
+      string apikey_header = "X-IG-API-KEY: " + api_key;
+      headers = curl_slist_append(headers, "Accept: application/json");
+      headers = curl_slist_append(headers, "Content-Type: application/json");
+      headers = curl_slist_append(headers, apikey_header.c_str());
+      headers = curl_slist_append(headers, cst.c_str());
+      headers = curl_slist_append(headers, security_token.c_str());
+
+      curl_easy_setopt(ch,CURLOPT_URL,c_url.c_str());
       curl_easy_setopt(ch,CURLOPT_WRITEFUNCTION,curl_wh);
+      curl_easy_setopt(ch,CURLOPT_HTTPHEADER, headers);
       curl_easy_setopt(ch,CURLOPT_WRITEDATA,&temp);
       curl_easy_perform(ch);
       curl_easy_cleanup(ch);
-      return temp;
-    }
+
+      curl_slist_free_all(headers);
+      
+      d.Parse<0>(temp.c_str());
+
+      if (d["positions"].IsArray()) {
+        for (int i=0;i<d["positions"].Capacity();i++) {
+
+          bpex p1;
+          p1.dealid = d["positions"][rapidjson::SizeType(i)]["position"]["dealId"].GetString();
+          p1.epic = d["positions"][rapidjson::SizeType(i)]["market"]["epic"].GetString();
+          result.push_back(p1);
+          
+        }
+      }
+
+      return result;
+  }
     
 
   virtual string openPos(string epic,string way,int nbc,int stop,int limit) {

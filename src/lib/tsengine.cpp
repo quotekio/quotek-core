@@ -59,8 +59,6 @@ void* broker_pos_sync(void* arg) {
   AssocArray<indice*> ilist = t0->getIndicesList();
   vector<string> si = iGetNames(ilist);
 
-  rapidjson::Document d;
-
   indice* idx;
 
   //pos variables
@@ -78,31 +76,31 @@ void* broker_pos_sync(void* arg) {
   float open;
   int size;
 
-  string mypos;
+  vector<bpex> mypos;
   vector<string> alive_pos;
 
   while(1) { 
 
     mypos = b0->getPositions();
-    if (mypos != "") {
+    if (mypos.size() != 0) {
 
-      d.Parse<0>(mypos.c_str());
       alive_pos.clear();
-      for (int i=0;i<d.Capacity();i++) {
+      for (int i=0;i<mypos.size();i++) {
       
-        idx = iResolve(ilist,d[SizeType(i)]["epic"].GetString());
+        idx = iResolve(ilist,mypos[i].epic);
 
         if (idx != NULL) {
           
-          epic = d[SizeType(i)]["epic"].GetString();
+          epic = mypos[i].epic;
           indice = idx->name;
-          dealid = d[SizeType(i)]["id"].GetString();
-          name = d[SizeType(i)]["name"].GetString();
+          dealid = mypos[i].dealid;
+          
+          //name = ;
 
-          stop_str = d[SizeType(i)]["stop"].GetString();
+          //stop_str = d[SizeType(i)]["stop"].GetString();
           //limit_str = d[SizeType(i)]["limit"].GetString();
-          open_str = d[SizeType(i)]["open"].GetString();
-          size_str =  d[SizeType(i)]["size"].GetString();
+          //open_str = d[SizeType(i)]["open"].GetString();
+          //size_str =  d[SizeType(i)]["size"].GetString();
       
           stop = 0;
           if (stop_str != "-") {
@@ -114,8 +112,8 @@ void* broker_pos_sync(void* arg) {
             //limit = atof(limit_str.c_str());
           //}        
 
-          open = atof(open_str.c_str());
-          size = atoi(size_str.c_str());
+          //open = atof(open_str.c_str());
+          //size = atoi(size_str.c_str());
 
           alive_pos.push_back(dealid);
 
@@ -303,22 +301,23 @@ void* tsEngine::poll(void* arg) {
   AssocArray<indice*> ilist = t0->getIndicesList();
   igmLogger* logger = t0->getLogger();
 
-  uint32_t time_ms;
+  int ticks = t0->getTicks();
 
+  uint32_t time_ms;
   string epic;
   string mepic; 
-  string buystr;
-  string sellstr;
   float buy;
   float sell;
   float spread;
 
   while(1) {
 
+    //perf profiling
+    auto tt0 = std::chrono::high_resolution_clock::now();
     values = t0->getBroker()->getValues();
 
     time_ms = time(0);
-
+    
     if (values.size() != 0 ) {
 
       for (int i=0;i<values.size();i++) {
@@ -328,7 +327,7 @@ void* tsEngine::poll(void* arg) {
         buy = values[i].buy;
         sell = values[i].sell;
 
-        r.timestamp = time(0);
+        r.timestamp = time_ms;
         r.value = (buy + sell) / 2;
         r.spread = (buy - sell) / 2;
         
@@ -341,7 +340,14 @@ void* tsEngine::poll(void* arg) {
       }
     }
 
-    sleep(1);
+    auto tt1 = std::chrono::high_resolution_clock::now();
+    auto elapsed_t = tt1 - tt0;
+    uint64_t elapsed = std::chrono::duration_cast<std::chrono::microseconds>(elapsed_t).count();
+    
+    if (elapsed < ticks) {  
+      usleep(ticks - elapsed);
+    }
+
   }
 
 }
@@ -366,6 +372,7 @@ void* tsEngine::evaluate(void* arg) {
   float v;
   float spread;
   evaluate_io ev_io;
+  uint64_t previous_t = 0;
 
   ev_io.ans = (char*) malloc(256 * sizeof(char) +1);
   ev_io.log_s = (char*) malloc(1024 * sizeof(char) +1);
@@ -375,6 +382,7 @@ void* tsEngine::evaluate(void* arg) {
 
   ev_io.recs = t0->getIndiceRecords(eval_name);
 
+  int ticks = t0->getTicks();
 
   string ans_str;
   string log_str;
@@ -389,18 +397,21 @@ void* tsEngine::evaluate(void* arg) {
 
   while(1) {
 
+    //perf profiling
+    auto tt0 = std::chrono::high_resolution_clock::now();
+
     ev_io.indice_name = eval_name.c_str();
 
     ev_io.ans[0] = '\0';
     ev_io.log_s[0] = '\0';
 
     record* last_rec = records_last(ev_io.recs);
-    
+
     t = last_rec->timestamp;
     v = last_rec->value;
     spread = last_rec->spread;
 
-    if ( t0->eval_running(idx,t) == 1) {
+    if ( t0->eval_running(idx,t) == 1 && t != previous_t ) {
       //execution of found eval function
       (*f)(t,v, spread, &ev_io);
       
@@ -415,7 +426,16 @@ void* tsEngine::evaluate(void* arg) {
         orders_queue->push(ans_str);
       }
     }
-    sleep(1);
+
+    previous_t = t;
+
+    auto tt1 = std::chrono::high_resolution_clock::now();
+    auto elapsed_t = tt1 - tt0;
+    uint64_t elapsed = std::chrono::duration_cast<std::chrono::microseconds>(elapsed_t).count();
+
+    if (elapsed < ticks) {  
+      usleep(ticks - elapsed);
+    }
 
   }
 
@@ -529,6 +549,7 @@ tsEngine::tsEngine(adamCfg* conf,
   store_init(&tse_store,256);
   tse_genes = NULL;
   tse_broker = b;
+  tse_ticks = conf->getTicks();
   tse_back = back;
   tse_strat = s;
   tse_mm = mm;
@@ -639,12 +660,16 @@ tsEngine::tsEngine(adamCfg* conf,
 }
 
 
-adamCfg* tsEngine::getAdamConfig() {
-  return cfg;
+adamCfg** tsEngine::getAdamConfig() {
+  return &cfg;
 }
 
 broker* tsEngine::getBroker() {
   return tse_broker;
+}
+
+int tsEngine::getTicks() {
+  return tse_ticks;
 }
 
 AssocArray<indice*> tsEngine::getIndicesList() {

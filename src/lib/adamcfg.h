@@ -79,6 +79,7 @@ class adamCfg {
 
     /* getters */
 
+  
     string getBroker();
     string getBrokerParams();
     string getBackend();
@@ -94,6 +95,7 @@ class adamCfg {
     int getBTo();
     int getMode();
     int getBSpeed();
+    int getTicks();
     string getBDump();
     string getBTResultFile();
     void chconf(char*);

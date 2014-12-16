@@ -7,6 +7,7 @@ adamCfg::adamCfg() {
   npath = "";
   mode = ADAM_MODE_REAL;
   inmem_history = 0;
+  ticks = 1000000;
 }
 
 string adamCfg::getBroker() {
@@ -74,6 +75,10 @@ int adamCfg::getBTo() {
   return backtest_to;
 }
 
+int adamCfg::getTicks() {
+  return ticks;
+}
+
 void adamCfg::setMode(int md) {
   mode = md;
 }
@@ -128,7 +133,9 @@ int adamCfg::read() {
         param = trim(sline.at(0));
         arg = trim(sline.at(1));
 
-        if (param == "ticks") ticks = atoi(arg.c_str());
+        if (param == "ticks") {
+          ticks = atoi(arg.c_str());
+        }
         else if (param == "broker") broker = arg;
         else if (param == "broker_params") broker_params = arg;
         else if (param == "backend") backend = arg;
