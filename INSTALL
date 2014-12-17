@@ -7,9 +7,6 @@ Adam Dependancies
 
 backend Modules Dependancies
 --------------------------
- * unixodbc
- * libodbc
- * sqlite odbc driver
  * influxdb-c (https://github.com/influxdb/influxdb-c.git)
 
 SETUP
@@ -18,15 +15,5 @@ SETUP
 /etc/sudoers:
 -------------
 
-www-data ALL=(ALL) NOPASSWD: /usr/bin/pkill, NOPASSWD: /usr/local/adam/bin/adam, NOPASSWD: /bin/kill, NOPASSWD: /bin/echo, NOPASSWD: /usr/local/adam/tools/vstore2dump
-
-/etc/odbc.ini (vstore)
-----------------------
-
-[vstore_sqlite]
-Description=Adam/Visible Hand Vstore database
-Driver=SQLite3
-Database=/usr/local/adam/admin/data/vstore.sqlite
-# optional lock timeout in milliseconds
-Timeout=2000
+www-data ALL=(ALL) NOPASSWD: /usr/bin/pkill, NOPASSWD: /usr/local/adam/bin/adam, NOPASSWD: /bin/kill, NOPASSWD: /bin/echo
 
