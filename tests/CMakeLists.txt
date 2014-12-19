@@ -16,6 +16,13 @@ SET (CMAKE_RANLIB  "/usr/bin/llvm-ranlib")
 add_definitions(-DADAM_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
 
 add_executable(
+	test_utils
+	unit/test_utils.cpp
+    ../src/lib/utils.cpp
+)
+
+
+add_executable(
 	test_records
 	unit/test_records.cpp
         ../src/lib/records.cpp
@@ -30,6 +37,8 @@ add_executable(
 	../src/lib/utils.cpp
 	unit/test_backend_influxdb.cpp
 )
+
+
 
 
 find_library (CURL curl)

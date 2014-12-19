@@ -124,6 +124,19 @@ test_records/fast:
 	$(MAKE) -f CMakeFiles/test_records.dir/build.make CMakeFiles/test_records.dir/build
 .PHONY : test_records/fast
 
+#=============================================================================
+# Target rules for targets named test_utils
+
+# Build rule for target.
+test_utils: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_utils
+.PHONY : test_utils
+
+# fast build rule for target.
+test_utils/fast:
+	$(MAKE) -f CMakeFiles/test_utils.dir/build.make CMakeFiles/test_utils.dir/build
+.PHONY : test_utils/fast
+
 home/wintermew/Projects/adam/src/lib/http.o: home/wintermew/Projects/adam/src/lib/http.cpp.o
 .PHONY : home/wintermew/Projects/adam/src/lib/http.o
 
@@ -208,6 +221,7 @@ home/wintermew/Projects/adam/src/lib/utils.o: home/wintermew/Projects/adam/src/l
 # target to build an object file
 home/wintermew/Projects/adam/src/lib/utils.cpp.o:
 	$(MAKE) -f CMakeFiles/test_backend_influxdb.dir/build.make CMakeFiles/test_backend_influxdb.dir/home/wintermew/Projects/adam/src/lib/utils.cpp.o
+	$(MAKE) -f CMakeFiles/test_utils.dir/build.make CMakeFiles/test_utils.dir/home/wintermew/Projects/adam/src/lib/utils.cpp.o
 .PHONY : home/wintermew/Projects/adam/src/lib/utils.cpp.o
 
 home/wintermew/Projects/adam/src/lib/utils.i: home/wintermew/Projects/adam/src/lib/utils.cpp.i
@@ -216,6 +230,7 @@ home/wintermew/Projects/adam/src/lib/utils.i: home/wintermew/Projects/adam/src/l
 # target to preprocess a source file
 home/wintermew/Projects/adam/src/lib/utils.cpp.i:
 	$(MAKE) -f CMakeFiles/test_backend_influxdb.dir/build.make CMakeFiles/test_backend_influxdb.dir/home/wintermew/Projects/adam/src/lib/utils.cpp.i
+	$(MAKE) -f CMakeFiles/test_utils.dir/build.make CMakeFiles/test_utils.dir/home/wintermew/Projects/adam/src/lib/utils.cpp.i
 .PHONY : home/wintermew/Projects/adam/src/lib/utils.cpp.i
 
 home/wintermew/Projects/adam/src/lib/utils.s: home/wintermew/Projects/adam/src/lib/utils.cpp.s
@@ -224,6 +239,7 @@ home/wintermew/Projects/adam/src/lib/utils.s: home/wintermew/Projects/adam/src/l
 # target to generate assembly for a file
 home/wintermew/Projects/adam/src/lib/utils.cpp.s:
 	$(MAKE) -f CMakeFiles/test_backend_influxdb.dir/build.make CMakeFiles/test_backend_influxdb.dir/home/wintermew/Projects/adam/src/lib/utils.cpp.s
+	$(MAKE) -f CMakeFiles/test_utils.dir/build.make CMakeFiles/test_utils.dir/home/wintermew/Projects/adam/src/lib/utils.cpp.s
 .PHONY : home/wintermew/Projects/adam/src/lib/utils.cpp.s
 
 unit/test_backend_influxdb.o: unit/test_backend_influxdb.cpp.o
@@ -274,6 +290,30 @@ unit/test_records.cpp.s:
 	$(MAKE) -f CMakeFiles/test_records.dir/build.make CMakeFiles/test_records.dir/unit/test_records.cpp.s
 .PHONY : unit/test_records.cpp.s
 
+unit/test_utils.o: unit/test_utils.cpp.o
+.PHONY : unit/test_utils.o
+
+# target to build an object file
+unit/test_utils.cpp.o:
+	$(MAKE) -f CMakeFiles/test_utils.dir/build.make CMakeFiles/test_utils.dir/unit/test_utils.cpp.o
+.PHONY : unit/test_utils.cpp.o
+
+unit/test_utils.i: unit/test_utils.cpp.i
+.PHONY : unit/test_utils.i
+
+# target to preprocess a source file
+unit/test_utils.cpp.i:
+	$(MAKE) -f CMakeFiles/test_utils.dir/build.make CMakeFiles/test_utils.dir/unit/test_utils.cpp.i
+.PHONY : unit/test_utils.cpp.i
+
+unit/test_utils.s: unit/test_utils.cpp.s
+.PHONY : unit/test_utils.s
+
+# target to generate assembly for a file
+unit/test_utils.cpp.s:
+	$(MAKE) -f CMakeFiles/test_utils.dir/build.make CMakeFiles/test_utils.dir/unit/test_utils.cpp.s
+.PHONY : unit/test_utils.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -284,6 +324,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... test_backend_influxdb"
 	@echo "... test_records"
+	@echo "... test_utils"
 	@echo "... home/wintermew/Projects/adam/src/lib/http.o"
 	@echo "... home/wintermew/Projects/adam/src/lib/http.i"
 	@echo "... home/wintermew/Projects/adam/src/lib/http.s"
@@ -302,6 +343,9 @@ help:
 	@echo "... unit/test_records.o"
 	@echo "... unit/test_records.i"
 	@echo "... unit/test_records.s"
+	@echo "... unit/test_utils.o"
+	@echo "... unit/test_utils.i"
+	@echo "... unit/test_utils.s"
 .PHONY : help
 
 

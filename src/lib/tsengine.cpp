@@ -53,6 +53,7 @@ void* broker_pos_sync(void* arg) {
   tsEngine* t0 = (tsEngine*) arg;
   moneyManager* mm = t0->getMoneyManager();
   broker* b0 = t0->getBroker();
+  int ticks = t0->getTicks();
   vector<position>* poslist = mm->getPositions();
   igmLogger* logger = t0->getLogger();
 
@@ -80,6 +81,9 @@ void* broker_pos_sync(void* arg) {
   vector<string> alive_pos;
 
   while(1) { 
+
+    //perf profiling
+    auto tt0 = std::chrono::high_resolution_clock::now();
 
     mypos = b0->getPositions();
     if (mypos.size() != 0) {
@@ -145,7 +149,15 @@ void* broker_pos_sync(void* arg) {
         mm->cleanPositions(alive_pos);
       }
     }
-    sleep(1);
+
+    auto tt1 = std::chrono::high_resolution_clock::now();
+    auto elapsed_t = tt1 - tt0;
+    uint64_t elapsed = std::chrono::duration_cast<std::chrono::microseconds>(elapsed_t).count();
+
+    if (elapsed < ticks) {  
+      usleep(ticks - elapsed);
+    }
+
   }
 }
 
@@ -526,7 +538,8 @@ void* tsEngine::execute(void* arg) {
       }
     }
 
-    sleep(1);
+    //execution loop needs to be really fast, so little sleep time
+    usleep(1000);
   }
 
 }

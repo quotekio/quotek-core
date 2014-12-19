@@ -29,6 +29,12 @@ std::string &trim(std::string &s) {
         return ltrim(rtrim(s));
 }
 
+std::string &upper(std::string &s) {
+        std::transform(s.begin(), s.end(),s.begin(), ::toupper);
+        return s;
+}
+
+
 
 uint64_t getMsTimeStamp() {
 

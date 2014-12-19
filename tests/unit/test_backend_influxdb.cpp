@@ -32,20 +32,13 @@ int main(int argc, char** argv) {
 
   records* recs2 = idb->query("SELECT value,spread FROM CAC_MINI order asc");
 
-  cout << "RECS2_SIZE:" << recs2->size << endl;
   assert(recs2->size > 0);
 
   records* recs3 = idb->query("CAC_MINI", recs2->data[0].timestamp , recs2->data[9].timestamp );
-  cout << "RECS3_SIZE:" << recs3->size << endl;
   assert(recs3->size == 10);
 
   
-
-
-  
-
-
-
+  cout << "TEST_BACKEND_INFLUXDB [OK]" << endl;
 
   return 0;
 

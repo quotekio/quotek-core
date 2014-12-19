@@ -36,6 +36,7 @@ void sreplaceAll(std::string&,
 	             const std::string&,
                  const std::string&);
 
+std::string &upper(std::string &s);
 
 std::string currentDateTime();
 std::string epochToDateTime(time_t t);

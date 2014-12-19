@@ -201,20 +201,77 @@ public:
 
   virtual string openPos(string epic,string way,int nbc,int stop,int limit) {
 
-
     string temp = "";
-
-    char* url_and_params = (char*) malloc(1024);
-    sprintf(url_and_params,"http://127.0.0.1:9090/action/openpos?epic=%s&way=%s&nbc=%d&stop=%d&limit=%d",epic.c_str(),way.c_str(),nbc,stop,limit);
-
+    string pdata = "";
+    string stop_str = "";
+    string limit_str = "";
     CURL* ch = curl_easy_init();
-    curl_easy_setopt(ch,CURLOPT_URL,url_and_params);
+    string c_url = api_url + "/gateway/deal/positions/otc";
+    curl_slist *headers = NULL;
+    rapidjson::Document d;
+    
+    //Adds API Key to header;
+    string apikey_header = "X-IG-API-KEY: " + api_key;
+    headers = curl_slist_append(headers, "Accept: application/json");
+    headers = curl_slist_append(headers, "Content-Type: application/json");
+    headers = curl_slist_append(headers, apikey_header.c_str());
+    headers = curl_slist_append(headers, cst.c_str());
+    headers = curl_slist_append(headers, security_token.c_str());
+
+    if (stop == 0) {
+      stop_str = "null";
+    }
+    else {
+      stop_str = int2string(stop);
+    }
+
+    if (limit == 0) {
+      limit_str = "null";
+    }
+    else  {
+      limit_str = int2string(limit);
+    }
+
+    upper(way);
+    cout << "WAY:" << way << endl;
+
+    //build post data
+    pdata = "{";
+    pdata += "\"epic\":\"" + epic + "\",";
+    pdata += "\"expiry\":\"DFB\",";
+    pdata += "\"direction\":\"" + way + "\",";
+    pdata += "\"size\":\"" + int2string(nbc) + "\",";
+    pdata += "\"orderType\": \"MARKET\",";
+    pdata += "\"level\": null,";
+    pdata += "\"guaranteedStop\": \"true\",";
+    pdata += "\"stopLevel\":\"" + stop_str + "\",";
+    pdata += "\"stopDistance\": null,";
+    pdata += "\"trailingStop\": null,";
+    pdata += "\"trailingStopIncrement\": null,";
+    pdata += "\"forceOpen\": \"true\",";
+    pdata += "\"limitLevel\":\"" + limit_str + "\",";
+    pdata += "\"limitDistance\": null,";
+    pdata += "\"quoteId\": null,";
+    pdata += "\"currencyCode\": \"EUR\"";
+    pdata += "}"; 
+
+    cout << pdata << endl;
+
+    curl_easy_setopt(ch,CURLOPT_URL,c_url.c_str());
     curl_easy_setopt(ch,CURLOPT_WRITEFUNCTION,curl_wh);
+    curl_easy_setopt(ch,CURLOPT_HTTPHEADER, headers);
     curl_easy_setopt(ch,CURLOPT_WRITEDATA,&temp);
+    curl_easy_setopt(ch,CURLOPT_POST, 1);
+    curl_easy_setopt(ch,CURLOPT_POSTFIELDS, pdata.c_str());
     curl_easy_perform(ch);
     curl_easy_cleanup(ch);
 
-    free(url_and_params);
+    curl_slist_free_all(headers);
+    
+    cout << temp << endl;
+
+    d.Parse<0>(temp.c_str());
+
     return temp;
 
   }
