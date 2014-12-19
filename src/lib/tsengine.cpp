@@ -550,6 +550,7 @@ tsEngine::tsEngine(adamCfg* conf,
   tse_genes = NULL;
   tse_broker = b;
   tse_ticks = conf->getTicks();
+  tse_inmem_history = conf->getInMemHistory();
   tse_back = back;
   tse_strat = s;
   tse_mm = mm;
@@ -710,7 +711,7 @@ records* tsEngine::getIndiceRecords(string mepic) {
 // Loads indices history from backend to memory
 int tsEngine::loadHistory() {
 
-    if (cfg->getInMemHistory() == 0) return 0;
+    if (tse_inmem_history == 0) return 0;
 
     int t_start = time(0) - cfg->getInMemHistory();
     vector<string> inames = iGetNames(indices_list);

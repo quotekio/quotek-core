@@ -127,6 +127,7 @@ class tsEngine{
 
     broker* tse_broker;
     int tse_ticks;
+    int tse_inmem_history;
     backend* tse_back;
     strategy* tse_strat;
     moneyManager* tse_mm;
