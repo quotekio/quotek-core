@@ -26,8 +26,7 @@ typedef struct tradelife_io {
 
 typedef struct evaluate_io {
   const char* indice_name;
-  farray* values;
-  iarray* tstamps;
+  records* recs;
   char* ans;
   char* log_s;
   store* s;

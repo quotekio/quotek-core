@@ -418,6 +418,7 @@ void* tsEngine::evaluate(void* arg) {
       ans_str = std::string(ev_io.ans);
       log_str = std::string(ev_io.log_s);
 
+
       if (log_str != "") {
            logger->log(log_str);
       }
