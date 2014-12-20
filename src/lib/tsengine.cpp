@@ -68,10 +68,6 @@ void* broker_pos_sync(void* arg) {
   string dealid;
   string name;
 
-  string stop_str;
-  string limit_str;
-  string open_str;
-  string size_str;
   float stop;
   float limit;
   float open;
@@ -98,31 +94,15 @@ void* broker_pos_sync(void* arg) {
           epic = mypos[i].epic;
           indice = idx->name;
           dealid = mypos[i].dealid;
+          size = mypos[i].size;
+          stop = mypos[i].stop;
+          limit = mypos[i].limit;
+          open = mypos[i].open;
           
-          //name = ;
-
-          //stop_str = d[SizeType(i)]["stop"].GetString();
-          //limit_str = d[SizeType(i)]["limit"].GetString();
-          //open_str = d[SizeType(i)]["open"].GetString();
-          //size_str =  d[SizeType(i)]["size"].GetString();
-      
-          stop = 0;
-          if (stop_str != "-") {
-            stop = atof(stop_str.c_str());
-          }
-
-          limit = 0;
-          //if (limit_str != "-") {
-            //limit = atof(limit_str.c_str());
-          //}        
-
-          //open = atof(open_str.c_str());
-          //size = atoi(size_str.c_str());
-
           alive_pos.push_back(dealid);
 
           if (! mm->hasPos(dealid) ) {
-            logger->log("New pos found:" + dealid);       
+            logger->log("New position found:" + dealid);       
    
             position p;
             p.epic = epic;

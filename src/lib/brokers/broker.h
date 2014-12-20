@@ -21,6 +21,7 @@ typedef struct bpex
   string dealid;
   string epic;
   int size;
+  float open;
   float stop;
   float limit;
 
