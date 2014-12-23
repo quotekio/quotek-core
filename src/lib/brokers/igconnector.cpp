@@ -1,6 +1,6 @@
 #include "broker.h"
 #include <curl/curl.h>
-#include "rapidjson/rapidjson.h"
+#include "../rapidjson/rapidjson.h"
 #include "../rapidjson/document.h"
 #include <stdlib.h>
 #include "../utils.h"
@@ -232,34 +232,34 @@ public:
       stop_str = "null";
     }
     else {
-      stop_str = int2string(stop);
+      stop_str = "\"" + int2string(stop) + "\"";
     }
 
     if (limit == 0) {
       limit_str = "null";
     }
     else  {
-      limit_str = int2string(limit);
+      limit_str = "\"" + int2string(limit) + "\"";
     }
 
     //build post data
-    pdata = "{";
-    pdata += "\"epic\":\"" + epic + "\",";
-    pdata += "\"expiry\":\"DFB\",";
-    pdata += "\"direction\":\"" + upper(way) + "\",";
-    pdata += "\"size\":\"" + int2string(nbc) + "\",";
-    pdata += "\"orderType\": \"MARKET\",";
-    pdata += "\"level\": null,";
-    pdata += "\"guaranteedStop\": \"true\",";
-    pdata += "\"stopLevel\":\"" + stop_str + "\",";
-    pdata += "\"stopDistance\": null,";
-    pdata += "\"trailingStop\": null,";
-    pdata += "\"trailingStopIncrement\": null,";
-    pdata += "\"forceOpen\": \"true\",";
-    pdata += "\"limitLevel\":\"" + limit_str + "\",";
-    pdata += "\"limitDistance\": null,";
-    pdata += "\"quoteId\": null,";
-    pdata += "\"currencyCode\":\"" + currencies_map[epic] + "\"" ;
+    pdata = "{\n";
+    pdata += "    \"epic\": \"" + epic + "\",\n";
+    pdata += "    \"expiry\": \"DFB\",\n";
+    pdata += "    \"direction\": \"" + upper(way) + "\",\n";
+    pdata += "    \"size\": \"" + int2string(nbc) + "\",\n";
+    pdata += "    \"orderType\": \"MARKET\",\n";
+    pdata += "    \"level\": null,\n";
+    pdata += "    \"guaranteedStop\": \"true\",\n";
+    pdata += "    \"stopLevel\": " + stop_str + ",\n";
+    pdata += "    \"stopDistance\": null,\n";
+    pdata += "    \"trailingStop\": null,\n";
+    pdata += "    \"trailingStopIncrement\": null,\n";
+    pdata += "    \"forceOpen\": \"true\",\n";
+    pdata += "    \"limitLevel\": " + limit_str + ",\n";
+    pdata += "    \"limitDistance\": null,\n";
+    pdata += "    \"quoteId\": null,\n";
+    pdata += "    \"currencyCode\": \"" + currencies_map[epic] + "\"\n" ;
     pdata += "}"; 
 
     cout << pdata << endl;
@@ -275,6 +275,8 @@ public:
 
     curl_slist_free_all(headers);
     
+    cout << temp << endl;
+
     d.Parse<0>(temp.c_str());
 
     return temp;

@@ -2,6 +2,8 @@
 
 igmLogger::igmLogger() {
 
+  use_stdout = false;
+
   out.open("/var/log/adam.log",std::ofstream::out | std::ofstream::app);
 
   if ( ! out.is_open() ) {
@@ -9,6 +11,18 @@ igmLogger::igmLogger() {
     exit(1);
   } 
  }
+
+igmLogger::igmLogger(bool uout) {
+
+  use_stdout = uout;
+  out.open("/var/log/adam.log",std::ofstream::out | std::ofstream::app);
+
+  if ( ! out.is_open() ) {
+    cout << "cannot open /var/log/adam.log for writing" << endl;
+    exit(1);
+  }
+
+}
 
 
 void igmLogger::log(string logstr) {
@@ -18,8 +32,12 @@ void igmLogger::log(string logstr) {
   le.entry = "[" + currentDateTime() + "] " +logstr;
   entries.push_back(le);
   out << "[" << currentDateTime() << "] " << logstr << endl;
-}
 
+  if (use_stdout) {
+    cout << "[" << currentDateTime() << "] " << logstr << endl;
+  }
+
+}
 
 vector<log_entry>* igmLogger::getAllEntries() {
   return &entries;

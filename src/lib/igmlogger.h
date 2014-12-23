@@ -22,12 +22,14 @@ class igmLogger {
 
   public:
     igmLogger();
+    igmLogger(bool);
     void log(string);
     ofstream* getStream();
     vector<log_entry> getLastEntries(int);
     vector<log_entry>* getAllEntries();
     void clear();
   private:
+  bool use_stdout;
   ofstream out;
   vector<log_entry> entries;
 
