@@ -9,11 +9,3 @@ backend Modules Dependancies
 --------------------------
  * influxdb-c (https://github.com/influxdb/influxdb-c.git)
 
-SETUP
-=====
-
-/etc/sudoers:
--------------
-
-www-data ALL=(ALL) NOPASSWD: /usr/bin/pkill, NOPASSWD: /usr/local/adam/bin/adam, NOPASSWD: /bin/kill, NOPASSWD: /bin/echo
-
