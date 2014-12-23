@@ -249,16 +249,16 @@ public:
     pdata += "    \"direction\": \"" + upper(way) + "\",\n";
     pdata += "    \"size\": \"" + int2string(nbc) + "\",\n";
     pdata += "    \"orderType\": \"MARKET\",\n";
-    pdata += "    \"level\": null,\n";
+    //pdata += "    \"level\": null,\n";
     pdata += "    \"guaranteedStop\": \"true\",\n";
     pdata += "    \"stopLevel\": " + stop_str + ",\n";
-    pdata += "    \"stopDistance\": null,\n";
-    pdata += "    \"trailingStop\": null,\n";
-    pdata += "    \"trailingStopIncrement\": null,\n";
+    //pdata += "    \"stopDistance\": null,\n";
+    //pdata += "    \"trailingStop\": null,\n";
+    //pdata += "    \"trailingStopIncrement\": null,\n";
     pdata += "    \"forceOpen\": \"true\",\n";
     pdata += "    \"limitLevel\": " + limit_str + ",\n";
-    pdata += "    \"limitDistance\": null,\n";
-    pdata += "    \"quoteId\": null,\n";
+    //pdata += "    \"limitDistance\": null,\n";
+    //pdata += "    \"quoteId\": null,\n";
     pdata += "    \"currencyCode\": \"" + currencies_map[epic] + "\"\n" ;
     pdata += "}"; 
 
@@ -275,10 +275,11 @@ public:
 
     curl_slist_free_all(headers);
     
+    /*
     cout << temp << endl;
-
     d.Parse<0>(temp.c_str());
-
+    */
+    
     return temp;
 
   }
@@ -322,6 +323,7 @@ private:
     string apikey_header = "X-IG-API-KEY: " + api_key;
     headers = curl_slist_append(headers, "Accept: application/json");
     headers = curl_slist_append(headers, "Content-Type: application/json");
+    headers = curl_slist_append(headers, "version: 1");
     headers = curl_slist_append(headers, apikey_header.c_str());
     headers = curl_slist_append(headers, cst.c_str());
     headers = curl_slist_append(headers, security_token.c_str());
