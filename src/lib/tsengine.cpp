@@ -499,7 +499,10 @@ void* tsEngine::execute(void* arg) {
            for (int k=0;k<reverse_dealids.size();k++) b0->closePos(reverse_dealids[k]);
          }
 
-         else b0->openPos(epic,way,nbc,stop,limit) ;
+         else {
+           string res = b0->openPos(epic,way,nbc,stop,limit) ;
+           logger->log("Broker Response:" + res);
+         }
 
         }
      
@@ -513,9 +516,29 @@ void* tsEngine::execute(void* arg) {
         position* cpos  = mm->getPositionByDealid(dealid);
         if (cpos != NULL) {
           cpos->status = POS_PENDING_CLOSE;
-          b0->closePos(dealid);
+          string res = b0->closePos(dealid);
+          logger->log("Broker Response:" + res);
         }
       }
+
+      else if (order_params.at(0) == "closeallpos") {
+
+        string indice = order_params.at(1);
+        string way = order_params.at(2);
+
+        vector<string> dealids = mm->findPos(indice,way);
+
+        cout << "DEALIDS_SIZE:" << dealids.size() << endl;
+
+        for (int k=0;k<dealids.size();k++) {
+          string res = b0->closePos(dealids[k]);
+          logger->log("Broker Response:" + res);
+        }
+
+      }
+
+
+
     }
 
     //execution loop needs to be really fast, so little sleep time

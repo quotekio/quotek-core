@@ -67,6 +67,7 @@ int ___log (const char* log_input, char* log_s);
 
 
 #define close_pos(_dealid) (__order("closepos",_dealid,"",0,0,0,io->ans))
+#define close_allpos(idx, way) (__order("closeallpos",idx,way,0,0,0,io->ans))
 
 
 #define trade_hours(h1_str,h2_str) {  if (__trade_hours(h1_str,h2_str,t) == 0) { return NULL ; } }

@@ -183,27 +183,32 @@ public:
         for (int i=0;i<d["positions"].Capacity();i++) {
 
           bpex p1;
-          p1.size = d["positions"][rapidjson::SizeType(i)]["position"]["contractSize"].GetInt(); 
 
-          string direction = d["positions"][rapidjson::SizeType(i)]["position"]["direction"].GetString();
+          rapidjson::Value& jval = d["positions"][rapidjson::SizeType(i)]["position"];
+          rapidjson::Value& jval_m = d["positions"][rapidjson::SizeType(i)]["market"];
+
+          p1.size = roundint(jval["dealSize"].GetDouble()); 
+
+          string direction = jval["direction"].GetString();
 
           //puts size in reverse if direction is sell.
           if ( direction == "SELL" )  {
             p1.size *= -1;
           }
 
-          p1.dealid = d["positions"][rapidjson::SizeType(i)]["position"]["dealId"].GetString();
-          p1.open = d["positions"][rapidjson::SizeType(i)]["position"]["openLevel"].GetDouble();
-          p1.epic = d["positions"][rapidjson::SizeType(i)]["market"]["epic"].GetString();
+          p1.dealid = jval["dealId"].GetString();
+          p1.open = jval["openLevel"].GetDouble();
+          p1.epic = jval_m["epic"].GetString();
 
           p1.stop = 0;
-          if (  d["positions"][rapidjson::SizeType(i)]["position"]["stopLevel"].IsDouble() ) {
-            p1.stop = d["positions"][rapidjson::SizeType(i)]["position"]["stopLevel"].GetDouble();
+          
+          if ( ! jval["stopLevel"].IsNull() ) {
+            p1.stop = jval["stopLevel"].GetDouble();
           }
 
           p1.limit = 0;
-          if (  d["positions"][rapidjson::SizeType(i)]["position"]["stopLevel"].IsDouble() ) {
-            p1.limit = d["positions"][rapidjson::SizeType(i)]["position"]["limitLevel"].GetDouble();
+          if (! jval["limitLevel"].IsNull() ) {
+            p1.limit = jval["limitLevel"].GetDouble();
           }
 
           result.push_back(p1);
@@ -211,6 +216,7 @@ public:
         }
       }
 
+      lastpos = result;
       return result;
   }
     
@@ -245,24 +251,22 @@ public:
     //build post data
     pdata = "{\n";
     pdata += "    \"epic\": \"" + epic + "\",\n";
-    pdata += "    \"expiry\": \"DFB\",\n";
+    pdata += "    \"expiry\": \"-\",\n";
     pdata += "    \"direction\": \"" + upper(way) + "\",\n";
     pdata += "    \"size\": \"" + int2string(nbc) + "\",\n";
     pdata += "    \"orderType\": \"MARKET\",\n";
     //pdata += "    \"level\": null,\n";
     pdata += "    \"guaranteedStop\": \"true\",\n";
-    pdata += "    \"stopLevel\": " + stop_str + ",\n";
-    //pdata += "    \"stopDistance\": null,\n";
+    pdata += "    \"stopDistance\": " + stop_str + ",\n";
+    pdata += "    \"stopLevel\": null,\n";
     //pdata += "    \"trailingStop\": null,\n";
     //pdata += "    \"trailingStopIncrement\": null,\n";
     pdata += "    \"forceOpen\": \"true\",\n";
-    pdata += "    \"limitLevel\": " + limit_str + ",\n";
-    //pdata += "    \"limitDistance\": null,\n";
+    pdata += "    \"limitDistance\": " + limit_str + ",\n";
+    pdata += "    \"limitLevel\": null,\n";
     //pdata += "    \"quoteId\": null,\n";
     pdata += "    \"currencyCode\": \"" + currencies_map[epic] + "\"\n" ;
     pdata += "}"; 
-
-    cout << pdata << endl;
 
     curl_easy_setopt(ch,CURLOPT_URL,c_url.c_str());
     curl_easy_setopt(ch,CURLOPT_WRITEFUNCTION,curl_wh);
@@ -275,12 +279,11 @@ public:
 
     curl_slist_free_all(headers);
     
-    /*
-    cout << temp << endl;
     d.Parse<0>(temp.c_str());
-    */
-    
-    return temp;
+    string res = "ERROR: NULLREF";
+    if (! d["dealReference"].IsNull() ) res = d["dealReference"].GetString();
+    else if (! d["errorCode"].IsNull()) res = std::string("ERROR:") + d["errorCode"].GetString();
+    return res;
 
   }
 
@@ -291,21 +294,54 @@ public:
     string c_url = api_url + "/gateway/deal/positions/otc" ;
     curl_slist *headers = NULL;
     rapidjson::Document d;
+    string pdata;
+
+    bpex pos;
+
+    //finds position in current list
+    for (int i=0;i<lastpos.size();i++) {
+      if (lastpos[i].dealid == dealid) {
+        pos = lastpos[i];
+        break;
+      }
+    }
+
+    string way = ( pos.size < 0 ) ? "BUY" : "SELL";
+    int size = (pos.size < 0) ? pos.size * -1 : pos.size; 
     
     headers = addHeaders();
+
+    //hack IG DELETE with body Issue
+    headers = curl_slist_append(headers, "_METHOD: DELETE");
+
+    pdata = "{\n";
+    pdata += "    \"dealId\": \"" + dealid + "\",\n";
+    pdata += "    \"expiry\": \"-\",\n";
+    pdata += "    \"direction\": \"" + upper(way) + "\",\n";
+    pdata += "    \"size\": \"" + int2string(size) + "\",\n";
+    pdata += "    \"orderType\": \"MARKET\"\n";
+    pdata += "}";
 
     CURL* ch = curl_easy_init();
     curl_easy_setopt(ch,CURLOPT_URL,c_url.c_str());
     curl_easy_setopt(ch,CURLOPT_WRITEFUNCTION,curl_wh);
+    curl_easy_setopt(ch,CURLOPT_HTTPHEADER, headers);
     curl_easy_setopt(ch,CURLOPT_WRITEDATA,&temp);
-    curl_easy_setopt(ch, CURLOPT_CUSTOMREQUEST, "DELETE"); 
+    //hack IG DELETE with body Issue
+    //curl_easy_setopt(ch, CURLOPT_CUSTOMREQUEST, "DELETE"); 
+    curl_easy_setopt(ch,CURLOPT_POST,1);
+    curl_easy_setopt(ch,CURLOPT_POSTFIELDS, pdata.c_str());
     curl_easy_perform(ch);
     curl_easy_cleanup(ch);
 
     curl_slist_free_all(headers);
 
-    return temp;
-  
+    d.Parse<0>(temp.c_str());
+    string res = "ERROR: NULLREF";
+    if (! d["dealReference"].IsNull() ) res = d["dealReference"].GetString();
+    else if (! d["errorCode"].IsNull()) res = std::string("ERROR:") + d["errorCode"].GetString();
+    return res;
+
   }
 
 
@@ -314,6 +350,7 @@ private:
   string cst;
   string security_token;
   AssocArray<string> currencies_map;
+  vector<bpex> lastpos;
 
   inline curl_slist* addHeaders() {
 

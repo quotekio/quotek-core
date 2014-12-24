@@ -78,6 +78,10 @@ int randint(int min,int max) {
   return min + ( rand() % ((max - min) + 1) );
 }
 
+int roundint(double r) {
+    return (r > 0.0) ? (r + 0.5) : (r - 0.5); 
+}
+
 
 std::string sreplace(std::string &s,
                       std::string toReplace,

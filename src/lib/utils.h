@@ -61,5 +61,7 @@ std::string json_escape(const std::string& input);
 float randfloat(float min, float max);
 int randint(int min,int max);
 
+int roundint(double);
+
 
 #endif

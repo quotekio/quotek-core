@@ -17,6 +17,10 @@ void* __order(const char* action,const char* indice,const char* way, int nbc, in
     sprintf(ans,"closepos:%s", indice);
   }
 
+  else if (strcmp(action,"closeallpos") == 0 ) {
+    sprintf(ans,"closeallpos:%s:%s", indice,way);
+  }
+  
 }
 
 
