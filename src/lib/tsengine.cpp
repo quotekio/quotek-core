@@ -275,11 +275,40 @@ return NULL;
 }
 
 
+void* tsEngine::saveToBackend(void* arg) {
 
-void* backend_store(void* arg) {
+  tsEngine *t0 = (tsEngine*) arg;
+  backend* back0 = t0->getBackend();
+  t0->setBSP(0);
 
-  tsEngine *t0 = (tsEngine*) arg; 
-  
+  while(1) {
+
+    int backend_save_pos = t0->getBSP();
+    AssocArray<records*>* inmem_recs = t0->getRecords();
+    int rsize_snapshot;
+    for (int i=0; i< inmem_recs->Size(); i++) {
+
+      string iname = inmem_recs->GetItemName(i);
+      cout << "Appending" << iname << "data" << endl ;
+      records* recs = inmem_recs->at(i);
+      
+      //snap records size only once for first element.
+      //(next elements should always have at leaest the same size)
+      if (i==0) rsize_snapshot = r->size;
+
+      for (int j= backend_save_pos;j < rsize_snapshot ;j++) {
+        back0->store(iname, recs[j]);
+      }
+
+    }
+
+    backend_save_pos += rsize_snapshot;
+    t0->setBSP(backend_save_pos);
+
+    sleep(10);
+
+  }
+
   return NULL;
 
 }
@@ -662,24 +691,31 @@ tsEngine::tsEngine(adamCfg* conf,
     pthread_create(&(eval_threads[i].th) ,NULL,evaluate,(void*)&(eval_threads[i]) );
   }
 
-  printf ("starting clock..\n");
+  printf ("Starting clock..\n");
   pthread_create(&clkth,NULL,aclock,(void*)this);  
 
-  printf ("initializing executor..\n");
+  printf ("Initializing executor..\n");
   pthread_create(&executor,NULL,execute,(void*)this);
 
-  printf ("initializing money manager..\n");
+  printf ("Initializing money manager..\n");
   pthread_create(&mmth,NULL,moneyman,(void*)this);
 
-  printf ("initializing broker sync threads..\n");
+  printf ("Initializing broker sync threads..\n");
   pthread_create(&bsync,NULL,broker_pos_sync,(void*)this);
   pthread_create(&bfclose,NULL,broker_force_close,(void*)this);
+
+  printf ("Initializing backend I/O Thread..\n");
+  pthread_create(&backioth,NULL,saveToBackend,(void*)this);
 
 }
 
 
 adamCfg** tsEngine::getAdamConfig() {
   return &cfg;
+}
+
+backend* tsEngine::getBackend() {
+  return tse_back;
 }
 
 broker* tsEngine::getBroker() {
@@ -689,6 +725,15 @@ broker* tsEngine::getBroker() {
 int tsEngine::getTicks() {
   return tse_ticks;
 }
+
+int tsEngine::getBSP() {
+  return bsp;
+}
+
+void tsEngine::setBSP(int ibsp) {
+  bsp = ibsp;
+}
+
 
 AssocArray<indice*> tsEngine::getIndicesList() {
   return indices_list;
@@ -719,6 +764,11 @@ AssocArray<void*>* tsEngine::getEvalPointers() {
 int tsEngine::pushRecord(string mepic,record* r) {
   records_push(inmem_records[mepic],*r);
   return 0;
+}
+
+
+AssocArray<records*>* tsEngine::getAllRecords() {
+  return &inmem_records;
 }
 
 records* tsEngine::getIndiceRecords(string mepic) {

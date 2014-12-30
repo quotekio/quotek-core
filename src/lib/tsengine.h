@@ -83,6 +83,7 @@ class tsEngine{
              vector<string>);
 
     broker* getBroker();
+    backend* getBackend();
     int getTicks();
     Queue <std::string>* getOrdersQueue();
     AssocArray<indice*> getIndicesList();
@@ -90,6 +91,7 @@ class tsEngine{
     moneyManager* getMoneyManager();
     genetics* getGE();
 
+    AssocArray<records*>* getRecords();
     records* getIndiceRecords(string);
     int pushValues(string mepic,float v);
     int pushRecord(string,record*);
@@ -111,6 +113,9 @@ class tsEngine{
     int getUptime();
     void tick();
 
+    int getBSP();
+    void setBSP(int);
+
     //#### STATIC,THREADED FUNCTIONS
     static void* poll(void*);
     static void* evaluate(void*);
@@ -118,7 +123,7 @@ class tsEngine{
     static void* moneyman(void*);
     static void* modulethread_wrapper(void*);
     static void* aclock(void*);
-
+    static void* saveToBackend(void*);
 
   protected:
 
@@ -132,6 +137,8 @@ class tsEngine{
     strategy* tse_strat;
     moneyManager* tse_mm;
     genetics* tse_ge;
+
+    int bsp;
 
     AssocArray<indice*> indices_list;    
 
@@ -152,6 +159,7 @@ class tsEngine{
     pthread_t bsync;
     pthread_t bfclose;
     pthread_t clkth;
+    pthread_t backioth;
 
     //struct defined to pass data to modulethread_wrapper
     typedef struct module_initializer {
