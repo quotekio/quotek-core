@@ -98,7 +98,7 @@ networkSession* network::server_accept() {
   }
 
   else {
-      std::cout << "NEW CONN ACCEPTED !" << std::endl;
+      //std::cout << "NEW CONN ACCEPTED !" << std::endl;
       networkSession* nsession = new networkSession(sock_id);
       return nsession;
   }
