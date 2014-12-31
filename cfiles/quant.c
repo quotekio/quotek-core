@@ -214,11 +214,14 @@ farray* lreg_coefs(records* recs2) {
 
 }
 
-
 float stdDeviation(records* recs) {
   return (float) sqrt(variance(recs,0));
 }
 
+//time value of money
+float tvom(float interest, float t) {
+  return exp( interest * t);
+}
 
 farray* cmavg(records* recs) {
 
@@ -314,3 +317,5 @@ float spread_avg(records* recs) {
   }
   return sum / recs->size;
 }
+
+
