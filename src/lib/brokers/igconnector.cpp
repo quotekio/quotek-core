@@ -83,8 +83,10 @@ public:
       curl_slist_free_all(headers);
 
       rapidjson::Document d;
-      d.Parse<0>(temp.c_str());
 
+      d.Parse<0>(temp.c_str());
+      if (d.HasParseError() ) return 0;
+     
       vector<string> hdata = split(htemp,'\n');
 
       for (int i=0;i<hdata.size();i++) {
@@ -138,6 +140,7 @@ public:
       curl_slist_free_all(headers);
 
       d.Parse<0>(temp.c_str());
+      if (d.HasParseError() ) return result;
 
       if (d["marketDetails"].IsArray()) {
         
@@ -178,6 +181,7 @@ public:
       curl_slist_free_all(headers);
       
       d.Parse<0>(temp.c_str());
+      if (d.HasParseError() ) return result;
 
       if (d["positions"].IsArray()) {
         for (int i=0;i<d["positions"].Capacity();i++) {
@@ -280,6 +284,8 @@ public:
     curl_slist_free_all(headers);
     
     d.Parse<0>(temp.c_str());
+    if (d.HasParseError() ) return "";
+
     string res = "ERROR: NULLREF";
     if (! d["dealReference"].IsNull() ) res = d["dealReference"].GetString();
     else if (! d["errorCode"].IsNull()) res = std::string("ERROR:") + d["errorCode"].GetString();
@@ -337,6 +343,9 @@ public:
     curl_slist_free_all(headers);
 
     d.Parse<0>(temp.c_str());
+    if (d.HasParseError() ) return "";
+
+
     string res = "ERROR: NULLREF";
     if (! d["dealReference"].IsNull() ) res = d["dealReference"].GetString();
     else if (! d["errorCode"].IsNull()) res = std::string("ERROR:") + d["errorCode"].GetString();
@@ -393,7 +402,9 @@ private:
     curl_easy_cleanup(ch);
     curl_slist_free_all(headers);
 
+    
     d.Parse<0>(temp.c_str());
+    if (d.HasParseError()) return ;
 
     if (d["marketDetails"].IsArray()) {
       

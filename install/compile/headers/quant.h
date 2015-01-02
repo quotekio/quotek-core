@@ -19,7 +19,14 @@ float variance_q(records*, uint8_t,float);
 float covariance(records*,records*);
 float covariance_q(records*,records*,float,float);
 
+//Black-Scholes function, gives back option price.
+float euro_bsf(const char* way, float stock_price, float strike, float expire, float rf_interest, float Volatility );
 
+//Black-Scholes reverse function, gives back Implied Volatility.
+float reverse_euro_bsf(const char* way, float option_price, float stock_price, float strike, float expire, float rf_interest );
+
+//time value of money
+float tvom(float interest, float t);
 
 
 float stdDeviation(records*);
