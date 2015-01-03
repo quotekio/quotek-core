@@ -111,7 +111,7 @@ void btEngine::evaluate_(string eval_name,void* eval_ptr) {
     log_str = std::string(ev_io.log_s);
 
     if (log_str != "") {
-         logger->log(log_str);
+         logger->log(log_str, progress_tstamp);
     }
 
     if ( ans_str != "") {
@@ -127,7 +127,59 @@ void btEngine::moneyman_() {
   records* recs;
   float v;
 
+  //TRADELIFE struct for fctptr
+  typedef void* (*tl_fct)(pos_c*,tradelife_io*);
+  void* tl_fct_fref = tse_strat->getTLFct(); 
+
+  tradelife_io tl_io;
+
   vector<position>* poslist = tse_mm->getPositions();
+
+  if ( tl_fct_fref != NULL) {
+
+    tl_io.ans = (char*) malloc(1024* sizeof(char));
+    tl_io.log_s = (char*) malloc(1024* sizeof(char));
+    tl_io.s = &tse_store;
+
+    tl_fct tl = (tl_fct) tl_fct_fref;
+
+    for (int i=0;i<poslist->size();i++) {
+
+      tl_io.ans[0] = '\0';
+      tl_io.log_s[0] = '\0';
+
+      pos_c pos_io;
+      pos_io.indice = poslist->at(i).indice.c_str();
+      pos_io.dealid = poslist->at(i).dealid.c_str();
+      pos_io.pnl = poslist->at(i).pnl;
+      pos_io.open = poslist->at(i).open;
+      pos_io.size = poslist->at(i).size;
+      pos_io.stop = poslist->at(i).stop;
+      pos_io.vstop = poslist->at(i).vstop;
+      pos_io.vlimit = poslist->at(i).vlimit;
+      pos_io.nb_inc = poslist->at(i).nb_inc; 
+      pos_io.limit = poslist->at(i).limit;
+
+      (*tl)(&pos_io,&tl_io);
+
+      poslist->at(i).vstop = pos_io.vstop;
+      poslist->at(i).vlimit = pos_io.vlimit;
+      poslist->at(i).nb_inc = pos_io.nb_inc;
+
+      if (std::string(tl_io.ans) != "" ) {
+        orders_queue.push(tl_io.ans);
+      }
+       
+      if (std::string(tl_io.log_s) != "" ) {
+        logger->log(tl_io.log_s, progress_tstamp);
+      }
+ 
+    }
+
+    free(tl_io.ans);
+    free(tl_io.log_s);
+
+  }
 
   for(int j=0;j<si.size();j++) {
     
@@ -160,6 +212,11 @@ void btEngine::moneyman_() {
           rmpos = REMPOS_LIMIT;
         }
 
+        else if (p->size > 0 && v >= p->vlimit && p->vlimit != p->open ) {
+          rmpos = REMPOS_VLIMIT;
+        }
+
+        
         else if (p->size < 0 && v >= p->stop ) {
           rmpos = REMPOS_STOP;
         }
@@ -172,6 +229,13 @@ void btEngine::moneyman_() {
           rmpos = REMPOS_LIMIT;
         }
 
+        else if (p->size < 0 && v <= p->vlimit && p->vlimit != p->open ) {
+          rmpos = REMPOS_VLIMIT;
+        }
+        
+
+
+
         if (rmpos > 0) {
  
           p->close_time = inmem_records[0]->data[backtest_pos].timestamp;
@@ -183,8 +247,9 @@ void btEngine::moneyman_() {
           if (rmpos == REMPOS_STOP) logstr = logstr + " (STOP)";
           else if (rmpos == REMPOS_VSTOP) logstr = logstr + " (VSTOP)";
           else if (rmpos == REMPOS_LIMIT) logstr = logstr + " (LIMIT)";
+          else if (rmpos == REMPOS_VLIMIT) logstr = logstr + " (VLIMIT)";
 
-          logger->log(logstr);
+          logger->log(logstr, progress_tstamp);
           if (iter == poslist->end() ) break;
 
         }
@@ -201,7 +266,7 @@ void btEngine::execute_() {
   vector<std::string> order_params;
 
   if (orders_queue.pop(order,false) ) {
-      logger->log("Processing Order " + order);
+      logger->log("Processing Order " + order, progress_tstamp);
       order_params = split(order,':');
   }
   else return;
@@ -232,7 +297,7 @@ void btEngine::execute_() {
       free(smartval);
     }
 
-    logger->log("Opening Position on " + epic);
+    logger->log("Opening Position on " + epic, progress_tstamp);
 
     int mm_answer = tse_mm->ask(indice,way,nbc,stop);
   
@@ -272,6 +337,7 @@ void btEngine::execute_() {
          p.stop = p.open + stop;
          p.vstop = p.stop;
          p.limit = p.open - limit;
+         p.vlimit = p.limit;
        }
 
        else {
@@ -280,6 +346,7 @@ void btEngine::execute_() {
          p.stop = p.open - stop;
          p.vstop = p.stop;
          p.limit = p.open + limit;
+         p.vlimit = p.limit;
        }
 
        p.pnl = 0;
@@ -293,7 +360,7 @@ void btEngine::execute_() {
     }
 
     else {
-      logger->log("Position refused by moneymanager (" + tse_mm->resolveError(mm_answer) + ")");
+      logger->log("Position refused by moneymanager (" + tse_mm->resolveError(mm_answer) + ")", progress_tstamp);
     }
   }
 
@@ -321,6 +388,8 @@ adamresult* btEngine::run() {
 
   for(int i=0;i<inmem_records[0]->size -1 ;i++) {
     backtest_pos++;
+    progress_tstamp = inmem_records[0]->data[backtest_pos].timestamp ;
+
     for (int j=0;j<eval_pointers.Size();j++) {
       evaluate_(eval_pointers.GetItemName(j), eval_pointers[j] );
     }
@@ -333,7 +402,7 @@ adamresult* btEngine::run() {
     //cout << backtest_progress << endl;
     if (backtest_progress % 10 == 0 && backtest_progress > bpp) {
       bpp = backtest_progress;
-      logger->log("Backtest Progress: " + int2string(backtest_progress) + "%");
+      logger->log("Backtest Progress: " + int2string(backtest_progress) + "%", progress_tstamp);
     }
 
   }

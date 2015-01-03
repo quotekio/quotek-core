@@ -4,6 +4,11 @@
 #include "tsengine.h"
 #include <map>
 
+#define REMPOS_STOP 0x01
+#define REMPOS_VSTOP 0x02
+#define REMPOS_LIMIT 0x03
+#define REMPOS_VLIMIT 0x04
+
 /*
 btEngine class defines the behaviour of adam while in backtest mode.
 The threading model is given away for serial processing in a single loop.
@@ -39,10 +44,10 @@ class btEngine: public tsEngine {
     
   protected:
 
-    float backtest_speed;
     int tse_mode;
     int backtest_pos;
     int backtest_progress;
+    int progress_tstamp;
     int backtest_from;
     int backtest_to; 
     vector<position> positions_history;

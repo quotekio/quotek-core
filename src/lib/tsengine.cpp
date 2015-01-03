@@ -112,6 +112,7 @@ void* broker_pos_sync(void* arg) {
             p.open = open;
             p.stop = stop;
             p.vstop = stop;
+            p.vlimit = limit;
             p.nb_inc = 1;
             p.limit = limit;
             p.size = size;
@@ -216,12 +217,14 @@ void* tsEngine::moneyman(void* arg) {
         pos_io.size = poslist->at(i).size;
         pos_io.stop = poslist->at(i).stop;
         pos_io.vstop = poslist->at(i).vstop;
+        pos_io.vlimit = poslist->at(i).vlimit;
         pos_io.nb_inc = poslist->at(i).nb_inc; 
         pos_io.limit = poslist->at(i).limit;
 
         (*tl)(&pos_io,&tl_io);
 
         poslist->at(i).vstop = pos_io.vstop;
+        poslist->at(i).vlimit = pos_io.vlimit;
         poslist->at(i).nb_inc = pos_io.nb_inc;
 
         if (std::string(tl_io.ans) != "" ) {
@@ -235,6 +238,8 @@ void* tsEngine::moneyman(void* arg) {
         
         //code de value fetching + close if vpos_limit
         float cval = records_last(t0->getIndiceRecords(poslist->at(i).indice))->value;
+
+        
         if ( poslist->at(i).size < 0  &&  cval >= poslist->at(i).vstop ) {
           orders_queue->push("closepos:" + poslist->at(i).dealid );
         }
@@ -243,6 +248,20 @@ void* tsEngine::moneyman(void* arg) {
           orders_queue->push("closepos:" + poslist->at(i).dealid );
         }
         
+        if (poslist->at(i).vlimit != 0) {
+
+          /* CLose on virtual limit */
+          if ( poslist->at(i).size > 0  &&  cval >= poslist->at(i).vlimit ) {
+            orders_queue->push("closepos:" + poslist->at(i).dealid );
+          }
+          
+          /* CLose on virtual limit */
+          else if ( poslist->at(i).size < 0  &&  cval <= poslist->at(i).vlimit ) {
+            orders_queue->push("closepos:" + poslist->at(i).dealid );
+          }
+
+        }
+
       }
 
     }

@@ -10,6 +10,7 @@ typedef struct position {
   int size;
   float stop;
   float vstop;
+  float vlimit;
   int nb_inc;
   float limit;
   float open;

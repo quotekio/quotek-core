@@ -31,11 +31,6 @@
 #include <iostream>
 #include <fstream>
 
-
-#define REMPOS_STOP 0x01
-#define REMPOS_VSTOP 0x02
-#define REMPOS_LIMIT 0x03
-
 using namespace rapidjson;
 
 typedef struct eval_module_io {

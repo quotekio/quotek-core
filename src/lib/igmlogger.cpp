@@ -39,6 +39,21 @@ void igmLogger::log(string logstr) {
 
 }
 
+void igmLogger::log(string logstr, int tstamp) {
+
+  log_entry le;
+  le.tstamp = time(NULL);
+  le.entry = "[" + epochToDateTime(tstamp) + "] " +logstr;
+  entries.push_back(le);
+  out << "[" << epochToDateTime(tstamp) << "] " << logstr << endl;
+
+  if (use_stdout) {
+    cout << "[" << epochToDateTime(tstamp) << "] " << logstr << endl;
+  }
+
+}
+
+
 vector<log_entry>* igmLogger::getAllEntries() {
   return &entries;
 }
