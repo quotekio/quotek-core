@@ -91,8 +91,8 @@ public:
         for ( int i=0; i< d[0u]["points"].Size(); i++  ) {
            rapidjson::Value& points = d[0u]["points"][i];           
            r.timestamp = points[0u].GetInt();
-           r.value = points[2].GetDouble();
-           r.spread = points[3].GetDouble();
+           r.value = points[3].GetDouble();
+           r.spread = points[2].GetDouble();
            records_push(result,r);
         }
       }
@@ -109,10 +109,20 @@ public:
       std::ostringstream qstream;
       std::string outp;
       record r;
-      //construct query;
-      qstream << "select value, spread from " << indice <<
-                 " where time > " << tinf << 
-                 "s and time <" << tsup << "s order asc";
+
+      if (tinf >= 0) {
+        qstream << "SELECT value, spread FROM " << indice <<
+                   " WHERE time > " << tinf << 
+                   "s AND time <" << tsup << "s ORDER ASC";
+      }
+
+      else  {
+
+        qstream << "SELECT value, spread FROM " << indice <<
+                   " WHERE time > now() + " << tinf << 
+                   "s AND time < now() + " << tsup << "s ORDER ASC";
+      }
+
     
       url += "&q=" + hhdl->escape(qstream.str());
       // Perform http request to influxdb backend and get result.
@@ -129,8 +139,8 @@ public:
         for ( int i=0; i< d[0u]["points"].Size(); i++  ) {
            rapidjson::Value& points = d[0u]["points"][i];           
            r.timestamp = points[0u].GetInt();
-           r.value = points[2].GetDouble();
-           r.spread = points[3].GetDouble();
+           r.value = points[3].GetDouble();
+           r.spread = points[2].GetDouble();
            records_push(result,r);
         }
       }

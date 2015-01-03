@@ -50,6 +50,7 @@ btEngine::btEngine(adamCfg* conf,
   for (int i=0;i<evnames.size();i++) {
     void* evptr = tse_strat->resolveFunction(evnames.at(i),"EVAL");
     if (evptr) {
+      cout << "loading eval for indice "  << evnames.at(i)  << endl;
       eval_pointers[evnames.at(i)] = evptr;
     }
   }
@@ -62,20 +63,7 @@ int btEngine::loadHistory_() {
     string q;
     vector<string> inames = iGetNames(indices_list);
     for (int i=0;i<inames.size();i++) {
-
-      if (backtest_from > 0) {
-        q = "select value, spread from " + inames[i] + "where time >" + 
-                 int2string(backtest_from) +  "s and time < " + 
-                 int2string(backtest_to) + "s";
-      }
-
-      else {
-         q = "select value, spread from " + inames[i] + "where time > now() + " + 
-                 int2string(backtest_from) +  "s and time < now() + " + 
-                 int2string(backtest_to) + "s";
-      }
-
-      records* recs = tse_back->query(q);
+      records* recs = tse_back->query(inames[i], backtest_from, backtest_to);
       inmem_records[inames[i]] = recs;
     }
 
