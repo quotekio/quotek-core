@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include "../utils.h"
 #include "../assoc.h"
+#include <pthread.h>
+
+#define MAX_UPTIME 42000
 
 size_t curl_wh(void *ptr, size_t size, size_t nmemb, string stream)
 {
@@ -34,6 +37,11 @@ public:
 
       api_url = "https://demo-api.ig.com";
       requires_indices_list = 1;
+      
+      //creates uptime loop, to reconnect when IG session expires.
+      pthread_t uptime_loop;
+      pthread_create(&uptime_loop,NULL,igConnector::staticUptimeLoop, this);
+
       return 0;
 
     }
@@ -50,7 +58,7 @@ public:
     }
   
     virtual int connect() {
-      cout << "Starting broker connection.." << endl;
+      cout << "(Re)Starting broker connection.." << endl;
       string temp = "";
       string htemp = "";
       string pdata = "";
@@ -360,6 +368,7 @@ private:
   string security_token;
   AssocArray<string> currencies_map;
   vector<bpex> lastpos;
+  int uptime_s;
 
   inline curl_slist* addHeaders() {
 
@@ -376,6 +385,27 @@ private:
   
     return headers;
 
+  }
+
+
+  static void* staticUptimeLoop(void* p) {
+    static_cast<igConnector*>(p)->uptimeLoop(NULL);
+    return NULL;
+  }
+
+  void* uptimeLoop(void*) {
+    uptime_s = 0;
+    while(1) {
+      uptime_s++;
+      if (uptime_s >= MAX_UPTIME) {
+        connect();
+
+        uptime_s =0;
+      }
+      sleep(1);
+
+    }
+    return NULL;
   }
 
   void loadCurrenciesMap() {
