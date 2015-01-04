@@ -40,6 +40,20 @@ uint32_t store_get(store* s,char* name) {
 }
 
 
+void store_clean(store* s, char* name) {
+
+  int i;
+  for (i=0;i<s->size;i++) {
+    if (strcmp(s->name[i],name) == 0 ) {
+      int j = 0;
+      for (j=0;j< MAX_STORENAME_LEN; j++) s->name[i][j] = 0x00;
+      s->data[i] = 0;
+    }
+  }
+
+}
+
+
 void* store_init(store* s,int size) {
 
   int i = 0;
