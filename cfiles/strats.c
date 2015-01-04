@@ -145,12 +145,12 @@ farray* __sampleT(int tinf,int tsup,uint32_t t,farray* values,iarray* tstamps) {
 
  int __counter(store* s,char* cname,int wait) {
 
-  if (store_exists(s,cname) != ERR ) {
-    int i = store_get(s,cname);
-    i++;
+  if (store_get(s,cname) != NULL ) {
+    int* i = (int*) store_get(s, cname);
+    *i++;
 
-    if (i == wait) {
-      i=1;
+    if (*i == wait) {
+      *i=1;
       store_push(s,cname,i);
       return 1;
     }
@@ -162,8 +162,9 @@ farray* __sampleT(int tinf,int tsup,uint32_t t,farray* values,iarray* tstamps) {
   }
 
   else {
-    int i = 1;
-    store_push(s,cname,i);
+    int* new_i = (int*) malloc(sizeof(int));
+    *new_i=1;
+    store_push(s,cname,new_i);
     return 0;
   }
 

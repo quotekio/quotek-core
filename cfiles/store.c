@@ -1,6 +1,6 @@
 #include "store.h"
 
-void* store_push(store* s,char* name,uint32_t data)  {
+void* store_push(store* s,char* name, void* data)  {
 
   int exists = store_exists(s,name);
 
@@ -28,7 +28,7 @@ int store_exists(store* s,char* name) {
 }
 
 
-uint32_t store_get(store* s,char* name) {
+void* store_get(store* s,char* name) {
 
   int i;
   for (i=0;i<s->size;i++) {
@@ -36,7 +36,7 @@ uint32_t store_get(store* s,char* name) {
       return s->data[i];
     }
   }
-  return ERR;
+  return NULL;
 }
 
 

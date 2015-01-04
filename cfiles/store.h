@@ -9,15 +9,15 @@
 typedef struct store {
 
   char** name;
-  uint32_t data[128];
+  void* data[128];
   int size;
   int msize;
   
 } store;
 
 
-void* store_push(store* s, char* name,uint32_t data);
-uint32_t store_get(store* s, char* name);
+void* store_push(store* s, char* name, void* data);
+void* store_get(store* s, char* name);
 void store_clean(store* s, char* name);
 void* store_init(store* s,int size);
 int store_exists(store* s,char* name);
