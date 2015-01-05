@@ -42,7 +42,7 @@ btEngine::btEngine(adamCfg* conf,
   logger = new igmLogger();
 
   //initializes store
-  store_init(&tse_store,256);
+  store_init(&tse_store);
   
   printf ("loading evaluators..\n");
   vector<string> evnames = iGetNames(getIndicesList());

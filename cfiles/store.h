@@ -1,3 +1,5 @@
+#ifndef STORE_H
+#define STORE_H
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,16 +10,19 @@
 
 typedef struct store {
 
-  char** name;
+  char name[128][MAX_STORENAME_LEN];
   void* data[128];
   int size;
   int msize;
-  
-} store;
+  pthread_mutex_t m_mutex;
+  pthread_cond_t  m_condition;  
 
+} store;
 
 void* store_push(store* s, char* name, void* data);
 void* store_get(store* s, char* name);
 void store_clean(store* s, char* name);
-void* store_init(store* s,int size);
+void* store_init(store* s);
 int store_exists(store* s,char* name);
+
+#endif

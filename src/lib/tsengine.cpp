@@ -618,7 +618,7 @@ tsEngine::tsEngine(adamCfg* conf,
   cout << "Initializing TS Engine.." << endl;
 
   //initializing store
-  store_init(&tse_store,256);
+  store_init(&tse_store);
   tse_genes = NULL;
   tse_broker = b;
   tse_ticks = conf->getTicks();

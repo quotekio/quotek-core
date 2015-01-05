@@ -97,7 +97,7 @@ void genetics::genPopulation(int size) {
     individual iv;
     iv.result=0;
 
-    store_init(&(iv.attributes),genes.size());
+    store_init(&(iv.attributes));
     char gname[512];
 
     for(int j=0;j< genes.size();j++) {
@@ -105,12 +105,16 @@ void genetics::genPopulation(int size) {
       strncpy(gname,genes[j].name.c_str(),512*sizeof(char));
 
       if ( genes[j].dataType == "int" ) {
-        int val = randint(genes[j].ilimit_inf,genes[j].ilimit_sup);
+
+
+        int* val = (int*) malloc(sizeof(int));
+        *val = randint(genes[j].ilimit_inf,genes[j].ilimit_sup);
         store_push( &(iv.attributes), gname, val);
       }
 
       else if (genes[j].dataType == "float") {
-        float val = randfloat(genes[j].limit_inf,genes[j].limit_sup);
+        float* val  = (float*) malloc(sizeof(float));
+        *val = randfloat(genes[j].limit_inf,genes[j].limit_sup);
         store_push( &(iv.attributes), gname, val);
       }
     }
@@ -177,7 +181,7 @@ void genetics::reproduce(vector<individual>* p) {
     individual iv;
     iv.result = 0;
     individual* giver;
-    store_init(&(iv.attributes),genes.size());
+    store_init(&(iv.attributes));
 
     //randomly pick 2 individuals inside survivors group for mating
     int p1_idx = rand() % survivors;
@@ -234,13 +238,17 @@ void genetics::mutateGene(individual* iv,gene* g) {
   	strncpy(gname,gene_ref->name.c_str(), 512*sizeof(char) );
 
     if (gene_ref->dataType == "int") {
-  	  int val = gene_ref->ilimit_inf + rand() % gene_ref->ilimit_sup ;
+          int* val = (int*) malloc(sizeof(int));
+  	  *val = gene_ref->ilimit_inf + rand() % gene_ref->ilimit_sup ;
   	  store_push ( &(iv->attributes) , gname , val );
     }  
 
     else if (gene_ref->dataType == "float") {
-      float val =  gene_ref->limit_inf + (float) rand() / ((float)RAND_MAX/(gene_ref->limit_sup - gene_ref->limit_inf ));
-      store_push ( &(iv->attributes) , gname , (uint32_t) val );
+   
+      float* val = (float*) malloc(sizeof(float));
+
+      *val =  gene_ref->limit_inf + (float) rand() / ((float)RAND_MAX/(gene_ref->limit_sup - gene_ref->limit_inf ));
+      store_push ( &(iv->attributes) , gname , val );
     }
   }
 }
@@ -293,7 +301,7 @@ vector <string> genetics::serializeIV(individual* iv) {
   gene* linked_gene;
   for(int i=0;i<iv->attributes.size;i++) {
     char* gname = store_item_at( &(iv->attributes), i);
-    uint32_t gval = store_value_at( &(iv->attributes),i);
+    int gval = *( (int*) store_value_at( &(iv->attributes),i));
     linked_gene = getGene( std::string(gname) );
 
     if ( linked_gene->dataType == "int"  ) {

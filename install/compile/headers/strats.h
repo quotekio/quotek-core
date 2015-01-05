@@ -90,7 +90,8 @@ int ___log (const char* log_input, char* log_s);
 
 #define store(_a,_d) ( store_push(io->s,_a,_d) )
 #define get(_a,_b) ( (_b) store_get(io->s,_a) )
-#define stored(_a) ( (store_get(io->s,_a) == ERR ) ? 0 : 1 ) 
+#define stored(_a) ( (store_get(io->s,_a) == NULL ) ? 0 : 1 )
+#define clean(_a) ( store_clean(io->s,_a) )
 
 #define genetics(_a,_b) ( (_b) store_get(io->genes,_a) )  
 

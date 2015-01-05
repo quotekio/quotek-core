@@ -1,8 +1,9 @@
 #include "store.h"
 
-void store_push(store* s,char* name,uint32_t data)  {
+void* store_push(store* s,char* name, void* data)  {
 
   pthread_mutex_lock( &s->m_mutex );
+
   int exists = store_exists(s,name);
 
   if (exists == ERR) {
@@ -32,48 +33,35 @@ int store_exists(store* s,char* name) {
 }
 
 
-uint32_t store_get(store* s,char* name) {
+void* store_get(store* s,char* name) {
 
   int i;
-  pthread_mutex_lock( &s->m_mutex );
   for (i=0;i<s->size;i++) {
     if (strcmp(s->name[i],name) == 0 ) {
       return s->data[i];
     }
   }
-  return ERR;
+  return NULL;
 }
 
 
-void store_init(store* s,int size) {
+void store_delete(store* s, char* name) {
 
-  int i = 0;
-  //s->data = (void**) malloc(size * sizeof(void*)) ;
-  s->name = (char**) malloc(size * sizeof(char*));
-
-  for (i=0;i< size;i++) {
-    s->name[i] = (char*) malloc( MAX_STORENAME_LEN * sizeof(char) );
-    //s->data[i] = (void*) malloc( 1 * sizeof(char) );
+  int i;
+  for (i=0;i<s->size;i++) {
+    if (strcmp(s->name[i],name) == 0 ) {
+      int j = 0;
+      for (j=0;j< MAX_STORENAME_LEN; j++) s->name[i][j] = 0x00;
+      s->data[i] = 0;
+    }
   }
 
+}
+
+void* store_init(store* s) {
+
   s->size = 0;
-  s->msize = size;
-
-  pthread_mutex_init( &s->m_mutex, NULL );
-  pthread_cond_init( &s->m_condition, NULL );
-
-}
-
-char* store_item_at(store* s,int index) {
-  if (index < s->size ) return s->name[index];
-  else return NULL;
-}
-
-
-uint32_t store_value_at(store*s,int index) {
-
- if (index < s->size ) return s->data[index];
- else return 0; 
+  s->msize = 128;
 
 }
 
@@ -84,3 +72,18 @@ void store_clear(store* s) {
     s->data[i] = 0x00;
   }
 }
+
+char* store_item_at(store* s,int index) {
+  if (index < s->size ) return s->name[index];
+  else return NULL;
+}
+
+
+void* store_value_at(store*s,int index) {
+
+ if (index < s->size ) return s->data[index];
+ else return 0;
+
+}
+
+

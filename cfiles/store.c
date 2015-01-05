@@ -53,18 +53,7 @@ void store_clean(store* s, char* name) {
 
 }
 
-
-void* store_init(store* s,int size) {
-
-  int i = 0;
-
-  //s->data = (void**) malloc(size * sizeof(void*)) ;
-  s->name = (char**) malloc(128 * sizeof(char*));
-
-  for (i=0;i< size;i++) {
-    s->name[i] = (char*) malloc( MAX_STORENAME_LEN * sizeof(char) );
-    //s->data[i] = (void*) malloc( 1 * sizeof(char) );
-  }
+void* store_init(store* s) {
 
   s->size = 0;
   s->msize = 128;
