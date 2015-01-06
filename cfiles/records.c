@@ -31,24 +31,16 @@ record* records_last(records* recs) {
 }
 
 
+records* records_extract_last(records* recs, int nbrecs) {
 
-records* records_sample_loose(records* recs, 
-                      const char* search_method, 
-                      uint32_t timestamp, 
-                      int tinf, 
-                      int tsup,
-                      int delta) {
-
-  irarray* recs_t = records_timestamps(records* recs);
-
-  for (i=0;i<delta;i++) {
-
-    
-
+  records* result = recs;
+  if ( nbrecs < recs->size )  {
+    result += recs->size - nbrecs;
   }
-
-
+  
+  return result;
 }
+
 
 records* records_sample(records* recs, 
 	                    const char* search_method, 
