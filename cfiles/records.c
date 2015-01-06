@@ -33,11 +33,18 @@ record* records_last(records* recs) {
 
 records* records_extract_last(records* recs, int nbrecs) {
 
-  records* result = recs;
+  records* result = (records*) malloc(sizeof(records)) ;
+
+  result->size = recs->size;
+  result->msize = recs->msize;
+  result->data = recs->data;
+
   if ( nbrecs < recs->size )  {
-    result += recs->size - nbrecs;
+    result->data += result->size - nbrecs;
+    result->size = nbrecs;
+    result->msize = nbrecs;
   }
-  
+
   return result;
 }
 
