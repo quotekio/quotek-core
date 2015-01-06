@@ -30,6 +30,26 @@ record* records_last(records* recs) {
   else return NULL;
 }
 
+
+
+records* records_sample_loose(records* recs, 
+                      const char* search_method, 
+                      uint32_t timestamp, 
+                      int tinf, 
+                      int tsup,
+                      int delta) {
+
+  irarray* recs_t = records_timestamps(records* recs);
+
+  for (i=0;i<delta;i++) {
+
+    
+
+  }
+
+
+}
+
 records* records_sample(records* recs, 
 	                    const char* search_method, 
 	                    uint32_t timestamp, 

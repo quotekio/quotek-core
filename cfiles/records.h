@@ -22,6 +22,7 @@ void records_init(records*,int);
 void records_push(records*,record);
 record* records_last(records*);
 records* records_sample(records*, const char*, uint32_t, int, int);
+records* records_sample_loose(records*, const char* uint32_t, int, int, int);
 int records_search_dicho(records* ,uint32_t);
 
 /* Legacy functions to translate to old datastruct */
