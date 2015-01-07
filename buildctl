@@ -45,6 +45,19 @@ function bctl_release() {
   cd ..
 }
 
+function bctl_append_buildnum() {
+
+  bnum=`cat .buildctl|grep build_number|sed 's/build_number//'`
+  bnum=`expr $bnum + 1`
+
+  echo "Running build number $bnum"
+  sed "s/##BNUM##/$bnum/" src/lib/constants.h.tpl > src/lib/constants.h
+
+  sed "s/^build_number.*$/build_number $bnum/" -i .buildctl
+  
+}
+
+
 function bctl_install() {
   make install
 }
@@ -61,12 +74,14 @@ case $1 in
   ;;
 
   buildall)
+    bctl_append_buildnum
     bctl_cmake
     bctl_compile_all
     bctl_release
   ;;
 
   buildall-debug)
+    bctl_append_buildnum
     bctl_cmake_debug
     bctl_compile_all
     bctl_release
