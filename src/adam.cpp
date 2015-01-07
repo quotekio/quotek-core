@@ -4,6 +4,50 @@ tsEngine* tse;
 btEngine* bte;
 int so_iter = 0;
 
+
+void panic(const char *fmt, ...) {
+
+  char buf[1024];
+  va_list argptr;
+  va_start(argptr, fmt);
+  vsprintf(buf, fmt, argptr);
+  va_end(argptr);
+  fprintf(stderr, "%s", buf);
+  exit(1);
+
+}
+
+static void dumpstack(){
+    char dbx[160];
+    sprintf(dbx, "echo 'where\ndetach' | gdb -a %d > /tmp/adam/dbg/%ld.dump", getpid(), time(0) );
+    system(dbx);
+    return;
+}
+
+
+void init_signals(struct sigaction* sigact){
+
+  sigact->sa_handler = signal_callback_handler;
+  sigemptyset(&(sigact->sa_mask));
+  sigact->sa_flags = 0;
+  sigaction(SIGINT, sigact, (struct sigaction *)NULL);
+
+  sigaddset(&(sigact->sa_mask), SIGSEGV);
+  sigaction(SIGSEGV, sigact, (struct sigaction *)NULL);
+
+  sigaddset(&(sigact->sa_mask), SIGBUS);
+  sigaction(SIGBUS, sigact, (struct sigaction *)NULL);
+
+  sigaddset(&(sigact->sa_mask), SIGQUIT);
+  sigaction(SIGQUIT, sigact, (struct sigaction *)NULL);
+
+  sigaddset(&(sigact->sa_mask), SIGHUP);
+  sigaction(SIGHUP, sigact, (struct sigaction *)NULL);
+
+  sigaddset(&(sigact->sa_mask), SIGKILL);
+  sigaction(SIGKILL, sigact, (struct sigaction *)NULL);
+}
+
 void signal_callback_handler(int signum) {
   
   if (signum == SIGINT) {
@@ -38,6 +82,15 @@ void signal_callback_handler(int signum) {
       }
     }
   }
+
+  else if (signum == SIGSEGV || signum == SIGBUS) {
+
+    dumpstack();
+    panic("FATAL: %s Fault. Logged StackTrace\n", (signum == SIGSEGV) ? "Segmentation" : ((signum == SIGBUS) ? "Bus" : "Unknown"));
+  
+  }
+
+
 }
 
 void parse_cmdline(adamCfg* conf,int argc,char** argv) {
@@ -146,6 +199,10 @@ create_be* load_backend(string bename) {
 int main(int argc,char** argv) {
 
   extern tsEngine* t;
+
+  //init signals
+  struct sigaction sigact;
+  init_signals(&sigact);
 
   //seeds prandom generator
   srand(time(NULL));
@@ -278,9 +335,6 @@ int main(int argc,char** argv) {
       break;
       
   }
-
-  signal(SIGINT, signal_callback_handler);
-  signal(SIGHUP, signal_callback_handler);
 
   aep_params* aepp = c->getAEPP();
 

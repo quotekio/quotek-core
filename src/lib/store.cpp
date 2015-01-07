@@ -18,6 +18,8 @@ void* store_push(store* s,char* name, void* data)  {
 
   pthread_mutex_unlock( &s->m_mutex );
 
+  return NULL;
+  
 }
 
 
@@ -62,6 +64,9 @@ void* store_init(store* s) {
 
   s->size = 0;
   s->msize = 128;
+
+  return NULL;
+
 
 }
 
