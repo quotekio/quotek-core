@@ -8,7 +8,6 @@ BUGS
 PRIORITAIRE
 ===========
 
-* mettre le code de génération de stack trace dans adam !
 * Implementer le client LightStreamer dans igconnector !
 * faire une fonction records_sample "loose" au cas ou le timestamp ne serait pas trouvé ( lorsque tick > 1s par ex.)
 * Inclure une option safe_signal dans les backtests qui verifie le delta en secondes entre v[t] et v[t-1], et qui jump si le delta est trop grand ( > 5s)

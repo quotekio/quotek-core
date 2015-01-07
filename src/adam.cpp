@@ -19,13 +19,15 @@ void panic(const char *fmt, ...) {
 
 static void dumpstack(){
     char dbx[160];
-    sprintf(dbx, "echo 'where\ndetach' | gdb -a %d > /tmp/adam/dbg/%ld.dump", getpid(), time(0) );
+    sprintf(dbx, "echo 'where\ndetach' | gdb -p %d > /tmp/adam/dbg/%ld.dump", getpid(), time(0) );
     system(dbx);
     return;
 }
 
 
 void init_signals(struct sigaction* sigact){
+
+  cout << "Initializing signals.." << endl;
 
   sigact->sa_handler = signal_callback_handler;
   sigemptyset(&(sigact->sa_mask));
@@ -200,18 +202,18 @@ int main(int argc,char** argv) {
 
   extern tsEngine* t;
 
+  cout << "ADAM TRADING BOT " << ADAM_VERSION << endl << "(c) 2013-2014 Clément Gamé" << endl;
+
   //init signals
   struct sigaction sigact;
   init_signals(&sigact);
-
+  
   //seeds prandom generator
   srand(time(NULL));
   
-  printf("ADAM TRADING BOT %s, (c) 2013-2014 Clément Gamé\n", ADAM_VERSION);
-
   chdir(ADAM_PREFIX);
 
-  cout << "loading configuration..." << endl;
+  cout << "Loading configuration..." << endl;
 
   genetics* ge = NULL;
   strategy* s;
