@@ -19,7 +19,7 @@ void panic(const char *fmt, ...) {
 
 static void dumpstack(){
     char dbx[160];
-    sprintf(dbx, "echo 'where\ndetach' | gdb -p %d > /tmp/adam/dbg/%ld.dump", getpid(), time(0) );
+    sprintf(dbx, "echo 'bt full\ndetach' | gdb -p %d > /tmp/adam/dbg/%ld.dump", getpid(), time(0) );
     system(dbx);
     return;
 }
