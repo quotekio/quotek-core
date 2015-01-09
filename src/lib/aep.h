@@ -18,6 +18,7 @@ typedef struct aep_handle_io {
 void* aep_handler(void*);
 std::string aep_answer(std::string,tsEngine*);
 std::string aep_corestats(tsEngine*);
+std::string aep_order(tsEngine*,std::vector<string>);
 std::string aep_poslist(tsEngine*);
 std::string aep_lastlogs(tsEngine*,int);
 std::string aep_btprogress(tsEngine*);

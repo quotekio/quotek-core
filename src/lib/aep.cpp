@@ -34,7 +34,12 @@ std::string aep_answer(std::string data,tsEngine* t0) {
       if ( query_args[0] == "lastlogs" ) {
         int ne = atoi( query_args[1].c_str() ) ;
         res = aep_lastlogs(t0,ne);
-      } 
+      }
+
+      else if (query_args[0] == "order") {
+        res = aep_order(t0,query_args);
+      }
+
     }
   }
   
@@ -82,6 +87,18 @@ std::string aep_version(tsEngine* t0) {
 }
 
 
+std::string aep_order(tsEngine* t0, std::vector<string> args) {
+
+  string order = "";
+  for (int i=1;i<args.size();i++) {
+    order += args[i] + " ";
+  }
+  t0->getOrdersQueue()->push(order);
+
+  return "OK";
+
+}
+
 std::string aep_poslist(tsEngine* t0) {
 
   moneyManager* mm = t0->getMoneyManager();
@@ -96,7 +113,9 @@ std::string aep_poslist(tsEngine* t0) {
     ret += "\"indice\":\"" + plist->at(i).indice + "\",";
     ret += "\"epic\":\"" + plist->at(i).epic + "\",";
     ret += "\"size\":\"" + int2string(plist->at(i).size) + "\",";
+    ret += "\"open\":\"" + float2string(plist->at(i).open) + "\",";
     ret += "\"stop\":\"" + float2string(plist->at(i).stop) + "\",";
+    ret += "\"limit\":\"" + float2string(plist->at(i).limit) + "\",";
     ret += "\"pnl\":\""  + float2string(plist->at(i).pnl)  + "\",";
     ret += "\"dealid\":\"" + plist->at(i).dealid + "\"";
     
@@ -143,7 +162,6 @@ std::string aep_btprogress(tsEngine* t0) {
   ret = "{ \"btprogress\":\"" + int2string( bt0->getBacktestProgress() ) + "\" }";
   return ret;
 }
-
 
 void* aep_handler(void* ptr) {
 
