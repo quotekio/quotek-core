@@ -268,7 +268,7 @@ public:
     pdata += "    \"size\": \"" + int2string(nbc) + "\",\n";
     pdata += "    \"orderType\": \"MARKET\",\n";
     //pdata += "    \"level\": null,\n";
-    pdata += "    \"guaranteedStop\": \"true\",\n";
+    pdata += "    \"guaranteedStop\": \"false\",\n";
     pdata += "    \"stopDistance\": " + stop_str + ",\n";
     pdata += "    \"stopLevel\": null,\n";
     //pdata += "    \"trailingStop\": null,\n";
