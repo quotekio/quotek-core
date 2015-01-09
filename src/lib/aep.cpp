@@ -93,6 +93,7 @@ std::string aep_order(tsEngine* t0, std::vector<string> args) {
   for (int i=1;i<args.size();i++) {
     order += args[i] + " ";
   }
+  order = trim(order);
   t0->getOrdersQueue()->push(order);
 
   return "OK";
