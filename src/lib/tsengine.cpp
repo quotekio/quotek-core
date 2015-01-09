@@ -806,14 +806,12 @@ int tsEngine::loadHistory() {
 
     if (tse_inmem_history == 0) return 0;
 
-    int t_start = time(0) - cfg->getInMemHistory();
     vector<string> inames = iGetNames(indices_list);
     for (int i=0;i<inames.size();i++) {
 
-      string q = "select * from " + inames[i] + "where time >" + int2string(t_start) +  "s";
-      records* recs = tse_back->query(q);
+      records* recs = tse_back->query(inames[i], -1 * tse_inmem_history, -1 );
       inmem_records[inames[i]] = recs;
-
+      
     }
 
   return 0;
