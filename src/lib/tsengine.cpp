@@ -554,10 +554,8 @@ void* tsEngine::execute(void* arg) {
            for (int k=0;k<reverse_dealids.size();k++) b0->closePos(reverse_dealids[k]);
          }
 
-         else {
-           string res = b0->openPos(epic,way,nbc,stop,limit) ;
-           logger->log("Broker Response:" + res);
-         }
+         string res = b0->openPos(epic,way,nbc,stop,limit) ;
+         logger->log("Broker Response:" + res);
 
         }
      

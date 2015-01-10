@@ -323,8 +323,6 @@ void btEngine::execute_() {
        }
      }
 
-     else { 
-
        position p;
        p.epic = epic;
        p.indice = indice;
@@ -355,8 +353,6 @@ void btEngine::execute_() {
        p.open_time = inmem_records[0]->data[backtest_pos].timestamp;
        tse_mm->addPosition(p);
       
-     }
-
     }
 
     else {
