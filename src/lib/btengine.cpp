@@ -397,7 +397,6 @@ adamresult* btEngine::run() {
   int bpp = 0;
 
   for(int i=0;i<backtest_inmem_records[0]->size -1 ;i++) {
-    backtest_pos++;
 
     //displace data from backtest_inmem to inmem
     for ( int j=0; j< backtest_inmem_records.Size(); j++  )  {
@@ -420,6 +419,8 @@ adamresult* btEngine::run() {
       bpp = backtest_progress;
       logger->log("Backtest Progress: " + int2string(backtest_progress) + "%", progress_tstamp);
     }
+
+    backtest_pos++;
 
   }
 
