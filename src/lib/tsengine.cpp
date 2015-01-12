@@ -637,7 +637,15 @@ tsEngine::tsEngine(adamCfg* conf,
   if (tse_broker->requiresIndicesList() == 1)  {
     tse_broker->setIndicesList(iGetEpics(indices_list));
   }
-  tse_broker->connect();
+  int conn_status = tse_broker->connect();
+
+  if (conn_status != 0) {
+    logger->log("[broker] Can't connect to broker, please check your credentials/ API availability");
+    exit(1);
+  }
+
+  
+
 
   vector<string> si = iGetNames(indices_list);
   for(int i=0;i<si.size();i++) {

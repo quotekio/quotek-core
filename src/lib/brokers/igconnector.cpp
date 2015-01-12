@@ -59,6 +59,10 @@ public:
   
     virtual int connect() {
       cout << "(Re)Starting broker connection.." << endl;
+
+      cst = "";
+      security_token = "";
+
       string temp = "";
       string htemp = "";
       string pdata = "";
@@ -93,7 +97,7 @@ public:
       rapidjson::Document d;
 
       d.Parse<0>(temp.c_str());
-      if (d.HasParseError() ) return 0;
+      if (d.HasParseError() ) return 1;
      
       vector<string> hdata = split(htemp,'\n');
 
@@ -109,13 +113,12 @@ public:
 
       }
 
+      if ( cst == "" || security_token == "") {
+        return 1;
+      }
+
       //loads currencies map right after connect
       loadCurrenciesMap();
-
-      //debug
-      /*for (int i=0;i<ilist.size();i++) {
-        cout << "EPIC:" << ilist[i] << ", CURRENCY:" << currencies_map[ilist[i]] << endl;
-      }*/
 
       return 0;
     }
