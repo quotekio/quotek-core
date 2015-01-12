@@ -40,10 +40,11 @@ btEngine::btEngine(adamCfg* conf,
   vector<string> si = iGetNames(indices_list);
   for(int i=0;i<si.size();i++) {
     inmem_records[si[i]] = (records*) malloc(sizeof(records));
+    backtest_inmem_records[si[i]] = (records*) malloc(sizeof(records));
     //initializing records structures for each found indice
     records_init(inmem_records[si[i]],10000);
     records_init(backtest_inmem_records[si[i]], 10000);
-    
+
   }
 
   //loads backtest history
