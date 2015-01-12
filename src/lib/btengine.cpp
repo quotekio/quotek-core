@@ -412,7 +412,7 @@ adamresult* btEngine::run() {
     execute_();
  
     //Computes backtest Progress.
-    backtest_progress =  ( (float) backtest_pos / (float) ( inmem_records[0]->size -1) ) * 100;
+    backtest_progress =  ( (float) backtest_pos / (float) ( backtest_inmem_records[0]->size -1) ) * 100;
     //cout << backtest_progress << endl;
     if (backtest_progress % 10 == 0 && backtest_progress > bpp) {
       bpp = backtest_progress;
