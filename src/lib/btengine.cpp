@@ -109,9 +109,11 @@ void btEngine::evaluate_(string eval_name,void* eval_ptr) {
   ev_io.log_s[0] = '\0';
   ev_io.recs = getIndiceRecords(eval_name);
 
-  t = ev_io.recs->data[backtest_pos].timestamp;
-  v = ev_io.recs->data[backtest_pos].value;
-  spread = ev_io.recs->data[backtest_pos].spread;
+  record* r = records_last(ev_io.recs);
+
+  t = r->timestamp;
+  v = r->value;
+  spread = r->spread;
   //debug
   //cout << "SIMUTIME:" << epochToDateTime(t) << endl;
 
