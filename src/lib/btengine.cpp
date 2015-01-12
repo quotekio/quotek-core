@@ -36,7 +36,7 @@ btEngine::btEngine(adamCfg* conf,
   }
 
   //loads backtest history
-  loadHistory_();
+  loadBacktestData_();
 
   //initializes logger
   logger = new igmLogger();
@@ -58,13 +58,13 @@ btEngine::btEngine(adamCfg* conf,
 }
 
 // Loads indices history from backend to memory
-int btEngine::loadHistory_() {
+int btEngine::loadBacktestData_() {
 
     string q;
     vector<string> inames = iGetNames(indices_list);
     for (int i=0;i<inames.size();i++) {
       records* recs = tse_back->query(inames[i], backtest_from, backtest_to);
-      inmem_records[inames[i]] = recs;
+      backtest_inmem_records[inames[i]] = recs;
     }
 
   return 0;
@@ -382,9 +382,15 @@ adamresult* btEngine::run() {
 
   int bpp = 0;
 
-  for(int i=0;i<inmem_records[0]->size -1 ;i++) {
+  for(int i=0;i<backtest_inmem_records[0]->size -1 ;i++) {
     backtest_pos++;
-    progress_tstamp = inmem_records[0]->data[backtest_pos].timestamp ;
+
+    //displace data from backtest_inmem to inmem
+    for ( int j=0; j< backtest_inmem_records.Size(); j++  )  {
+      records_push( inmem_records[j], backtest_inmem_records[j]->data[i]);
+    }
+
+    progress_tstamp = backtest_inmem_records[0]->data[backtest_pos].timestamp ;
 
     for (int j=0;j<eval_pointers.Size();j++) {
       evaluate_(eval_pointers.GetItemName(j), eval_pointers[j] );

@@ -30,7 +30,7 @@ class btEngine: public tsEngine {
     void evaluate_(string,void*);
     void moneyman_();
     void execute_();
-    int loadHistory_();
+    int loadBacktestData_();
     adamresult* run();
     adamGeneticsResult* runGenetics();
 
@@ -51,6 +51,8 @@ class btEngine: public tsEngine {
     int backtest_from;
     int backtest_to; 
     vector<position> positions_history;
+
+    AssocArray<records*> backtest_inmem_records;
 
     AssocArray<void*> eval_pointers; 
 
