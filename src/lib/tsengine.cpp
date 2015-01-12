@@ -638,7 +638,6 @@ tsEngine::tsEngine(adamCfg* conf,
   tse_broker->connect();
 
   vector<string> si = iGetNames(indices_list);
-
   for(int i=0;i<si.size();i++) {
 
     inmem_records[si[i]] = (records*) malloc(sizeof(records));
