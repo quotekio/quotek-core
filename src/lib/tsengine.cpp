@@ -644,6 +644,9 @@ tsEngine::tsEngine(adamCfg* conf,
     exit(1);
   }
 
+  else {
+    logger->log("[broker] Connection to Broker successful");
+  }
   
 
 
