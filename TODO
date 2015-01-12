@@ -3,8 +3,6 @@ BUGS
 ====
 
 * la commande closeallpos ne marche pas correctement, le moneymanager ne renvoie pas la bonne liste de positions avec findPos()
-* closepos, la commande fonctionne de façon aléatoire, la commande est envoyée en boucle alors que la posiion semble deja fermée.
-* La synchronization des positions ne fonctionne pas bien: fonctionne au demarrage mais apres ça se complique.
 
 ===========
 PRIORITAIRE

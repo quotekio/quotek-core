@@ -142,6 +142,7 @@ void* broker_pos_sync(void* arg) {
   }
 }
 
+/*
 void* broker_force_close(void* arg) {
 
   tsEngine* t0 = (tsEngine*) arg;
@@ -159,6 +160,7 @@ void* broker_force_close(void* arg) {
     sleep(5);
   }
 }
+*/
 
 
 void* tsEngine::aclock(void* arg) {
@@ -725,7 +727,8 @@ tsEngine::tsEngine(adamCfg* conf,
 
   printf ("Initializing broker sync threads..\n");
   pthread_create(&bsync,NULL,broker_pos_sync,(void*)this);
-  pthread_create(&bfclose,NULL,broker_force_close,(void*)this);
+  
+  //pthread_create(&bfclose,NULL,broker_force_close,(void*)this);
 
   printf ("Initializing backend I/O Thread..\n");
   pthread_create(&backioth,NULL,saveToBackend,(void*)this);
