@@ -36,15 +36,16 @@ btEngine::btEngine(adamCfg* conf,
   }
 
 
-  //initializes inmem_records
+  //initializes inmem_records, backtest_inmem_records
   vector<string> si = iGetNames(indices_list);
   for(int i=0;i<si.size();i++) {
     inmem_records[si[i]] = (records*) malloc(sizeof(records));
     //initializing records structures for each found indice
     records_init(inmem_records[si[i]],10000);
-
+    records_init(backtest_inmem_records[si[i]], 10000);
+    
   }
-  
+
   //loads backtest history
   loadBacktestData_();
 
@@ -402,8 +403,8 @@ adamresult* btEngine::run() {
 
     progress_tstamp = backtest_inmem_records[0]->data[backtest_pos].timestamp ;
 
-    for (int j=0;j<eval_pointers.Size();j++) {
-      evaluate_(eval_pointers.GetItemName(j), eval_pointers[j] );
+    for (int k=0;k<eval_pointers.Size();k++) {
+      evaluate_(eval_pointers.GetItemName(k), eval_pointers[k] );
     }
 
     moneyman_();
