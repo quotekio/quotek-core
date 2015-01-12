@@ -412,6 +412,8 @@ adamresult* btEngine::run() {
     moneyman_();
     execute_();
  
+    backtest_pos++;
+
     //Computes backtest Progress.
     backtest_progress =  ( (float) backtest_pos / (float) ( backtest_inmem_records[0]->size -1) ) * 100;
     //cout << backtest_progress << endl;
@@ -419,8 +421,6 @@ adamresult* btEngine::run() {
       bpp = backtest_progress;
       logger->log("Backtest Progress: " + int2string(backtest_progress) + "%", progress_tstamp);
     }
-
-    backtest_pos++;
 
   }
 
