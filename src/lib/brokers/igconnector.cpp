@@ -231,7 +231,9 @@ public:
         }
       }
 
+      pthread_mutex_lock( &lastpos_mutex );
       lastpos = result;
+      pthread_mutex_unlock( &lastpos_mutex );
       return result;
   }
     
@@ -316,12 +318,14 @@ public:
     bpex pos;
 
     //finds position in current list
+    pthread_mutex_lock( &lastpos_mutex );
     for (int i=0;i<lastpos.size();i++) {
       if (lastpos[i].dealid == dealid) {
         pos = lastpos[i];
         break;
       }
     }
+    pthread_mutex_unlock( &lastpos_mutex );
 
     string way = ( pos.size < 0 ) ? "BUY" : "SELL";
     int size = (pos.size < 0) ? pos.size * -1 : pos.size; 
@@ -371,6 +375,7 @@ private:
   string security_token;
   AssocArray<string> currencies_map;
   vector<bpex> lastpos;
+  pthread_mutex_t lastpos_mutex;
   int uptime_s;
 
   inline curl_slist* addHeaders() {
@@ -395,6 +400,7 @@ private:
     static_cast<igConnector*>(p)->uptimeLoop(NULL);
     return NULL;
   }
+
 
   void* uptimeLoop(void*) {
     uptime_s = 0;
