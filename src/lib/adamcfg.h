@@ -46,12 +46,22 @@ typedef struct genetics_params {
 
 } genetics_params;
 
+typedef struct ticks_t {
+
+  int getval;
+  int getpos;
+  int eval;
+
+} ticks_t;
+
+
 
 class adamCfg {
 
   private:
 
-    int ticks;
+    ticks_t ticks;
+
     string broker;
     string broker_params;
     string backend;
@@ -95,7 +105,7 @@ class adamCfg {
     int getBTo();
     int getMode();
     int getBSpeed();
-    int getTicks();
+    ticks_t getTicks();
     string getBDump();
     string getBTResultFile();
     void chconf(char*);

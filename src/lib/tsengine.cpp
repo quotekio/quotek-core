@@ -53,7 +53,7 @@ void* broker_pos_sync(void* arg) {
   tsEngine* t0 = (tsEngine*) arg;
   moneyManager* mm = t0->getMoneyManager();
   broker* b0 = t0->getBroker();
-  int ticks = t0->getTicks();
+  ticks_t ticks = t0->getTicks();
   vector<position>* poslist = mm->getPositions();
   igmLogger* logger = t0->getLogger();
 
@@ -135,8 +135,8 @@ void* broker_pos_sync(void* arg) {
     auto elapsed_t = tt1 - tt0;
     uint64_t elapsed = std::chrono::duration_cast<std::chrono::microseconds>(elapsed_t).count();
 
-    if (elapsed < ticks) {  
-      usleep(ticks - elapsed);
+    if (elapsed < ticks.getpos) {  
+      usleep(ticks.getpos - elapsed);
     }
 
   }
@@ -350,7 +350,7 @@ void* tsEngine::poll(void* arg) {
   AssocArray<indice*> ilist = t0->getIndicesList();
   igmLogger* logger = t0->getLogger();
 
-  int ticks = t0->getTicks();
+  ticks_t ticks = t0->getTicks();
 
   uint32_t time_ms;
   string epic;
@@ -373,8 +373,8 @@ void* tsEngine::poll(void* arg) {
 
         record r;
         epic = values[i].epic;
-        buy = values[i].buy;
-        sell = values[i].sell;
+        buy = values[i].bid;
+        sell = values[i].offer;
 
         r.timestamp = time_ms;
         r.value = (buy + sell) / 2;
@@ -393,8 +393,8 @@ void* tsEngine::poll(void* arg) {
     auto elapsed_t = tt1 - tt0;
     uint64_t elapsed = std::chrono::duration_cast<std::chrono::microseconds>(elapsed_t).count();
     
-    if (elapsed < ticks) {  
-      usleep(ticks - elapsed);
+    if (elapsed < ticks.getval) {  
+      usleep(ticks.getval - elapsed);
     }
 
   }
@@ -431,7 +431,7 @@ void* tsEngine::evaluate(void* arg) {
 
   ev_io.recs = t0->getIndiceRecords(eval_name);
 
-  int ticks = t0->getTicks();
+  ticks_t ticks = t0->getTicks();
 
   string ans_str;
   string log_str;
@@ -483,8 +483,8 @@ void* tsEngine::evaluate(void* arg) {
     auto elapsed_t = tt1 - tt0;
     uint64_t elapsed = std::chrono::duration_cast<std::chrono::microseconds>(elapsed_t).count();
 
-    if (elapsed < ticks) {  
-      usleep(ticks - elapsed);
+    if (elapsed < ticks.eval) {  
+      usleep(ticks.eval - elapsed);
     }
 
   }
@@ -633,7 +633,8 @@ tsEngine::tsEngine(adamCfg* conf,
   logger = new igmLogger();
 
   //initializes and connect to broker;
-  tse_broker->init(conf->getBrokerParams());
+  tse_broker->initialize(conf->getBrokerParams(),true,true,"push");
+
   if (tse_broker->requiresIndicesList() == 1)  {
     tse_broker->setIndicesList(iGetEpics(indices_list));
   }
@@ -759,7 +760,7 @@ broker* tsEngine::getBroker() {
   return tse_broker;
 }
 
-int tsEngine::getTicks() {
+ticks_t tsEngine::getTicks() {
   return tse_ticks;
 }
 

@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include <getopt.h>
 
-#include "lib/brokers/broker.h"
+#include "lib/broker.hpp"
 #include "lib/strategy.h"
 #include "lib/moneymanager.h"
 #include "lib/genetics.h"

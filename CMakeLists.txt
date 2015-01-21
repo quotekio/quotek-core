@@ -27,7 +27,7 @@ add_executable(
   src/lib/btengine.cpp
   src/lib/utils.h
   src/lib/utils.cpp
-  src/lib/brokers/broker.h
+  src/lib/broker.hpp
   src/lib/strategy.h
   src/lib/strategy.cpp
   src/lib/narrays.h
@@ -63,13 +63,6 @@ add_executable(
 #)
 
 add_library(
-        igconnector SHARED
-        src/lib/brokers/broker.h
-        src/lib/brokers/igconnector.cpp
-        src/lib/utils.cpp
-)
-
-add_library(
        influxdbbe SHARED
        src/lib/backends/backend.h
        src/lib/backends/influxdb.cpp
@@ -89,11 +82,6 @@ target_link_libraries(
 )
 
 target_link_libraries(
-  igconnector
-  curl
-)
-
-target_link_libraries(
   csv2influx
   curl
 )
@@ -110,7 +98,6 @@ install (TARGETS adam DESTINATION bin)
 install (TARGETS csv2influx DESTINATION tools)
 #install (TARGETS nntrain DESTINATION tools)
 
-install (TARGETS igconnector DESTINATION lib)
 install (TARGETS influxdbbe DESTINATION lib)
 
 install (FILES "install/clanglibs/libc++.so" DESTINATION lib)

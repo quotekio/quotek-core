@@ -1,5 +1,5 @@
 /*
-This is a Quick'n'Dirty C++ implementation of LightStreamer Client
+IG api C++ Connector v1.0
 Copyright(c) 2015 Clément Gamé.
 
 All rights reserved.
@@ -27,23 +27,49 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 THE USE OF THIS SOFTWARE,EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-class LSClient {
 
-  public:
+#ifndef broker_H
+#define broker_H
 
-    LSClient(string url, 
-    		     string username, 
-    		     string password, 
-    		     vector<string>* subscribtions);
+#include <vector>
+#include <string>
+#include <iostream>
+#include "brokerio.hpp"
 
-    int connect();
-    void* receive_loop(void*);
+using namespace std;
 
-  private:
+class broker {
 
-  	string ls_url;
-  	string ls_username;
-  	string ls_password;
-  	vector<string>* ls_subscribtions;
+public:
+    broker();
+    virtual ~broker();
+    virtual int initialize(string, bool, bool, string);
+    virtual void setMode(string);
+    virtual string getMode();
+    virtual int connect();
+    virtual int initPushService();
+    virtual int requiresIndicesList();
+    virtual int setIndicesList(vector<string>);
+    virtual vector<bvex> getValues();
+    virtual vector<bpex> getPositions();
+    virtual string closePos(string);
+    virtual string openPos(string, string, int ,int ,int);
+    
+private:
+
+protected:
+    vector<string> ilist;
+    string username;
+    string password;
+    string api_key;
+    string api_url;
+    string connector_mode;
+    int requires_indices_list;
 
 };
+
+// the types of the class factories
+typedef broker* create_t();
+typedef void destroy_t(broker*);
+
+#endif

@@ -8,7 +8,7 @@
 #include <string>
 #include "constants.h"
 #include "adamcfg.h"
-#include "brokers/broker.h"
+#include "broker.hpp"
 #include "backends/backend.h"
 #include "records.h"
 #include "queue_c.h"
@@ -79,7 +79,7 @@ class tsEngine{
 
     broker* getBroker();
     backend* getBackend();
-    int getTicks();
+    ticks_t getTicks();
     Queue <std::string>* getOrdersQueue();
     AssocArray<indice*> getIndicesList();
     strategy* getStrategy();
@@ -126,7 +126,7 @@ class tsEngine{
     evmio_array evmio_a;
 
     broker* tse_broker;
-    int tse_ticks;
+    ticks_t tse_ticks;
     int tse_inmem_history;
     backend* tse_back;
     strategy* tse_strat;

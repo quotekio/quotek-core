@@ -1,6 +1,5 @@
-#include "lsclient.h"
 /*
-This is a Quick'n'Dirty C++ implementation of LightStreamer Client
+IG api C++ Connector v1.0
 Copyright(c) 2015 Clément Gamé.
 
 All rights reserved.
@@ -28,21 +27,22 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 THE USE OF THIS SOFTWARE,EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-LSClient::LSClient(string url, 
-    		       string username, 
-    		       string password, 
-    		       vector<string>* subscribtions) {
 
-  ls_url = url;
-  ls_username = username;
-  ls_password = password;
-  ls_subscribtions = subscribtions;
+// broker connector value exchange
+typedef struct bvex {
+  std::string epic;
+  float bid;
+  float offer;
+} bvex;
 
-}
+//broker connector position exchange
+typedef struct bpex
+{
+  std::string dealid;
+  std::string epic;
+  int size;
+  float open;
+  float stop;
+  float limit;
 
-int LSClient::connect() {
-
-  
-
-}
-
+} bpex;

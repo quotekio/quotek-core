@@ -7,7 +7,9 @@ adamCfg::adamCfg() {
   npath = "";
   mode = ADAM_MODE_REAL;
   inmem_history = 0;
-  ticks = 1000000;
+  ticks.getval = 1000000;
+  ticks.getpos = 1000000;
+  ticks.eval = 1000000;
 }
 
 string adamCfg::getBroker() {
@@ -75,7 +77,7 @@ int adamCfg::getBTo() {
   return backtest_to;
 }
 
-int adamCfg::getTicks() {
+ticks_t adamCfg::getTicks() {
   return ticks;
 }
 
@@ -133,8 +135,16 @@ int adamCfg::read() {
         param = trim(sline.at(0));
         arg = trim(sline.at(1));
 
-        if (param == "ticks") {
-          ticks = atoi(arg.c_str());
+        if (param == "getval_ticks") {
+          ticks.getval = atoi(arg.c_str());
+        }
+
+        else if (param == "getpos_ticks") {
+          ticks.getpos = atoi(arg.c_str());
+        }
+
+        else if (param == "eval_ticks") {
+          ticks.eval = atoi(arg.c_str());
         }
         else if (param == "broker") broker = arg;
         else if (param == "broker_params") broker_params = arg;
