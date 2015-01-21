@@ -10,6 +10,7 @@ adamCfg::adamCfg() {
   ticks.getval = 1000000;
   ticks.getpos = 1000000;
   ticks.eval = 1000000;
+  broker_mode = "poll";
 }
 
 string adamCfg::getBroker() {
@@ -58,6 +59,10 @@ aep_params* adamCfg::getAEPP() {
   return &aepp;
 }
 
+
+std::string adamCfg::getBrokerMode() {
+  return broker_mode;
+}
 
 int adamCfg::getMode() {
   return mode;
@@ -147,6 +152,8 @@ int adamCfg::read() {
           ticks.eval = atoi(arg.c_str());
         }
         else if (param == "broker") broker = arg;
+        else if (param == "broker_mode") broker_mode = arg;
+
         else if (param == "broker_params") broker_params = arg;
         else if (param == "backend") backend = arg;
         else if (param == "backend_params") backend_params = arg;

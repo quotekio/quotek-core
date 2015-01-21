@@ -633,7 +633,7 @@ tsEngine::tsEngine(adamCfg* conf,
   logger = new igmLogger();
 
   //initializes and connect to broker;
-  tse_broker->initialize(conf->getBrokerParams(),true,true,"push");
+  tse_broker->initialize(conf->getBrokerParams(),true,true, conf->getBrokerMode() );
 
   if (tse_broker->requiresIndicesList() == 1)  {
     tse_broker->setIndicesList(iGetEpics(indices_list));

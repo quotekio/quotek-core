@@ -64,6 +64,7 @@ class adamCfg {
 
     string broker;
     string broker_params;
+    string broker_mode;
     string backend;
     string backend_params;
     int inmem_history;
@@ -104,6 +105,7 @@ class adamCfg {
     int getBFrom();
     int getBTo();
     int getMode();
+    string getBrokerMode();
     int getBSpeed();
     ticks_t getTicks();
     string getBDump();
