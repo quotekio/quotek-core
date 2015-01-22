@@ -73,7 +73,7 @@ void* broker_pos_sync(void* arg) {
   float open;
   int size;
 
-  vector<bpex> mypos;
+  vector<bpex> broker_poslist;
   vector<string> alive_pos;
 
   while(1) { 
@@ -81,54 +81,51 @@ void* broker_pos_sync(void* arg) {
     //perf profiling
     auto tt0 = std::chrono::high_resolution_clock::now();
 
-    mypos = b0->getPositions();
-    if (mypos.size() != 0) {
-
-      alive_pos.clear();
-      for (int i=0;i<mypos.size();i++) {
+    broker_poslist = b0->getPositions();
+    alive_pos.clear();
+    for (int i=0;i < broker_poslist.size();i++) {
       
-        idx = iResolve(ilist,mypos[i].epic);
+      idx = iResolve(ilist, broker_poslist[i].epic);
 
-        if (idx != NULL) {
+      if (idx != NULL) {
           
-          epic = mypos[i].epic;
-          indice = idx->name;
-          dealid = mypos[i].dealid;
-          size = mypos[i].size;
-          stop = mypos[i].stop;
-          limit = mypos[i].limit;
-          open = mypos[i].open;
+        epic = broker_poslist[i].epic;
+        indice = idx->name;
+        dealid = broker_poslist[i].dealid;
+        size = broker_poslist[i].size;
+        stop = broker_poslist[i].stop;
+        limit = broker_poslist[i].limit;
+        open = broker_poslist[i].open;
           
-          alive_pos.push_back(dealid);
+        alive_pos.push_back(dealid);
 
-          if (! mm->hasPos(dealid) ) {
-            logger->log("New position found:" + dealid);       
+        if (! mm->hasPos(dealid) ) {
+          logger->log("New position found:" + dealid);       
    
-            position p;
-            p.epic = epic;
-            p.indice = indice;
-            p.dealid = dealid;
-            p.name = name;
-            p.open = open;
-            p.stop = stop;
-            p.vstop = stop;
-            p.vlimit = limit;
-            p.nb_inc = 1;
-            p.limit = limit;
-            p.size = size;
-            p.pnl = 0;
-            p.status = POS_OPEN;
-            mm->addPosition(p);
+          position p;
+          p.epic = epic;
+          p.indice = indice;
+          p.dealid = dealid;
+          p.name = name;
+          p.open = open;
+          p.stop = stop;
+          p.vstop = stop;
+          p.vlimit = limit;
+          p.nb_inc = 1;
+          p.limit = limit;
+          p.size = size;
+          p.pnl = 0;
+          p.status = POS_OPEN;
+          mm->addPosition(p);
  
-          }    
-        }
+        }    
       }
-
-      //removal of closed pos
-      if (alive_pos.size() < poslist->size() ) {
-        logger->log("Cleaning of closed positions");
-        mm->cleanPositions(alive_pos);
-      }
+    }
+    
+    //removal of closed pos
+    if (alive_pos.size() < poslist->size() ) {
+      logger->log("Cleaning of closed positions");
+      mm->cleanPositions(alive_pos);
     }
 
     auto tt1 = std::chrono::high_resolution_clock::now();
