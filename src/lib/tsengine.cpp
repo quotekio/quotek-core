@@ -48,7 +48,12 @@ void* tsEngine::modulethread_wrapper(void* arg) {
 } 
 
 
-void* broker_pos_sync(void* arg) {
+/**
+* broker_sync method enables to synchronize
+* adam's state with broker, regarding positions,
+* potential errors and stuff. 
+*/
+void* broker_sync(void* arg) {
 
   tsEngine* t0 = (tsEngine*) arg;
   moneyManager* mm = t0->getMoneyManager();
@@ -81,7 +86,20 @@ void* broker_pos_sync(void* arg) {
     //perf profiling
     auto tt0 = std::chrono::high_resolution_clock::now();
 
+    //Errors fetching
+    std::vector<brokerError*>* b_errlist = b0->getErrors();
+
+    for (int errnum=0;errnum < b_errlist->size(); errnum++ )  {
+      logger->log("[broker] Broker Error:" + b_errlist->at(errnum)->type);
+    }
+
+    b_errlist->clear();
+
+
+
+    poslist = mm->getPositions();
     broker_poslist = b0->getPositions();
+
     alive_pos.clear();
     for (int i=0;i < broker_poslist.size();i++) {
       
@@ -735,10 +753,8 @@ tsEngine::tsEngine(adamCfg* conf,
   pthread_create(&mmth,NULL,moneyman,(void*)this);
 
   printf ("Initializing broker sync threads..\n");
-  pthread_create(&bsync,NULL,broker_pos_sync,(void*)this);
+  pthread_create(&bsync,NULL,broker_sync,(void*)this);
   
-  //pthread_create(&bfclose,NULL,broker_force_close,(void*)this);
-
   printf ("Initializing backend I/O Thread..\n");
   pthread_create(&backioth,NULL,saveToBackend,(void*)this);
 
