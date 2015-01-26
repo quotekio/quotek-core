@@ -49,8 +49,10 @@ void* tsEngine::modulethread_wrapper(void* arg) {
 
 void tsEngine::openPosition(string epic, string way, int nbc, int stop, int limit) {
 
-  bpex ex1;
+  //API Performance profiling.
+  auto tt0 = std::chrono::high_resolution_clock::now();
 
+  bpex ex1;
   indice* idx = iResolve(indices_list, epic);
 
   ex1 = tse_broker->openPos(epic, way, nbc, stop, limit);
@@ -72,7 +74,11 @@ void tsEngine::openPosition(string epic, string way, int nbc, int stop, int limi
     p.status = POS_OPEN;
     tse_mm->addPosition(p);
 
-    logger->log("New Position Opened:" + ex1.dealid);
+    auto tt1 = std::chrono::high_resolution_clock::now();
+    auto elapsed_t = tt1 - tt0;
+    uint64_t elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed_t).count();
+
+    logger->log("New Position Opened: " + ex1.dealid + " (" + int2string(elapsed) + "ms)");
   }
 
   else  {
@@ -83,13 +89,20 @@ void tsEngine::openPosition(string epic, string way, int nbc, int stop, int limi
 
 void tsEngine::closePosition(string dealid) {
 
+  //API Performance profiling.
+  auto tt0 = std::chrono::high_resolution_clock::now();
 
   position* p = tse_mm->getPositionByDealid(dealid);
 
   string result = tse_broker->closePos(dealid, p->size);
   if (result == "ACCEPTED:SUCCESS" ) {
     tse_mm->remPosition(dealid);
-    logger->log("Position Closed:" + dealid);
+
+    auto tt1 = std::chrono::high_resolution_clock::now();
+    auto elapsed_t = tt1 - tt0;
+    uint64_t elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed_t).count();
+
+    logger->log("Position Closed: " + dealid + " (" + int2string(elapsed) + "ms)" );
   }
 
   else  {

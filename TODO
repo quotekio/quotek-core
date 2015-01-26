@@ -2,14 +2,12 @@
 BUGS
 ====
 
-
-* les commandes closepos/closeallpos ne marchent pas correctement, le moneymanager ne renvoie pas la bonne liste de positions avec findPos()
+* Une des regles du moneymanager semble disfonctionner: opposite position already open lorsqu'on ouvre 2x la meme position.
 
 ===========
 PRIORITAIRE
 ===========
 
-* LOGS BROKER !
 * faire une fonction records_sample "loose" au cas ou le timestamp ne serait pas trouvé ( lorsque tick > 1s par ex.)
 * Inclure une option safe_signal dans les backtests qui verifie le delta en secondes entre v[t] et v[t-1], et qui jump si le delta est trop grand ( > 5s)
 * Finir le format de backtests JSON
@@ -20,6 +18,5 @@ PRIORITAIRE
 SECONDAIRE
 ==========
 
-* Finir le module deepthroat pour le news analysis
 * Completer la doc
 
