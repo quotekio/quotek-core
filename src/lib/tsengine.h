@@ -111,6 +111,10 @@ class tsEngine{
     int getBSP();
     void setBSP(int);
 
+    void openPosition(string epic, string way, int nbc, int stop, int limit);
+    void closePosition(string dealid);
+
+
     //#### STATIC,THREADED FUNCTIONS
     static void* poll(void*);
     static void* evaluate(void*);
@@ -151,8 +155,6 @@ class tsEngine{
     pthread_t evaluator;
     pthread_t executor;
     pthread_t mmth;
-    pthread_t bsync;
-    pthread_t bfclose;
     pthread_t clkth;
     pthread_t backioth;
 

@@ -49,7 +49,6 @@ typedef struct genetics_params {
 typedef struct ticks_t {
 
   int getval;
-  int getpos;
   int eval;
 
 } ticks_t;

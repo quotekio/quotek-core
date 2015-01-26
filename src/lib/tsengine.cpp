@@ -47,13 +47,61 @@ void* tsEngine::modulethread_wrapper(void* arg) {
 
 } 
 
+void tsEngine::openPosition(string epic, string way, int nbc, int stop, int limit) {
+
+  bpex ex1;
+
+  indice* idx = iResolve(indices_list, epic);
+
+  ex1 = tse_broker->openPos(epic, way, nbc, stop, limit);
+
+  if (ex1.status == "ACCEPTED")  {
+
+    position p;
+    p.epic = epic;
+    p.indice = idx->name;
+    p.dealid = ex1.dealid;
+    p.open = ex1.open;
+    p.stop = ex1.stop;
+    p.vstop = ex1.stop;
+    p.vlimit = ex1.limit;
+    p.nb_inc = 1;
+    p.limit = ex1.limit;
+    p.size = ex1.size;
+    p.pnl = 0;
+    p.status = POS_OPEN;
+    tse_mm->addPosition(p);
+
+    logger->log("New Position Opened:" + ex1.dealid);
+  }
+
+  else  {
+    logger->log("[broker] Error opening position:" + ex1.reason );
+  }
+
+}
+
+void tsEngine::closePosition(string dealid) {
+
+
+  position* p = tse_mm->getPositionByDealid(dealid);
+
+  string result = tse_broker->closePos(dealid, p->size);
+  if (result == "ACCEPTED:SUCCESS" ) {
+    tse_mm->remPosition(dealid);
+    logger->log("Position Closed:" + dealid);
+  }
+
+  else  {
+    logger->log("[broker] Error closing position:" + result );
+  }
+
+}
 
 /**
-* broker_sync method enables to synchronize
-* adam's state with broker, regarding positions,
-* potential errors and stuff. 
+* broker_sync method enables to synchronize broker and bot at start
 */
-void* broker_sync(void* arg) {
+void broker_sync_start(void* arg) {
 
   tsEngine* t0 = (tsEngine*) arg;
   moneyManager* mm = t0->getMoneyManager();
@@ -81,79 +129,47 @@ void* broker_sync(void* arg) {
   vector<bpex> broker_poslist;
   vector<string> alive_pos;
 
-  while(1) { 
+  poslist = mm->getPositions();
+  broker_poslist = b0->getPositions();
 
-    //perf profiling
-    auto tt0 = std::chrono::high_resolution_clock::now();
-
-    //Errors fetching
-    std::vector<brokerError*>* b_errlist = b0->getErrors();
-
-    for (int errnum=0;errnum < b_errlist->size(); errnum++ )  {
-      logger->log("[broker] Broker Error:" + b_errlist->at(errnum)->type);
-    }
-
-    b_errlist->clear();
-
-
-
-    poslist = mm->getPositions();
-    broker_poslist = b0->getPositions();
-
-    alive_pos.clear();
-    for (int i=0;i < broker_poslist.size();i++) {
+  alive_pos.clear();
+  for (int i=0;i < broker_poslist.size();i++) {
       
-      idx = iResolve(ilist, broker_poslist[i].epic);
+    idx = iResolve(ilist, broker_poslist[i].epic);
 
-      if (idx != NULL) {
+    if (idx != NULL) {
           
-        epic = broker_poslist[i].epic;
-        indice = idx->name;
-        dealid = broker_poslist[i].dealid;
-        size = broker_poslist[i].size;
-        stop = broker_poslist[i].stop;
-        limit = broker_poslist[i].limit;
-        open = broker_poslist[i].open;
+      epic = broker_poslist[i].epic;
+      indice = idx->name;
+      dealid = broker_poslist[i].dealid;
+      size = broker_poslist[i].size;
+      stop = broker_poslist[i].stop;
+      limit = broker_poslist[i].limit;
+      open = broker_poslist[i].open;
           
-        alive_pos.push_back(dealid);
+      alive_pos.push_back(dealid);
 
-        if (! mm->hasPos(dealid) ) {
-          logger->log("New position found:" + dealid);       
+      if (! mm->hasPos(dealid) ) {
+        logger->log("New position found:" + dealid);       
    
-          position p;
-          p.epic = epic;
-          p.indice = indice;
-          p.dealid = dealid;
-          p.name = name;
-          p.open = open;
-          p.stop = stop;
-          p.vstop = stop;
-          p.vlimit = limit;
-          p.nb_inc = 1;
-          p.limit = limit;
-          p.size = size;
-          p.pnl = 0;
-          p.status = POS_OPEN;
-          mm->addPosition(p);
+        position p;
+        p.epic = epic;
+        p.indice = indice;
+        p.dealid = dealid;
+        p.name = name;
+        p.open = open;
+        p.stop = stop;
+        p.vstop = stop;
+        p.vlimit = limit;
+        p.nb_inc = 1;
+        p.limit = limit;
+        p.size = size;
+        p.pnl = 0;
+        p.status = POS_OPEN;
+        mm->addPosition(p);
  
-        }    
-      }
+      }    
     }
-    
-    //removal of closed pos
-    if (alive_pos.size() < poslist->size() ) {
-      logger->log("Cleaning of closed positions");
-      mm->cleanPositions(alive_pos);
-    }
-
-    auto tt1 = std::chrono::high_resolution_clock::now();
-    auto elapsed_t = tt1 - tt0;
-    uint64_t elapsed = std::chrono::duration_cast<std::chrono::microseconds>(elapsed_t).count();
-
-    if (elapsed < ticks.getpos) {  
-      usleep(ticks.getpos - elapsed);
-    }
-
   }
 }
 
@@ -568,11 +584,10 @@ void* tsEngine::execute(void* arg) {
            else reverse_way = "sell";
 
            reverse_dealids = mm->findPos(indice,reverse_way);
-           for (int k=0;k<reverse_dealids.size();k++) b0->closePos(reverse_dealids[k]);
+           for (int k=0;k<reverse_dealids.size();k++) t0->closePosition(reverse_dealids[k]);
          }
 
-         string res = b0->openPos(epic,way,nbc,stop,limit) ;
-         logger->log("Broker Response:" + res);
+          t0->openPosition(epic,way,nbc,stop,limit) ;
 
         }
      
@@ -586,8 +601,7 @@ void* tsEngine::execute(void* arg) {
         position* cpos  = mm->getPositionByDealid(dealid);
         if (cpos != NULL) {
           cpos->status = POS_PENDING_CLOSE;
-          string res = b0->closePos(dealid);
-          logger->log("Broker Response:" + res);
+          t0->closePosition(dealid);
         }
       }
 
@@ -601,8 +615,7 @@ void* tsEngine::execute(void* arg) {
         cout << "DEALIDS_SIZE:" << dealids.size() << endl;
 
         for (int k=0;k<dealids.size();k++) {
-          string res = b0->closePos(dealids[k]);
-          logger->log("Broker Response:" + res);
+          t0->closePosition(dealids[k]);
         }
 
       }
@@ -752,9 +765,9 @@ tsEngine::tsEngine(adamCfg* conf,
   printf ("Initializing money manager..\n");
   pthread_create(&mmth,NULL,moneyman,(void*)this);
 
-  printf ("Initializing broker sync threads..\n");
-  pthread_create(&bsync,NULL,broker_sync,(void*)this);
-  
+  printf ("Synchronizing broker Positions with adam..\n");
+  broker_sync_start((void*)this);
+
   printf ("Initializing backend I/O Thread..\n");
   pthread_create(&backioth,NULL,saveToBackend,(void*)this);
 

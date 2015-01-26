@@ -8,7 +8,6 @@ adamCfg::adamCfg() {
   mode = ADAM_MODE_REAL;
   inmem_history = 0;
   ticks.getval = 1000000;
-  ticks.getpos = 1000000;
   ticks.eval = 1000000;
   broker_mode = "poll";
 }
@@ -143,11 +142,7 @@ int adamCfg::read() {
         if (param == "getval_ticks") {
           ticks.getval = atoi(arg.c_str());
         }
-
-        else if (param == "getpos_ticks") {
-          ticks.getpos = atoi(arg.c_str());
-        }
-
+        
         else if (param == "eval_ticks") {
           ticks.eval = atoi(arg.c_str());
         }
