@@ -99,7 +99,7 @@ int strategy::decorate() {
     }
 
 
-    line = std::regex_replace(line,subeval,std::string("$1_SUBEVAL(t,v,io)")) ;
+    line = std::regex_replace(line,subeval,std::string("$1_SUBEVAL(t,v,spread,io)")) ;
     for (int i=0;i<deco.size()-1;i=i+2) {
       line = sreplace(line,deco.at(i),deco.at(i+1));
     }
