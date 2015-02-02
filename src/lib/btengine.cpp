@@ -393,6 +393,11 @@ void btEngine::execute_() {
     vector<string> dealids = tse_mm->findPos(indice,way);
 
     for (int k=0;k<dealids.size();k++) {
+
+      position* pinv = tse_mm->getPositionByDealid(dealids[k]);
+      pinv->close_time = inmem_records[0]->data[backtest_pos].timestamp;
+      positions_history.push_back(*pinv);
+      
       tse_mm->remPosition(dealids[k]);
     }
 
