@@ -384,6 +384,20 @@ void btEngine::execute_() {
 
     tse_mm->remPosition(dealid);       
   }
+
+  else if (order_params.at(0) == "closeallpos") {
+
+    string indice = order_params.at(1);
+    string way = order_params.at(2);
+
+    vector<string> dealids = tse_mm->findPos(indice,way);
+
+    for (int k=0;k<dealids.size();k++) {
+      tse_mm->remPosition(dealids[k]);
+    }
+
+  }
+
 }
 
 

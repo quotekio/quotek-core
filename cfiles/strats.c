@@ -147,7 +147,7 @@ farray* __sampleT(int tinf,int tsup,uint32_t t,farray* values,iarray* tstamps) {
 
   if (store_get(s,cname) != NULL ) {
     int* i = (int*) store_get(s, cname);
-    *i++;
+    *i = *i + 1;
 
     if (*i == wait) {
       *i=1;
