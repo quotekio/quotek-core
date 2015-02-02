@@ -124,6 +124,7 @@ public:
       }
 
     
+
       url += "&q=" + hhdl->escape(qstream.str());
       // Perform http request to influxdb backend and get result.
       outp = hhdl->get(url);
@@ -133,6 +134,11 @@ public:
       // Effectively parse result
       rapidjson::Document d;
       d.Parse<0>(outp.c_str());
+
+      if (d.HasParseError()) {
+        cout << "[ERROR] Backend query error: JSON Parsing. returning empty result!" << endl;
+        return result;
+      }
 
       if (d.IsArray())  {
 
