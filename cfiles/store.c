@@ -45,12 +45,25 @@ void store_clean(store* s, char* name) {
   int i;
   for (i=0;i<s->size;i++) {
     if (strcmp(s->name[i],name) == 0 ) {
+  
+      store_shift_left(s,i);
+      
       int j = 0;
-      for (j=0;j< MAX_STORENAME_LEN; j++) s->name[i][j] = 0x00;
-      s->data[i] = 0;
+      for (j=0;j< MAX_STORENAME_LEN; j++) s->name[s->size-1][j] = 0x00;
+      s->data[s->size-1] = 0;
+      s->size = s->size -1;
+
     }
   }
 
+}
+
+void store_shift_left(store* s, int offset) {
+  int i=0;
+  for (i= offset + 1; i < s->size ; i++ ) {
+    s->data[i-1] = s->data[i];
+    s->name[i-1] = s->name[i];
+  }
 }
 
 void* store_init(store* s) {
