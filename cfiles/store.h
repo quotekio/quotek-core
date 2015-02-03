@@ -22,7 +22,7 @@ typedef struct store {
 void* store_push(store* s, char* name, void* data);
 void* store_get(store* s, char* name);
 void store_clean(store* s, char* name);
-void store_shift_left(store *s, char* name);
+void store_shift_left(store *s, int offset);
 void* store_init(store* s);
 int store_exists(store* s,char* name);
 
