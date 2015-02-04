@@ -60,6 +60,7 @@ typedef struct evaluate_io {
   char* log_s;
   store* s;
   store* genes;
+  int state;
   struct evmio_array* evmio_a;
 } evaluate_io;
 

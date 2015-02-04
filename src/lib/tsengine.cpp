@@ -472,6 +472,7 @@ void* tsEngine::evaluate(void* arg) {
   ev_io.evmio_a = t0->getEVMIOArray();
   ev_io.s = t0->getStore();
   ev_io.genes = NULL;
+  ev_io.state = 0;
 
   ev_io.recs = t0->getIndiceRecords(eval_name);
 

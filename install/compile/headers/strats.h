@@ -31,6 +31,7 @@ typedef struct evaluate_io {
   char* log_s;
   store* s;
   store* genes;
+  int state;
   struct evmio_array* evmio_a;
 } evaluate_io;
 
@@ -97,5 +98,8 @@ int ___log (const char* log_input, char* log_s);
 
 #define counter(_a,_b) ( __counter(io->s,_a,_b) )
 #define log(_log_input) ( ___log(_log_input,io->log_s) )
+
+#define set_state(st_) ( io->state = st_ )
+#define get_state() (io->state)
 
 #endif

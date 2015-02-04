@@ -27,7 +27,7 @@ class btEngine: public tsEngine {
              genetics*,
              vector<string>);
 
-    void evaluate_(string,void*);
+    int evaluate_(string,void*, int cstate);
     void moneyman_();
     void execute_();
     int loadBacktestData_();

@@ -83,7 +83,7 @@ int btEngine::loadBacktestData_() {
 }
 
 
-void btEngine::evaluate_(string eval_name,void* eval_ptr) {
+int btEngine::evaluate_(string eval_name,void* eval_ptr, int cstate) {
 
   typedef void* (*eval_fct)(uint32_t,float,float,evaluate_io*);
 
@@ -99,7 +99,8 @@ void btEngine::evaluate_(string eval_name,void* eval_ptr) {
   ev_io.evmio_a = &evmio_a;
   ev_io.s = &tse_store;
   ev_io.genes = tse_genes;
-
+  ev_io.state = cstate;
+  
   string ans_str;
   string log_str;
   indice* idx = iResolve(indices_list,eval_name);
@@ -133,6 +134,10 @@ void btEngine::evaluate_(string eval_name,void* eval_ptr) {
     }
   }
 
+  free(ev_io.ans);
+  free(ev_io.log_s);
+  return ev_io.state;
+  
 }
 
 void btEngine::moneyman_() {
@@ -413,6 +418,13 @@ adamresult* btEngine::run() {
   result->from = backtest_from; 
   result->to = backtest_to;
 
+
+  AssocArray<int> state_array;
+
+  for (int k=0;k<eval_pointers.Size();k++) {
+    state_array[eval_pointers.GetItemName(k)] = 0;
+  }
+
   int bpp = 0;
 
   for(int i=0;i<backtest_inmem_records[0]->size -1 ;i++) {
@@ -425,7 +437,11 @@ adamresult* btEngine::run() {
     progress_tstamp = backtest_inmem_records[0]->data[backtest_pos].timestamp ;
 
     for (int k=0;k<eval_pointers.Size();k++) {
-      evaluate_(eval_pointers.GetItemName(k), eval_pointers[k] );
+
+      std::string evname_ = eval_pointers.GetItemName(k);
+      int state = state_array[evname_];
+      int nstate = evaluate_(evname_, eval_pointers[k], state );
+      state_array[evname_] = nstate;
     }
 
     moneyman_();
