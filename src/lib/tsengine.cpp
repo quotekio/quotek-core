@@ -235,6 +235,8 @@ void* tsEngine::moneyman(void* arg) {
   //pnl-needed vars
   float v;
 
+  float cval;
+
   tradelife_io tl_io;
   
   int inc = 0;
@@ -245,33 +247,69 @@ void* tsEngine::moneyman(void* arg) {
 
   while (1) {
 
+
+    //checks STOPS & LIMIT and cleans positions if needed.
+    for(std::vector<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
+
+      position p0 = *iter;
+      position* p = &p0;
+      cval = records_last(t0->getIndiceRecords(p->indice))->value;
+
+      //checking of Real Stops
+      if ( p->size < 0  &&  cval >= p->stop ) {
+        mm->remPosition(iter);
+        logger->log("Position " +  p->dealid + " closed ! (STOP)");
+      }
+
+      else if ( p->size > 0  &&  cval <= p->stop ) {
+        mm->remPosition(iter);
+        logger->log("Position " +  p->dealid + " closed ! (STOP)");
+      }
+
+      if (p->limit > 0) {
+
+        if ( p->size < 0  &&  cval < p->limit ) {
+          mm->remPosition(iter);
+          logger->log("Position " +  p->dealid + " closed ! (LIMIT)");
+        }
+
+        else if ( p->size > 0  &&  cval > p->limit ) {
+          mm->remPosition(iter);
+          logger->log("Position " +  p->dealid + " closed ! (LIMIT)");
+        }
+      }
+    }
+
     //plays tradelife callback inside strategy.
     if ( tl_fct_fref != NULL) {
 
       tl_fct tl = (tl_fct) tl_fct_fref;
 
-      for (int i=0;i<poslist->size();i++) {
+      for(std::vector<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
 
+        position p0 = *iter;
+        position* p = &p0;
+        
         tl_io.ans[0] = '\0';
         tl_io.log_s[0] = '\0';
 
         pos_c pos_io;
-        pos_io.indice = poslist->at(i).indice.c_str();
-        pos_io.dealid = poslist->at(i).dealid.c_str();
-        pos_io.pnl = poslist->at(i).pnl;
-        pos_io.open = poslist->at(i).open;
-        pos_io.size = poslist->at(i).size;
-        pos_io.stop = poslist->at(i).stop;
-        pos_io.vstop = poslist->at(i).vstop;
-        pos_io.vlimit = poslist->at(i).vlimit;
-        pos_io.nb_inc = poslist->at(i).nb_inc; 
-        pos_io.limit = poslist->at(i).limit;
+        pos_io.indice = p->indice.c_str();
+        pos_io.dealid = p->dealid.c_str();
+        pos_io.pnl = p->pnl;
+        pos_io.open = p->open;
+        pos_io.size = p->size;
+        pos_io.stop = p->stop;
+        pos_io.vstop = p->vstop;
+        pos_io.vlimit = p->vlimit;
+        pos_io.nb_inc = p->nb_inc; 
+        pos_io.limit = p->limit;
 
         (*tl)(&pos_io,&tl_io);
 
-        poslist->at(i).vstop = pos_io.vstop;
-        poslist->at(i).vlimit = pos_io.vlimit;
-        poslist->at(i).nb_inc = pos_io.nb_inc;
+        p->vstop = pos_io.vstop;
+        p->vlimit = pos_io.vlimit;
+        p->nb_inc = pos_io.nb_inc;
 
         if (std::string(tl_io.ans) != "" ) {
           orders_queue->push(tl_io.ans);
@@ -282,28 +320,28 @@ void* tsEngine::moneyman(void* arg) {
         }
 
         
-        //code de value fetching + close if vpos_limit
-        float cval = records_last(t0->getIndiceRecords(poslist->at(i).indice))->value;
-
-        
-        if ( poslist->at(i).size < 0  &&  cval >= poslist->at(i).vstop ) {
-          orders_queue->push("closepos:" + poslist->at(i).dealid );
+        cval = records_last(t0->getIndiceRecords(p->indice))->value;
+    
+       
+        //Checking of Virtual Stops/Limits
+        if ( p->size < 0  &&  cval >= p->vstop ) {
+          orders_queue->push("closepos:" + p->dealid );
         }
 
-        else if ( poslist->at(i).size > 0  &&  cval <= poslist->at(i).vstop ) {
-          orders_queue->push("closepos:" + poslist->at(i).dealid );
+        else if ( p->size > 0  &&  cval <= p->vstop ) {
+          orders_queue->push("closepos:" + p->dealid );
         }
-        
-        if (poslist->at(i).vlimit != 0) {
-
-          /* CLose on virtual limit */
-          if ( poslist->at(i).size > 0  &&  cval >= poslist->at(i).vlimit ) {
-            orders_queue->push("closepos:" + poslist->at(i).dealid );
-          }
           
+        if (p->vlimit != 0) {
+
           /* CLose on virtual limit */
-          else if ( poslist->at(i).size < 0  &&  cval <= poslist->at(i).vlimit ) {
-            orders_queue->push("closepos:" + poslist->at(i).dealid );
+          if ( p->size > 0  &&  cval >= p->vlimit ) {
+            orders_queue->push("closepos:" + p->dealid );
+          }
+            
+          /* CLose on virtual limit */
+          else if ( p->size < 0  &&  cval <= p->vlimit ) {
+            orders_queue->push("closepos:" + p->dealid );
           }
 
         }
@@ -332,7 +370,9 @@ void* tsEngine::moneyman(void* arg) {
     }
     
     inc++;
-    sleep(1);
+
+    //money management loop needs to be really fast, so little sleep time
+    usleep(1000);
   } 
 
 return NULL;

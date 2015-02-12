@@ -141,6 +141,11 @@ int adamCfg::read() {
 
         if (param == "getval_ticks") {
           ticks.getval = atoi(arg.c_str());
+          //Limits ticks to 1000000
+          if (ticks.getval > 1000000) {
+            printf("ERROR: getval ticks cannot be higher than one second");
+            exit(1);
+          }
         }
         
         else if (param == "eval_ticks") {
