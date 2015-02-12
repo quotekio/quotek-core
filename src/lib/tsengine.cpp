@@ -236,6 +236,7 @@ void* tsEngine::moneyman(void* arg) {
   float v;
 
   float cval;
+  record* r;
 
   tradelife_io tl_io;
   
@@ -253,7 +254,9 @@ void* tsEngine::moneyman(void* arg) {
 
       position p0 = *iter;
       position* p = &p0;
-      cval = records_last(t0->getIndiceRecords(p->indice))->value;
+      r = records_last(t0->getIndiceRecords(p->indice));
+      if (r != NULL) cval = r->value;
+      else continue;
 
       //checking of Real Stops
       if ( p->size < 0  &&  cval >= p->stop ) {
@@ -320,9 +323,10 @@ void* tsEngine::moneyman(void* arg) {
         }
 
         
-        cval = records_last(t0->getIndiceRecords(p->indice))->value;
-    
-       
+        r = records_last(t0->getIndiceRecords(p->indice));
+        if (r != NULL) cval = r->value;
+        else continue;
+        
         //Checking of Virtual Stops/Limits
         if ( p->size < 0  &&  cval >= p->vstop ) {
           orders_queue->push("closepos:" + p->dealid );
