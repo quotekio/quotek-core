@@ -237,6 +237,8 @@ void* tsEngine::moneyman(void* arg) {
 
   float cval;
   record* r;
+  position p0;
+  position* p;
 
   tradelife_io tl_io;
   
@@ -252,8 +254,8 @@ void* tsEngine::moneyman(void* arg) {
     //checks STOPS & LIMIT and cleans positions if needed.
     for(std::vector<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
 
-      position p0 = *iter;
-      position* p = &p0;
+      p0 = *iter;
+      p = &p0;
       r = records_last(t0->getIndiceRecords(p->indice));
       if (r != NULL) cval = r->value;
       else continue;
@@ -289,10 +291,10 @@ void* tsEngine::moneyman(void* arg) {
       tl_fct tl = (tl_fct) tl_fct_fref;
 
       for(std::vector<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
-
-        position p0 = *iter;
-        position* p = &p0;
         
+        p0 = *iter;
+        p = &p0;
+
         tl_io.ans[0] = '\0';
         tl_io.log_s[0] = '\0';
 
