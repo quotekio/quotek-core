@@ -264,11 +264,13 @@ void* tsEngine::moneyman(void* arg) {
       if ( p->size < 0  &&  cval >= p->stop ) {
         mm->remPosition(iter);
         logger->log("Position " +  p->dealid + " closed ! (STOP)");
+        continue;
       }
 
       else if ( p->size > 0  &&  cval <= p->stop ) {
         mm->remPosition(iter);
         logger->log("Position " +  p->dealid + " closed ! (STOP)");
+        continue;
       }
 
       if (p->limit > 0) {
@@ -276,11 +278,13 @@ void* tsEngine::moneyman(void* arg) {
         if ( p->size < 0  &&  cval < p->limit ) {
           mm->remPosition(iter);
           logger->log("Position " +  p->dealid + " closed ! (LIMIT)");
+          continue;
         }
 
         else if ( p->size > 0  &&  cval > p->limit ) {
           mm->remPosition(iter);
           logger->log("Position " +  p->dealid + " closed ! (LIMIT)");
+          continue;
         }
       }
     }
@@ -291,7 +295,7 @@ void* tsEngine::moneyman(void* arg) {
       tl_fct tl = (tl_fct) tl_fct_fref;
 
       for(std::vector<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
-        
+
         p0 = *iter;
         p = &p0;
 
