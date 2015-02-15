@@ -1,14 +1,10 @@
 #include "assoc.h"
 #include "narrays.h"
 #include "queue_c.h"
-#include "igmlogger.h"
 #include "store.h"
 
 typedef struct module_io {
-  int mode;
-  iarray** tstamps;
-  AssocArray<farray**> values;
-  igmLogger* logger;
+  AssocArray<farray*>* values;
   float* cur_pnl;
   float* cumulative_pnl;
   Queue_c* input;

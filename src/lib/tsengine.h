@@ -209,6 +209,7 @@ typedef struct module_io {
   float* cumulative_pnl;
   Queue_c* input;
   Queue_c* output; 
+  store* st;
 
 } module_io;
 

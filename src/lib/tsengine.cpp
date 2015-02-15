@@ -22,6 +22,7 @@ void* tsEngine::modulethread_wrapper(void* arg) {
   mio.logger = t0->getLogger();
   mio.cur_pnl = mm->getCurPNL();
   mio.cumulative_pnl = mm->getCumulativePNL();
+  mio.st = t0->getStore() ;
 
   mio.input = &(mi->input);
   mio.output = &(mi->output);
