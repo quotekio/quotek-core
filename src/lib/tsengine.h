@@ -201,17 +201,13 @@ typedef struct eval_thread {
 } eval_thread;
 
 typedef struct module_io {
-  int mode;
-  iarray** tstamps;
-  AssocArray<farray**> values;
-  igmLogger* logger;
   float* cur_pnl;
   float* cumulative_pnl;
   Queue_c* input;
-  Queue_c* output; 
-  store* st;
-
+  Queue_c* output;
+  store* s;
 } module_io;
+
 
 
 #endif

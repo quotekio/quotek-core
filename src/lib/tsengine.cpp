@@ -17,13 +17,11 @@ void* tsEngine::modulethread_wrapper(void* arg) {
   moneyManager* mm = t0->getMoneyManager();
 
   string module_so = "lib" + mi->name + ".so";
+  
   module_io mio;
-  mio.mode = ADAM_MODE_REAL;
-  mio.logger = t0->getLogger();
   mio.cur_pnl = mm->getCurPNL();
   mio.cumulative_pnl = mm->getCumulativePNL();
-  mio.st = t0->getStore() ;
-
+  mio.s = t0->getStore() ;
   mio.input = &(mi->input);
   mio.output = &(mi->output);
   

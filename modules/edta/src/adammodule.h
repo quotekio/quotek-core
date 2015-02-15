@@ -4,12 +4,11 @@
 #include "store.h"
 
 typedef struct module_io {
-  AssocArray<farray*>* values;
   float* cur_pnl;
   float* cumulative_pnl;
   Queue_c* input;
   Queue_c* output;
-  store* st;
+  store* s;
 } module_io;
 
 typedef struct eval_module_io {

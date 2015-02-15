@@ -22,7 +22,7 @@ void* module_fct(module_io mio) {
   AssocArray<iarray*> timings; 
 
   cout << "Loading Event Driven Trading Algorithm Module v0.1.." << endl;
-
+  
   //opens and reads json file
   fh.open(edta_eventfile.c_str());
 
@@ -42,15 +42,23 @@ void* module_fct(module_io mio) {
   d.Parse<0>(json_content.c_str());
 
   if ( d.IsArray() ) {
-    for (int i=0;i<d.Size();i++) { 
-
-      std::string vname = d["value"].GetString();
-
-      if (timings[vname] == NULL) {
-        iarray_init(timings[vname], 10);
-      }     
-      iarray_push(timings[vname], d["time"].GetInt()); 
+    //first loop, initializes timings assoc
+    for (int i=0;i<d.Size();i++) {
+      std::string vname = d[i]["value"].GetString();
+      timings[vname] = (iarray*) malloc(sizeof(iarray));
+      iarray_init(timings[vname],10);
     }
+
+    for (int i=0;i<d.Size();i++) { 
+      std::string vname = d[i]["value"].GetString();
+      iarray_push(timings[vname],d[i]["time"].GetInt()); 
+    }
+
+  }
+
+  else {
+    cout << "Invalid EDTA File, leaving Module.." << endl;
+    return NULL;
   }
 
   //puts back parsed data inside store
@@ -58,7 +66,13 @@ void* module_fct(module_io mio) {
     char sname[128];
     strcpy(sname,timings.GetItemName(i).c_str());
     strcat(sname,".EDTA");
-    store_push(mio.st,sname, timings[i]);
+
+    if (mio.s == NULL) {
+      cout << "EDTA Error: store pointer is NULL!" << endl;
+      return NULL;
+    }
+
+    store_push(mio.s,sname,timings[i]);
   }
 
   return NULL;

@@ -1,7 +1,7 @@
 #include "store.h"
 
 void* store_push(store* s,char* name, void* data)  {
-
+  
   pthread_mutex_lock( &s->m_mutex );
 
   int exists = store_exists(s,name);
