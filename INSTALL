@@ -9,3 +9,10 @@ backend Modules Dependancies
 --------------------------
  * influxdb-c (https://github.com/influxdb/influxdb-c.git)
 
+* System Mods
+=============
+
+/etc/security/limits.conf > * core unlimited
+ulimit -c unlimited
+
+

@@ -174,6 +174,12 @@ int main(int argc,char** argv) {
 
   extern tsEngine* t;
 
+
+  iarray* a;
+  int at = a->values[10];
+
+  cout << at << endl;
+
   cout << "ADAM TRADING BOT " << ADAM_VERSION << endl << "(c) 2013-2014 Clément Gamé" << endl;
 
   //init signals
