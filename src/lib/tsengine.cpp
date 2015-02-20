@@ -398,6 +398,8 @@ void* tsEngine::saveToBackend(void* arg) {
 
   while(1) {
 
+    auto tt0 = std::chrono::high_resolution_clock::now();
+
     AssocArray<records*>* inmem_recs = t0->getRecords();
     int rsize_snapshot;
     for (int i=0; i< inmem_recs->Size(); i++) {
@@ -426,12 +428,16 @@ void* tsEngine::saveToBackend(void* arg) {
     backend_save_pos = rsize_snapshot;
     t0->setBSP(backend_save_pos);
 
-    sleep(10);
+    auto tt1 = std::chrono::high_resolution_clock::now();
+    auto elapsed_t = tt1 - tt0;
+    uint64_t elapsed = std::chrono::duration_cast<std::chrono::microseconds>(elapsed_t).count();
+    
+    if (elapsed < 1000000) {  
+      usleep(1000000 - elapsed);
+    }
 
   }
-
   return NULL;
-
 }
 
 
