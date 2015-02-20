@@ -5,26 +5,6 @@ btEngine* bte;
 int so_iter = 0;
 
 
-void panic(const char *fmt, ...) {
-
-  char buf[1024];
-  va_list argptr;
-  va_start(argptr, fmt);
-  vsprintf(buf, fmt, argptr);
-  va_end(argptr);
-  fprintf(stderr, "%s", buf);
-  exit(1);
-
-}
-
-static void dumpstack(){
-    char dbx[160];
-    sprintf(dbx, "echo 'bt full\ndetach' | gdb -p %d > /tmp/adam/dbg/%ld.dump", getpid(), time(0) );
-    system(dbx);
-    return;
-}
-
-
 void init_signals(struct sigaction* sigact){
 
   cout << "Initializing signals.." << endl;
@@ -84,14 +64,6 @@ void signal_callback_handler(int signum) {
       }
     }
   }
-
-  else if (signum == SIGSEGV || signum == SIGBUS) {
-
-    dumpstack();
-    panic("FATAL: %s Fault. Logged StackTrace\n", (signum == SIGSEGV) ? "Segmentation" : ((signum == SIGBUS) ? "Bus" : "Unknown"));
-  
-  }
-
 
 }
 
