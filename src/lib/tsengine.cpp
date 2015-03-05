@@ -298,9 +298,6 @@ void* tsEngine::moneyman(void* arg) {
         p0 = *iter;
         p = &p0;
 
-        tl_io.ans[0] = '\0';
-        tl_io.log_s[0] = '\0';
-
         pos_c pos_io;
         pos_io.indice = p->indice.c_str();
         pos_io.dealid = p->dealid.c_str();
@@ -522,8 +519,8 @@ void* tsEngine::evaluate(void* arg) {
   evaluate_io ev_io;
   uint64_t previous_t = 0;
 
-  ev_io.ans = (char*) malloc(256 * sizeof(char) +1);
-  ev_io.log_s = (char*) malloc(1024 * sizeof(char) +1);
+  ev_io.ans = CreateQueue(50);
+  ev_io.logs = CreateQueue(50);
   ev_io.evmio_a = t0->getEVMIOArray();
   ev_io.s = t0->getStore();
   ev_io.genes = NULL;
