@@ -1,26 +1,29 @@
 #include "strats.h"
 
 
-void* __order(const char* action,const char* indice,const char* way, int nbc, int stop,int limit, char* ans ) {
+void* __order(const char* action,const char* indice,const char* way, int nbc, int stop,int limit, Queue_c* orders ) {
 
+  char* order = (char*) malloc(1024*sizeof(char));
 
   if (strcmp(action,"openpos") == 0 ) {
-    sprintf(ans,"openpos:%s:%s:%d:%d:%d", indice, way, nbc,stop,limit);
+    sprintf(order,"openpos:%s:%s:%d:%d:%d", indice, way, nbc,stop,limit);
   }
 
   else if (strcmp(action,"smartpos") == 0 ) {
-    sprintf(ans,"smartpos:%s:%s:%d", indice, way,limit);
+    sprintf(order,"smartpos:%s:%s:%d", indice, way,limit);
   }
   
 
   else if (strcmp(action,"closepos") == 0 ) {
-    sprintf(ans,"closepos:%s", indice);
+    sprintf(order,"closepos:%s", indice);
   }
 
   else if (strcmp(action,"closeallpos") == 0 ) {
-    sprintf(ans,"closeallpos:%s:%s", indice,way);
+    sprintf(order,"closeallpos:%s:%s", indice,way);
   }
   
+  Enqueue(order, *orders);
+
 }
 
 
@@ -171,9 +174,12 @@ farray* __sampleT(int tinf,int tsup,uint32_t t,farray* values,iarray* tstamps) {
 }
 
 
-int ___log (const char* log_input, char* log_s) {
+int ___log (const char* log_input, Queue_c* logs) {
   if (strlen(log_input) > 1024 ) return -1;
-  strncpy(log_s,log_input,sizeof(char)* 1024);
+
+  char* log = (char*) malloc( sizeof(char) * 1024 );
+  Enqueue(log, *logs);
+  
   return 0;
 }
 

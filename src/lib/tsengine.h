@@ -56,8 +56,8 @@ typedef struct tradelife_io {
 typedef struct evaluate_io {
   const char* indice_name;
   records* recs;
-  Queue_c* ans;
-  Queue_c* log_s;
+  Queue_c* orders;
+  Queue_c* logs;
   store* s;
   store* genes;
   int state;

@@ -519,8 +519,11 @@ void* tsEngine::evaluate(void* arg) {
   evaluate_io ev_io;
   uint64_t previous_t = 0;
 
-  ev_io.ans = CreateQueue(50);
-  ev_io.logs = CreateQueue(50);
+  Queue_c orders_q = CreateQueue(50);
+  Queue_c logs_q = CreateQueue(50);
+
+  ev_io.orders = &orders_q;
+  ev_io.logs = &logs_q;
   ev_io.evmio_a = t0->getEVMIOArray();
   ev_io.s = t0->getStore();
   ev_io.genes = NULL;
@@ -530,7 +533,7 @@ void* tsEngine::evaluate(void* arg) {
 
   ticks_t ticks = t0->getTicks();
 
-  string ans_str;
+  string order_str;
   string log_str;
 
   indice* idx = iResolve(t0->getIndicesList(),eval_name);
@@ -548,9 +551,6 @@ void* tsEngine::evaluate(void* arg) {
 
     ev_io.indice_name = eval_name.c_str();
 
-    ev_io.ans[0] = '\0';
-    ev_io.log_s[0] = '\0';
-
     record* last_rec = records_last(ev_io.recs);
 
     t = last_rec->timestamp;
@@ -558,20 +558,26 @@ void* tsEngine::evaluate(void* arg) {
     spread = last_rec->spread;
 
     if ( t0->eval_running(idx,t) == 1 && t != previous_t ) {
+      
       //execution of found eval function
       (*f)(t,v, spread, &ev_io);
       
-      ans_str = std::string(ev_io.ans);
-      log_str = std::string(ev_io.log_s);
-
-
-      if (log_str != "") {
-           logger->log(log_str);
+      while( ! IsEmpty( orders_q ) ) {
+        char* order = (char*) FrontAndDequeue( orders_q );
+        std::string order_str = std::string(order);
+        if ( order_str != "") {
+          orders_queue->push(order_str);
+        }
       }
 
-      if ( ans_str != "") {
-        orders_queue->push(ans_str);
+      while( ! IsEmpty( logs_q ) ) {
+        char* log = (char*) FrontAndDequeue( logs_q );
+        std::string log_str = std::string(log);
+        if ( log_str != "") {
+          logger->log(log_str);
+        }
       }
+
     }
 
     previous_t = t;

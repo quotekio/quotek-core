@@ -94,22 +94,20 @@ int btEngine::evaluate_(string eval_name,void* eval_ptr, int cstate) {
 
   eval_fct f = (eval_fct) eval_ptr;
 
-  ev_io.ans = (char*) malloc(256 * sizeof(char) +1);
-  ev_io.log_s = (char*) malloc(1024 * sizeof(char) +1);
+  Queue_c orders_q = CreateQueue(50);
+  Queue_c logs_q = CreateQueue(50);
+
+  ev_io.orders = &orders_q;
+  ev_io.logs = &logs_q;
   ev_io.evmio_a = &evmio_a;
   ev_io.s = &tse_store;
   ev_io.genes = tse_genes;
   ev_io.state = cstate;
   
-  string ans_str;
-  string log_str;
   indice* idx = iResolve(indices_list,eval_name);
 
   ev_io.indice_name = eval_name.c_str();
-  ev_io.ans[0] = '\0';
-  ev_io.log_s[0] = '\0';
   ev_io.recs = getIndiceRecords(eval_name);
-
   record* r = records_last(ev_io.recs);
 
   t = r->timestamp;
@@ -122,20 +120,23 @@ int btEngine::evaluate_(string eval_name,void* eval_ptr, int cstate) {
     //execution of found eval function
     (*f)(t,v,spread, &ev_io);
 
-    ans_str = std::string(ev_io.ans);
-    log_str = std::string(ev_io.log_s);
-
-    if (log_str != "") {
-         logger->log(log_str, progress_tstamp);
+    while( ! IsEmpty( orders_q ) ) {
+      char* order = (char*) FrontAndDequeue( orders_q );
+      std::string order_str = std::string(order);
+      if ( order_str != "") {
+        orders_queue.push(order_str);
+      }
     }
-
-    if ( ans_str != "") {
-      orders_queue.push(ans_str);
-    }
+    
+    while( ! IsEmpty( logs_q ) ) {
+      char* log = (char*) FrontAndDequeue( logs_q );
+      std::string log_str = std::string(log);
+      if ( log_str != "") {
+        logger->log(log_str);
+      }
+    }      
   }
-
-  free(ev_io.ans);
-  free(ev_io.log_s);
+  
   return ev_io.state;
   
 }
