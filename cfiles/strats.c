@@ -26,6 +26,17 @@ void* __order(const char* action,const char* indice,const char* way, int nbc, in
 
 }
 
+int ___log (const char* log_input, Queue_c* logs) {
+  
+  if (strlen(log_input) > 1024 ) return -1;
+  char* logstr = (char*) malloc( sizeof(char) * 1024 );
+  strncpy(logstr, log_input, 1024 * sizeof(char));
+  Enqueue(logstr, *logs);
+
+  return 0;
+}
+
+
 
 uint8_t __is_time(const char* timestr,uint32_t t) {
 
@@ -173,13 +184,4 @@ farray* __sampleT(int tinf,int tsup,uint32_t t,farray* values,iarray* tstamps) {
 
 }
 
-
-int ___log (const char* log_input, Queue_c* logs) {
-  if (strlen(log_input) > 1024 ) return -1;
-
-  char* log = (char*) malloc( sizeof(char) * 1024 );
-  Enqueue(log, *logs);
-  
-  return 0;
-}
 

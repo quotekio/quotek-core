@@ -568,14 +568,16 @@ void* tsEngine::evaluate(void* arg) {
         if ( order_str != "") {
           orders_queue->push(order_str);
         }
+        free(order);
       }
 
       while( ! IsEmpty( logs_q ) ) {
-        char* log = (char*) FrontAndDequeue( logs_q );
-        std::string log_str = std::string(log);
+        char* logstr = (char*) FrontAndDequeue( logs_q );
+        std::string log_str = std::string(logstr);
         if ( log_str != "") {
           logger->log(log_str);
         }
+        free(logstr);
       }
 
     }
