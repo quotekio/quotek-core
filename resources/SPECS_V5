@@ -2,7 +2,7 @@
 SPECIFICATIONS ADAM V5, Codename Queen Ann's Revenge
 ====================================================
 
-[ ] Gestion de toutes les files d'attente inter-threads avec ZMQ, notamment mise en queue de l'historique de simulation pour obtenir des resultats de backtest qui son time/power independants
+[ ] Gestion de toutes les files d'attente inter-threads avec ZMQ, notamment mise en queue de l'historique de simulation pour obtenir des resultats de backtest qui son time/power independants ==> Not Needed
 
 [x] Passage du vstore en monilitique, stockage et utilisation de l'historique direct dans influx.
 
@@ -16,6 +16,9 @@ SPECIFICATIONS ADAM V5, Codename Queen Ann's Revenge
 ============
 CHANGELOG V5
 ============
+
+
+* Ajout d'un systeme de queues pour le passage d'ordres et la remontée de logs dans les fonctions d'evaluation.
 
 * Suppression du module vstore, ajout en remplacement d'un nouveau type de main module obligatoire: backend.
 
