@@ -244,8 +244,11 @@ void* tsEngine::moneyman(void* arg) {
   
   int inc = 0;
 
-  tl_io.ans = (char*) malloc(1024* sizeof(char));
-  tl_io.log_s = (char*) malloc(1024* sizeof(char));
+  Queue_c orders_q = CreateQueue(50);
+  Queue_c logs_q = CreateQueue(50);
+
+  tl_io.orders = &orders_q;
+  tl_io.logs = &logs_q;
   tl_io.s = t0->getStore();
 
   while (1) {
@@ -317,15 +320,24 @@ void* tsEngine::moneyman(void* arg) {
         p->vlimit = pos_io.vlimit;
         p->nb_inc = pos_io.nb_inc;
 
-        if (std::string(tl_io.ans) != "" ) {
-          orders_queue->push(tl_io.ans);
-        }
-         
-        if (std::string(tl_io.log_s) != "" ) {
-          logger->log(tl_io.log_s);
+        while( ! IsEmpty( orders_q ) ) {
+          char* order = (char*) FrontAndDequeue( orders_q );
+          std::string order_str = std::string(order);
+          if ( order_str != "") {
+            orders_queue->push(order_str);
+          }
+          free(order);
         }
 
-        
+        while( ! IsEmpty( logs_q ) ) {
+          char* logstr = (char*) FrontAndDequeue( logs_q );
+          std::string log_str = std::string(logstr);
+          if ( log_str != "") {
+            logger->log(log_str);
+          }
+          free(logstr);
+        }
+
         r = records_last(t0->getIndiceRecords(p->indice));
         if (r != NULL) cval = r->value;
         else continue;

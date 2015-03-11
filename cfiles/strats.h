@@ -17,8 +17,8 @@
 //!MH_APPEND!
 
 typedef struct tradelife_io {
-  char* ans;
-  char* log_s;
+  Queue_c* orders;
+  Queue_c* logs;
   store* s;
   store* genes;
 } tradelife_io;
