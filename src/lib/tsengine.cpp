@@ -92,6 +92,7 @@ void tsEngine::closePosition(string dealid) {
   auto tt0 = std::chrono::high_resolution_clock::now();
 
   position* p = tse_mm->getPositionByDealid(dealid);
+  p->status = POS_PENDING_CLOSE;
 
   string result = tse_broker->closePos(dealid, p->size);
   if (result == "ACCEPTED:SUCCESS" ) {
