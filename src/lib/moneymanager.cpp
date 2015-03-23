@@ -457,7 +457,7 @@ void moneyManager::saveCPNL() {
   ofstream fh (CPNL_FILE);
   if (fh.is_open()) {
     fh << cumulative_pnl;
+    fh.close();
   }
-  fh.close();
 
 }
