@@ -390,8 +390,7 @@ void* tsEngine::moneyman(void* arg) {
     
     inc++;
 
-    //money management loop needs to be really fast, so little sleep time
-    usleep(1000);
+    usleep(1000000);
   } 
 
 return NULL;
