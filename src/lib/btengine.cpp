@@ -99,7 +99,6 @@ int btEngine::evaluate_(string eval_name,void* eval_ptr, int cstate) {
 
   ev_io.orders = &orders_q;
   ev_io.logs = &logs_q;
-  ev_io.evmio_a = &evmio_a;
   ev_io.s = &tse_store;
   ev_io.genes = tse_genes;
   ev_io.state = cstate;

@@ -28,22 +28,11 @@
 #include "genetics.h"
 #include "indice.h"
 #include "quant.h"
+#include "tsemodule.hpp"
 #include <iostream>
 #include <fstream>
 
 using namespace rapidjson;
-
-typedef struct eval_module_io {
-      char mname[50];
-      Queue_c* input;
-      Queue_c* output;
-    } eval_module_io;
-
-
-typedef struct evmio_array {
-  eval_module_io* evmio;
-  size_t size;
-} evmio_array;
 
 typedef struct tradelife_io {
   Queue_c* orders;
@@ -61,7 +50,6 @@ typedef struct evaluate_io {
   store* s;
   store* genes;
   int state;
-  struct evmio_array* evmio_a;
 } evaluate_io;
 
 
@@ -96,7 +84,6 @@ class tsEngine{
 
     AssocArray<void*>* getEvalPointers();
     igmLogger* getLogger();
-    evmio_array* getEVMIOArray();
 
     store* getStore();
     store* getGeneticsStore();
@@ -115,6 +102,8 @@ class tsEngine{
     void openPosition(string epic, string way, int nbc, int stop, int limit);
     void closePosition(string dealid);
 
+    /** Creates a new object to expose some parts of the engine. */
+    tsexport* eexport();
 
     //#### STATIC,THREADED FUNCTIONS
     static void* poll(void*);
@@ -128,7 +117,6 @@ class tsEngine{
   protected:
 
     adamCfg* cfg;
-    evmio_array evmio_a;
 
     broker* tse_broker;
     ticks_t tse_ticks;
@@ -145,7 +133,6 @@ class tsEngine{
     Queue <std::string> orders_queue;
     AssocArray<records*> inmem_records;
 
-
     AssocArray<void*> eval_ptrs;
     igmLogger* logger;
     vector<string> modules_list;
@@ -159,14 +146,6 @@ class tsEngine{
     pthread_t clkth;
     pthread_t backioth;
 
-    //struct defined to pass data to modulethread_wrapper
-    typedef struct module_initializer {
-      tsEngine* engine;
-      string name;
-      Queue_c input;
-      Queue_c output;
-    } module_initializer;
- 
     typedef struct eval_thread {
       tsEngine* engine;
       pthread_t th;
@@ -174,22 +153,11 @@ class tsEngine{
       string eval_name;
     } eval_thread;
 
-
     vector<pthread_t> modules_threads_list;
-    vector<module_initializer> modules_init_list;
     vector<eval_thread> eval_threads;
-
     int uptime;
-
 };
 
-//struct defined to pass data to modulethread_wrapper
-typedef struct module_initializer {
-  tsEngine* engine;
-  string name;
-  Queue_c input;
-  Queue_c output;
-} module_initializer;
 
 typedef struct eval_thread {
 
@@ -199,15 +167,5 @@ typedef struct eval_thread {
   string eval_name;
 
 } eval_thread;
-
-typedef struct module_io {
-  float* cur_pnl;
-  float* cumulative_pnl;
-  Queue_c* input;
-  Queue_c* output;
-  store* s;
-} module_io;
-
-
 
 #endif

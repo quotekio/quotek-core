@@ -1,5 +1,16 @@
 #include "tsengine.h"
 
+tsexport* tsEngine::eexport() {
+
+  return new tsexport(1,
+                      getLogger(),
+                      tse_mm->getCurPNL(),
+                      tse_mm->getCumulativePNL(),
+                      tse_mm->getPositions(),
+                      &tse_store
+                       );
+
+}
 
 void* tsEngine::modulethread_wrapper(void* arg) {
 
@@ -8,16 +19,14 @@ void* tsEngine::modulethread_wrapper(void* arg) {
     exit(1);
   }
 
+  /*
 
-  typedef void* (*fctptr)(module_io);
-  
-  module_initializer* mi = (module_initializer*) arg;
-
-  tsEngine* t0 = mi->engine;
-  moneyManager* mm = t0->getMoneyManager();
-
-  string module_so = "lib" + mi->name + ".so";
-  
+  //typedef void* (*fctptr)(module_io);
+  //module_initializer* mi = (module_initializer*) arg;
+  //tsEngine* t0 = mi->engine;
+  //moneyManager* mm = t0->getMoneyManager();
+  //string module_so = "lib" + mi->name + ".so";
+ 
   module_io mio;
   mio.cur_pnl = mm->getCurPNL();
   mio.cumulative_pnl = mm->getCumulativePNL();
@@ -39,11 +48,10 @@ void* tsEngine::modulethread_wrapper(void* arg) {
     exit(1);
   }
   
-  fctptr f = (fctptr) symbol;
-  (*f)(mio);
-
+  //fctptr f = (fctptr) symbol;
+  //(*f)(mio);
+  */
   return NULL;
-
 } 
 
 void tsEngine::openPosition(string epic, string way, int nbc, int stop, int limit) {
@@ -536,7 +544,6 @@ void* tsEngine::evaluate(void* arg) {
 
   ev_io.orders = &orders_q;
   ev_io.logs = &logs_q;
-  ev_io.evmio_a = t0->getEVMIOArray();
   ev_io.s = t0->getStore();
   ev_io.genes = NULL;
   ev_io.state = 0;
@@ -763,8 +770,6 @@ tsEngine::tsEngine(adamCfg* conf,
     logger->log("[broker] Connection to Broker successful");
   }
   
-
-
   vector<string> si = iGetNames(indices_list);
   for(int i=0;i<si.size();i++) {
 
@@ -786,37 +791,14 @@ tsEngine::tsEngine(adamCfg* conf,
     loadHistory();
   }
 
-  evmio_a.evmio = (eval_module_io*) malloc(modules_list.size() * sizeof(eval_module_io) );
-  evmio_a.size = modules_list.size();
-
-
+  /* Loading of external modules */
   for(int i=0;i<modules_list.size();i++) {
 
     cout << "Initializing Extra Module: " << modules_list[i] << endl;
 
     pthread_t t;
-    module_initializer mi;
     modules_threads_list.push_back(t);
-    modules_init_list.push_back(mi);
-
-    module_initializer* cur_mi = &modules_init_list[modules_init_list.size()-1];
-
-    cur_mi->engine = this;
-    cur_mi->name = modules_list[i];
-    cur_mi->input = CreateQueue(50);
-    cur_mi->output = CreateQueue(50);
-
-    strncpy(evmio_a.evmio[i].mname,cur_mi->name.c_str(),50*sizeof(char));
-    evmio_a.evmio[i].input = &(cur_mi->input);
-    evmio_a.evmio[i].output = &(cur_mi->output);
-
-  }
-
-  //Launching of all module threads AFTER the Initialisation of all of them
-  for(int i=0;i<modules_init_list.size();i++) {
-    module_initializer* cur_mi = &modules_init_list[i];
-    pthread_t* cur_pthread = &modules_threads_list[i];
-    pthread_create(cur_pthread,NULL,modulethread_wrapper,(void*) cur_mi);
+    
   }
 
   printf ("initializing poller..\n");
@@ -944,11 +926,6 @@ int tsEngine::loadHistory() {
 
 igmLogger* tsEngine::getLogger() {
   return logger;
-}
-
-
-evmio_array* tsEngine::getEVMIOArray() {
-  return &evmio_a;
 }
 
 store* tsEngine::getStore() {
