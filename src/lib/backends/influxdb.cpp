@@ -191,6 +191,44 @@ public:
       return 0;
     }
 
+    virtual int saveHistory(position* pos)  {
+
+      std::ostringstream sdata;
+      http* hhdl = prepare_http_handler();
+      string outp;
+
+      sdata << "[\n";
+      sdata << "\t{ \"name\": \"__history__\",\n";
+      sdata << "\t  \"columns\" : [ \"indice\", \"epic\", \"dealid\", \"size\", \"stop\", \"limit\", \"open\", \"pnl\" ],\n";
+      sdata << "\t  \"points\" : [" << pos2json(pos) << "]\n"; 
+      sdata << "\t}\n";
+      sdata << "]";
+
+      outp = hhdl->post(pre_url,sdata.str());      
+      hhdl->destroy();
+      return 0;
+
+    }
+
+    virtual int saveHistory(vector<position>* plist) {
+
+      std::ostringstream sdata;
+      http* hhdl = prepare_http_handler();
+      string outp;
+
+      sdata << "[\n";
+      sdata << "\t{ \"name\": \"__history__\",\n";
+      sdata << "\t  \"columns\" : [ \"indice\", \"epic\", \"dealid\", \"size\", \"stop\", \"limit\", \"open\", \"pnl\" ],\n";
+      sdata << "\t  \"points\" : [" << poslist2json(plist) << "]\n"; 
+      sdata << "\t}\n";
+      sdata << "]";
+
+      outp = hhdl->post(pre_url,sdata.str());
+      hhdl->destroy();
+      return 0;
+
+    }
+
 private:
   string host;
   string port;
@@ -216,6 +254,32 @@ private:
     }
     return jstream.str();
   };
+
+  std::string pos2json(position* pos)  {
+  
+    std::ostringstream jstream;
+    jstream << "[" << "\"" << pos->indice << "\", "
+            << "\"" << pos->epic << "\", "
+            << "\"" << pos->dealid << "\", "
+            << pos->size << ", " << pos->stop << ", "
+            << pos->limit << ", " << pos->open << ", "
+            << pos->pnl << "]";
+
+    return jstream.str();
+
+  }
+
+  std::string poslist2json(vector<position>* plist) {
+
+    std::ostringstream jstream;    
+    for (int i=0;i<plist->size();i++)  {
+      jstream << pos2json(&(plist->at(i)));
+      if (i !=  (plist->size() - 1 ) ) jstream << ",";
+
+    }
+    return jstream.str();
+  }
+
 
   http* prepare_http_handler() {
     http* hhdl = new http();

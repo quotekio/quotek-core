@@ -169,6 +169,14 @@ string moneyManager::cleanPositions(vector<string> alive_pos) {
 vector<position>::iterator moneyManager::remPosition(vector<position>::iterator iter) {
   
       position* p = &*iter;
+
+      //adds close_time tstamp
+      p->close_time = time(0);
+
+      //stores position to history
+      positions_history.push_back(*p);
+
+      //deletes position from poslist
       cumulative_pnl += p->pnl;
       return positions.erase(iter);
 
@@ -177,7 +185,16 @@ vector<position>::iterator moneyManager::remPosition(vector<position>::iterator 
 void moneyManager::remPosition(string dealid) {
   
   for (posList::iterator iter =  positions.begin() ;iter != positions.end();++iter) {
+    
     position *p = &*iter;
+
+    //adds close_time tstamp
+    p->close_time = time(0);
+
+    //stores position to history
+    positions_history.push_back(*p);
+
+    //deletes position from poslist
     if (p->dealid == dealid) {
       cumulative_pnl += p->pnl;
       iter = positions.erase(iter);
@@ -190,6 +207,10 @@ void moneyManager::remPosition(string dealid) {
 
 vector<position>* moneyManager::getPositions() {
   return &positions;
+}
+
+vector<position>* moneyManager::getPositionsHistory() {
+  return &positions_history;
 }
 
 

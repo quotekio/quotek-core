@@ -74,6 +74,7 @@ class moneyManager {
     bool hasPos(string);
     bool hasPos(string,string);
     vector<position>* getPositions();
+    vector<position>* getPositionsHistory();
     position* getPositionByDealid(string);
     string cleanPositions(vector<string>);
     string resolveError(int);
@@ -104,6 +105,7 @@ class moneyManager {
     float critical_loss_percentage;
     float max_var;
   	vector<position> positions;
+    vector<position> positions_history;
     AssocArray<indice*> indices_list;
     float var;
     float cur_pnl;

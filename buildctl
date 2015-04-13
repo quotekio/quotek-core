@@ -16,6 +16,8 @@ function bctl_cleanup() {
   rm tests/CMakeCache.txt
   rm tests/cmake_install.cmake
   rm -rf tests/CMakeFiles
+  
+  rm install/compile/headers/*.h
 
 }
 
@@ -29,7 +31,7 @@ function bctl_install_SDK() {
 
  mkdir -p /usr/local/include/adam
  cp src/lib/igmlogger.h src/lib/store.h src/lib/tsexport.hpp src/lib/tsemodule.hpp src/lib/utils.h /usr/local/include/adam
-
+ cp src/lib/position.h /usr/local/include/adam
 }
 
 function bctl_cmake() {

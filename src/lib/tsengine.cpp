@@ -79,6 +79,7 @@ void tsEngine::openPosition(string epic, string way, int nbc, int stop, int limi
     p.size = ex1.size;
     p.pnl = 0;
     p.status = POS_OPEN;
+    p.open_time = time(0);
     tse_mm->addPosition(p);
 
     auto tt1 = std::chrono::high_resolution_clock::now();
@@ -412,10 +413,21 @@ void* tsEngine::saveToBackend(void* arg) {
   backend* back0 = t0->getBackend();
   t0->setBSP(0);
   int backend_save_pos = t0->getBSP();
+  vector<position>* pos_history = t0->getMoneyManager()->getPositionsHistory();
+   
+  int prev_t = 0;
 
   while(1) {
 
     auto tt0 = std::chrono::high_resolution_clock::now();
+
+    //saves history
+    for (int i=0; i< pos_history->size();i++ ) {
+      if ( pos_history->at(i).close_time > prev_t ) {
+        prev_t = pos_history->at(i).close_time;
+        back0->saveHistory(&(pos_history->at(i)));
+      }
+    }
 
     AssocArray<records*>* inmem_recs = t0->getRecords();
     int rsize_snapshot;

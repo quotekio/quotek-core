@@ -1,10 +1,10 @@
 #ifndef POSITION_H
 #define POSITION_H
 typedef struct position {
-  string indice;
-  string epic;
-  string dealid;
-  string name;
+  std::string indice;
+  std::string epic;
+  std::string dealid;
+  std::string name;
   int size;
   float stop;
   float vstop;
