@@ -134,6 +134,11 @@ float covariance(records* recs1,records* recs2) {
  return covariance;
 }
 
+
+/**
+ * Computes covariance without 
+ */
+
 float covariance_q(records* recs1,records* recs2,float avg1,float avg2) {
 
   float covariance = 0;
@@ -182,15 +187,15 @@ farray* lreg(records* recs) {
 }
 
 
-farray* lreg_coefs(records* recs2) {
+affine lreg_affine(records* recs2) {
+
+  affine result;
 
   records recs1;
-  farray* results = (farray*) malloc(sizeof(farray));
   float a,b;
   float avg1,avg2;
   int i;
 
-  farray_init(results,2);
   records_init(&recs1,10);
 
   //initializing of X array of values
@@ -203,13 +208,10 @@ farray* lreg_coefs(records* recs2) {
   avg1 = avg(&recs1);
   avg2 = avg(recs2);
 
-  a = covariance_q(&recs1,recs2,avg1,avg2) / variance_q(&recs1,0,avg1);
-  b = avg2 - ( a * avg1 ) ; 
+  result.a = covariance_q(&recs1, recs2, avg1, avg2) / variance_q(&recs1, 0, avg1);
+  result.b = avg2 - ( a * avg1 ) ; 
 
-  farray_push(results,a);
-  farray_push(results,b);  
-
-  //farray_destroy(&v1);
+  free(recs1.data);
   return results;
 
 }

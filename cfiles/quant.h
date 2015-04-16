@@ -2,6 +2,11 @@
 #include "narrays.h"
 #include "records.h"
 
+//struct to store affine equations.
+typedef struct affine {
+  float a;
+  float b;
+} affine;
 
 int above(records* recs, float val,float thold);
 int below(records* recs, float val,float thold);
@@ -35,6 +40,6 @@ float percentDelta(records*);
 
 farray* cmavg(records*);
 farray* lreg(records*);
-farray* lreg_coefs(records*);
+affine lreg_affine(records*);
 
 
