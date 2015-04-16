@@ -2,7 +2,7 @@
 #include "narrays.h"
 #include "records.h"
 
-//struct to store affine equations.
+/** This struct aims to store affine equations parameters. */
 typedef struct affine {
   float a;
   float b;
@@ -37,9 +37,13 @@ float tvom(float interest, float t);
 float stdDeviation(records*);
 float percentDelta(records*);
 
-
 farray* cmavg(records*);
 farray* lreg(records*);
-affine lreg_affine(records*);
+
+/**
+ * This function produces the affine equation of the linear regression
+ * of the points inside recs2
+ */
+affine lreg_affine(records* recs2);
 
 
