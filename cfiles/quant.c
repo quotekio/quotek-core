@@ -212,7 +212,7 @@ affine lreg_affine(records* recs2) {
   result.b = avg2 - ( a * avg1 ) ; 
 
   free(recs1.data);
-  return results;
+  return result;
 
 }
 
