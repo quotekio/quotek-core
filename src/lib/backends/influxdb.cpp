@@ -199,7 +199,7 @@ public:
 
       sdata << "[\n";
       sdata << "\t{ \"name\": \"__history__\",\n";
-      sdata << "\t  \"columns\" : [ \"indice\", \"epic\", \"dealid\", \"size\", \"stop\", \"limit\", \"open\", \"pnl\" ],\n";
+      sdata << "\t  \"columns\" : [ \"indice\", \"epic\", \"dealid\", \"size\", \"stop\", \"limit\", \"open\", \"pnl\", \"pnl_peak\", \"open_time\", \"close_time\" ],\n";
       sdata << "\t  \"points\" : [" << pos2json(pos) << "]\n"; 
       sdata << "\t}\n";
       sdata << "]";
@@ -218,7 +218,7 @@ public:
 
       sdata << "[\n";
       sdata << "\t{ \"name\": \"__history__\",\n";
-      sdata << "\t  \"columns\" : [ \"indice\", \"epic\", \"dealid\", \"size\", \"stop\", \"limit\", \"open\", \"pnl\" ],\n";
+      sdata << "\t  \"columns\" : [ \"indice\", \"epic\", \"dealid\", \"size\", \"stop\", \"limit\", \"open\", \"pnl\", \"pnl_peak\", \"open_time\", \"close_time\" ],\n";
       sdata << "\t  \"points\" : [" << poslist2json(plist) << "]\n"; 
       sdata << "\t}\n";
       sdata << "]";
@@ -263,7 +263,8 @@ private:
             << "\"" << pos->dealid << "\", "
             << pos->size << ", " << pos->stop << ", "
             << pos->limit << ", " << pos->open << ", "
-            << pos->pnl << "]";
+            << pos->pnl << ", " << pos->pnl_peak << ", "
+            << pos->open_time << ", " << pos->close_time << "]";
 
     return jstream.str();
 

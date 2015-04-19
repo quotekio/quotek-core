@@ -13,6 +13,7 @@ typedef struct position {
   float vlimit;
   float open;
   float pnl;
+  float pnl_peak;
   int status;
   int open_time;
   int close_time;

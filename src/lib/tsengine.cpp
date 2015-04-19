@@ -78,6 +78,7 @@ void tsEngine::openPosition(string epic, string way, int nbc, int stop, int limi
     p.limit = ex1.limit;
     p.size = ex1.size;
     p.pnl = 0;
+    p.pnl_peak = -1000000000;
     p.status = POS_OPEN;
     p.open_time = time(0);
     tse_mm->addPosition(p);

@@ -78,8 +78,10 @@ void moneyManager::computePNLs(string indice_name,float cur_value) {
     if (positions.at(i).indice == indice_name) {
       position* p = &(positions.at(i));
       p->pnl = (cur_value - p->open) * pnl_coef * unit_coef * p->size;
-      
 
+      //saves pnl peak
+      if ( p->pnl > p->pnl_peak ) p->pnl_peak = p->pnl;
+      
     }
   }
 }
