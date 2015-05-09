@@ -8,13 +8,14 @@ const string strategy::cflags = "-g -Wall -shared -rdynamic -fPIC";
 
 const string strategy::cpath = "/tmp/adam/cenv";
 
-strategy::strategy(string n) {
+strategy::strategy(string stpath, string n) {
+  strats_path = stpath;
   name = n;
   genetics_engine = NULL;
-
 }
 
-strategy::strategy(string n, genetics* ge) {
+strategy::strategy(string stpath, string n, genetics* ge) {
+  strats_path = stpath;
   name = n;
   genetics_engine = ge;
 }
@@ -46,7 +47,7 @@ int strategy::include(string line,vector<string>* lines) {
 
 
     string iname = trim(line.replace(0,strlen("@strat_include"),""));
-    ifstream fh (std::string("strats/" + iname + ".ts").c_str());
+    ifstream fh (std::string(strats_path + "/" + iname).c_str());
     string iline;
 
     while(fh.good()){
@@ -77,7 +78,7 @@ int strategy::decorate() {
 
   
 
-  ifstream fh (std::string("strats/" + name + ".ts").c_str());
+  ifstream fh (std::string(strats_path + "/" + name).c_str());
   ofstream wh (std::string(strategy::cpath + "/" + name + ".c").c_str());
 
   wh << "#include \"strats.h\"" << endl;  

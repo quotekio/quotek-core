@@ -41,6 +41,7 @@ class strategy {
 
     void* handle;
     string name;
+    string strats_path;
     genetics* genetics_engine;
 
 };
