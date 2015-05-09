@@ -69,6 +69,7 @@ class adamCfg {
     int inmem_history;
     AssocArray<indice*> indices_list;
     string strat;
+    string strats_path;
     vector<string> modules_list;
     mm_params mmp;
     genetics_params gp;
@@ -100,6 +101,7 @@ class adamCfg {
     genetics_params* getGP();
     aep_params* getAEPP();
     string getStrat();
+    string getStratsPath();
 
     int getBFrom();
     int getBTo();

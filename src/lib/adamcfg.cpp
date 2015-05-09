@@ -10,6 +10,7 @@ adamCfg::adamCfg() {
   ticks.getval = 1000000;
   ticks.eval = 1000000;
   broker_mode = "poll";
+  strats_path = "strats";
 }
 
 string adamCfg::getBroker() {
@@ -44,6 +45,10 @@ vector<string> adamCfg::getModulesList() {
 
 string adamCfg::getStrat() {
   return strat;
+}
+
+string adamCfg::getStratsPath() {
+  return strats_path;
 }
 
 mm_params* adamCfg::getMMP() {
@@ -181,6 +186,7 @@ int adamCfg::read() {
         }
         
         else if (param == "strat") strat = arg;
+        else if (param == "strats_path") strats_path = arg;
         else if (param == "mm_capital") mmp.mm_capital = atof(arg.c_str());
         else if (param == "mm_max_openpos") mmp.mm_max_openpos = atoi(arg.c_str());
         else if (param == "mm_max_openpos_per_epic") mmp.mm_max_openpos_per_epic = atoi(arg.c_str());

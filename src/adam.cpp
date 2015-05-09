@@ -237,12 +237,12 @@ int main(int argc,char** argv) {
                                 gp->genetics_max_generations,
                                 gp->genetics_recompute_winners);
 
-    s = new strategy(c->getStrat(),ge);
+    s = new strategy(c->getStratsPath(), c->getStrat(), ge);
 
   }
 
   else {
-    s = new strategy(c->getStrat());
+    s = new strategy(c->getStratsPath(), c->getStrat());
   }
 
 
