@@ -21,8 +21,8 @@ class strategy {
 
   public:
 
-    strategy(string name);
-    strategy(string name,genetics* ge);
+    strategy(string stpath, string name);
+    strategy(string stpath, string name,genetics* ge);
     void setGE(genetics* ge);
     int prepareCompile();
     int compile(int);
