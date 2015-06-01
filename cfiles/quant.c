@@ -1,5 +1,22 @@
 #include "quant.h"
 
+records* scale_records(records* recs1, int scale_x, int scale_y) {
+
+  records* recs = (records*) malloc(sizeof(records)) ;
+  int i;
+  records_init(recs,10000);
+  
+  for (i=0;i< recs1->size;i++) {
+    record r;
+    r.timestamp = recs1->data[i].timestamp / scale_x ;
+    r.value =  recs1->data[i].value / scale_y;
+    r.spread = recs1->data[i].spread;
+    records_push(recs,r);
+  }
+  return recs;
+}
+
+
 int above(records* recs, float val,float thold) {
 
   int nb_above = 0;
@@ -215,6 +232,40 @@ affine lreg_affine(records* recs2) {
   return result;
 
 }
+
+
+affine lreg_affine_scaled(records* recs2, int scale_x, int scale_y) {
+
+  records* rscaled = scale_records(recs2, scale_x, scale_y );
+
+  affine result;
+
+  records recs1;
+  float a,b;
+  float avg1,avg2;
+  int i;
+
+  records_init(&recs1,10);
+
+  //initializing of X array of values
+  for(i=1;i<=recs2->size;i++) {
+    record r;
+    r.value = (float) i;
+    records_push(&recs1,r);
+  }
+
+  avg1 = avg(&recs1);
+  avg2 = avg(recs2);
+
+  result.a = covariance_q(&recs1, recs2, avg1, avg2) / variance_q(&recs1, 0, avg1);
+  result.b = avg2 - ( a * avg1 ) ; 
+
+  free(recs1.data);
+  free(rscaled->data);
+  return result;
+  
+}
+
 
 float stdDeviation(records* recs) {
   return (float) sqrt(variance(recs,0));

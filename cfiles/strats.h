@@ -63,6 +63,11 @@ int ___log (const char* log_input, Queue_c*);
 #define buy(idx,n,stp,lm) (__order("openpos",idx,"buy",n,stp,lm,io->orders))
 #define sell(idx,n,stp,lm) (__order("openpos",idx,"sell",n,stp,lm,io->orders))
 
+#define buy_hedged(idx1,idx2,n,stp,lm) {  __order("openpos",idx1,"buy",n,stp,lm,io->orders);__order("openpos",idx2,"sell",n,stp,lm,io->orders); }
+
+#define sell_hedged(idx1,idx2,n,stp,lm) {  __order("openpos",idx1,"sell",n,stp,lm,io->orders);__order("openpos",idx2,"buy",n,stp,lm,io->orders); }
+
+
 #define smartbuy(idx,lm) (__order("smartpos",idx,"buy",0,0,lm,io->orders) )
 #define smartsell(idx,lm) (__order("smartpos",idx,"sell",0,0,lm,io->orders) )
 

@@ -8,6 +8,12 @@ typedef struct affine {
   float b;
 } affine;
 
+/**
+ * This functions helps to rescale records to get correct value/timesteamp
+ * ratio
+ */
+records* scale_records(records* recs1, int scale_x, int scale_y);
+
 int above(records* recs, float val,float thold);
 int below(records* recs, float val,float thold);
 
@@ -40,10 +46,14 @@ float percentDelta(records*);
 farray* cmavg(records*);
 farray* lreg(records*);
 
+
+
 /**
  * This function produces the affine equation of the linear regression
  * of the points inside recs2
  */
 affine lreg_affine(records* recs2);
+affine lreg_affine_scaled(records* recs2, int scale_x, int scale_y);
+
 
 
