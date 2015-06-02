@@ -49,13 +49,13 @@ function bctl_compile() {
 
 function bctl_compile_all() {
   make
-  cd cfiles
+  cd qsa
   ./compile.sh
   cd ..
 }
 
 function bctl_release() {
-  cd cfiles
+  cd qsa
   ./release.sh
   cd ..
 }

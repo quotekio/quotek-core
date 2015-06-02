@@ -1,3 +1,8 @@
+/*
+Quotek Strats API 1.1
+Copyright 2013-2015 Quotek SAS
+*/
+
 #include <math.h>
 #include "narrays.h"
 #include "records.h"
@@ -8,11 +13,25 @@ typedef struct affine {
   float b;
 } affine;
 
+/** This structure stores trend percentage analysis. */
+typedef struct trend_p {
+  float bull;
+  float bear;
+  float neutral;
+} trend_p;
+
+
 /**
  * This functions helps to rescale records to get correct value/timesteamp
  * ratio
  */
 records* scale_records(records* recs1, int scale_x, int scale_y);
+
+/**
+ * This function computes the trend of an asset on a specific time period and returns
+ * a triplet of values: the bull, bear and neutral percentages.
+ */
+trend_p trend_percentages(records* recs);
 
 int above(records* recs, float val,float thold);
 int below(records* recs, float val,float thold);

@@ -1,5 +1,9 @@
-#include "strats.h"
+/*
+Quotek Strats API 1.1
+Copyright 2013-2015 Quotek SAS
+*/
 
+#include "strats.h"
 
 void* __order(const char* action,const char* indice,const char* way, int nbc, int stop,int limit, Queue_c* orders ) {
 

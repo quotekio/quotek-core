@@ -1,3 +1,8 @@
+/*
+Quotek Strats API 1.1
+Copyright 2013-2015 Quotek SAS
+*/
+
 #ifndef STRATS_H
 #define STRATS_H
 

@@ -1,3 +1,8 @@
+/*
+Quotek Strats API 1.1
+Copyright 2013-2015 Quotek SAS
+*/
+
 #include "quant.h"
 
 records* scale_records(records* recs1, int scale_x, int scale_y) {
@@ -14,6 +19,35 @@ records* scale_records(records* recs1, int scale_x, int scale_y) {
     records_push(recs,r);
   }
   return recs;
+}
+
+
+trend_p trend_percentages(records* recs) {
+
+  trend_p result;
+  result.bull = 0;
+  result.bear = 0;
+  result.neutral = 0;
+
+  int i;
+  for (i=0;i<recs->size-1;i++) {
+
+    if ( recs->data[i].value < recs->data[i+1].value ) result.bull ++;
+    else if ( recs->data[i].value > recs->data[i+1].value ) result.bear ++;
+    else result.neutral++;
+  }
+
+  result.bull /= recs->size;
+  result.bull *= 100;
+
+  result.bear /= recs->size;
+  result.bear *= 100;
+ 
+  result.neutral /= recs->size;
+  result.neutral *= 100;
+  
+  return result;
+  
 }
 
 
