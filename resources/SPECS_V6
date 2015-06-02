@@ -2,9 +2,11 @@
 SPECIFICATIONS ADAM V6, codename Flying Dutchman
 ================================================
 
+[ ] Passage de toutes les I/O inter-threads par une message queue ZMQ
+
 [ ] Passage du code d'evaluation en C++
 
-[ ] Passage de toutes les I/O inter-threads par une message queue ZMQ
+[ ] Reecriture du backtester pour support multithread
 
 [ ] Evaluation des R-expressions (nlle classe Rexec)
 
@@ -21,4 +23,3 @@ SPECIFICATIONS ADAM V6, codename Flying Dutchman
 ============
 CHANGELOG V6
 ============
-
