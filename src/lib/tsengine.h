@@ -29,6 +29,7 @@
 #include "indice.h"
 #include "quant.h"
 #include "tsemodule.hpp"
+#include "tsexport.hpp"
 #include <iostream>
 #include <fstream>
 

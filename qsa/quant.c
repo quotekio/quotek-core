@@ -405,4 +405,21 @@ float spread_avg(records* recs) {
   return sum / recs->size;
 }
 
+float risk_reward_ratio(float expected_profit,  
+                        int stop, 
+                        int leverage) {
+
+  float max_loss = leverage * stop; 
+  return expected_profit / max_loss ;
+  
+}
+
+
+float compute_stop_from_risk_reward_ratio(float risk_reward_ratio, 
+                                          float expected_profit, 
+                                          int leverage) {
+
+  return (  expected_profit / risk_reward_ratio ) / leverage ;
+
+}
 

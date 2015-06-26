@@ -3,8 +3,10 @@
 
 #include <iostream>
 #include <vector>
+#include <deque>
 #include <cmath>
 #include <string>
+
 #include "assoc.h"
 #include "utils.h"
 #include "indice.h"
@@ -50,7 +52,7 @@ typedef struct pos_c {
 
 
  
-typedef std::vector<position> posList;
+typedef std::deque<position> posList;
 
 
 
@@ -69,12 +71,12 @@ class moneyManager {
     int ask(string,string,int,int);
     void smartAsk(int*,string);
     int addPosition(position p);
-    vector<position>::iterator remPosition(vector<position>::iterator);
+    std::deque<position>::iterator remPosition(std::deque<position>::iterator);
     void remPosition(string);
     bool hasPos(string);
     bool hasPos(string,string);
-    vector<position>* getPositions();
-    vector<position>* getPositionsHistory();
+    std::deque<position>* getPositions();
+    std::deque<position>* getPositionsHistory();
     position* getPositionByDealid(string);
     string cleanPositions(vector<string>);
     string resolveError(int);
@@ -96,6 +98,9 @@ class moneyManager {
 
     void loadCPNL();
     void saveCPNL();
+
+    //void lockPoslist();
+    //void unlockPoslist();
     
   private:
   	float capital;
@@ -104,8 +109,9 @@ class moneyManager {
     float max_loss_percentage_per_trade;
     float critical_loss_percentage;
     float max_var;
-  	vector<position> positions;
-    vector<position> positions_history;
+  	std::deque<position> positions;
+
+    std::deque<position> positions_history;
     AssocArray<indice*> indices_list;
     float var;
     float cur_pnl;

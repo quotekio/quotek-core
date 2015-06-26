@@ -130,7 +130,7 @@ void broker_sync_start(void* arg) {
   moneyManager* mm = t0->getMoneyManager();
   broker* b0 = t0->getBroker();
   ticks_t ticks = t0->getTicks();
-  vector<position>* poslist = mm->getPositions();
+  std::deque<position>* poslist = mm->getPositions();
   igmLogger* logger = t0->getLogger();
 
   AssocArray<indice*> ilist = t0->getIndicesList();
@@ -240,14 +240,14 @@ void* tsEngine::moneyman(void* arg) {
   //TRADELIFE struct for fctptr
   typedef void* (*tl_fct)(pos_c*,tradelife_io*);
   void* tl_fct_fref = st->getTLFct(); 
-  vector<position>* poslist = mm->getPositions();
+  std::deque<position>* poslist = mm->getPositions();
 
   //pnl-needed vars
   float v;
 
   float cval;
   record* r;
-  position p0;
+ 
   position* p;
 
   tradelife_io tl_io;
@@ -263,12 +263,10 @@ void* tsEngine::moneyman(void* arg) {
 
   while (1) {
 
-
     //checks STOPS & LIMIT and cleans positions if needed.
-    for(std::vector<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
+    for(std::deque<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
 
-      p0 = *iter;
-      p = &p0;
+      p = &*iter;
       r = records_last(t0->getIndiceRecords(p->indice));
       if (r != NULL) cval = r->value;
       else continue;
@@ -307,10 +305,10 @@ void* tsEngine::moneyman(void* arg) {
 
       tl_fct tl = (tl_fct) tl_fct_fref;
 
-      for(std::vector<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
+      for(std::deque<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
 
-        p0 = *iter;
-        p = &p0;
+        
+        p = &*iter;
 
         pos_c pos_io;
         pos_io.indice = p->indice.c_str();
@@ -414,7 +412,7 @@ void* tsEngine::saveToBackend(void* arg) {
   backend* back0 = t0->getBackend();
   t0->setBSP(0);
   int backend_save_pos = t0->getBSP();
-  vector<position>* pos_history = t0->getMoneyManager()->getPositionsHistory();
+  std::deque<position>* pos_history = t0->getMoneyManager()->getPositionsHistory();
    
   int prev_t = 0;
 

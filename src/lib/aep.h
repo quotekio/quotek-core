@@ -6,6 +6,7 @@
 #include "btengine.h"
 #include "constants.h"
 
+#include <deque>
 #include <string>
 #include <iostream>
 

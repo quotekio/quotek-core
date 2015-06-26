@@ -74,5 +74,21 @@ farray* lreg(records*);
 affine lreg_affine(records* recs2);
 affine lreg_affine_scaled(records* recs2, int scale_x, int scale_y);
 
+/**
+ * Computes risk reward ratio given expected_gain, open price, stop, and pip cost.
+ *
+ */
+float risk_reward_ratio(float expected_profit,
+	                    int stop, 
+	                    int leverage);
+/**
+ * Computes where to place the stop-loss given expected risk reward ratio.
+ */
+float compute_stop_from_risk_reward_ratio(float risk_reward_ratio, 
+	                                      float expected_profit, 
+	                                      int leverage);
+
+
+
 
 

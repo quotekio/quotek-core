@@ -25,7 +25,7 @@ public:
   	       igmLogger* logger,
   	       float* cur_pnl,
   	       float* cumulative_pnl,
-  	       vector<position>* positions,
+  	       std::deque<position>* positions,
   	       store* s) {
 
     this->mode = mode;
@@ -42,7 +42,7 @@ public:
   igmLogger* logger;
   float* cur_pnl;
   float* cumulative_pnl;
-  vector<position>* positions;
+  std::deque<position>* positions;
   store* s;
   void* eptr;
 
