@@ -130,7 +130,7 @@ void broker_sync_start(void* arg) {
   moneyManager* mm = t0->getMoneyManager();
   broker* b0 = t0->getBroker();
   ticks_t ticks = t0->getTicks();
-  std::deque<position>* poslist = mm->getPositions();
+  tsdeque<position>* poslist = mm->getPositions();
   igmLogger* logger = t0->getLogger();
 
   AssocArray<indice*> ilist = t0->getIndicesList();
@@ -240,7 +240,7 @@ void* tsEngine::moneyman(void* arg) {
   //TRADELIFE struct for fctptr
   typedef void* (*tl_fct)(pos_c*,tradelife_io*);
   void* tl_fct_fref = st->getTLFct(); 
-  std::deque<position>* poslist = mm->getPositions();
+  tsdeque<position>* poslist = mm->getPositions();
 
   //pnl-needed vars
   float v;
@@ -264,7 +264,7 @@ void* tsEngine::moneyman(void* arg) {
   while (1) {
 
     //checks STOPS & LIMIT and cleans positions if needed.
-    for(std::deque<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
+    for(tsdeque<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
 
       p = &*iter;
       r = records_last(t0->getIndiceRecords(p->indice));
@@ -305,7 +305,7 @@ void* tsEngine::moneyman(void* arg) {
 
       tl_fct tl = (tl_fct) tl_fct_fref;
 
-      for(std::deque<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
+      for(tsdeque<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
 
         
         p = &*iter;
@@ -412,7 +412,7 @@ void* tsEngine::saveToBackend(void* arg) {
   backend* back0 = t0->getBackend();
   t0->setBSP(0);
   int backend_save_pos = t0->getBSP();
-  std::deque<position>* pos_history = t0->getMoneyManager()->getPositionsHistory();
+  tsdeque<position>* pos_history = t0->getMoneyManager()->getPositionsHistory();
    
   int prev_t = 0;
 

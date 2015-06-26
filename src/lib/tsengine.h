@@ -12,6 +12,7 @@
 #include "backends/backend.h"
 #include "records.h"
 #include "queue_c.h"
+#include "tsdeque.hpp"
 
 
 #include "rapidjson/rapidjson.h"
