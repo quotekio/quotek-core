@@ -169,7 +169,7 @@ string moneyManager::cleanPositions(vector<string> alive_pos) {
 
 
 
-tsdeque<position>::iterator moneyManager::remPosition(tsdeque<position>::iterator iter) {
+vector<position>::iterator moneyManager::remPosition(vector<position>::iterator iter) {
   
       position* p = &*iter;
 
@@ -208,11 +208,11 @@ void moneyManager::remPosition(string dealid) {
 
 
 
-tsdeque<position>* moneyManager::getPositions() {
+cvector<position>* moneyManager::getPositions() {
   return &positions;
 }
 
-tsdeque<position>* moneyManager::getPositionsHistory() {
+cvector<position>* moneyManager::getPositionsHistory() {
   return &positions_history;
 }
 

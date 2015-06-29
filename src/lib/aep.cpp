@@ -105,7 +105,7 @@ std::string aep_poslist(tsEngine* t0) {
   moneyManager* mm = t0->getMoneyManager();
   std::string ret = "[";
 
-  std::deque<position>* plist = mm->getPositions();
+  cvector<position>* plist = mm->getPositions();
 
   for (int i=0;i<plist->size();i++) {
 

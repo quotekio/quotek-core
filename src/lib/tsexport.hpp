@@ -3,6 +3,7 @@
 
 #include "igmlogger.h"
 #include "store.h"
+#include "cvector.hpp"
 
 
 /** tsexport is a class meant to expose some poarts 
@@ -25,7 +26,7 @@ public:
   	       igmLogger* logger,
   	       float* cur_pnl,
   	       float* cumulative_pnl,
-  	       std::deque<position>* positions,
+  	       cvector<position>* positions,
   	       store* s) {
 
     this->mode = mode;
@@ -42,7 +43,7 @@ public:
   igmLogger* logger;
   float* cur_pnl;
   float* cumulative_pnl;
-  std::deque<position>* positions;
+  cvector<position>* positions;
   store* s;
   void* eptr;
 

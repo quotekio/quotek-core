@@ -210,7 +210,7 @@ public:
 
     }
 
-    virtual int saveHistory(vector<position>* plist) {
+    virtual int saveHistory(cvector<position>* plist) {
 
       std::ostringstream sdata;
       http* hhdl = prepare_http_handler();
@@ -270,7 +270,7 @@ private:
 
   }
 
-  std::string poslist2json(vector<position>* plist) {
+  std::string poslist2json(cvector<position>* plist) {
 
     std::ostringstream jstream;    
     for (int i=0;i<plist->size();i++)  {

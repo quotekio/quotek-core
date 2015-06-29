@@ -12,7 +12,7 @@
 #include "indice.h"
 #include "results.h"
 #include "position.h"
-#include "tsdeque.hpp"
+#include "cvector.hpp"
 
 #define MM_ERR_NBPOS 0x01
 #define MM_ERR_TRADERISK_2HIGH 0x02
@@ -53,7 +53,7 @@ typedef struct pos_c {
 
 
  
-typedef tsdeque<position> posList;
+typedef vector<position> posList;
 
 
 
@@ -72,12 +72,12 @@ class moneyManager {
     int ask(string,string,int,int);
     void smartAsk(int*,string);
     int addPosition(position p);
-    tsdeque<position>::iterator remPosition(tsdeque<position>::iterator);
+    vector<position>::iterator remPosition(vector<position>::iterator);
     void remPosition(string);
     bool hasPos(string);
     bool hasPos(string,string);
-    tsdeque<position>* getPositions();
-    tsdeque<position>* getPositionsHistory();
+    cvector<position>* getPositions();
+    cvector<position>* getPositionsHistory();
     position* getPositionByDealid(string);
     string cleanPositions(vector<string>);
     string resolveError(int);
@@ -110,9 +110,9 @@ class moneyManager {
     float max_loss_percentage_per_trade;
     float critical_loss_percentage;
     float max_var;
-  	tsdeque<position> positions;
+  	cvector<position> positions;
 
-    tsdeque<position> positions_history;
+    cvector<position> positions_history;
     AssocArray<indice*> indices_list;
     float var;
     float cur_pnl;

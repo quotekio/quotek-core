@@ -7,6 +7,7 @@
 #include <iostream>
 #include "../records.h"
 #include "../position.h"
+#include "../cvector.hpp"
 
 using namespace std;
 
@@ -27,7 +28,7 @@ public:
      * @param plist: pointer to vector of positions to save.
      * @returns: 0 on success, >0 either.
      */
-    virtual int saveHistory(vector<position>* plist) {return 0;}
+    virtual int saveHistory(cvector<position>* plist) {return 0;}
 
     /**
      * Saves a position history to backend database.

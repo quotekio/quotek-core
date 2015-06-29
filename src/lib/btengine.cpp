@@ -155,7 +155,7 @@ void btEngine::moneyman_() {
 
   tradelife_io tl_io;
 
-  tsdeque<position>* poslist = tse_mm->getPositions();
+  cvector<position>* poslist = tse_mm->getPositions();
 
   if ( tl_fct_fref != NULL) {
 
@@ -218,7 +218,7 @@ void btEngine::moneyman_() {
     tse_mm->computePNLs(si.at(j),v);
 
     //close positions where limit/stop is reached
-    for(tsdeque<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
+    for(vector<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
 
       if ( poslist->size() == 0 ) break;
 
@@ -473,7 +473,7 @@ adamresult* btEngine::run() {
   result->stop = time(0);
 
   //Adds remaining pos to history
-  tsdeque<position>* rpos = tse_mm->getPositions();
+  cvector<position>* rpos = tse_mm->getPositions();
   result->remainingpos = rpos->size();
 
   for (int i=0;i<result->remainingpos;i++) {
