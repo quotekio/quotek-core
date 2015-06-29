@@ -469,15 +469,14 @@ void* tsEngine::saveToBackend(void* arg) {
 }
 
 
-void* tsEngine::poll(void* arg) {
+void tsEngine::poll() {
 
-  tsEngine *t0 = (tsEngine*) arg; 
   vector<bvex> values;
 
-  AssocArray<indice*> ilist = t0->getIndicesList();
-  igmLogger* logger = t0->getLogger();
+  AssocArray<indice*> ilist = this->getIndicesList();
+  igmLogger* logger = this->getLogger();
 
-  ticks_t ticks = t0->getTicks();
+  ticks_t ticks = this->getTicks();
 
   uint32_t time_ms;
   string epic;
@@ -489,8 +488,8 @@ void* tsEngine::poll(void* arg) {
   while(1) {
 
     //perf profiling
-    auto tt0 = std::chrono::high_resolution_clock::now();
-    values = t0->getBroker()->getValues();
+    auto tthis = std::chrono::high_resolution_clock::now();
+    values = this->getBroker()->getValues();
 
     time_ms = time(0);
     
@@ -510,14 +509,14 @@ void* tsEngine::poll(void* arg) {
         indice* idx = iResolve(ilist, epic);
         if (idx != NULL) {
           mepic = idx->name;
-          t0->pushRecord(mepic,&r);
+          this->pushRecord(mepic,&r);
 
         }
       }
     }
 
     auto tt1 = std::chrono::high_resolution_clock::now();
-    auto elapsed_t = tt1 - tt0;
+    auto elapsed_t = tt1 - tthis;
     uint64_t elapsed = std::chrono::duration_cast<std::chrono::microseconds>(elapsed_t).count();
     
     if (elapsed < ticks.getval) {  
@@ -628,14 +627,13 @@ void* tsEngine::evaluate(void* arg) {
 
 // ############
 
-void* tsEngine::execute(void* arg) {
+void tsEngine::execute() {
 
-  tsEngine *t0 = (tsEngine*) arg; 
-  Queue<std::string> *orders_queue = t0->getOrdersQueue();
-  broker* b0 = t0->getBroker();
-  moneyManager* mm = t0->getMoneyManager();
-  igmLogger* logger = t0->getLogger();
-  AssocArray<indice*> ilist = t0->getIndicesList();
+  Queue<std::string> *orders_queue = this->getOrdersQueue();
+  broker* b0 = this->getBroker();
+  moneyManager* mm = this->getMoneyManager();
+  igmLogger* logger = this->getLogger();
+  AssocArray<indice*> ilist = this->getIndicesList();
     
   std::string order;
   vector<std::string> order_params;
@@ -688,10 +686,10 @@ void* tsEngine::execute(void* arg) {
            else reverse_way = "sell";
 
            reverse_dealids = mm->findPos(indice,reverse_way);
-           for (int k=0;k<reverse_dealids.size();k++) t0->closePosition(reverse_dealids[k]);
+           for (int k=0;k<reverse_dealids.size();k++) this->closePosition(reverse_dealids[k]);
          }
 
-          t0->openPosition(epic,way,nbc,stop,limit) ;
+          this->openPosition(epic,way,nbc,stop,limit) ;
 
         }
      
@@ -705,7 +703,7 @@ void* tsEngine::execute(void* arg) {
         position* cpos  = mm->getPositionByDealid(dealid);
         if (cpos != NULL) {
           cpos->status = POS_PENDING_CLOSE;
-          t0->closePosition(dealid);
+          this->closePosition(dealid);
         }
       }
 
@@ -719,7 +717,7 @@ void* tsEngine::execute(void* arg) {
         cout << "DEALIDS_SIZE:" << dealids.size() << endl;
 
         for (int k=0;k<dealids.size();k++) {
-          t0->closePosition(dealids[k]);
+          this->closePosition(dealids[k]);
         }
 
       }
@@ -813,7 +811,7 @@ tsEngine::tsEngine(adamCfg* conf,
   }
 
   printf ("initializing poller..\n");
-  poller = new std::thread(poll,(void*) this);
+  poller = new std::thread( [this] { poll() ;} );
   
   printf ("initializing evaluators..\n");
   vector<string> evnames = iGetNames(getIndicesList());
@@ -839,7 +837,7 @@ tsEngine::tsEngine(adamCfg* conf,
   clkth = new std::thread(aclock,(void*) this);
 
   printf ("Initializing executor..\n");
-  executor = new std::thread(execute,(void*) this );
+  executor = new std::thread([this] { execute(); });
 
   printf ("Initializing money manager..\n");
   mmth = new std::thread(moneyman,(void*)this);
@@ -901,8 +899,6 @@ moneyManager* tsEngine::getMoneyManager() {
 AssocArray<void*>* tsEngine::getEvalPointers() {
   return &eval_ptrs;
 }
-
-
 
 int tsEngine::pushRecord(string mepic,record* r) {
   records_push(inmem_records[mepic],*r);

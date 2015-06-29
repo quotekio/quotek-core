@@ -107,10 +107,10 @@ class tsEngine{
     /** Creates a new object to expose some parts of the engine. */
     tsexport* eexport();
 
-    //#### STATIC,THREADED FUNCTIONS
-    static void* poll(void*);
+    //#### THREAD FUNCTIONS
+    void poll();
     static void* evaluate(void*);
-    static void* execute(void*);
+    void execute();
     static void* moneyman(void*);
     static void* modulethread_wrapper(void*);
     static void* aclock(void*);
