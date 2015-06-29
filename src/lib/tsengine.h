@@ -1,7 +1,6 @@
 #ifndef TSE_H
 #define TSE_H
 
-#include <pthread.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <dlfcn.h>
@@ -33,6 +32,7 @@
 #include "tsexport.hpp"
 #include <iostream>
 #include <fstream>
+#include <thread>
 
 using namespace rapidjson;
 
@@ -141,21 +141,21 @@ class tsEngine{
     store tse_store;
     store *tse_genes;
 
-    pthread_t poller;
-    pthread_t evaluator;
-    pthread_t executor;
-    pthread_t mmth;
-    pthread_t clkth;
-    pthread_t backioth;
+    std::thread* poller;
+    std::thread* evaluator;
+    std::thread* executor;
+    std::thread* mmth;
+    std::thread* clkth;
+    std::thread* backioth;
 
     typedef struct eval_thread {
       tsEngine* engine;
-      pthread_t th;
+      std::thread* th;
       void* eval_ptr;
       string eval_name;
     } eval_thread;
 
-    vector<pthread_t> modules_threads_list;
+    vector<std::thread> modules_threads_list;
     vector<eval_thread> eval_threads;
     int uptime;
 };
@@ -164,7 +164,7 @@ class tsEngine{
 typedef struct eval_thread {
 
   tsEngine* engine;
-  pthread_t th;
+  std::thread* th;
   void* eval_ptr;
   string eval_name;
 

@@ -807,13 +807,13 @@ tsEngine::tsEngine(adamCfg* conf,
 
     cout << "Initializing Extra Module: " << modules_list[i] << endl;
 
-    pthread_t t;
-    modules_threads_list.push_back(t);
+    //std::thread t;
+    //modules_threads_list.push_back(t);
     
   }
 
   printf ("initializing poller..\n");
-  pthread_create(&poller,NULL,poll,(void*)this);
+  poller = new std::thread(poll,(void*) this);
   
   printf ("initializing evaluators..\n");
   vector<string> evnames = iGetNames(getIndicesList());
@@ -832,23 +832,23 @@ tsEngine::tsEngine(adamCfg* conf,
   }
 
   for (int i=0;i<eval_threads.size();i++) {
-    pthread_create(&(eval_threads[i].th) ,NULL,evaluate,(void*)&(eval_threads[i]) );
+    eval_threads[i].th = new std::thread(evaluate, (void*)&(eval_threads[i]));
   }
 
   printf ("Starting clock..\n");
-  pthread_create(&clkth,NULL,aclock,(void*)this);  
+  clkth = new std::thread(aclock,(void*) this);
 
   printf ("Initializing executor..\n");
-  pthread_create(&executor,NULL,execute,(void*)this);
+  executor = new std::thread(execute,(void*) this );
 
   printf ("Initializing money manager..\n");
-  pthread_create(&mmth,NULL,moneyman,(void*)this);
+  mmth = new std::thread(moneyman,(void*)this);
 
   printf ("Synchronizing broker Positions with adam..\n");
   broker_sync_start((void*)this);
 
   printf ("Initializing backend I/O Thread..\n");
-  pthread_create(&backioth,NULL,saveToBackend,(void*)this);
+  backioth = new std::thread(saveToBackend,(void*)this);
 
 }
 
