@@ -46,7 +46,7 @@
 
     typename std::vector<T>::iterator end() {
       std::lock_guard<std::mutex> lock(mtx);
-      return this->data.begin();
+      return this->data.end();
     }
  
     void erase(const typename std::vector<T>::iterator& first, const typename std::vector<T>::iterator& last) {

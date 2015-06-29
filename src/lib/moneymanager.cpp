@@ -189,8 +189,6 @@ void moneyManager::remPosition(string dealid) {
   
   for (std::vector<position>::iterator iter =  positions.begin() ;iter != positions.end();++iter) {
     
-    cout << "ITER!" << endl;
-
     position *p = &*iter;
 
     //adds close_time tstamp
