@@ -153,7 +153,7 @@ string moneyManager::cleanPositions(vector<string> alive_pos) {
 
   string response = "";
 
-  for (posList::iterator iter =  positions.begin() ;iter != positions.end();++iter) {
+  for (std::vector::iterator<position> iter =  positions.begin() ;iter != positions.end();++iter) {
 
     position *p = &*iter;
     if ( ! contains(alive_pos,p->dealid) ) {
@@ -187,8 +187,10 @@ vector<position>::iterator moneyManager::remPosition(vector<position>::iterator 
 
 void moneyManager::remPosition(string dealid) {
   
-  for (posList::iterator iter =  positions.begin() ;iter != positions.end();++iter) {
+  for (std::vector::iterator<position> iter =  positions.begin() ;iter != positions.end();++iter) {
     
+    cout << "ITER!" << endl;
+
     position *p = &*iter;
 
     //adds close_time tstamp

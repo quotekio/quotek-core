@@ -52,10 +52,6 @@ typedef struct pos_c {
 } pos_c;
 
 
- 
-typedef vector<position> posList;
-
-
 
 class moneyManager {
 
