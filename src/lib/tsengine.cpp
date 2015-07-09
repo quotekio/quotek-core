@@ -12,25 +12,20 @@ tsexport* tsEngine::eexport() {
 
 }
 
-void* tsEngine::modulethread_wrapper(void* arg) {
-
-  if (!arg) {
-    cout << "Fatal error: Null pointer as module argument" << endl;
-    exit(1);
-  }
+void tsEngine::modulethread_wrapper() {
 
   /*
 
   //typedef void* (*fctptr)(module_io);
   //module_initializer* mi = (module_initializer*) arg;
   //tsEngine* t0 = mi->engine;
-  //moneyManager* mm = t0->getMoneyManager();
+  //moneyManager* mm = this->getMoneyManager();
   //string module_so = "lib" + mi->name + ".so";
  
   module_io mio;
   mio.cur_pnl = mm->getCurPNL();
   mio.cumulative_pnl = mm->getCumulativePNL();
-  mio.s = t0->getStore() ;
+  mio.s = this->getStore() ;
   mio.input = &(mi->input);
   mio.output = &(mi->output);
   
@@ -51,7 +46,6 @@ void* tsEngine::modulethread_wrapper(void* arg) {
   //fctptr f = (fctptr) symbol;
   //(*f)(mio);
   */
-  return NULL;
 } 
 
 void tsEngine::openPosition(string epic, string way, int nbc, int stop, int limit) {
@@ -124,16 +118,15 @@ void tsEngine::closePosition(string dealid) {
 /**
 * broker_sync method enables to synchronize broker and bot at start
 */
-void broker_sync_start(void* arg) {
-
-  tsEngine* t0 = (tsEngine*) arg;
-  moneyManager* mm = t0->getMoneyManager();
-  broker* b0 = t0->getBroker();
-  ticks_t ticks = t0->getTicks();
+void tsEngine::broker_sync_start() {
+  
+  moneyManager* mm = this->getMoneyManager();
+  broker* b0 = this->getBroker();
+  ticks_t ticks = this->getTicks();
   cvector<position>* poslist = mm->getPositions();
-  igmLogger* logger = t0->getLogger();
+  igmLogger* logger = this->getLogger();
 
-  AssocArray<indice*> ilist = t0->getIndicesList();
+  AssocArray<indice*> ilist = this->getIndicesList();
   vector<string> si = iGetNames(ilist);
 
   indice* idx;
@@ -200,10 +193,10 @@ void broker_sync_start(void* arg) {
 void* broker_force_close(void* arg) {
 
   tsEngine* t0 = (tsEngine*) arg;
-  moneyManager* mm = t0->getMoneyManager();
-  broker* b0 = t0->getBroker();
+  moneyManager* mm = this->getMoneyManager();
+  broker* b0 = this->getBroker();
   vector<position>* poslist = mm->getPositions();
-  Queue<std::string> *orders_queue = t0->getOrdersQueue();
+  Queue<std::string> *orders_queue = this->getOrdersQueue();
 
   while(1) {
     for (int i=0;i<poslist->size();i++) {
@@ -217,25 +210,23 @@ void* broker_force_close(void* arg) {
 */
 
 
-void* tsEngine::aclock(void* arg) {
-  tsEngine *t0 = (tsEngine*) arg;
+void tsEngine::aclock() {
 
   while(1) {
-    t0->tick();
+    this->tick();
     sleep(1);
   }
 }
 
-void* tsEngine::moneyman(void* arg) {
+void tsEngine::moneyman() {
 
-  tsEngine *t0 = (tsEngine*) arg;
-  broker* b0 = t0->getBroker();
-  moneyManager* mm = t0->getMoneyManager();
-  AssocArray<indice*> ilist = t0->getIndicesList();
+  broker* b0 = this->getBroker();
+  moneyManager* mm = this->getMoneyManager();
+  AssocArray<indice*> ilist = this->getIndicesList();
   vector<string> si = iGetNames(ilist);
-  igmLogger* logger = t0->getLogger();
-  Queue<std::string> *orders_queue = t0->getOrdersQueue();
-  strategy* st = t0->getStrategy();
+  igmLogger* logger = this->getLogger();
+  Queue<std::string> *orders_queue = this->getOrdersQueue();
+  strategy* st = this->getStrategy();
 
   //TRADELIFE struct for fctptr
   typedef void* (*tl_fct)(pos_c*,tradelife_io*);
@@ -259,7 +250,7 @@ void* tsEngine::moneyman(void* arg) {
 
   tl_io.orders = &orders_q;
   tl_io.logs = &logs_q;
-  tl_io.s = t0->getStore();
+  tl_io.s = this->getStore();
 
   while (1) {
 
@@ -267,7 +258,7 @@ void* tsEngine::moneyman(void* arg) {
     for(vector<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
 
       p = &*iter;
-      r = records_last(t0->getIndiceRecords(p->indice));
+      r = records_last(this->getIndiceRecords(p->indice));
       if (r != NULL) cval = r->value;
       else continue;
 
@@ -346,7 +337,7 @@ void* tsEngine::moneyman(void* arg) {
           free(logstr);
         }
 
-        r = records_last(t0->getIndiceRecords(p->indice));
+        r = records_last(this->getIndiceRecords(p->indice));
         if (r != NULL) cval = r->value;
         else continue;
         
@@ -379,7 +370,7 @@ void* tsEngine::moneyman(void* arg) {
 
     for(int j=0;j<si.size();j++) {
       
-      records* mrecs = t0->getIndiceRecords(si.at(j));
+      records* mrecs = this->getIndiceRecords(si.at(j));
       if (mrecs != NULL) {
         record* mr = records_last(mrecs);
         if (mr!= NULL) { 
@@ -401,18 +392,15 @@ void* tsEngine::moneyman(void* arg) {
     usleep(1000000);
   } 
 
-return NULL;
-
 }
 
 
-void* tsEngine::saveToBackend(void* arg) {
+void tsEngine::saveToBackend() {
 
-  tsEngine *t0 = (tsEngine*) arg;
-  backend* back0 = t0->getBackend();
-  t0->setBSP(0);
-  int backend_save_pos = t0->getBSP();
-  cvector<position>* pos_history = t0->getMoneyManager()->getPositionsHistory();
+  backend* back0 = this->getBackend();
+  this->setBSP(0);
+  int backend_save_pos = this->getBSP();
+  cvector<position>* pos_history = this->getMoneyManager()->getPositionsHistory();
    
   int prev_t = 0;
 
@@ -428,7 +416,7 @@ void* tsEngine::saveToBackend(void* arg) {
       }
     }
 
-    AssocArray<records*>* inmem_recs = t0->getRecords();
+    AssocArray<records*>* inmem_recs = this->getRecords();
     int rsize_snapshot;
     for (int i=0; i< inmem_recs->Size(); i++) {
 
@@ -438,7 +426,7 @@ void* tsEngine::saveToBackend(void* arg) {
       //snap records size only once for first element.
       //(next elements should always have at leaest the same size)
       if (i==0) rsize_snapshot = recs->size;
-      backend_save_pos = t0->getBSP();
+      backend_save_pos = this->getBSP();
 
       //cout << "BACKEND_SAVE_POS:" << backend_save_pos << endl;
       //cout << "RSIZE_SNAPSHOT:" << rsize_snapshot << endl;
@@ -454,7 +442,7 @@ void* tsEngine::saveToBackend(void* arg) {
     }
 
     backend_save_pos = rsize_snapshot;
-    t0->setBSP(backend_save_pos);
+    this->setBSP(backend_save_pos);
 
     auto tt1 = std::chrono::high_resolution_clock::now();
     auto elapsed_t = tt1 - tt0;
@@ -465,7 +453,6 @@ void* tsEngine::saveToBackend(void* arg) {
     }
 
   }
-  return NULL;
 }
 
 
@@ -527,17 +514,16 @@ void tsEngine::poll() {
 
 }
 
-void* tsEngine::evaluate(void* arg) {
+void tsEngine::evaluate(void* arg) {
 
   typedef void* (*eval_fct)(uint32_t,float,float, evaluate_io*);
 
   eval_thread* et = (eval_thread*) arg;
-  tsEngine *t0 = et->engine;
   eval_fct f = (eval_fct) et->eval_ptr;
   string eval_name = et->eval_name;
 
-  Queue<std::string> *orders_queue = t0->getOrdersQueue();
-  igmLogger* logger = t0->getLogger();
+  Queue<std::string> *orders_queue = this->getOrdersQueue();
+  igmLogger* logger = this->getLogger();
 
   //######## EVALUATION-NEEDED VALUES
   uint32_t t;
@@ -551,18 +537,18 @@ void* tsEngine::evaluate(void* arg) {
 
   ev_io.orders = &orders_q;
   ev_io.logs = &logs_q;
-  ev_io.s = t0->getStore();
+  ev_io.s = this->getStore();
   ev_io.genes = NULL;
   ev_io.state = 0;
 
-  ev_io.recs = t0->getIndiceRecords(eval_name);
+  ev_io.recs = this->getIndiceRecords(eval_name);
 
-  ticks_t ticks = t0->getTicks();
+  ticks_t ticks = this->getTicks();
 
   string order_str;
   string log_str;
 
-  indice* idx = iResolve(t0->getIndicesList(),eval_name);
+  indice* idx = iResolve(this->getIndicesList(),eval_name);
 
   //waits for some data to be collected before starting to process;
   while(ev_io.recs->size == 0) { 
@@ -583,7 +569,7 @@ void* tsEngine::evaluate(void* arg) {
     v = last_rec->value;
     spread = last_rec->spread;
 
-    if ( t0->eval_running(idx,t) == 1 && t != previous_t ) {
+    if ( this->eval_running(idx,t) == 1 && t != previous_t ) {
       
       //execution of found eval function
       (*f)(t,v, spread, &ev_io);
@@ -821,29 +807,30 @@ tsEngine::tsEngine(adamCfg* conf,
       cout << "loading eval for indice "  << evnames.at(i)  << endl;
       et.eval_ptr = evptr;
       et.eval_name = evnames.at(i);
-      et.engine = this;
       eval_threads.push_back(et);
     }
   }
 
   for (int i=0;i<eval_threads.size();i++) {
-    eval_threads[i].th = new std::thread(, (void*)&(eval_threads[i]));
+    void* etptr = (void*) &eval_threads[i];
+
+    eval_threads[i].th = new std::thread( [&] {  this->evaluate( (void*) &eval_threads[i] ); } );
   }
 
   printf ("Starting clock..\n");
-  clkth = new std::thread(aclock,(void*) this);
+  clkth = new std::thread([this] { aclock(); });
 
   printf ("Initializing executor..\n");
   executor = new std::thread([this] { execute(); });
 
   printf ("Initializing money manager..\n");
-  mmth = new std::thread(moneyman,(void*)this);
+  mmth = new std::thread([this] { moneyman(); });
 
   printf ("Synchronizing broker Positions with adam..\n");
-  broker_sync_start((void*)this);
+  broker_sync_start();
 
   printf ("Initializing backend I/O Thread..\n");
-  backioth = new std::thread(saveToBackend,(void*)this);
+  backioth = new std::thread( [this] { saveToBackend(); }  );
 
 }
 

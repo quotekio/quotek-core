@@ -139,8 +139,20 @@ class tsEngine{
     void moneyman();
 
     void modulethread_wrapper();
+    /**
+     * aclock is the thread callback handling time
+     * count in adam.
+     */
     void aclock();
+    
+    /**
+     * saveToBackend is the thread callback handling interactions
+     * with backend and specially saving data. 
+     */
     void saveToBackend();
+
+    void broker_sync_start();
+
 
   protected:
 
