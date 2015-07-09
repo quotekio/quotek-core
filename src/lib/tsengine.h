@@ -108,13 +108,39 @@ class tsEngine{
     tsexport* eexport();
 
     //#### THREAD FUNCTIONS
+    
+    /**
+     * Polling thread of adam.
+     * This function periodically fetches the data from the configured broker
+     */
     void poll();
-    static void* evaluate(void*);
+
+    /**
+     * Asset Evaluation threads.
+     * This function is vital to adam: it is the function which is
+     * called periodically (at each tick) to evaluate an asset and ultimately
+     * takes a decision to take a position or not.
+     */
+    void evaluate(void*);
+
+    /**
+     * This function is the orders execution threads callback.
+     * Each call to the broker passes there.
+     */
     void execute();
-    static void* moneyman(void*);
-    static void* modulethread_wrapper(void*);
-    static void* aclock(void*);
-    static void* saveToBackend(void*);
+
+    /**
+     * Money Management Thread.
+     * This callback is the second most important in adam.
+     * It runs the moneymanager: it ultimately decides to open a position
+     * or not depending of the defined policy. It also computes the PNL 
+     * of each position in real time.
+     */
+    void moneyman();
+
+    void modulethread_wrapper();
+    void aclock();
+    void saveToBackend();
 
   protected:
 

@@ -527,9 +527,6 @@ void tsEngine::poll() {
 
 }
 
-
-
-// ### VALUES EVALUATIONS ALGORITHM #######
 void* tsEngine::evaluate(void* arg) {
 
   typedef void* (*eval_fct)(uint32_t,float,float, evaluate_io*);
@@ -830,7 +827,7 @@ tsEngine::tsEngine(adamCfg* conf,
   }
 
   for (int i=0;i<eval_threads.size();i++) {
-    eval_threads[i].th = new std::thread(evaluate, (void*)&(eval_threads[i]));
+    eval_threads[i].th = new std::thread(, (void*)&(eval_threads[i]));
   }
 
   printf ("Starting clock..\n");
