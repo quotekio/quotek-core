@@ -17,12 +17,16 @@
 using namespace std;
 
 
-class strategy {
+/**
+ * Class strategy handler takes care of source decoration, compiling, etc..
+ */
+
+class strategyHandler {
 
   public:
 
-    strategy(string stpath, string name);
-    strategy(string stpath, string name,genetics* ge);
+    strategyHandler(string stpath, string name);
+    strategyHandler(string stpath, string name,genetics* ge);
     void setGE(genetics* ge);
     int prepareCompile();
     int compile(int);

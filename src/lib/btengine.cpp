@@ -9,7 +9,7 @@ btEngine::btEngine(adamCfg* conf,
                    broker* b,
                    backend* back,
                    AssocArray<indice*> ilist,
-                   strategy* s,
+                   strategyHandler* sh,
                    moneyManager* mm,
                    genetics* ge,
                    vector<string> mlist) {
@@ -17,7 +17,7 @@ btEngine::btEngine(adamCfg* conf,
 
   tse_broker = b;
   tse_back = back;
-  tse_strat = s;
+  tse_strathandler = sh;
   tse_mm = mm;
   tse_ge = ge;
   indices_list = ilist;
@@ -60,7 +60,7 @@ btEngine::btEngine(adamCfg* conf,
   vector<string> evnames = iGetNames(getIndicesList());
 
   for (int i=0;i<evnames.size();i++) {
-    void* evptr = tse_strat->resolveFunction(evnames.at(i),"EVAL");
+    void* evptr = tse_strathandler->resolveFunction(evnames.at(i),"EVAL");
     if (evptr) {
       cout << "loading eval for indice "  << evnames.at(i)  << endl;
       eval_pointers[evnames.at(i)] = evptr;
@@ -151,7 +151,7 @@ void btEngine::moneyman_() {
 
   //TRADELIFE struct for fctptr
   typedef void* (*tl_fct)(pos_c*,tradelife_io*);
-  void* tl_fct_fref = tse_strat->getTLFct(); 
+  void* tl_fct_fref = tse_strathandler->getTLFct(); 
 
   tradelife_io tl_io;
 

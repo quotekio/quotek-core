@@ -45,7 +45,7 @@ void signal_callback_handler(int signum) {
 
     chdir(ADAM_PREFIX);
 
-    strategy* s = tse->getStrategy();
+    strategyHandler* s = tse->getStratHandler();
     s->prepareCompile();
     cout << "recompiling strategy.." << endl;
     s->compile(so_iter);
@@ -188,7 +188,7 @@ int main(int argc,char** argv) {
   cout << "Loading configuration..." << endl;
 
   genetics* ge = NULL;
-  strategy* s;
+  strategyHandler* sh;
   adamCfg* c = new adamCfg();
 
   if (argc > 1 ) {
@@ -237,14 +237,13 @@ int main(int argc,char** argv) {
                                 gp->genetics_max_generations,
                                 gp->genetics_recompute_winners);
 
-    s = new strategy(c->getStratsPath(), c->getStrat(), ge);
+    sh = new strategyHandler(c->getStratsPath(), c->getStrat(), ge);
 
   }
 
   else {
-    s = new strategy(c->getStratsPath(), c->getStrat());
+    sh = new strategyHandler(c->getStratsPath(), c->getStrat());
   }
-
 
   broker* b = load_broker(c->getBroker())();
 
@@ -266,11 +265,11 @@ int main(int argc,char** argv) {
   }
 
   cout << "preparing strategy compilation.." << endl;
-  s->prepareCompile();
+  sh->prepareCompile();
   cout << "compiling strategy.." << endl;
-  s->compile(0);
+  sh->compile(0);
   cout << "loading compiled strategy.."<<endl;
-  s->dlibOpen(0);
+  sh->dlibOpen(0);
 
   adamGeneticsResult* gres;
   adamresult* res;
@@ -279,11 +278,11 @@ int main(int argc,char** argv) {
 
     case ADAM_MODE_REAL:
       cout << "starting Engine in real mode.." << endl;
-      tse = new tsEngine(c,b,back,ilist,s,mm,ge,mlist);
+      tse = new tsEngine(c,b,back,ilist,sh,mm,ge,mlist);
       break;
     case ADAM_MODE_BACKTEST:
       cout << "starting Engine in backtest mode.." << endl;
-      bte = new btEngine(c,b,back,ilist,s,mm,ge,mlist);
+      bte = new btEngine(c,b,back,ilist,sh,mm,ge,mlist);
       res = bte->run();
 
       if ( c->getBTResultFile() != "" ) {
@@ -294,7 +293,7 @@ int main(int argc,char** argv) {
 
     case ADAM_MODE_GENETICS:
       cout << "starting Engine in genetics mode.." << endl;
-      bte = new btEngine(c,b,back,ilist,s,mm,ge,mlist);
+      bte = new btEngine(c,b,back,ilist,sh,mm,ge,mlist);
       gres = bte->runGenetics();
 
       if ( c->getBTResultFile() != "" ) {

@@ -226,11 +226,11 @@ void tsEngine::moneyman() {
   vector<string> si = iGetNames(ilist);
   igmLogger* logger = this->getLogger();
   Queue<std::string> *orders_queue = this->getOrdersQueue();
-  strategy* st = this->getStrategy();
+  strategyHandler* sh = this->getStratHandler();
 
   //TRADELIFE struct for fctptr
   typedef void* (*tl_fct)(pos_c*,tradelife_io*);
-  void* tl_fct_fref = st->getTLFct(); 
+  void* tl_fct_fref = sh->getTLFct(); 
   cvector<position>* poslist = mm->getPositions();
 
   //pnl-needed vars
@@ -514,6 +514,7 @@ void tsEngine::poll() {
 
 }
 
+
 void tsEngine::evaluate(void* arg) {
 
   typedef void* (*eval_fct)(uint32_t,float,float, evaluate_io*);
@@ -607,6 +608,16 @@ void tsEngine::evaluate(void* arg) {
   }
 
 }
+
+
+void tsEngine::evaluate2() {
+
+  
+
+
+
+}
+
 
 // ############
 
@@ -723,7 +734,7 @@ tsEngine::tsEngine(adamCfg* conf,
                    broker* b,
                    backend* back,
                    AssocArray<indice*> ilist,
-                   strategy* s,
+                   strategyHandler* sh,
                    moneyManager* mm,
                    genetics* ge,
                    vector<string> mlist) {
@@ -737,7 +748,7 @@ tsEngine::tsEngine(adamCfg* conf,
   tse_ticks = conf->getTicks();
   tse_inmem_history = conf->getInMemHistory();
   tse_back = back;
-  tse_strat = s;
+  tse_strathandler = sh;
   tse_mm = mm;
   tse_ge = ge;
   indices_list = ilist;
@@ -802,7 +813,7 @@ tsEngine::tsEngine(adamCfg* conf,
 
   for (int i=0;i<evnames.size();i++) {
     eval_thread et;
-    void* evptr = tse_strat->resolveFunction(evnames.at(i),"EVAL");
+    void* evptr = tse_strathandler->resolveFunction(evnames.at(i),"EVAL");
     if (evptr) {
       cout << "loading eval for indice "  << evnames.at(i)  << endl;
       et.eval_ptr = evptr;
@@ -868,8 +879,8 @@ Queue<std::string>* tsEngine::getOrdersQueue() {
   return &orders_queue;
 }
 
-strategy* tsEngine::getStrategy() {
-  return tse_strat;
+strategyHandler* tsEngine::getStratHandler() {
+  return tse_strathandler;
 }
 
 moneyManager* tsEngine::getMoneyManager() {

@@ -22,7 +22,7 @@ class btEngine: public tsEngine {
              broker*,
              backend*,
              AssocArray<indice*>,
-             strategy*,
+             strategyHandler*,
              moneyManager*,
              genetics*,
              vector<string>);

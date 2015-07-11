@@ -19,7 +19,7 @@
 #include "queue.h"
 #include "assoc.h"
 #include "utils.h"
-#include "strategy.h"
+#include "strategyhandler.h"
 #include "narrays.h"
 #include "store.h"
 #include "moneymanager.h"
@@ -63,7 +63,7 @@ class tsEngine{
              broker*,
              backend*, 
              AssocArray<indice*>,
-             strategy*,
+             strategyHandler*,
              moneyManager*,
              genetics*,
              vector<string>);
@@ -73,7 +73,7 @@ class tsEngine{
     ticks_t getTicks();
     Queue <std::string>* getOrdersQueue();
     AssocArray<indice*> getIndicesList();
-    strategy* getStrategy();
+    strategyHandler* getStratHandler();
     moneyManager* getMoneyManager();
     genetics* getGE();
 
@@ -123,6 +123,8 @@ class tsEngine{
      */
     void evaluate(void*);
 
+    void evaluate2();
+
     /**
      * This function is the orders execution threads callback.
      * Each call to the broker passes there.
@@ -162,7 +164,7 @@ class tsEngine{
     ticks_t tse_ticks;
     int tse_inmem_history;
     backend* tse_back;
-    strategy* tse_strat;
+    strategyHandler* tse_strathandler;
     moneyManager* tse_mm;
     genetics* tse_ge;
 

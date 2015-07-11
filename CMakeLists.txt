@@ -25,11 +25,9 @@ add_executable(
 	src/lib/tsengine.h
 	src/lib/tsengine.cpp
   src/lib/btengine.cpp
-  src/lib/utils.h
   src/lib/utils.cpp
   src/lib/broker.hpp
-  src/lib/strategy.h
-  src/lib/strategy.cpp
+  src/lib/strategyhandler.cpp
   src/lib/narrays.h
   src/lib/narrays.cpp
   src/lib/store.h

@@ -1,39 +1,39 @@
-#include "strategy.h"
+#include "strategyhandler.h"
 
-const string strategy::cc = "clang";
-const string strategy::cflags = "-g -Wall -shared -rdynamic -fPIC";
+const string strategyHandler::cc = "clang";
+const string strategyHandler::cflags = "-g -Wall -shared -rdynamic -fPIC";
 
-//const string strategy::cc = "gcc";
-//const string strategy::cflags = "-shared -rdynamic -fPIC";
+//const string strategyHandler::cc = "gcc";
+//const string strategyHandler::cflags = "-shared -rdynamic -fPIC";
 
-const string strategy::cpath = "/tmp/adam/cenv";
+const string strategyHandler::cpath = "/tmp/adam/cenv";
 
-strategy::strategy(string stpath, string n) {
+strategyHandler::strategyHandler(string stpath, string n) {
   strats_path = stpath;
   name = n;
   genetics_engine = NULL;
 }
 
-strategy::strategy(string stpath, string n, genetics* ge) {
+strategyHandler::strategyHandler(string stpath, string n, genetics* ge) {
   strats_path = stpath;
   name = n;
   genetics_engine = ge;
 }
 
-void strategy::setGE(genetics* ge) {
+void strategyHandler::setGE(genetics* ge) {
   genetics_engine = ge;
 }
 
 
-int strategy::prepareCompile() {
+int strategyHandler::prepareCompile() {
 
   mkdir("/tmp/adam",S_IRWXU);
   mkdir("/tmp/adam/cenv",S_IRWXU);
 
-  string cfiles_cp_cmd = "cp compile/headers/* " + strategy::cpath;
+  string cfiles_cp_cmd = "cp compile/headers/* " + strategyHandler::cpath;
   system(cfiles_cp_cmd.c_str());
 
-  cfiles_cp_cmd = "cp compile/obj/* " + strategy::cpath;
+  cfiles_cp_cmd = "cp compile/obj/* " + strategyHandler::cpath;
   system(cfiles_cp_cmd.c_str());
 
   decorate();
@@ -43,7 +43,7 @@ int strategy::prepareCompile() {
 }
     
 
-int strategy::include(string line,vector<string>* lines) {
+int strategyHandler::include(string line,vector<string>* lines) {
 
 
     string iname = trim(line.replace(0,strlen("@strat_include"),""));
@@ -61,7 +61,7 @@ int strategy::include(string line,vector<string>* lines) {
 }
 
 
-int strategy::decorate() {
+int strategyHandler::decorate() {
 
   std::vector<std::string> deco;
   std::vector<std::string> lines;
@@ -79,7 +79,7 @@ int strategy::decorate() {
   
 
   ifstream fh (std::string(strats_path + "/" + name).c_str());
-  ofstream wh (std::string(strategy::cpath + "/" + name + ".c").c_str());
+  ofstream wh (std::string(strategyHandler::cpath + "/" + name + ".c").c_str());
 
   wh << "#include \"strats.h\"" << endl;  
 
@@ -122,21 +122,21 @@ int strategy::decorate() {
 
 
 
-int strategy::compile(int iter) {
+int strategyHandler::compile(int iter) {
 
   ostringstream oss;
   oss << iter;
 
-  string ccmd = strategy::cc + " " + strategy::cflags + " *.o " + name + ".c -o " + name +  oss.str()  + ".so" ;
+  string ccmd = strategyHandler::cc + " " + strategyHandler::cflags + " *.o " + name + ".c -o " + name +  oss.str()  + ".so" ;
 
-  chdir(strategy::cpath.c_str()); 
+  chdir(strategyHandler::cpath.c_str()); 
   system(ccmd.c_str());
 
   return 0;
 
 }
 
-int strategy::dlibOpen(int iter) {
+int strategyHandler::dlibOpen(int iter) {
 
   ostringstream oss;
   oss << iter;
@@ -156,19 +156,19 @@ int strategy::dlibOpen(int iter) {
 }
 
 
-void* strategy::resolveFunction(string indice,string type) {
+void* strategyHandler::resolveFunction(string indice,string type) {
 
   string symbol = indice + "_" + type; 
   return dlsym(handle, symbol.c_str());
 
 }
 
-void* strategy::getTLFct() {
+void* strategyHandler::getTLFct() {
   return dlsym(handle,"TRADE_LIFE");
 }
 
 
-void* strategy::getHandle() {
+void* strategyHandler::getHandle() {
   return handle;
 }
 

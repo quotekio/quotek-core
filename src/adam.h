@@ -13,7 +13,7 @@
 #include <getopt.h>
 
 #include "lib/broker.hpp"
-#include "lib/strategy.h"
+#include "lib/strategyhandler.h"
 #include "lib/moneymanager.h"
 #include "lib/genetics.h"
 #include "lib/network.h"
