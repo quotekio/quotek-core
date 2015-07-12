@@ -1,10 +1,7 @@
 #include "strategyhandler.h"
 
-const string strategyHandler::cc = "clang";
+const string strategyHandler::cc = "clang++";
 const string strategyHandler::cflags = "-g -Wall -shared -rdynamic -fPIC";
-
-//const string strategyHandler::cc = "gcc";
-//const string strategyHandler::cflags = "-shared -rdynamic -fPIC";
 
 const string strategyHandler::cpath = "/tmp/adam/cenv";
 
@@ -63,20 +60,8 @@ int strategyHandler::include(string line,vector<string>* lines) {
 
 int strategyHandler::decorate() {
 
-  std::vector<std::string> deco;
   std::vector<std::string> lines;
   std::string line;
-
-  std::regex subeval ("subeval\\(\"(.*?)\"\\)");
-
-  deco.push_back("_EVAL()");
-  deco.push_back("_EVAL(uint32_t t, float v, float spread, evaluate_io* io)");
-  deco.push_back("_SUBEVAL()");
-  deco.push_back("_SUBEVAL(uint32_t t, float v, float spread, evaluate_io* io)");  
-  deco.push_back("TRADE_LIFE()");
-  deco.push_back("TRADE_LIFE(position* pos, tradelife_io* io)");
-
-  
 
   ifstream fh (std::string(strats_path + "/" + name).c_str());
   ofstream wh (std::string(strategyHandler::cpath + "/" + name + ".c").c_str());
@@ -86,24 +71,9 @@ int strategyHandler::decorate() {
   while(fh.good()){
     getline(fh,line);
 
-    if (  line.find("@strat_include") != string::npos ) {
-      include(line,&lines);
-      line = "";
-    }
     
-    if ( line.find("@gene") != string::npos ) {
-      if (genetics_engine != NULL ) {
-        genetics_engine->parseGene(line);
-      }
-      line = "";
-
-    }
 
 
-    line = std::regex_replace(line,subeval,std::string("$1_SUBEVAL(t,v,spread,io)")) ;
-    for (int i=0;i<deco.size()-1;i=i+2) {
-      line = sreplace(line,deco.at(i),deco.at(i+1));
-    }
     lines.push_back(line);
   }
   fh.close();
@@ -113,6 +83,17 @@ int strategyHandler::decorate() {
     wh << lines.at(i) <<endl; 
 
   }
+
+  /*
+  // the class factories
+  extern "C" backend* create() {
+      return new influxdb;
+  }
+
+  extern "C" void destroy(backend* p) {
+      delete p;
+  }
+  */
 
   wh.close();
 
