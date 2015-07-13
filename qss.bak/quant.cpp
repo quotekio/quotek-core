@@ -3,7 +3,7 @@ Quotek Strats API 1.1
 Copyright 2013-2015 Quotek SAS
 */
 
-#include "quant.h"
+#include "quant.hpp"
 
 records* scale_records(records* recs1, int scale_x, int scale_y) {
 
@@ -22,9 +22,9 @@ records* scale_records(records* recs1, int scale_x, int scale_y) {
 }
 
 
-trend_p trend_percentages(records* recs) {
+quant::trend_p trend_percentages(records* recs) {
 
-  trend_p result;
+  quant::trend_p result;
   result.bull = 0;
   result.bear = 0;
   result.neutral = 0;
@@ -238,9 +238,9 @@ farray* lreg(records* recs) {
 }
 
 
-affine lreg_affine(records* recs2) {
+quant::affine lreg_affine(records* recs2) {
 
-  affine result;
+  quant::affine result;
 
   records recs1;
   float a,b;
@@ -268,11 +268,11 @@ affine lreg_affine(records* recs2) {
 }
 
 
-affine lreg_affine_scaled(records* recs2, int scale_x, int scale_y) {
+quant::affine lreg_affine_scaled(records* recs2, int scale_x, int scale_y) {
 
   records* rscaled = scale_records(recs2, scale_x, scale_y );
 
-  affine result;
+  quant::affine result;
 
   records recs1;
   float a,b;

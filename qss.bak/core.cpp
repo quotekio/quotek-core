@@ -1,9 +1,9 @@
 /*
-Quotek Strats API 1.1
+Quotek Strategies SDK 2.0
 Copyright 2013-2015 Quotek SAS
 */
 
-#include "strats.h"
+#include "core.hpp"
 
 void* __order(const char* action,const char* indice,const char* way, int nbc, int stop,int limit, Queue_c* orders ) {
 
