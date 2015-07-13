@@ -5,31 +5,32 @@
 #include <unistd.h>
 #include <dlfcn.h>
 #include <string>
-#include "constants.h"
-#include "adamcfg.h"
-#include "broker.hpp"
 #include "backends/backend.h"
-#include "records.h"
 #include "queue_c.h"
-#include "cvector.hpp"
 
-
-#include "rapidjson/rapidjson.h"
-#include "rapidjson/document.h"
-#include "queue.h"
+#include "adamcfg.h"
 #include "assoc.h"
-#include "utils.h"
-#include "strategyhandler.h"
+#include "broker.hpp"
+#include "constants.h"
+#include "cvector.hpp"
 #include "narrays.h"
-#include "store.h"
 #include "moneymanager.h"
 #include "igmlogger.h"
-#include "results.h"
 #include "genetics.h"
 #include "indice.h"
 #include "quant.h"
+#include "queue.hpp"
+#include "rapidjson/rapidjson.h"
+#include "rapidjson/document.h"
+#include "records.h"
+#include "results.h"
+#include "store.h"
+#include "strategyhandler.hpp"
+#include "strategy.hpp"
 #include "tsemodule.hpp"
 #include "tsexport.hpp"
+#include "utils.h"
+
 #include <iostream>
 #include <fstream>
 #include <thread>
@@ -123,7 +124,7 @@ class tsEngine{
      */
     void evaluate(void*);
 
-    void evaluate2();
+    void evaluate2(strategy* s);
 
     /**
      * This function is the orders execution threads callback.

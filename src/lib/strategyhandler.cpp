@@ -1,4 +1,4 @@
-#include "strategyhandler.h"
+#include "strategyhandler.hpp"
 
 const string strategyHandler::cc = "clang++";
 const string strategyHandler::cflags = "-g -Wall -shared -rdynamic -fPIC";

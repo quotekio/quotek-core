@@ -610,11 +610,55 @@ void tsEngine::evaluate(void* arg) {
 }
 
 
-void tsEngine::evaluate2() {
+void tsEngine::evaluate2(strategy* s) {
 
-  
+  //declares work variables
+  std::string order;
+  std::string logstr;
 
+  //fetch tsEngine objects to avoid too mluch function calls
+  igmLogger* logger = this->getLogger();
+  ticks_t ticks = this->getTicks();
 
+  //makes the strategy records pointer point to the correct memmory space
+  s->recs = this->getIndiceRecords(s->asset_name);
+  s->s = this->getStore();
+
+  //waits for some data to be collected before starting to process;
+  while(s->recs->size == 0) { 
+    cout << "Waiting for data population.." << endl;
+    sleep(1);
+  }
+
+  while(1) {
+    //perf profiling
+    auto tt0 = std::chrono::high_resolution_clock::now();
+
+    //setting of evaluation context.
+    record* last_rec = records_last(s->recs);
+    s->value = last_rec->value;
+    s->spread = last_rec->spread;
+    
+    //user algo tick evaluation.
+    s->evaluate();
+
+    while ( s->orders_queue.pop(order,false) ) {
+      this->orders_queue.push(order);
+    }
+
+    while( s->log_queue.pop(logstr,false) ) {
+      logger->log(logstr);
+    }
+   
+    auto tt1 = std::chrono::high_resolution_clock::now();
+    auto elapsed_t = tt1 - tt0;
+    uint64_t elapsed = std::chrono::duration_cast<std::chrono::microseconds>(elapsed_t).count();
+
+    if (elapsed < ticks.eval) {  
+      usleep(ticks.eval - elapsed);
+    }
+
+  }
 
 }
 

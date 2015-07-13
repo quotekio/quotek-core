@@ -1,4 +1,6 @@
 #include <regex>
+#include "queue.hpp"
+#include "store.h"
 
 /**
  * strategy class is one of the most important of quotek adam bot.
@@ -51,5 +53,23 @@ class strategy {
     /** Asset name stores the asset for which the strategy instance is running */
     std::string asset_name;
 
+    /** t stores the current epoch timestamp */
+    long t;
+
+    /** These are the I/O queues used by the strategies to communicate with the other
+     *  parts of the robot. These are not meant to be manipulated by user in his algorithms.
+     */
+    Queue<std::string> log_queue;
+    Queue<std::string> orders_queue;
+
+    /**
+     * recs variable points to the inmem values history of the processed asset.
+     */
+    records* recs;
+
+    /**
+     * store is a special object meant to share data between strategies threads.
+     */
+    store* s;
 
 };

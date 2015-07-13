@@ -1,3 +1,6 @@
+#ifndef QUEUE_HPP
+#define QUEUE_HPP
+
 #include <pthread.h>
 #include <queue>
 
@@ -55,3 +58,5 @@ template<class T> bool Queue<T>::pop(T& value, bool block) {
   return rtn;
 
 }
+
+#endif
