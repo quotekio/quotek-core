@@ -7,6 +7,7 @@ Copyright 2013-2015 Quotek SAS
 #define BROKER_HPP
 
 #include <string>
+#include <sstream>
 #include "strategy.hpp"
 
 namespace quotek {
@@ -23,16 +24,68 @@ namespace quotek {
      /**
       * 
       */
-     broker(strategy* s);
+     broker(quotek::core::strategy& s);
 
      /**
-      * buy sends a buy order to the broker
+      * buy sends a buy order to the broker. it will then open a long position having the caracteristics defined
+      * in the arguments.
       */
      void buy(std::string asset,
               int quantity,
               int stop,
               int limit);
-  
+
+     /**
+      * buy_hedged sends a buy order to the broker along with a sell order for the another asset.
+      * quantity, stop and limits are the same for the long position and the hedged one.
+      */
+     void buy_hedged(std::string asset,
+                     std::string hedged_asset,
+                     int quantity,
+                     int stop,
+                     int limit);
+
+      /**
+       * same than buy_hedged but here you can choose the quantity, stop and limit for hedged asset.
+       */
+      void buy_hedged_asym(std::string asset,
+                           int quantity,
+                           int stop,
+                           int limit,
+                           std::string hedged_asset,
+                           int hedged_quantity,
+                           int hedged_stop,
+                           int hedged_limit
+                           );
+     /**
+      * sell sends a sell order to the broker. It will then open a short position having the caracteristics
+      * defined in the arguments.
+      */
+     void sell(std::string asset,
+                int quantity,
+                int stop,
+                int limit);
+
+     /** smartbuy will place a long trade where stop and limit will be automatically computed according to: 
+          - a risk reward ratio provided by the user
+          - money management rules defined in the configuration 
+     */
+     void smartbuy(std::string asset, int expexted_risk_reward);
+
+     /** smartsell will place a short trade where stop and limit will be automatically computed according to: 
+          - a risk reward ratio provided by the user
+          - money management rules defined in the configuration 
+     */
+     void smartsell(std::string asset, int expexted_risk_reward);
+     
+     /**
+      * close_position allows to close a position given its ticket id given by the broker.
+      */
+     void close_position(std::string ticket_id);
+
+    private:
+
+      quotek::core::strategy& s;
 
   };
 }

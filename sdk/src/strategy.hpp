@@ -7,8 +7,11 @@ Copyright 2013-2015 Quotek SAS
 #define STRATEGY_HPP
 
 #include <regex>
+#include <map>
+
+#include "any.hpp"
 #include "cqueue.hpp"
-//#include "store.h"
+#include "record.hpp"
 
 namespace quotek {
 
@@ -26,7 +29,8 @@ namespace quotek {
       	/**
       	 * strategy constructor.
       	 */
-        strategy();
+        strategy(std::vector<quotek::data::record>& recs,
+                 std::map<std::string, quotek::data::any>& store);
 
         /**
          * strategy destructor
@@ -36,7 +40,7 @@ namespace quotek {
         /**
          * order() is a method meant to make direct orders to adam bot.
          */
-         void order();
+         void order(std::string order_data);
 
         /**
          * initialize() is a method meant to set the initial state of a strategy.
@@ -56,7 +60,7 @@ namespace quotek {
          */
         virtual void tradelife()  {}
 
-        vector<strategy*> substrats;
+        std::vector<strategy*> substrats;
 
         /** state is a variable meant to keep track of the state of the algorithm. it's up to the user to set it accordingly. */
         int state;
@@ -82,12 +86,12 @@ namespace quotek {
         /**
          * recs variable points to the inmem values history of the processed asset.
          */
-        records* recs;
+        std::vector<quotek::data::record>& recs;
 
         /**
          * store is a special object meant to share data between strategies threads.
          */
-        //store* s;
+        std::map<std::string, quotek::data::any>& store;
 
     };
 
