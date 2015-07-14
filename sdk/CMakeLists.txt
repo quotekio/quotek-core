@@ -20,6 +20,7 @@ add_library(
        src/broker.cpp
        src/record.cpp
        src/strategy.cpp
+       src/timeutils.cpp
 )
 
 find_library (PTHREAD pthread) 
@@ -38,3 +39,4 @@ install (FILES "src/cqueue.hpp" DESTINATION include/quotek)
 install (FILES "src/cvector.hpp" DESTINATION include/quotek)
 install (FILES "src/record.hpp" DESTINATION include/quotek)
 install (FILES "src/strategy.hpp" DESTINATION include/quotek)
+install (FILES "src/timeutils.hpp" DESTINATION include/quotek)

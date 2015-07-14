@@ -42,6 +42,11 @@ namespace quotek {
          */
          void order(std::string order_data);
 
+         /**
+          * log() is a method that allows the user algorithm to forward log data to adam.
+          */
+         void log(std::string log_string);
+
         /**
          * initialize() is a method meant to set the initial state of a strategy.
          * This method is executed only once, before the first evaluation. 
@@ -92,6 +97,11 @@ namespace quotek {
          * store is a special object meant to share data between strategies threads.
          */
         std::map<std::string, quotek::data::any>& store;
+
+        /**
+         * counters allow to maintain a series of variables to count and keep various steps across ticks.
+         */
+        std::map<std::string, int> counters;
 
     };
 

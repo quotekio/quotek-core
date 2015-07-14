@@ -13,7 +13,7 @@ namespace quotek {
     	               std::map<std::string, quotek::data::any>& store): recs(recs), store(store) {
      
     }
-    
+
     strategy::~strategy() {
 
     }
@@ -22,6 +22,9 @@ namespace quotek {
       orders_queue.push(order_data);
     }
 
+    void strategy::log(std::string log_string) {
+      log_queue.push(log_string);
+    }
+
   }
-  
 }
