@@ -123,7 +123,7 @@ void tsEngine::broker_sync_start() {
   moneyManager* mm = this->getMoneyManager();
   broker* b0 = this->getBroker();
   ticks_t ticks = this->getTicks();
-  cvector<position>* poslist = mm->getPositions();
+  quotek::data::cvector<position>* poslist = mm->getPositions();
   igmLogger* logger = this->getLogger();
 
   AssocArray<indice*> ilist = this->getIndicesList();
@@ -225,13 +225,13 @@ void tsEngine::moneyman() {
   AssocArray<indice*> ilist = this->getIndicesList();
   vector<string> si = iGetNames(ilist);
   igmLogger* logger = this->getLogger();
-  Queue<std::string> *orders_queue = this->getOrdersQueue();
+  quotek::data::cqueue<std::string> *orders_queue = this->getOrdersQueue();
   strategyHandler* sh = this->getStratHandler();
 
   //TRADELIFE struct for fctptr
   typedef void* (*tl_fct)(pos_c*,tradelife_io*);
   void* tl_fct_fref = sh->getTLFct(); 
-  cvector<position>* poslist = mm->getPositions();
+  quotek::data::cvector<position>* poslist = mm->getPositions();
 
   //pnl-needed vars
   float v;
@@ -400,7 +400,7 @@ void tsEngine::saveToBackend() {
   backend* back0 = this->getBackend();
   this->setBSP(0);
   int backend_save_pos = this->getBSP();
-  cvector<position>* pos_history = this->getMoneyManager()->getPositionsHistory();
+  quotek::data::cvector<position>* pos_history = this->getMoneyManager()->getPositionsHistory();
    
   int prev_t = 0;
 
@@ -523,7 +523,7 @@ void tsEngine::evaluate(void* arg) {
   eval_fct f = (eval_fct) et->eval_ptr;
   string eval_name = et->eval_name;
 
-  Queue<std::string> *orders_queue = this->getOrdersQueue();
+  quotek::data::cqueue<std::string> *orders_queue = this->getOrdersQueue();
   igmLogger* logger = this->getLogger();
 
   //######## EVALUATION-NEEDED VALUES
@@ -610,7 +610,7 @@ void tsEngine::evaluate(void* arg) {
 }
 
 
-void tsEngine::evaluate2(strategy* s) {
+void tsEngine::evaluate2(quotek::core::strategy* s) {
 
   //declares work variables
   std::string order;
@@ -621,8 +621,8 @@ void tsEngine::evaluate2(strategy* s) {
   ticks_t ticks = this->getTicks();
 
   //makes the strategy records pointer point to the correct memmory space
-  s->recs = this->getIndiceRecords(s->asset_name);
-  s->s = this->getStore();
+  //s->recs = this->getIndiceRecords(s->asset_name);
+  //s->s = this->getStore();
 
   //waits for some data to be collected before starting to process;
   while(s->recs->size == 0) { 
@@ -667,7 +667,7 @@ void tsEngine::evaluate2(strategy* s) {
 
 void tsEngine::execute() {
 
-  Queue<std::string> *orders_queue = this->getOrdersQueue();
+  quotek::data::cqueue<std::string> *orders_queue = this->getOrdersQueue();
   broker* b0 = this->getBroker();
   moneyManager* mm = this->getMoneyManager();
   igmLogger* logger = this->getLogger();
@@ -919,7 +919,7 @@ AssocArray<indice*> tsEngine::getIndicesList() {
   return indices_list;
 }
 
-Queue<std::string>* tsEngine::getOrdersQueue() {
+quotek::data::cqueue<std::string>* tsEngine::getOrdersQueue() {
   return &orders_queue;
 }
 

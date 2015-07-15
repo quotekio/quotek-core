@@ -30,8 +30,6 @@ add_executable(
   src/lib/strategyhandler.cpp
   src/lib/narrays.h
   src/lib/narrays.cpp
-  src/lib/store.h
-  src/lib/store.cpp
   src/lib/moneymanager.cpp
   src/lib/igmlogger.cpp
   src/lib/queue_c.cpp
@@ -42,13 +40,11 @@ add_executable(
   src/lib/aep.cpp
   src/lib/quant.cpp
   src/lib/narrays.cpp
-  src/lib/records.cpp
 )
 
 add_executable(
   csv2influx
   src/lib/http.cpp
-  src/lib/records.cpp
   src/lib/narrays.cpp
   src/csv2influx.cpp
   src/lib/utils.cpp
@@ -72,9 +68,12 @@ find_library (PTHREAD pthread)
 find_library (CURL curl)
 find_library (FAAN fann)
 find_library (INFLUXDB influxdb)
+find_library (QUOTEK quotek)
+
 
 target_link_libraries(
         adam
+        quotek
         pthread
         dl
 )

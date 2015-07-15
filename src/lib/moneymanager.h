@@ -12,7 +12,7 @@
 #include "indice.h"
 #include "results.h"
 #include "position.h"
-#include "cvector.hpp"
+#include <quotek/cvector.hpp>
 
 #define MM_ERR_NBPOS 0x01
 #define MM_ERR_TRADERISK_2HIGH 0x02
@@ -72,8 +72,8 @@ class moneyManager {
     void remPosition(string);
     bool hasPos(string);
     bool hasPos(string,string);
-    cvector<position>* getPositions();
-    cvector<position>* getPositionsHistory();
+    quotek::data::cvector<position>* getPositions();
+    quotek::data::cvector<position>* getPositionsHistory();
     position* getPositionByDealid(string);
     string cleanPositions(vector<string>);
     string resolveError(int);
@@ -106,9 +106,9 @@ class moneyManager {
     float max_loss_percentage_per_trade;
     float critical_loss_percentage;
     float max_var;
-  	cvector<position> positions;
+  	quotek::data::cvector<position> positions;
 
-    cvector<position> positions_history;
+    quotek::data::cvector<position> positions_history;
     AssocArray<indice*> indices_list;
     float var;
     float cur_pnl;

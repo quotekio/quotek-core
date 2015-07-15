@@ -5,7 +5,7 @@
 #include "tsengine.h"
 #include "btengine.h"
 #include "constants.h"
-#include "cvector.hpp"
+#include <quotek/cvector.hpp>
 
 #include <string>
 #include <iostream>

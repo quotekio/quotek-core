@@ -45,9 +45,12 @@ namespace quotek {
                      long time_inf,
                      long time_sup);
 
-       
+       /** stores the epoch timestamp at which the asset was worth value. */
        long timestamp;
+       /** the value of the asset at time timestamp. */
        float value;
+
+       /** the spread offered by the broker for the asset at time timestamp. */ 
        float spread;
 
     };

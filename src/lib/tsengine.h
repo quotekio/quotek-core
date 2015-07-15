@@ -12,21 +12,19 @@
 #include "assoc.h"
 #include "broker.hpp"
 #include "constants.h"
-#include "cvector.hpp"
 #include "narrays.h"
 #include "moneymanager.h"
 #include "igmlogger.h"
 #include "genetics.h"
 #include "indice.h"
 #include "quant.h"
-#include "queue.hpp"
+
 #include "rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
 #include "records.h"
 #include "results.h"
 #include "store.h"
 #include "strategyhandler.hpp"
-#include "strategy.hpp"
 #include "tsemodule.hpp"
 #include "tsexport.hpp"
 #include "utils.h"
@@ -34,6 +32,10 @@
 #include <iostream>
 #include <fstream>
 #include <thread>
+#include <quotek/cvector.hpp>
+#include <quotek/cqueue.hpp>
+#include <quotek/strategy.hpp>
+
 
 using namespace rapidjson;
 
@@ -72,7 +74,7 @@ class tsEngine{
     broker* getBroker();
     backend* getBackend();
     ticks_t getTicks();
-    Queue <std::string>* getOrdersQueue();
+    quotek::data::cqueue <std::string>* getOrdersQueue();
     AssocArray<indice*> getIndicesList();
     strategyHandler* getStratHandler();
     moneyManager* getMoneyManager();
@@ -124,7 +126,7 @@ class tsEngine{
      */
     void evaluate(void*);
 
-    void evaluate2(strategy* s);
+    void evaluate2(quotek::core::strategy* s);
 
     /**
      * This function is the orders execution threads callback.
@@ -173,7 +175,7 @@ class tsEngine{
 
     AssocArray<indice*> indices_list;    
 
-    Queue <std::string> orders_queue;
+    quotek::data::cqueue<std::string> orders_queue;
     AssocArray<records*> inmem_records;
 
     AssocArray<void*> eval_ptrs;

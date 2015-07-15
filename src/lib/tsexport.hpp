@@ -3,7 +3,7 @@
 
 #include "igmlogger.h"
 #include "store.h"
-#include "cvector.hpp"
+#include <quotek/cvector.hpp>
 
 
 /** tsexport is a class meant to expose some poarts 
@@ -26,7 +26,7 @@ public:
   	       igmLogger* logger,
   	       float* cur_pnl,
   	       float* cumulative_pnl,
-  	       cvector<position>* positions,
+  	       quotek::data::cvector<position>* positions,
   	       store* s) {
 
     this->mode = mode;
@@ -43,7 +43,7 @@ public:
   igmLogger* logger;
   float* cur_pnl;
   float* cumulative_pnl;
-  cvector<position>* positions;
+  quotek::data::cvector<position>* positions;
   store* s;
   void* eptr;
 

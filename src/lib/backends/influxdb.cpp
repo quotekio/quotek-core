@@ -67,14 +67,16 @@ public:
       return 0;
     }
 
-    virtual records* query(string q) {
-      records* result = (records*) malloc(sizeof(records));
+    virtual std::vector<quotek::data::record> query(string q) {
+      
+      std::vector<quotek::data::record> result;
+
       http* hhdl = prepare_http_handler();
       std::string url = pre_url;
       std::string outp;
-      record r;
+      
+      quotek::data::record r;
 
-      records_init(result,10000);
       url += "&q=" + hhdl->escape(q);
 
       // Perform http request to influxdb backend and get result.
@@ -93,19 +95,18 @@ public:
            r.timestamp = points[0u].GetInt();
            r.value = points[3].GetDouble();
            r.spread = points[2].GetDouble();
-           records_push(result,r);
+           result.push_back(r);
         }
       }
 
       return result;
     }
 
-    virtual records* query(string indice, int tinf, int tsup) {
+    virtual std::vector<quotek::data::record> query(string indice, int tinf, int tsup) {
 
-      records* result = (records*) malloc(sizeof(records));
+      std::vector<quotek::data::record> result ;
       http* hhdl = prepare_http_handler();
       std::string url = pre_url;
-      records_init(result,10000);
       std::ostringstream qstream;
       std::string outp;
       record r;
@@ -147,7 +148,7 @@ public:
            r.timestamp = points[0u].GetInt();
            r.value = points[3].GetDouble();
            r.spread = points[2].GetDouble();
-           records_push(result,r);
+           result.push_back(r);
         }
       }
 
