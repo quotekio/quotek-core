@@ -38,10 +38,13 @@ namespace quotek {
       }
 
       void push_back(T element) {
-
         std::lock_guard<std::mutex> lock(mtx);
         this->data.push_back(element);
+      }
 
+      void emplace_back(T element) {
+        std::lock_guard<std::mutex> lock(mtx);
+        this->data.emplace_back(element);
       } 
 
       std::mutex mtx;

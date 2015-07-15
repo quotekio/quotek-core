@@ -10,14 +10,14 @@ namespace quotek {
   namespace quant {
 
     bool above(std::vector<quotek::data::record>& recs, 
-    	      float value,
-    	      float thereshold) {
+    	         float value,
+    	         float thereshold) {
 
       int nb_above = 0;
       float computed_thold;
 
       for(int i=0;i<recs.size();i++) {
-        if (value > recs[i].value) nb_above++;
+        if (value > recs[i].value ) nb_above++;
       }
 
       computed_thold = (float) (nb_above / recs.size() ); 
@@ -116,12 +116,18 @@ namespace quotek {
 
    
     std::vector<float> moving_average(std::vector<quotek::data::record>& recs,
-                                      int  period) {
+                                      int periods) {
+    
+      std::vector<float> result;
+      return result;
 
     }
 
     std::vector<float> exponential_moving_average(std::vector<quotek::data::record>& recs, 
-                                                  int period) {
+                                                  int periods) {
+
+      std::vector<float> result;
+      return result;
 
     }
 
@@ -171,4 +177,6 @@ namespace quotek {
 
 
   }
+
+
 }

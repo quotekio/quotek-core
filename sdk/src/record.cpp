@@ -59,5 +59,36 @@ namespace quotek {
       return new_sample;
       
     }
+   
+    std::vector<record> record::extract(std::vector<record>& recs, int start_offset, int size ) {
+
+      std::vector<record>::const_iterator first = recs.begin() + start_offset;
+      std::vector<record>::const_iterator last = recs.begin() + start_offset + size;
+
+      std::vector<record> new_extract(first, last);
+      return new_extract;
+
+    }
+
+    std::vector<float> record::reshape(std::vector<record>& recs) {
+
+      std::vector<float> result;
+
+      for (int i=0;i<recs.size();i++) {
+        result.emplace_back(recs[i].value);
+      }
+      return result;
+    }
+
+    std::vector<record> record::import(std::vector<float>& data_to_import) {
+      std::vector<record> result;
+
+      for (int i=0;i<data_to_import.size();i++) {
+        result.emplace_back( record(0, data_to_import[i], 0) );
+      }
+      
+      return result;
+    }
+
   }
 }

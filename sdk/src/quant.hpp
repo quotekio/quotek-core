@@ -8,6 +8,7 @@ Copyright 2013-2015 Quotek SAS
 
 #include <string>
 #include <vector>
+#include "any.hpp"
 #include "record.hpp"
 #include "math.h"
 
@@ -112,17 +113,17 @@ namespace quotek {
     float percent_delta(std::vector<quotek::data::record>& recs);
 
     /**
-     * Computes the simple moving average of the provided dataset on period (in seconds)
+     * Computes the simple moving average of the provided dataset on n periods (in seconds)
      * eg if you want to compute an H1 SMA, use moving_average()
      */
     std::vector<float> moving_average(std::vector<quotek::data::record>& recs,
-                                      int  period);
+                                      int  periods);
 
     /**
-     * Computes the exponential moving average of the provided dataset on period (in seconds)
+     * Computes the exponential moving average of the provided dataset on n period (in seconds)
      */
     std::vector<float> exponential_moving_average(std::vector<quotek::data::record>& recs, 
-                                                  int period);
+                                                  int periods);
 
     /**
      * linear_regression computes the linear regression of the provided dataset

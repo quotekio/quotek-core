@@ -39,17 +39,35 @@ namespace quotek {
                          long search_timestamp);
 
        /**
-        * sample is a method to extract a subvector of records from a vector of records.
+        * sample is a method to extract a subvector of records from a vector of records, given starting and ending timestamps.
+        * Note: timestamps can be negative, in which case the real timestamps are time() + time_inf, time() + time_sup.
         */
        static std::vector<record> sample(std::vector<record>& recs,
                      long time_inf,
                      long time_sup);
+ 
+       /**
+        * extract is a conviency subvector extract. it takes begin() + start_offset, begin + start_offset + size iterators
+          to create a new subvector.
+        */
+       static std::vector<record> extract(std::vector<record>& recs, int start_offset, int size );
+
+       /**
+        * reshape takes all the values contained in the record dataset to reformat it as a simple floats vector.
+        */
+       static std::vector<float> reshape(std::vector<record>& recs);
+
+       /**
+        * import creates a records vector from a vector of float values. 
+        */
+       static std::vector<record> import(std::vector<float>& );
 
        /** stores the epoch timestamp at which the asset was worth value. */
        long timestamp;
-       /** the value of the asset at time timestamp. */
-       float value;
 
+       /** the value of the asset at time timestamp. */
+       
+       float value;
        /** the spread offered by the broker for the asset at time timestamp. */ 
        float spread;
 
