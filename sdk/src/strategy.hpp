@@ -28,6 +28,9 @@ namespace quotek {
       public:
       	/**
       	 * strategy constructor.
+         * @param recs dataset for the concerned asset.
+         * @param store shared algo in-memory map.
+         * @return new strategy object.
       	 */
         strategy(std::vector<quotek::data::record>& recs,
                  std::map<std::string, quotek::data::any>& store);
@@ -39,11 +42,13 @@ namespace quotek {
 
         /**
          * order() is a method meant to make direct orders to adam bot.
+         * @param order_data string representing the bot order to pass.
          */
          void order(std::string order_data);
 
          /**
           * log() is a method that allows the user algorithm to forward log data to adam.
+          * @param log_string string to log.
           */
          void log(std::string log_string);
 

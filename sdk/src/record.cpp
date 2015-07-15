@@ -70,7 +70,7 @@ namespace quotek {
 
     }
 
-    std::vector<float> record::reshape(std::vector<record>& recs) {
+    std::vector<float> record::export(std::vector<record>& recs) {
 
       std::vector<float> result;
 
@@ -86,7 +86,7 @@ namespace quotek {
       for (int i=0;i<data_to_import.size();i++) {
         result.emplace_back( record(0, data_to_import[i], 0) );
       }
-      
+
       return result;
     }
 

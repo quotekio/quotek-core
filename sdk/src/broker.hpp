@@ -29,6 +29,10 @@ namespace quotek {
      /**
       * buy sends a buy order to the broker. it will then open a long position having the caracteristics defined
       * in the arguments.
+      * @param asset name of the asset to take position on.
+      * @param quantity Number of contracts to take for the position.
+      * @param stop Stop-loss security thereshold, in BPS.
+      * @param limit Profit thereshold before close, in BPS.
       */
      void buy(std::string asset,
               int quantity,
@@ -38,6 +42,11 @@ namespace quotek {
      /**
       * buy_hedged sends a buy order to the broker along with a sell order for the another asset.
       * quantity, stop and limits are the same for the long position and the hedged one.
+      * @param asset name of the asset to take position on.
+      * @param hedged_asset name of the asset to take position on for hedging.
+      * @param quantity Number of contracts to take for the position.
+      * @param stop Stop-loss security thereshold, in BPS.
+      * @param limit Profit thereshold before close, in BPS.
       */
      void buy_hedged(std::string asset,
                      std::string hedged_asset,
@@ -60,6 +69,10 @@ namespace quotek {
      /**
       * sell sends a sell order to the broker. It will then open a short position having the caracteristics
       * defined in the arguments.
+      * @param asset name of the asset to take position on.
+      * @param quantity Number of contracts to take for the position.
+      * @param stop Stop-loss security thereshold, in BPS.
+      * @param limit Profit thereshold before close, in BPS.
       */
      void sell(std::string asset,
                 int quantity,
@@ -73,8 +86,8 @@ namespace quotek {
      void smartbuy(std::string asset, int expexted_risk_reward);
 
      /** smartsell will place a short trade where stop and limit will be automatically computed according to: 
-          - a risk reward ratio provided by the user
-          - money management rules defined in the configuration 
+          - a risk reward ratio provided by the user.
+          - money management rules defined in the configuration.
      */
      void smartsell(std::string asset, int expexted_risk_reward);
      
