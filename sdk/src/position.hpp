@@ -13,22 +13,65 @@ namespace quotek {
   namespace core {
     
     /**
+     * posstats maintains some statistics about a position over its lifespan.
+     */
+    class posstats {
+
+      public:
+        posstats();
+        ~posstats();
+
+        /** Indicates the maximum profit over the position's lifespan */
+        float pnl_peak;
+
+        /** tells how many times position's vstop was increased */
+        int vstop_increments;
+
+        /** tells how many times position's vstop was decreased */
+        int vstop_decrements;
+
+        /** tells how many times position's vlimit was increased */
+        int vlimit_increments;
+
+        /** tells how many times position's vlimit was decreased */
+        int vlimit_decrements;
+
+    };
+
+    /**
      * position class aims to store and manipulate the positions open by 
      * the user's broker. 
      */
-
     class position {
 
       public:
 
+        /** position class basic constructor */
       	position();
+
+      	/** position destructor */
       	~position();
+
+        /** Sets new vstop value for position object. 
+         *  @param new_vstop new vtop value
+         *  @return void.
+         */
+        void set_vstop(int new_vstop);
+
+        /** Sets new vlimit value for position object. 
+         *  @param new_vlimit new vlimit value.
+         *  @return void.
+         */
+        void set_vlimit(int new_vlimit);
 
         /** broker's ticket id */
         std::string ticket_id;
 
-        /** position asset */
+        /** position's asset name, as referenced in quotek */
         std::string asset_name;
+
+        /** position's asset_id, as referenced by broker */
+        std::string asset_id;
 
         /** size of the position */
         int size;
@@ -58,30 +101,10 @@ namespace quotek {
       	/** vstop is a virtual stop-loss */
       	int vstop;
 
-      	/** vlimit */
+      	/** vlimit is a virtual limit */
       	int vlimit;
 
     };
-
-    /**
-     * posstats maintains some statistics about a position over its lifespan.
-     */
-    class posstats {
-
-      public:
-        posstats();
-        ~posstats();
-
-        /** pnl_peak indicates the maximum profit over the position's lifespan */
-        float pnl_peak;
-        
-        int vstop_increments;
-        int vstop_decrements;
-
-
-
-    };
-
 
   }
 }
