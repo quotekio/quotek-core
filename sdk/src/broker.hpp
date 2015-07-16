@@ -22,7 +22,9 @@ namespace quotek {
     public:
  
      /**
-      * 
+      * Broker object constructor
+      * @param strategy back link to parent strategy object
+      * @return new broker object.
       */
      broker(quotek::core::strategy& s);
 
@@ -93,6 +95,7 @@ namespace quotek {
      
      /**
       * close_position allows to close a position given its ticket id given by the broker.
+      * @param ticket_id id of the position ticket provided by the broker.
       */
      void close_position(std::string ticket_id);
 
