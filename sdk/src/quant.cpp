@@ -131,10 +131,10 @@ namespace quotek {
 
     }
 
-    std::vector<float> linear_regression(std::vector<quotek::data::record>& recs) {
+    void linear_regression(std::vector<quotek::data::record>& recs, std::vector<float>& result) {
 
     }
-
+    
     affine linear_regression_affine(std::vector<quotek::data::record>& recs) {
 
     }

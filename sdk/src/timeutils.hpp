@@ -18,6 +18,14 @@ namespace quotek {
 
   namespace core {
       
+    /**
+     * time namespace contains the time related functions of the quotek SDK.
+     * Note that for most functions in this namespace user has to provide the current 
+     * timestamp instead of just having an internal time(0) call inside. It is because these functions
+     * must support backtesting, which implies decorelated real time and backtest time.
+     * To circumvent this, all you have to do is to call time functions in your strategies with 
+     * this->t as timestamp argument, eg: is_time("10:00", this->t);
+     */
     namespace time {
 
         /**
@@ -32,7 +40,9 @@ namespace quotek {
         /**
          * trade_hours tells if the market is open or not according to open and close hours
          * provided as time strings.
-         * @param time_open opening time of asset in market, under the form "HH:MM"
+         * @param time_open opening time of asset in market, under the form "HH:MM".
+         * @param time_close closing time of asset in market, under the form "HH:MM".
+         * @param timestamp epoch
          * @return true if current time is in asset trade hours, false otherwise.
          */
         bool trade_hours(std::string time_open, 
@@ -40,6 +50,8 @@ namespace quotek {
                          long timestamp);
 
         /** week_day returns the long day name according to a provided epoch timestamp.
+         * @param timestamp epoch timestamp 
+           @return day of week as a string ("monday" or "tuesday", etc..)
          */
         std::string week_day(long timestamp);
 

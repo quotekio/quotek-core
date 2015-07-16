@@ -64,18 +64,20 @@ namespace quotek {
        static std::vector<record> extract(std::vector<record>& recs, int start_offset, int size );
 
        /**
-        * export takes all the values contained in the record dataset to reformat it as a simple floats vector.
+        * values_export is a static method that takes all the values contained in the record dataset to reformat 
+        * it as a simple floats vector.
         * @param recs dataset to export.
         * @return vector of float values.
         */
-       static std::vector<float> export(std::vector<record>& recs);
+       static std::vector<float> values_export(std::vector<record>& recs);
 
        /**
-        * import creates a records vector from a vector of float values, it makes the exact opposite as import()
+        * values_import is a static method which creates a records vector from a vector of float values, 
+        * it makes the exact opposite as export()
         * @param vector of floats to import.
         * @return vector of records (the usual quotek dataset format)
         */
-       static std::vector<record> import(std::vector<float>& recs);
+       static std::vector<record> values_import(std::vector<float>& recs);
 
        /** stores the epoch timestamp at which the asset was worth value. */
        long timestamp;

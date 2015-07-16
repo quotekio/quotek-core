@@ -70,7 +70,7 @@ namespace quotek {
 
     }
 
-    std::vector<float> record::export(std::vector<record>& recs) {
+    std::vector<float> record::values_export(std::vector<record>& recs) {
 
       std::vector<float> result;
 
@@ -80,7 +80,7 @@ namespace quotek {
       return result;
     }
 
-    std::vector<record> record::import(std::vector<float>& data_to_import) {
+    std::vector<record> record::values_import(std::vector<float>& data_to_import) {
       std::vector<record> result;
 
       for (int i=0;i<data_to_import.size();i++) {
