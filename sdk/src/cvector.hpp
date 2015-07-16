@@ -16,7 +16,7 @@ namespace quotek {
     template <class T>
 
     /**
-     * Concurrent Vector class, to avoid race condition for vectors shared across many threads
+     * Concurrent Vector class, to avoid race condition for vectors shared across many threads.
      */
     class cvector {
     public:

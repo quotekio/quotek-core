@@ -10,7 +10,9 @@ namespace quotek {
   namespace core {
 
     strategy::strategy(std::vector<quotek::data::record>& recs,
-    	               std::map<std::string, quotek::data::any>& store): recs(recs), store(store) {
+    	               std::map<std::string, quotek::data::any>& store,
+                     std::vector<quotek::core::position>& pos_list
+                     ): recs(recs), store(store), pos_list(pos_list)  {
      
     }
 

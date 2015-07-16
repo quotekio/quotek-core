@@ -11,6 +11,7 @@ Copyright 2013-2015 Quotek SAS
 
 #include "any.hpp"
 #include "cqueue.hpp"
+#include "position.hpp"
 #include "record.hpp"
 
 namespace quotek {
@@ -33,7 +34,8 @@ namespace quotek {
          * @return new strategy object.
       	 */
         strategy(std::vector<quotek::data::record>& recs,
-                 std::map<std::string, quotek::data::any>& store);
+                 std::map<std::string, quotek::data::any>& store,
+                 std::vector<quotek::core::position>& pos_list);
 
         /**
          * strategy destructor
@@ -102,6 +104,11 @@ namespace quotek {
          * store is a special object meant to share data between strategies threads.
          */
         std::map<std::string, quotek::data::any>& store;
+
+        /**
+         * pos_list contains the current list of positions hold in the portofio.
+         */
+        std::vector<quotek::core::position>& pos_list;
 
         /**
          * counters allow to maintain a series of variables to count and keep various steps across ticks.

@@ -71,7 +71,7 @@ namespace quotek {
       float mean = average(recs);
       float variance = 0;
       for(int i=0;i<recs.size();i++) {
-        variance += pow( recs[i].value - mean,2);    
+        variance += pow( recs[i].value - mean, 2);    
       }
 
       if (sampled) {
@@ -88,20 +88,49 @@ namespace quotek {
     	             bool sampled,
     	             float average) {
 
+      float variance = 0;
+      for(int i=0;i<recs.size();i++) {
+        variance += pow( recs[i].value - average,2);    
+      }
+
+      if (sampled) {
+        variance /= ( recs.size() -1 ); 
+      }
+
+      else {
+        variance /= recs.size();
+      }
+
+      return variance;
     }
-    
     
     float covariance(std::vector<quotek::data::record>& recs1,
     	             std::vector<quotek::data::record>& recs2) {
 
-    }
+      float covariance= 0;
+      float v1_a = average(recs1);
+      float v2_a = average(recs2);
+      for(int i=0;i<recs1.size();i++) {
+         covariance += (recs1[i].value - v1_a) * (recs2[i].value - v2_a );    
+      }
 
+      covariance /= recs1.size();
+      return covariance;
+    }
 
     float covariance_q(std::vector<quotek::data::record>& recs1,
     	               std::vector<quotek::data::record>& recs2,
     	               float avg1,
     	               float avg2) {
 
+      float covariance = 0;
+      for(int i=0;i<recs1.size();i++) {
+         covariance += (recs1[i].value - avg1) * (recs2[i].value - avg2 );    
+      }
+
+      covariance /= recs1.size();
+
+      return covariance;
     }
 
     float standard_deviation(std::vector<quotek::data::record>& recs) {
@@ -119,6 +148,17 @@ namespace quotek {
                                       int periods) {
     
       std::vector<float> result;
+      
+      //dataset is too short or periods invalid
+      if ( recs.size() < periods - 1 || periods < 0 ) return result;
+
+      for(int i = periods - 1 ; i< recs.size();i++) {
+
+        std::vector<quotek::data::record> tmprec = quotek::data::record::extract(recs, i - periods  - 1 , periods);
+        float avg = average(tmprec);
+        result.push_back(avg);
+      }
+
       return result;
 
     }
@@ -127,6 +167,24 @@ namespace quotek {
                                                   int periods) {
 
       std::vector<float> result;
+      //dataset is too short or periods invalid
+      if ( recs.size() < periods -1 || periods < 0 ) return result;
+
+      float k =  2 / ( periods + 1 );
+
+      //computes first average
+      std::vector<quotek::data::record> tmprec = quotek::data::record::extract(recs, 0 , periods);
+      float avg = average(tmprec);
+
+      for(int i = periods ; i< recs.size();i++) {
+
+        result.push_back( recs[i].value * k + avg * ( 1- k) );
+
+        std::vector<quotek::data::record> tmprec = quotek::data::record::extract(recs, i - periods , periods);
+        avg = average(tmprec);
+
+      }
+
       return result;
 
     }
@@ -135,7 +193,10 @@ namespace quotek {
 
     }
     
-    affine linear_regression_affine(std::vector<quotek::data::record>& recs) {
+    affine linear_regression(std::vector<quotek::data::record>& recs) {
+
+        affine result;
+        return result;
 
     }
 
@@ -153,13 +214,13 @@ namespace quotek {
         else result.neutral++;
       }
 
-      result.bull /= recs.size();
+      result.bull /= recs.size() -1 ;
       result.bull *= 100;
 
-      result.bear /= recs.size();
+      result.bear /= recs.size() - 1;
       result.bear *= 100;
       
-      result.neutral /= recs.size();
+      result.neutral /= recs.size() -1 ;
       result.neutral *= 100;
       
       return result;
