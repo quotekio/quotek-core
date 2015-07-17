@@ -64,12 +64,27 @@ namespace quotek {
        static std::vector<record> extract(std::vector<record>& recs, int start_offset, int size );
 
        /**
+        * tima_as_value allows to process 
+        * 
+        *
+        */
+      
+       /**
         * values_export is a static method that takes all the values contained in the record dataset to reformat 
         * it as a simple floats vector.
         * @param recs dataset to export.
         * @return vector of float values.
         */
        static std::vector<float> values_export(std::vector<record>& recs);
+
+       /**
+        * timestamps_export is a static method that takes all the the timestamps contained in the record dataset
+        * to reformat it as a simple long vector.
+        * @param recs dataset to export timestamps from.
+        * @return vector of long timestamps.
+        */
+       static std::vector<long> timestamps_export(std::vector<record>& recs);
+
 
        /**
         * values_import is a static method which creates a records vector from a vector of float values, 

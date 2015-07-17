@@ -198,6 +198,8 @@ namespace quotek {
         affine result;
         return result;
 
+        
+
     }
 
     trend_p trend_percentages(std::vector<quotek::data::record>& recs) {

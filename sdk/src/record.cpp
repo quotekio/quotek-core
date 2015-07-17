@@ -69,6 +69,15 @@ namespace quotek {
       return new_extract;
 
     }
+    
+    std::vector<record> record::time_as_value(std::vector<record>& recs) {
+      std::vector<record> tav;
+
+      for (int i=0;i<recs.size();i++) {
+        tav.emplace_back( record(recs[i].timestamp, recs[i].timestamp,0) );
+      }
+      return tav;
+    }
 
     std::vector<float> record::values_export(std::vector<record>& recs) {
 
@@ -76,6 +85,15 @@ namespace quotek {
 
       for (int i=0;i<recs.size();i++) {
         result.emplace_back(recs[i].value);
+      }
+      return result;
+    }
+
+    std::vector<long> record::timestamps_export(std::vector<record>& recs) {
+
+      std::vector<long> result;
+      for (int i=0;i<recs.size();i++) {
+        result.emplace_back(recs[i].timestamp);
       }
       return result;
     }
