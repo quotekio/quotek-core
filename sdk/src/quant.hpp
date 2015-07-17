@@ -146,9 +146,10 @@ namespace quotek {
     /**
      * Computes the standard deviation for the values contained in the recs dataset.
      * @param recs dataset to work on.
+     * @sample if true, computes sample standard deviation, population standard deviation otherwise.
      * @return the standard deviation of the provided dataset, as a float.
      */
-    float standard_deviation(std::vector<quotek::data::record>& recs);
+    float standard_deviation(std::vector<quotek::data::record>& recs, bool sample);
 
     /**
      * Computes the delta in percent between first and last value of the recs dataset.

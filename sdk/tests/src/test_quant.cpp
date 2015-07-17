@@ -1,3 +1,8 @@
+/*
+Quotek Strategies SDK 2.0
+Copyright 2013-2015 Quotek SAS
+*/
+
 #include <quotek/quant.hpp>
 #include <iostream>
 
@@ -32,10 +37,9 @@ void test_variance(std::vector<quotek::data::record>& recs) {
 }
 
 void test_standard_deviation(std::vector<quotek::data::record>& recs) {
-  float stddev = quotek::quant::SD(recs);
-
-  std::cout << stddev << std::endl;
-
+  float stddev = quotek::quant::SD(recs,false);
+  assert( fabs( stddev - 266.818 ) < EPSILON );
+  stddev = quotek::quant::SD(recs,true);
   assert( fabs( stddev - 283 ) < EPSILON );
 
 }

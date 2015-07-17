@@ -20,10 +20,21 @@ add_executable(
        src/test_quant.cpp
 )
 
+add_executable(
+		test_timeutils
+		src/test_timeutils.cpp
+)
+
 find_library (quotek QUOTEK) 
 
 target_link_libraries(
         test_quant
+        quotek
+        pthread
+)
+
+target_link_libraries(
+        test_timeutils
         quotek
         pthread
 )
