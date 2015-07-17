@@ -133,8 +133,8 @@ namespace quotek {
       return covariance;
     }
 
-    float standard_deviation(std::vector<quotek::data::record>& recs) {
-      return (float) sqrt(variance(recs,0));
+    float standard_deviation(std::vector<quotek::data::record>& recs, bool sample) {
+      return (float) sqrt(variance(recs,sample));
     }
 
     float percent_delta(std::vector<quotek::data::record>& recs) {

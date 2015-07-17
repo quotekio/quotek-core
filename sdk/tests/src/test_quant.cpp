@@ -31,6 +31,16 @@ void test_variance(std::vector<quotek::data::record>& recs) {
 
 }
 
+void test_standard_deviation(std::vector<quotek::data::record>& recs) {
+  float stddev = quotek::quant::SD(recs);
+
+  std::cout << stddev << std::endl;
+
+  assert( fabs( stddev - 283 ) < EPSILON );
+
+}
+
+
 void test_trend_percentage(std::vector<quotek::data::record>& recs) {
 
   quotek::quant::trend_p trend = quotek::quant::trend_percentages(recs);
@@ -49,7 +59,9 @@ int main() {
   test_min(r1);
   test_max(r1);
   test_average(r1);
+  test_standard_deviation(r1);
   test_variance(r1);
   test_trend_percentage(r1);
+
 
 }
