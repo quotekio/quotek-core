@@ -4,6 +4,7 @@ Copyright 2013-2015 Quotek SAS
 */
 
 #include "quant.hpp"
+#include <iostream>
 
 namespace quotek {
 
@@ -191,15 +192,39 @@ namespace quotek {
 
     void linear_regression(std::vector<quotek::data::record>& recs, std::vector<float>& result) {
 
+      affine af = linear_regression(recs);
+      
+      for (int i=0;i<recs.size();i++) {
+        result.push_back( af.a * recs[i].timestamp + af.b );
+      }
+
     }
     
     affine linear_regression(std::vector<quotek::data::record>& recs) {
 
         affine result;
-        return result;
+        std::vector<quotek::data::record> T_records = quotek::data::record::time_as_value(recs);
 
+        //rescale
+        for (int i=0;i<T_records.size();i++) {
+          T_records[i].value = T_records[i].value * 0.0000001;
+        }
+
+        float T_average = average(T_records);
+        float V_average = average(recs);
+
+        std::cout << "T_AVG:" << T_average << std::endl;
+        std::cout << "V_AVG:" << V_average << std::endl;
+
+        std::cout << "VAR(TRECS):" << variance(T_records, false) << std::endl;
         
+        std::cout << "VAR(VALS):" << variance(recs, false) << std::endl;
+        std::cout << "COVAR(TRECS):" << covariance(T_records, recs) << std::endl;
 
+        result.a = covariance(T_records, recs) / variance(T_records, false);
+        result.b = V_average - ( result.a * T_average ) ; 
+
+        return result;
     }
 
     trend_p trend_percentages(std::vector<quotek::data::record>& recs) {

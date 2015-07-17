@@ -71,8 +71,8 @@ namespace quotek {
     }
     
     std::vector<record> record::time_as_value(std::vector<record>& recs) {
-      std::vector<record> tav;
 
+      std::vector<record> tav;
       for (int i=0;i<recs.size();i++) {
         tav.emplace_back( record(recs[i].timestamp, recs[i].timestamp,0) );
       }

@@ -25,6 +25,7 @@ namespace quotek {
     #define SD standard_deviation
     #define SIGMA standard_deviation
     #define SLR linear_regression
+    #define OLS linear_regression
     #define PLR polynomial_regression
     #define RRR risk_reward_ratio
 
@@ -79,7 +80,6 @@ namespace quotek {
      * @param recs dataset to work on.
      * @return the smallest value stored in recs dataset.
      */
-
     float min(std::vector<quotek::data::record>& recs);
 
     

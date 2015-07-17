@@ -54,17 +54,45 @@ void test_trend_percentage(std::vector<quotek::data::record>& recs) {
   
 }
 
+void test_linear_regression(std::vector<quotek::data::record>& recs) {
+
+  quotek::quant::affine af = quotek::quant::linear_regression(recs);
+
+  std::cout << af.a << std::endl;
+  std::cout << af.b << std::endl;
+
+}
+
 int main() {
 
   //creates false record
+  
+  std::vector<long> tstamps = { 1437143900, 
+                                1437143901, 
+                                1437143902, 
+                                1437143903, 
+                                1437143904, 
+                                1437143905, 
+                                1437143906, 
+                                1437143907, 
+                                1437143908 };
+
   std::vector<float> vals = { 4530, 4575, 4890, 4235, 4144, 4356, 4588, 4720, 4989 };
+
+
   std::vector<quotek::data::record> r1 = quotek::data::record::values_import(vals);
+
+  for (int i=0;i< r1.size(); i++ ) {
+    r1[i].timestamp = tstamps[i];
+  }
 
   test_min(r1);
   test_max(r1);
   test_average(r1);
   test_standard_deviation(r1);
   test_variance(r1);
+
+  test_linear_regression(r1);
   test_trend_percentage(r1);
 
 

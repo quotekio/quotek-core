@@ -64,10 +64,9 @@ namespace quotek {
        static std::vector<record> extract(std::vector<record>& recs, int start_offset, int size );
 
        /**
-        * tima_as_value allows to process 
-        * 
-        *
+        * tima_as_value allows to place timestamps contained in records as values.
         */
+       static std::vector<record> time_as_value(std::vector<record>& recs);
       
        /**
         * values_export is a static method that takes all the values contained in the record dataset to reformat 
