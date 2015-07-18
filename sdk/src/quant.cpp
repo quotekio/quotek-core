@@ -151,13 +151,14 @@ namespace quotek {
       std::vector<float> result;
       
       //dataset is too short or periods invalid
-      if ( recs.size() < periods - 1 || periods < 0 ) return result;
+      if ( recs.size() < periods || periods < 2 ) return result;
 
-      for(int i = periods - 1 ; i< recs.size();i++) {
+      for(int i = 0 ; i < recs.size() - periods + 1 ;i++) {
 
-        std::vector<quotek::data::record> tmprec = quotek::data::record::extract(recs, i - periods  - 1 , periods);
+        std::vector<quotek::data::record> tmprec = quotek::data::record::extract(recs, i,periods);
         float avg = average(tmprec);
         result.push_back(avg);
+
       }
 
       return result;
@@ -169,20 +170,29 @@ namespace quotek {
 
       std::vector<float> result;
       //dataset is too short or periods invalid
-      if ( recs.size() < periods -1 || periods < 0 ) return result;
+      if ( recs.size() < periods || periods < 2 ) return result;
 
-      float k =  2 / ( periods + 1 );
+      float k =  2.0 / ( periods + 1 );      
 
-      //computes first average
-      std::vector<quotek::data::record> tmprec = quotek::data::record::extract(recs, 0 , periods);
-      float avg = average(tmprec);
+      int start = (periods - 1) / 2 ;
 
-      for(int i = periods ; i< recs.size();i++) {
+      int start_modulo = (periods - 1) % 2;
 
-        result.push_back( recs[i].value * k + avg * ( 1- k) );
+      //compute first EMA
+      std::vector<quotek::data::record> v_ema_first = quotek::data::record::extract(recs,0, start + start_modulo );
 
-        std::vector<quotek::data::record> tmprec = quotek::data::record::extract(recs, i - periods , periods);
-        avg = average(tmprec);
+      if (start > 0) start_modulo = 0;
+      
+      float ema_first = average(v_ema_first);
+      result.push_back(ema_first);
+
+      using namespace std;
+      cout << "K:" << k << endl << "START:" << start << endl << "START_MODULO:" << start_modulo << endl << "EMA_FIRST:" << ema_first << endl;
+
+      for(int i = start + start_modulo ; i< recs.size() ; i++) {
+
+        float prev_ema = result[result.size()-1];
+        result.push_back( recs[i].value * k + prev_ema * ( 1- k) );
 
       }
 
@@ -203,25 +213,17 @@ namespace quotek {
     affine linear_regression(std::vector<quotek::data::record>& recs) {
 
         affine result;
-        std::vector<quotek::data::record> T_records = quotek::data::record::time_as_value(recs);
 
-        //rescale
-        for (int i=0;i<T_records.size();i++) {
-          T_records[i].value = T_records[i].value * 0.0000001;
+        std::vector<quotek::data::record> T_series;
+
+        for (int i=1;i<recs.size()+1;i++) {
+          T_series.emplace_back( quotek::data::record(0, i, 0) );
         }
 
-        float T_average = average(T_records);
+        float T_average = average(T_series);
         float V_average = average(recs);
 
-        std::cout << "T_AVG:" << T_average << std::endl;
-        std::cout << "V_AVG:" << V_average << std::endl;
-
-        std::cout << "VAR(TRECS):" << variance(T_records, false) << std::endl;
-        
-        std::cout << "VAR(VALS):" << variance(recs, false) << std::endl;
-        std::cout << "COVAR(TRECS):" << covariance(T_records, recs) << std::endl;
-
-        result.a = covariance(T_records, recs) / variance(T_records, false);
+        result.a = covariance(T_series, recs) / variance(T_series, false);
         result.b = V_average - ( result.a * T_average ) ; 
 
         return result;

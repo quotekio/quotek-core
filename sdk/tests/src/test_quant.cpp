@@ -44,6 +44,38 @@ void test_standard_deviation(std::vector<quotek::data::record>& recs) {
 
 }
 
+void test_moving_average(std::vector<quotek::data::record>& recs) {
+
+  std::vector<float> v1 = quotek::quant::SMA(recs,2);
+
+  std::vector<float> expected_result = { 4552.5, 4732.5, 4562.5, 4189.5, 4250, 4472, 4654, 4854.5 };
+
+  assert ( v1 == expected_result );
+  
+}
+
+void test_exponential_moving_average(std::vector<quotek::data::record>& recs) {
+
+  std::vector<float> v1 = quotek::quant::EMA(recs,2);
+
+  for (int i=0;i<v1.size();i++) {
+    std::cout << v1[i] << std::endl;
+  }
+
+  v1 = quotek::quant::EMA(recs,3);
+
+  for (int i=0;i<v1.size();i++) {
+    std::cout << v1[i] << std::endl;
+  }
+
+  v1 = quotek::quant::EMA(recs,4);
+
+  for (int i=0;i<v1.size();i++) {
+    std::cout << v1[i] << std::endl;
+  }
+
+}
+
 
 void test_trend_percentage(std::vector<quotek::data::record>& recs) {
 
@@ -58,8 +90,8 @@ void test_linear_regression(std::vector<quotek::data::record>& recs) {
 
   quotek::quant::affine af = quotek::quant::linear_regression(recs);
 
-  std::cout << af.a << std::endl;
-  std::cout << af.b << std::endl;
+  assert( fabs( af.a - 29.8 ) < EPSILON );
+  assert( fabs( af.b - 4409.56) < EPSILON );
 
 }
 
@@ -91,6 +123,8 @@ int main() {
   test_average(r1);
   test_standard_deviation(r1);
   test_variance(r1);
+  test_moving_average(r1);
+  test_exponential_moving_average(r1);
 
   test_linear_regression(r1);
   test_trend_percentage(r1);

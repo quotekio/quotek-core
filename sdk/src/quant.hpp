@@ -177,9 +177,11 @@ namespace quotek {
      */
     std::vector<float> exponential_moving_average(std::vector<quotek::data::record>& recs, 
                                                   int periods);
-
     /**
      * linear_regression computes the linear regression of the provided dataset.
+     * Note about linear regression: in order to avoid troublesome scaling problems,
+     * it is computed which sequence(1..dataset_size) as x coordinates. So in order 
+     * to work properly, it assumes constant interval on x between points of the dataset.
      * @param recs dataset to work on.
      * @param result reference, to store the result of the linear regression.
      * @return none.
@@ -189,6 +191,9 @@ namespace quotek {
     /**
      * Computes the linear regretion of the values contained in the dataset and
      * gives the result as an affine structure such as the line equation is y = affine.a * x + affine.b
+     * Note about linear regression: in order to avoid troublesome scaling problems,
+     * it is computed which sequence(1..dataset_size) as x coordinates. So in order 
+     * to work properly, it assumes constant interval on x between points of the dataset.
      * @param recs dataset to work on.
      * @return affine structure containing slope in tercept values.
      */
