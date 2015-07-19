@@ -57,23 +57,19 @@ void test_moving_average(std::vector<quotek::data::record>& recs) {
 void test_exponential_moving_average(std::vector<quotek::data::record>& recs) {
 
   std::vector<float> v1 = quotek::quant::EMA(recs,2);
+  std::vector<float> v2 = quotek::quant::EMA(recs,5);
+
+  std::vector<float> expected_ema2 = {4530, 4560, 4780, 4416.67, 4234.89, 4315.63, 4497.21, 4645.74, 4874.58 };
+  std::vector<float> expected_ema5 = {4552.5, 4560, 4670, 4525, 4398, 4384, 4452, 4541.33 };
 
   for (int i=0;i<v1.size();i++) {
-    std::cout << v1[i] << std::endl;
+    assert( fabs( v1[i] - expected_ema2[i] ) < EPSILON  );
   }
 
-  v1 = quotek::quant::EMA(recs,3);
-
-  for (int i=0;i<v1.size();i++) {
-    std::cout << v1[i] << std::endl;
+  for (int i=0;i<v2.size();i++) {
+    assert( fabs( v2[i] - expected_ema5[i] ) < EPSILON  );
   }
-
-  v1 = quotek::quant::EMA(recs,4);
-
-  for (int i=0;i<v1.size();i++) {
-    std::cout << v1[i] << std::endl;
-  }
-
+  
 }
 
 
@@ -125,9 +121,7 @@ int main() {
   test_variance(r1);
   test_moving_average(r1);
   test_exponential_moving_average(r1);
-
   test_linear_regression(r1);
   test_trend_percentage(r1);
-
 
 }

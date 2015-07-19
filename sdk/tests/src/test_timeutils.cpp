@@ -10,24 +10,24 @@ void test_is_time(std::string tstr, long t) {
 }
 
 void test_trade_hours(std::string tstr1, std::string tstr2, long t) {
-  assert( quotek::core::time::trade_hours(tstr1,tstr2,t) ); 
+  assert( quotek::core::time::trade_hours(tstr1,tstr2,t) == true ); 
 }
 
 void test_week_day(long t) {
-  assert( quotek::core::time::week_day(t) == "tuesday" );
+  assert( quotek::core::time::week_day(t) == "monday" );
 }
 
 void test_month_day(long t) {
-  assert ( quotek::core::time::month_day(t) == 15 );
+  assert ( quotek::core::time::month_day(t) == 20 );
 }
 
 int main() {
 
-  std::string tstr = "10:44";
-  std::string tstr1 = "09:00";
-  std::string tstr2 = "17:30";
+  std::string tstr = "10:49";
+  std::string tstr1 = "09:00:00";
+  std::string tstr2 = "17:30:00";
 
-  long t = 0;
+  long t = 1437382175;
 
   test_is_time(tstr,t);
   test_trade_hours(tstr1,tstr2,t);

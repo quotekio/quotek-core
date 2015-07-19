@@ -168,34 +168,28 @@ namespace quotek {
     std::vector<float> exponential_moving_average(std::vector<quotek::data::record>& recs, 
                                                   int periods) {
 
+      std::vector<quotek::data::record> v_ema_first;
       std::vector<float> result;
       //dataset is too short or periods invalid
       if ( recs.size() < periods || periods < 2 ) return result;
 
       float k =  2.0 / ( periods + 1 );      
 
-      int start = (periods - 1) / 2 ;
-
-      int start_modulo = (periods - 1) % 2;
+      int start = (periods - 1) / 2  + (periods - 1) % 2 ; 
 
       //compute first EMA
-      std::vector<quotek::data::record> v_ema_first = quotek::data::record::extract(recs,0, start + start_modulo );
+      v_ema_first = quotek::data::record::extract(recs,0, start );
 
-      if (start > 0) start_modulo = 0;
-      
       float ema_first = average(v_ema_first);
       result.push_back(ema_first);
-
-      using namespace std;
-      cout << "K:" << k << endl << "START:" << start << endl << "START_MODULO:" << start_modulo << endl << "EMA_FIRST:" << ema_first << endl;
-
-      for(int i = start + start_modulo ; i< recs.size() ; i++) {
+            
+      for(int i = start; i< recs.size() ; i++) {
 
         float prev_ema = result[result.size()-1];
-        result.push_back( recs[i].value * k + prev_ema * ( 1- k) );
-
+        if ( start >= 2  ) result.push_back( recs[i-1].value * k + prev_ema * ( 1- k) );
+        else result.push_back( recs[i].value * k + prev_ema * ( 1- k) );
       }
-
+    
       return result;
 
     }

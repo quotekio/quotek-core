@@ -4,6 +4,7 @@ Copyright 2013-2015 Quotek SAS
 */
 
 #include "timeutils.hpp"
+#include <iostream>
 
 namespace quotek {
 
@@ -94,7 +95,7 @@ namespace quotek {
           int cweekday = 1;
           time_t curtime = (time_t) timestamp;
           cweekday = localtime(&curtime)->tm_wday;
-          return weekdays[cweekday];
+          return weekdays[cweekday-1];
         }
 
         int month_day(long timestamp) {
