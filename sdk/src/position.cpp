@@ -38,5 +38,9 @@ namespace quotek {
       this->vlimit_decrements = 0;
     }
 
+    posstats::~posstats() {
+      
+    }
+
   }
 }

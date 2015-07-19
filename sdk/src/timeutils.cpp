@@ -4,7 +4,6 @@ Copyright 2013-2015 Quotek SAS
 */
 
 #include "timeutils.hpp"
-#include <iostream>
 
 namespace quotek {
 

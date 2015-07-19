@@ -35,7 +35,7 @@ namespace quotek {
       	 */
         strategy(std::vector<quotek::data::record>& recs,
                  std::map<std::string, quotek::data::any>& store,
-                 std::vector<quotek::core::position>& pos_list);
+                 std::vector<quotek::core::position>& portfolio);
 
         /**
          * strategy destructor
@@ -106,10 +106,9 @@ namespace quotek {
         std::map<std::string, quotek::data::any>& store;
 
         /**
-         * pos_list contains the current list of positions hold in the portofio.
+         * portfolio contains the current list of running positions.
          */
-        std::vector<quotek::core::position>& pos_list;
-
+        std::vector<quotek::core::position>& portfolio;
         /**
          * counters allow to maintain a series of variables to count and keep various steps across ticks.
          */

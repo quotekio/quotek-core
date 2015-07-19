@@ -11,8 +11,8 @@ namespace quotek {
 
     strategy::strategy(std::vector<quotek::data::record>& recs,
     	               std::map<std::string, quotek::data::any>& store,
-                     std::vector<quotek::core::position>& pos_list
-                     ): recs(recs), store(store), pos_list(pos_list)  {
+                     std::vector<quotek::core::position>& portfolio
+                     ): recs(recs), store(store), portfolio(portfolio)  {
      
     }
 
