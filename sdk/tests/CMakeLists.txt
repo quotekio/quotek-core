@@ -30,6 +30,15 @@ add_executable(
     src/test_broker.cpp
 )
 
+add_executable(
+    test_strategy
+    src/test_strategy.cpp
+)
+
+add_executable(
+    test_position
+    src/test_position.cpp
+)
 
 
 find_library (quotek QUOTEK) 
@@ -48,6 +57,18 @@ target_link_libraries(
 
 target_link_libraries(
         test_broker
+        quotek
+        pthread
+)
+
+target_link_libraries(
+        test_strategy
+        quotek
+        pthread
+)
+
+target_link_libraries(
+        test_position
         quotek
         pthread
 )

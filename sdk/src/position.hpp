@@ -64,6 +64,22 @@ namespace quotek {
          */
         void set_vlimit(int new_vlimit);
 
+        /** vshift allows to shift vstop/limit values by number provided as argument.
+         *  If position has a stop of 30 BPS and a limit of 50, pos.vshift(10) will set vstop to 20 and limit to 60.
+         *  On the other side, pos.vshift(-10) will set vstop at 40 BPS and limit of 40.
+         *  @param offset value to increase/decrease. */
+        void vshift(int offset);
+
+        /** Retrieves vstop private value 
+         *  @return vstop value
+         */
+        float get_vstop();
+
+        /** Retrieves vlimit private value 
+         *  @return vlimit value;
+         */
+        float get_vlimit();
+
         /** broker's ticket id */
         std::string ticket_id;
 
