@@ -21,7 +21,7 @@ namespace quotek {
         if (value > recs[i].value ) nb_above++;
       }
 
-      computed_thold = (float) (nb_above / recs.size() ); 
+      computed_thold =   (float) nb_above / recs.size() ; 
       if ( computed_thold >= thereshold) return true;
       return false;
 
@@ -69,7 +69,7 @@ namespace quotek {
                            std::vector<int>& weights) {
 
       float sum = 0;
-      
+
       //computes weights sum
       int weights_sum = 0;
       for (int i=0;i<weights.size();i++) {

@@ -10,6 +10,12 @@ Copyright 2013-2015 Quotek SAS
 
 void test_above(std::vector<quotek::data::record>& recs) {
 
+  assert( quotek::quant::above(recs,5000,1) == true );
+  assert (quotek::quant::above(recs,4000,1) == false);
+
+  assert (quotek::quant::above(recs,4550,.4) == true);
+  assert (quotek::quant::above(recs,4550,.5) == false);
+
 }
 
 void test_min(std::vector<quotek::data::record>& recs) {
@@ -142,6 +148,7 @@ int main() {
     r1[i].timestamp = tstamps[i];
   }
 
+  test_above(r1);
   test_min(r1);
   test_max(r1);
   test_average(r1);
