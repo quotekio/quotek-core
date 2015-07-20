@@ -30,6 +30,16 @@ void test_average(std::vector<quotek::data::record>& recs) {
   assert( fabs(avg - 4558.56) < EPSILON );
 }
 
+void test_weighted_average(std::vector<quotek::data::record>& recs) {
+
+  std::vector<int> weights = {1,2,3,4,5,6,7,8,9};
+  float wavg = quotek::quant::weighted_average(recs, weights); 
+
+  assert( fabs( wavg - 4598.29 ) < EPSILON );
+
+}
+
+
 void test_variance(std::vector<quotek::data::record>& recs) {
   float var = quotek::quant::variance(recs,false);
   assert( fabs(var - 71192.024) < EPSILON ); 
@@ -68,6 +78,24 @@ void test_exponential_moving_average(std::vector<quotek::data::record>& recs) {
 
   for (int i=0;i<v2.size();i++) {
     assert( fabs( v2[i] - expected_ema5[i] ) < EPSILON  );
+  }
+  
+}
+
+void test_weighted_moving_average(std::vector<quotek::data::record>& recs) {
+
+  std::vector<float> v1 = quotek::quant::WMA(recs,2);
+  std::vector<float> v2 = quotek::quant::WMA(recs,4);
+
+  std::vector<float> expected_wma2 = {4560, 4785, 4453.33, 4174.33, 4285.33, 4510.67, 4676, 4899.33 };
+  std::vector<float> expected_wma4 = { 4529, 4363.6, 4321.6, 4394.3, 4550, 4764.8 };
+
+  for ( int i = 0; i < v1.size(); i++  ) {
+    assert( fabs( v1[i] - expected_wma2[i] ) < EPSILON  );
+  }
+
+  for ( int i = 0; i < v2.size(); i++  ) {
+    assert( fabs( v2[i] - expected_wma4[i] ) < EPSILON  );
   }
   
 }
@@ -117,10 +145,12 @@ int main() {
   test_min(r1);
   test_max(r1);
   test_average(r1);
+  test_weighted_average(r1);
   test_standard_deviation(r1);
   test_variance(r1);
   test_moving_average(r1);
   test_exponential_moving_average(r1);
+  test_weighted_moving_average(r1);
   test_linear_regression(r1);
   test_trend_percentage(r1);
 

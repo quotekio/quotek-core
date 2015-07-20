@@ -22,6 +22,7 @@ namespace quotek {
     #define AVG average
     #define SMA moving_average
     #define EMA exponential_moving_average
+    #define WMA weighted_moving_average
     #define SD standard_deviation
     #define SIGMA standard_deviation
     #define SLR linear_regression
@@ -99,6 +100,16 @@ namespace quotek {
     float average(std::vector<quotek::data::record>& recs);
     
     /**
+     * This function returns a weight average of the values contained in
+     * the provided recs dataset.
+     * @param recs dataset to work on.
+     * @param weights weights vector.
+     * @return the mean value of the dataset, as a float value.
+     */
+    float weighted_average(std::vector<quotek::data::record>& recs,
+                           std::vector<int>& weights);
+
+    /**
      * Returns the variance of the values contained in the provided recs dataset.
      * @param recs dataset to work on.
      * @param sampled when you need to make a variance estimate, elimites bias by dividing by N-1 instead of N.
@@ -169,7 +180,8 @@ namespace quotek {
                                       int  periods);
 
     /**
-     * Computes the exponential moving average of the provided dataset for n periods.
+     * Computes the exponential moving average (EMA) of the provided dataset for n periods.
+     * As a reminder, EMA is is a special kind of moving average giving more weight to recent values.
      * eg if you want to compute an EMA100 for the provided dataset, use exponential_moving_average(recs,50)
      * @param recs dataset to work on.
      * @param periods the number of dataset values that must be aggregated together to compute a single point of the EMA.
@@ -177,6 +189,18 @@ namespace quotek {
      */
     std::vector<float> exponential_moving_average(std::vector<quotek::data::record>& recs, 
                                                   int periods);
+
+
+    /** Computes the weighted moving average (WMA) of the provided dataset for n periods.
+     *  WMA gives even more weight to recent values than EMA.
+     *  Note: the weight vector for this function is {1,2,..periods-1,periods}
+     *  @param recs dataset to work on.
+     *  @param periods Number of periods for the moving average.
+     */
+
+    std::vector<float> weighted_moving_average(std::vector<quotek::data::record>& recs, 
+                                                  int periods);
+
     /**
      * linear_regression computes the linear regression of the provided dataset.
      * Note about linear regression: in order to avoid troublesome scaling problems,

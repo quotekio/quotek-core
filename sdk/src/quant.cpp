@@ -65,6 +65,25 @@ namespace quotek {
       return sum / recs.size();
     }
     
+    float weighted_average(std::vector<quotek::data::record>& recs,
+                           std::vector<int>& weights) {
+
+      float sum = 0;
+      
+      //computes weights sum
+      int weights_sum = 0;
+      for (int i=0;i<weights.size();i++) {
+        weights_sum+= weights[i];
+      }
+
+      for(int i=0;i<recs.size();i++) {
+        sum += recs[i].value * weights[i];
+      }
+
+      return sum / weights_sum;
+
+    }
+
 
     float variance(std::vector<quotek::data::record>& recs,
     	           bool sampled) {
@@ -190,6 +209,31 @@ namespace quotek {
         else result.push_back( recs[i].value * k + prev_ema * ( 1- k) );
       }
     
+      return result;
+
+    }
+
+
+    std::vector<float> weighted_moving_average(std::vector<quotek::data::record>& recs, 
+                                                  int periods) {
+
+      std::vector<float> result;
+      
+      //dataset is too short or periods invalid
+      if ( recs.size() < periods || periods < 2 ) return result;
+
+      //computes weights vector
+      std::vector<int> weight_vector;
+      for (int i=1;i<=periods;i++) {
+        weight_vector.emplace_back(i);
+      }
+
+      for(int i = 0 ; i < recs.size() - periods + 1 ;i++) {
+
+        std::vector<quotek::data::record> tmprec = quotek::data::record::extract(recs, i,periods);
+        float avg = weighted_average(tmprec,weight_vector);
+        result.push_back(avg);
+      }
       return result;
 
     }
