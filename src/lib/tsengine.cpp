@@ -60,7 +60,7 @@ void tsEngine::openPosition(string epic, string way, int nbc, int stop, int limi
 
   if (ex1.status == "ACCEPTED")  {
 
-    position p;
+    quotek::core::position p;
     p.asset_id = epic;
     p.asset_name = idx->name;
     p.ticket_id = ex1.dealid;
@@ -94,8 +94,8 @@ void tsEngine::closePosition(string dealid) {
   //API Performance profiling.
   auto tt0 = std::chrono::high_resolution_clock::now();
 
-  position* p = tse_mm->getPositionByDealid(dealid);
-  p->status = POS_PENDING_CLOSE;
+  quotek::core::position* p = tse_mm->getPositionByDealid(dealid);
+  //p->status = POS_PENDING_CLOSE;
 
   string result = tse_broker->closePos(dealid, p->size);
   if (result == "ACCEPTED:SUCCESS" ) {
@@ -122,7 +122,7 @@ void tsEngine::broker_sync_start() {
   moneyManager* mm = this->getMoneyManager();
   broker* b0 = this->getBroker();
   ticks_t ticks = this->getTicks();
-  quotek::data::cvector<position>* poslist = mm->getPositions();
+  quotek::data::cvector<quotek::core::position>* poslist = mm->getPositions();
   igmLogger* logger = this->getLogger();
 
   AssocArray<indice*> ilist = this->getIndicesList();
@@ -167,7 +167,7 @@ void tsEngine::broker_sync_start() {
       if (! mm->hasPos(dealid) ) {
         logger->log("New position found:" + dealid);       
    
-        position p;
+        quotek::core::position p;
         p.asset_id = epic;
         p.asset_name = indice;
         p.ticket_id = dealid;
@@ -228,15 +228,15 @@ void tsEngine::moneyman() {
   //TRADELIFE struct for fctptr
   typedef void* (*tl_fct)(pos_c*,tradelife_io*);
   void* tl_fct_fref = sh->getTLFct(); 
-  quotek::data::cvector<position>* poslist = mm->getPositions();
+  quotek::data::cvector<quotek::core::position>* poslist = mm->getPositions();
 
   //pnl-needed vars
   float v;
 
   float cval;
-  record* r;
+  quotek::data::record r;
  
-  position* p;
+  quotek::core::position* p;
 
   tradelife_io tl_io;
   
@@ -252,23 +252,23 @@ void tsEngine::moneyman() {
   while (1) {
 
     //checks STOPS & LIMIT and cleans positions if needed.
-    for(vector<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
+    for(vector<quotek::core::position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
 
       p = &*iter;
-      r = records_last(this->getIndiceRecords(p->indice));
+      r = records_last(this->getIndiceRecords(p->asset_name));
       if (r != NULL) cval = r->value;
       else continue;
 
       //checking of Real Stops
       if ( p->size < 0  &&  cval >= p->stop ) {
         mm->remPosition(iter);
-        logger->log("Position " +  p->dealid + " closed ! (STOP)");
+        logger->log("Position " +  p->ticket_id + " closed ! (STOP)");
         continue;
       }
 
       else if ( p->size > 0  &&  cval <= p->stop ) {
         mm->remPosition(iter);
-        logger->log("Position " +  p->dealid + " closed ! (STOP)");
+        logger->log("Position " +  p->ticket_id + " closed ! (STOP)");
         continue;
       }
 
@@ -276,13 +276,13 @@ void tsEngine::moneyman() {
 
         if ( p->size < 0  &&  cval < p->limit ) {
           mm->remPosition(iter);
-          logger->log("Position " +  p->dealid + " closed ! (LIMIT)");
+          logger->log("Position " +  p->ticket_id + " closed ! (LIMIT)");
           continue;
         }
 
         else if ( p->size > 0  &&  cval > p->limit ) {
           mm->remPosition(iter);
-          logger->log("Position " +  p->dealid + " closed ! (LIMIT)");
+          logger->log("Position " +  p->ticket_id + " closed ! (LIMIT)");
           continue;
         }
       }
@@ -293,28 +293,27 @@ void tsEngine::moneyman() {
 
       tl_fct tl = (tl_fct) tl_fct_fref;
 
-      for(vector<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
+      for(vector<quotek::core::position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
 
         
         p = &*iter;
 
         pos_c pos_io;
-        pos_io.indice = p->indice.c_str();
-        pos_io.dealid = p->dealid.c_str();
+        pos_io.indice = p->asset_name.c_str();
+        pos_io.dealid = p->ticket_id.c_str();
         pos_io.pnl = p->pnl;
         pos_io.open = p->open;
         pos_io.size = p->size;
         pos_io.stop = p->stop;
-        pos_io.vstop = p->vstop;
-        pos_io.vlimit = p->vlimit;
+        pos_io.vstop = p->get_vstop();
+        pos_io.vlimit = p->get_vlimit();
         pos_io.nb_inc = p->nb_inc; 
         pos_io.limit = p->limit;
 
         (*tl)(&pos_io,&tl_io);
 
-        p->vstop = pos_io.vstop;
-        p->vlimit = pos_io.vlimit;
-        p->nb_inc = pos_io.nb_inc;
+        p->set_vstop(pos_io.vstop);
+        p->set_vlimit(pos_io.vlimit);
 
         while( ! IsEmpty( orders_q ) ) {
           char* order = (char*) FrontAndDequeue( orders_q );
@@ -334,29 +333,29 @@ void tsEngine::moneyman() {
           free(logstr);
         }
 
-        r = records_last(this->getIndiceRecords(p->indice));
+        r = records_last(this->getIndiceRecords(p->asset_name));
         if (r != NULL) cval = r->value;
         else continue;
         
         //Checking of Virtual Stops/Limits
-        if ( p->size < 0  &&  cval >= p->vstop ) {
-          orders_queue->push("closepos:" + p->dealid );
+        if ( p->size < 0  &&  cval >= p->get_vstop() ) {
+          orders_queue->push("closepos:" + p->ticket_id );
         }
 
-        else if ( p->size > 0  &&  cval <= p->vstop ) {
-          orders_queue->push("closepos:" + p->dealid );
+        else if ( p->size > 0  &&  cval <= p->get_vstop() ) {
+          orders_queue->push("closepos:" + p->ticket_id );
         }
           
         if (p->vlimit != 0) {
 
           /* CLose on virtual limit */
-          if ( p->size > 0  &&  cval >= p->vlimit ) {
-            orders_queue->push("closepos:" + p->dealid );
+          if ( p->size > 0  &&  cval >= p->get_vlimit() ) {
+            orders_queue->push("closepos:" + p->ticket_id );
           }
             
           /* CLose on virtual limit */
-          else if ( p->size < 0  &&  cval <= p->vlimit ) {
-            orders_queue->push("closepos:" + p->dealid );
+          else if ( p->size < 0  &&  cval <= p->get_vlimit() ) {
+            orders_queue->push("closepos:" + p->ticket_id );
           }
 
         }
@@ -397,7 +396,7 @@ void tsEngine::saveToBackend() {
   backend* back0 = this->getBackend();
   this->setBSP(0);
   int backend_save_pos = this->getBSP();
-  quotek::data::cvector<position>* pos_history = this->getMoneyManager()->getPositionsHistory();
+  quotek::data::cvector<quotek::core::position>* pos_history = this->getMoneyManager()->getPositionsHistory();
    
   int prev_t = 0;
 
@@ -407,18 +406,18 @@ void tsEngine::saveToBackend() {
 
     //saves history
     for (int i=0; i< pos_history->size();i++ ) {
-      if ( pos_history->at(i).close_time > prev_t ) {
-        prev_t = pos_history->at(i).close_time;
+      if ( pos_history->at(i).close_date > prev_t ) {
+        prev_t = pos_history->at(i).close_date;
         back0->saveHistory(&(pos_history->at(i)));
       }
     }
 
-    AssocArray<records*>* inmem_recs = this->getRecords();
+    AssocArray<records*>* inmem_records = this->getRecords();
     int rsize_snapshot;
-    for (int i=0; i< inmem_recs->Size(); i++) {
+    for (int i=0; i< inmem_records->Size(); i++) {
 
-      string iname = inmem_recs->GetItemName(i);
-      records* recs = inmem_recs->at(i);
+      string iname = inmem_records->GetItemName(i);
+      records* recs = inmem_records->at(i);
 
       //snap records size only once for first element.
       //(next elements should always have at leaest the same size)
@@ -735,7 +734,7 @@ void tsEngine::execute() {
 
       else if (order_params.at(0) == "closepos") {
         std::string dealid = order_params.at(1);
-        position* cpos  = mm->getPositionByDealid(dealid);
+        quotek::core::position* cpos  = mm->getPositionByDealid(dealid);
         if (cpos != NULL) {
           cpos->status = POS_PENDING_CLOSE;
           this->closePosition(dealid);

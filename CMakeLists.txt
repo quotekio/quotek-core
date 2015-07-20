@@ -38,7 +38,6 @@ add_executable(
   src/lib/genetics.cpp
   src/lib/network.cpp
   src/lib/aep.cpp
-  src/lib/quant.cpp
   src/lib/narrays.cpp
 )
 
