@@ -80,12 +80,14 @@ target_link_libraries(
 
 target_link_libraries(
   csv2influx
+  quotek
   curl
 )
 
 
 target_link_libraries(
   influxdbbe
+  quotek
   influxdb
   curl
 )

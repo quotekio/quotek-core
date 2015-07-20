@@ -26,7 +26,7 @@ public:
   	       igmLogger* logger,
   	       float* cur_pnl,
   	       float* cumulative_pnl,
-  	       quotek::data::cvector<position>* positions,
+  	       quotek::data::cvector<quotek::core::position>* positions,
   	       store* s) {
 
     this->mode = mode;
@@ -43,7 +43,7 @@ public:
   igmLogger* logger;
   float* cur_pnl;
   float* cumulative_pnl;
-  quotek::data::cvector<position>* positions;
+  quotek::data::cvector<quotek::core::position>* positions;
   store* s;
   void* eptr;
 

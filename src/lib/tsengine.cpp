@@ -61,20 +61,19 @@ void tsEngine::openPosition(string epic, string way, int nbc, int stop, int limi
   if (ex1.status == "ACCEPTED")  {
 
     position p;
-    p.epic = epic;
-    p.indice = idx->name;
-    p.dealid = ex1.dealid;
+    p.asset_id = epic;
+    p.asset_name = idx->name;
+    p.ticket_id = ex1.dealid;
     p.open = ex1.open;
     p.stop = ex1.stop;
-    p.vstop = ex1.stop;
-    p.vlimit = ex1.limit;
-    p.nb_inc = 1;
+    p.set_vstop(ex1.stop);
+    p.set_vlimit(ex1.limit);
+
     p.limit = ex1.limit;
     p.size = ex1.size;
     p.pnl = 0;
-    p.pnl_peak = -1000000000;
-    p.status = POS_OPEN;
-    p.open_time = time(0);
+    //p.status = POS_OPEN;
+    p.open_date = time(0);
     tse_mm->addPosition(p);
 
     auto tt1 = std::chrono::high_resolution_clock::now();
@@ -169,19 +168,17 @@ void tsEngine::broker_sync_start() {
         logger->log("New position found:" + dealid);       
    
         position p;
-        p.epic = epic;
-        p.indice = indice;
-        p.dealid = dealid;
-        p.name = name;
+        p.asset_id = epic;
+        p.asset_name = indice;
+        p.ticket_id = dealid;
         p.open = open;
         p.stop = stop;
-        p.vstop = stop;
-        p.vlimit = limit;
-        p.nb_inc = 1;
+        p.set_vstop(stop);
+        p.set_vlimit(limit);
         p.limit = limit;
         p.size = size;
         p.pnl = 0;
-        p.status = POS_OPEN;
+        //p.status = POS_OPEN;
         mm->addPosition(p);
  
       }    

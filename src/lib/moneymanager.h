@@ -11,8 +11,8 @@
 #include "utils.h"
 #include "indice.h"
 #include "results.h"
-#include "position.h"
 #include <quotek/cvector.hpp>
+#include <quotek/position.hpp>
 
 #define MM_ERR_NBPOS 0x01
 #define MM_ERR_TRADERISK_2HIGH 0x02
@@ -67,14 +67,14 @@ class moneyManager {
     int countPos(string indice_name);
     int ask(string,string,int,int);
     void smartAsk(int*,string);
-    int addPosition(position p);
-    vector<position>::iterator remPosition(vector<position>::iterator);
+    int addPosition(quotek::core::position p);
+    vector<quotek::core::position>::iterator remPosition(vector<quotek::core::position>::iterator);
     void remPosition(string);
     bool hasPos(string);
     bool hasPos(string,string);
-    quotek::data::cvector<position>* getPositions();
-    quotek::data::cvector<position>* getPositionsHistory();
-    position* getPositionByDealid(string);
+    quotek::data::cvector<quotek::core::position>* getPositions();
+    quotek::data::cvector<quotek::core::position>* getPositionsHistory();
+    quotek::core::position* getPositionByDealid(string);
     string cleanPositions(vector<string>);
     string resolveError(int);
     float* getCurPNL();
@@ -106,9 +106,8 @@ class moneyManager {
     float max_loss_percentage_per_trade;
     float critical_loss_percentage;
     float max_var;
-  	quotek::data::cvector<position> positions;
-
-    quotek::data::cvector<position> positions_history;
+  	quotek::data::cvector<quotek::core::position> positions;
+    quotek::data::cvector<quotek::core::position> positions_history;
     AssocArray<indice*> indices_list;
     float var;
     float cur_pnl;

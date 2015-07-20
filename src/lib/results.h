@@ -4,20 +4,20 @@
 #include <string>
 #include <vector>
 #include "utils.h"
-#include "position.h"
 #include <fstream>
+
+#include <quotek/position.hpp>
 
 using namespace std;
 
-inline string pos2json(position* p) {
+inline string pos2json(quotek::core::position* p) {
 
   stringstream ss;
 
   ss << "{";
-  ss << "\"asset\":\"" << p->indice << "\",\n";
-  ss << "\"epic\":\"" << p->epic << "\",\n";
-  ss << "\"dealid\":\"" << p->dealid << "\",\n";
-  ss << "\"name\":\"" << p->name << "\",\n";
+  ss << "\"asset\":\"" << p->asset_name << "\",\n";
+  ss << "\"broker_id\":\"" << p->asset_id << "\",\n";
+  ss << "\"ticket_id\":\"" << p->ticket_id << "\",\n";
   
   if (  p->size > 0 ) {
     ss << "\"way\":\"buy\",\n"; 
@@ -29,8 +29,8 @@ inline string pos2json(position* p) {
   ss << "\"stop\":" << p->stop << ",\n";
   ss << "\"limit\":" << p->limit << ",\n";
   ss << "\"pnl\":" << p->pnl << ",\n";
-  ss << "\"open_time\":" << p->open_time << ",\n";
-  ss << "\"close_time\":" << p->close_time << "\n";
+  ss << "\"open_date\":" << p->open_date << ",\n";
+  ss << "\"close_date\":" << p->close_date << "\n";
   ss << "}";
 
   return ss.str();
@@ -110,7 +110,7 @@ class adamresult {
     
     vector<assetstats*> astats;
     vector<string> loglines;
-    vector<position> positions_history;
+    vector<quotek::core::position> positions_history;
 
   	string json_encode() {
 

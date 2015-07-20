@@ -17,11 +17,9 @@
 #include "igmlogger.h"
 #include "genetics.h"
 #include "indice.h"
-#include "quant.h"
 
 #include "rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
-#include "records.h"
 #include "results.h"
 #include "store.h"
 #include "strategyhandler.hpp"
@@ -34,7 +32,10 @@
 #include <thread>
 #include <quotek/cvector.hpp>
 #include <quotek/cqueue.hpp>
+#include <quotek/quant.hpp>
+#include <quotek/record.hpp>
 #include <quotek/strategy.hpp>
+
 
 
 using namespace rapidjson;
@@ -49,7 +50,7 @@ typedef struct tradelife_io {
 
 typedef struct evaluate_io {
   const char* indice_name;
-  records* recs;
+  std::vector<quotek::data::record>& recs;
   Queue_c* orders;
   Queue_c* logs;
   store* s;
@@ -80,10 +81,10 @@ class tsEngine{
     moneyManager* getMoneyManager();
     genetics* getGE();
 
-    AssocArray<records*>* getRecords();
-    records* getIndiceRecords(string);
+    AssocArray< std::vector<quotek::data::record> >& getRecords();
+    std::vector<quotek::data::record>& getIndiceRecords(string);
     int pushValues(string mepic,float v);
-    int pushRecord(string,record*);
+    int pushRecord(string,quotek::data::record);
 
     adamCfg** getAdamConfig();
 
@@ -176,7 +177,7 @@ class tsEngine{
     AssocArray<indice*> indices_list;    
 
     quotek::data::cqueue<std::string> orders_queue;
-    AssocArray<records*> inmem_records;
+    AssocArray< std::vector<quotek::data::record> > inmem_records;
 
     AssocArray<void*> eval_ptrs;
     igmLogger* logger;

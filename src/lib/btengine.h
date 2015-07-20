@@ -50,9 +50,9 @@ class btEngine: public tsEngine {
     int progress_tstamp;
     int backtest_from;
     int backtest_to; 
-    vector<position> positions_history;
+    vector<quotek::core::position> positions_history;
 
-    AssocArray<records*> backtest_inmem_records;
+    AssocArray< std::vector<quotek::data::record> > backtest_inmem_records;
 
     AssocArray<void*> eval_pointers; 
 
