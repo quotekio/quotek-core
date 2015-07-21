@@ -8,6 +8,42 @@ Copyright 2013-2015 Quotek SAS
 namespace quotek {
   namespace data {
 
+
+    records::records() {}
+    
+    records::~records() {}
+
+    std::vector<quotek::data::record>& records::get_data() {
+      return this->data;
+    }
+
+    std::vector<long>& records::get_timestamps() {
+      return this->timestamps;
+    }
+
+    std::vector<float>& records::get_values() {
+      return this->values;
+    }
+
+    std::vector<float>& records::get_spreads() {
+      return this->spreads;
+    }
+
+    void records::append(long timestamp, float value) {
+      this->timestamps.emplace_back(timestamp);
+      this->values.emplace_back(value);
+      this->spreads.emplace_back(0);
+      this->data.emplace_back( record(timestamp , value, 0) );
+    }
+
+    void records::append(long timestamp, float value, float spread) {
+      this->timestamps.emplace_back(timestamp);
+      this->values.emplace_back(value);
+      this->spreads.emplace_back(spread);
+      this->data.emplace_back( record(timestamp , value, spread) ); 
+    }
+
+
     record::record() {
 
     }

@@ -28,7 +28,7 @@ namespace quotek {
        record(long timestamp, 
               float value, 
               float spread);
- 
+    
        /** record destructor */
        ~record();
 
@@ -52,7 +52,7 @@ namespace quotek {
        static std::vector<record> sample(std::vector<record>& recs,
                      long time_inf,
                      long time_sup);
- 
+    
        /**
         * extract is a conviency subvector extract. it takes begin() + start_offset, begin + start_offset + size iterators
         * to create a new subvector.
@@ -102,7 +102,49 @@ namespace quotek {
        float spread;
 
     };
-}
+
+    /** records is a class that is is a quotek::data::record container */
+
+    class records {
+
+      public:
+        /** Class Constructor */
+        records();
+
+        /** Class Destructor */
+        ~records();
+
+        /** [] Operator */
+        quotek::data::record& operator [] (const int&  i) {
+          return this->data[i];
+        }
+
+        /** Retrieves a vector of quotek::data::record. */
+        std::vector<quotek::data::record>& get_data();
+
+        /** Retrieves a vector that contains all the timestamps of the dataset. */
+        std::vector<long>& get_timestamps();
+
+        /** Retrieves a vector that contains all the values of the dataset. */
+        std::vector<float>& get_values();
+
+        /** Retrieves a vector that contains all the spreads of a dataset. */
+        std::vector<float>& get_spreads();
+
+        /** Adds new entry to records container (no spread) */
+        void append(long timestamp, float value);
+
+        /** Adds new entry to records container (with spread) */
+        void append(long timestamp, float value, float spread);
+
+      private:
+        std::vector<quotek::data::record> data;
+        std::vector<long> timestamps;
+        std::vector<float> values;
+        std::vector<float> spreads;
+    };
+  
+  }
 
 }
 #endif
