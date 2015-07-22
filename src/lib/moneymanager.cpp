@@ -75,12 +75,12 @@ void moneyManager::computePNLs(string indice_name,float cur_value) {
 
   for (int i=0;i<positions.size();i++) {
 
-    if (positions.at(i).indice == indice_name) {
-      position* p = &(positions.at(i));
+    if (positions.at(i).asset_name == indice_name) {
+      quotek::core::position* p = &(positions.at(i));
       p->pnl = (cur_value - p->open) * pnl_coef * unit_coef * p->size;
 
       //saves pnl peak
-      if ( p->pnl > p->pnl_peak ) p->pnl_peak = p->pnl;
+      if ( p->pnl > p->stats->pnl_peak ) p->stats->pnl_peak = p->pnl;
       
     }
   }
@@ -90,7 +90,7 @@ void moneyManager::computePNLs(string indice_name,float cur_value) {
 bool moneyManager::hasPos(string dealid) {
 
   for(int i =0;i<positions.size();i++) {
-    if (positions.at(i).dealid == dealid) {
+    if (positions.at(i).ticket_id == dealid) {
       return true;
     }
   }
@@ -102,7 +102,7 @@ bool moneyManager::hasPos(string indice,string way) {
 
   if (way == "sell") {
     for(int i =0;i<positions.size();i++) {
-      if (positions.at(i).indice == indice && positions.at(i).size < 0 ) {
+      if (positions.at(i).asset_name == indice && positions.at(i).size < 0 ) {
         return true;
       }
     }
@@ -110,7 +110,7 @@ bool moneyManager::hasPos(string indice,string way) {
 
   else if (way == "buy") {
     for(int i =0;i<positions.size();i++) {
-      if (positions.at(i).indice == indice && positions.at(i).size > 0 ) {
+      if (positions.at(i).asset_name == indice && positions.at(i).size > 0 ) {
         return true;
       }
     }
@@ -124,16 +124,16 @@ vector<string> moneyManager::findPos(string indice ,string way) {
 
   if (way == "sell") {
     for(int i =0;i<positions.size();i++) {
-      if (positions.at(i).indice == indice && positions.at(i).size < 0 ) {
-        result.push_back(positions.at(i).dealid);
+      if (positions.at(i).asset_name == indice && positions.at(i).size < 0 ) {
+        result.push_back(positions.at(i).ticket_id);
       }
     }
   }
 
   else if (way == "buy") {
     for(int i =0;i<positions.size();i++) {
-      if (positions.at(i).indice == indice && positions.at(i).size > 0 ) {
-        result.push_back(positions.at(i).dealid);
+      if (positions.at(i).asset_name == indice && positions.at(i).size > 0 ) {
+        result.push_back(positions.at(i).ticket_id);
       }
     }
   }
@@ -144,7 +144,7 @@ vector<string> moneyManager::findPos(string indice ,string way) {
 
 
 
-int moneyManager::addPosition(position p) {
+int moneyManager::addPosition(quotek::core::position p) {
   positions.push_back(p);
   return 0;
 }
@@ -153,11 +153,11 @@ string moneyManager::cleanPositions(vector<string> alive_pos) {
 
   string response = "";
 
-  for (std::vector<position>::iterator iter =  positions.begin() ;iter != positions.end();++iter) {
+  for (std::vector<quotek::core::position>::iterator iter =  positions.begin() ;iter != positions.end();++iter) {
 
-    position *p = &*iter;
-    if ( ! contains(alive_pos,p->dealid) ) {
-      response = response + p->dealid + ";";
+    quotek::core::position *p = &*iter;
+    if ( ! contains(alive_pos,p->ticket_id) ) {
+      response = response + p->ticket_id + ";";
       cumulative_pnl += p->pnl;
       iter = positions.erase(iter);
       if (iter == positions.end()) break;
@@ -169,12 +169,12 @@ string moneyManager::cleanPositions(vector<string> alive_pos) {
 
 
 
-vector<position>::iterator moneyManager::remPosition(vector<position>::iterator iter) {
+vector<quotek::core::position>::iterator moneyManager::remPosition(vector<quotek::core::position>::iterator iter) {
   
-      position* p = &*iter;
+      quotek::core::position* p = &*iter;
 
-      //adds close_time tstamp
-      p->close_time = time(0);
+      //adds close_date tstamp
+      p->close_date = time(0);
 
       //stores position to history
       positions_history.push_back(*p);
@@ -187,18 +187,18 @@ vector<position>::iterator moneyManager::remPosition(vector<position>::iterator 
 
 void moneyManager::remPosition(string dealid) {
   
-  for (std::vector<position>::iterator iter =  positions.begin() ;iter != positions.end();++iter) {
+  for (std::vector<quotek::core::position>::iterator iter =  positions.begin() ;iter != positions.end();++iter) {
     
-    position *p = &*iter;
+    quotek::core::position *p = &*iter;
 
     //adds close_time tstamp
-    p->close_time = time(0);
+    p->close_date = time(0);
 
     //stores position to history
     positions_history.push_back(*p);
 
     //deletes position from poslist
-    if (p->dealid == dealid) {
+    if (p->ticket_id == dealid) {
       cumulative_pnl += p->pnl;
       iter = positions.erase(iter);
       if (iter == positions.end()) break;
@@ -208,20 +208,20 @@ void moneyManager::remPosition(string dealid) {
 
 
 
-cvector<position>* moneyManager::getPositions() {
+quotek::data::cvector<quotek::core::position>* moneyManager::getPositions() {
   return &positions;
 }
 
-cvector<position>* moneyManager::getPositionsHistory() {
+quotek::data::cvector<quotek::core::position>* moneyManager::getPositionsHistory() {
   return &positions_history;
 }
 
 
-position* moneyManager::getPositionByDealid(string dealid) {
+quotek::core::position* moneyManager::getPositionByDealid(string dealid) {
 
   for(int i=0;i< positions.size() ;i++) {
 
-    if (positions.at(i).dealid == dealid) {
+    if (positions.at(i).ticket_id == dealid) {
       return &(positions.at(i));
     }
     
@@ -237,8 +237,8 @@ float moneyManager::computeVAR() {
 
   for(int i=0; i< positions.size();i++) {
 
-    position* p = &(positions.at(i));
-    indice* idx = iResolve(indices_list,p->indice);
+    quotek::core::position* p = &(positions.at(i));
+    indice* idx = iResolve(indices_list,p->asset_name);
     int pnl_coef = idx->pnl_pp; 
     int unit_coef = (idx->unit == "pip") ? 10000 : 1;
 
@@ -259,7 +259,7 @@ int moneyManager::countPos(string indice_name) {
   int nbpos = 0;
 
   for(int i=0;i<positions.size();i++) {
-    if ( positions[i].indice == indice_name ) nbpos++;
+    if ( positions[i].asset_name == indice_name ) nbpos++;
   }
 
   return nbpos;
@@ -377,7 +377,7 @@ int moneyManager::getReversePosForceClose() {
 void moneyManager::getPositionsString(string* s) {
 
   for (int i=0;i<positions.size();i++) {
-    *s += "Indice:" + positions[i].indice + "\n";
+    *s += "Indice:" + positions[i].asset_name + "\n";
     *s += "Size:" + int2string(positions[i].size) + "\n";
     *s += "Open:" + float2string(positions[i].open) + "\n";
     *s += "Stop:" + float2string(positions[i].stop) + "\n";
@@ -393,7 +393,7 @@ void moneyManager::displayPositions() {
 
   for (int i=0;i<positions.size();i++) {
 
-    cout << "Indice:" << positions[i].indice << endl;
+    cout << "Indice:" << positions[i].asset_name << endl;
     cout << "Size:" << positions[i].size << endl;
     cout << "Open:" << positions[i].open << endl;
     cout << "Stop:" << positions[i].stop << endl;

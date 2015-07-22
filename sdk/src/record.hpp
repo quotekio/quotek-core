@@ -131,11 +131,21 @@ namespace quotek {
         /** Retrieves a vector that contains all the spreads of a dataset. */
         std::vector<float>& get_spreads();
 
+        /** last returns last vector element. */
+        quotek::data::record& last();
+
+        /** returns size of container. */
+        size_t size();
+
+
         /** Adds new entry to records container (no spread) */
         void append(long timestamp, float value);
 
         /** Adds new entry to records container (with spread) */
         void append(long timestamp, float value, float spread);
+
+        /** Adds new entry to records container (record form) */
+        void append(quotek::data::record& r);
 
       private:
         std::vector<quotek::data::record> data;

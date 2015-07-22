@@ -38,15 +38,7 @@ btEngine::btEngine(adamCfg* conf,
 
   //initializes inmem_records, backtest_inmem_records
   vector<string> si = iGetNames(indices_list);
-  for(int i=0;i<si.size();i++) {
-    inmem_records[si[i]] = (records*) malloc(sizeof(records));
-    backtest_inmem_records[si[i]] = (records*) malloc(sizeof(records));
-    //initializing records structures for each found indice
-    records_init(inmem_records[si[i]],10000);
-    records_init(backtest_inmem_records[si[i]], 10000);
-
-  }
-
+  
   //loads backtest history
   loadBacktestData_();
 
@@ -54,7 +46,7 @@ btEngine::btEngine(adamCfg* conf,
   logger = new igmLogger();
 
   //initializes store
-  store_init(&tse_store);
+  //store_init(&tse_store);
   
   printf ("loading evaluators..\n");
   vector<string> evnames = iGetNames(getIndicesList());
@@ -75,7 +67,7 @@ int btEngine::loadBacktestData_() {
     string q;
     vector<string> inames = iGetNames(indices_list);
     for (int i=0;i<inames.size();i++) {
-      records* recs = tse_back->query(inames[i], backtest_from, backtest_to);
+      quotek::data::records recs = tse_back->query(inames[i], backtest_from, backtest_to);
       backtest_inmem_records[inames[i]] = recs;
     }
 
@@ -85,6 +77,7 @@ int btEngine::loadBacktestData_() {
 
 int btEngine::evaluate_(string eval_name,void* eval_ptr, int cstate) {
 
+/*
   typedef void* (*eval_fct)(uint32_t,float,float,evaluate_io*);
 
   uint32_t t;
@@ -105,9 +98,9 @@ int btEngine::evaluate_(string eval_name,void* eval_ptr, int cstate) {
   
   indice* idx = iResolve(indices_list,eval_name);
 
-  ev_io.indice_name = eval_name.c_str();
-  ev_io.recs = getIndiceRecords(eval_name);
-  record* r = records_last(ev_io.recs);
+  ev_io.asset_name_name = eval_name.c_str();
+  ev_io.recs = getAssetRecords(eval_name);
+  quotek::data::record r = 
 
   t = r->timestamp;
   v = r->value;
@@ -140,13 +133,14 @@ int btEngine::evaluate_(string eval_name,void* eval_ptr, int cstate) {
   }
   
   return ev_io.state;
-  
+  */
+  return 0;
+
 }
 
 void btEngine::moneyman_() {
 
   vector<string> si = iGetNames(indices_list);
-  records* recs;
   float v;
 
   //TRADELIFE struct for fctptr
@@ -155,7 +149,7 @@ void btEngine::moneyman_() {
 
   tradelife_io tl_io;
 
-  cvector<position>* poslist = tse_mm->getPositions();
+  quotek::data::cvector<quotek::core::position>* poslist = tse_mm->getPositions();
 
   if ( tl_fct_fref != NULL) {
 
@@ -170,9 +164,10 @@ void btEngine::moneyman_() {
 
     for (int i=0;i<poslist->size();i++) {
 
+      /** USELESS/To Rewrite SECTION
       pos_c pos_io;
-      pos_io.indice = poslist->at(i).indice.c_str();
-      pos_io.dealid = poslist->at(i).dealid.c_str();
+      pos_io.asset_name = poslist->at(i).asset_name.c_str();
+      pos_io.ticket_id = poslist->at(i).ticket_id.c_str();
       pos_io.pnl = poslist->at(i).pnl;
       pos_io.open = poslist->at(i).open;
       pos_io.size = poslist->at(i).size;
@@ -187,6 +182,7 @@ void btEngine::moneyman_() {
       poslist->at(i).vstop = pos_io.vstop;
       poslist->at(i).vlimit = pos_io.vlimit;
       poslist->at(i).nb_inc = pos_io.nb_inc;
+      */
 
       while( ! IsEmpty( orders_q ) ) {
         char* order = (char*) FrontAndDequeue( orders_q );
@@ -212,20 +208,20 @@ void btEngine::moneyman_() {
 
   for(int j=0;j<si.size();j++) {
     
-    recs = getIndiceRecords(si.at(j));
-    v = recs->data[backtest_pos].value;
+    quotek::data::records& recs = getAssetRecords(si.at(j));
+    v = recs.get_data()[backtest_pos].value;
 
     tse_mm->computePNLs(si.at(j),v);
 
     //close positions where limit/stop is reached
-    for(vector<position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
+    for(vector<quotek::core::position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
 
       if ( poslist->size() == 0 ) break;
 
-      position p0 = *iter;
-      position* p = &p0;
+      quotek::core::position p0 = *iter;
+      quotek::core::position* p = &p0;
 
-      if  (p->indice == si.at(j)) {
+      if  (p->asset_name == si.at(j)) {
 
         int rmpos = 0;
 
@@ -233,7 +229,7 @@ void btEngine::moneyman_() {
           rmpos = REMPOS_STOP;
         }
   
-        else if (p->size > 0 && v <= p->vstop) {
+        else if (p->size > 0 && v <= p->get_vstop()) {
           rmpos = REMPOS_VSTOP;
         }
 
@@ -241,7 +237,7 @@ void btEngine::moneyman_() {
           rmpos = REMPOS_LIMIT;
         }
 
-        else if (p->size > 0 && v >= p->vlimit && p->vlimit != p->open ) {
+        else if (p->size > 0 && v >= p->get_vlimit() && p->get_vlimit() != p->open ) {
           rmpos = REMPOS_VLIMIT;
         }
 
@@ -250,7 +246,7 @@ void btEngine::moneyman_() {
           rmpos = REMPOS_STOP;
         }
 
-        else if (p->size < 0 && v >= p->vstop ) {
+        else if (p->size < 0 && v >= p->get_vstop() ) {
           rmpos = REMPOS_VSTOP;
         }
 
@@ -258,20 +254,17 @@ void btEngine::moneyman_() {
           rmpos = REMPOS_LIMIT;
         }
 
-        else if (p->size < 0 && v <= p->vlimit && p->vlimit != p->open ) {
+        else if (p->size < 0 && v <= p->get_vlimit() && p->get_vstop() != p->open ) {
           rmpos = REMPOS_VLIMIT;
         }
-        
-
-
 
         if (rmpos > 0) {
  
-          p->close_time = inmem_records[0]->data[backtest_pos].timestamp;
+          p->close_date = inmem_records[0].get_data()[backtest_pos].timestamp;
           positions_history.push_back(p0);
           iter = tse_mm->remPosition(iter);
 
-          string logstr = "POS " + p->indice + " Removed";
+          string logstr = "POS " + p->asset_name + " Removed";
 
           if (rmpos == REMPOS_STOP) logstr = logstr + " (STOP)";
           else if (rmpos == REMPOS_VSTOP) logstr = logstr + " (VSTOP)";
@@ -344,42 +337,42 @@ void btEngine::execute_() {
        for (int k=0;k<reverse_dealids.size();k++) {
 
          //Store pos to be removed to the postions history.
-         position* pinv = tse_mm->getPositionByDealid(reverse_dealids[k]);
-         pinv->close_time = inmem_records[0]->data[backtest_pos].timestamp;
+         quotek::core::position* pinv = tse_mm->getPositionByDealid(reverse_dealids[k]);
+         pinv->close_date = inmem_records[0].get_data()[backtest_pos].timestamp;
          positions_history.push_back(*pinv);
          //removes inverse pos.
          tse_mm->remPosition(reverse_dealids[k]);
        }
      }
 
-       position p;
-       p.epic = epic;
-       p.indice = indice;
-       p.dealid = randstring(8);
-       p.nb_inc = 1;
+       quotek::core::position p;
+       p.asset_id = epic;
+       p.asset_name = indice;
+       p.ticket_id = randstring(8);
+       //p.nb_inc = 1;
        
        if (way == "sell") {
-         p.open = getIndiceRecords(indice)->data[backtest_pos].value;
+         p.open = getAssetRecords(indice).get_data()[backtest_pos].value;
          p.size = -1 * nbc;
          p.stop = p.open + stop;
-         p.vstop = p.stop;
+         p.set_vstop(p.stop);
          p.limit = p.open - limit;
-         p.vlimit = p.limit;
+         p.set_vlimit(p.limit);
        }
 
        else {
-         p.open = getIndiceRecords(indice)->data[backtest_pos].value;
+         p.open = getAssetRecords(indice).get_data()[backtest_pos].value;
          p.size = nbc;
          p.stop = p.open - stop;
-         p.vstop = p.stop;
+         p.set_vstop(p.stop);
          p.limit = p.open + limit;
-         p.vlimit = p.limit;
+         p.set_vlimit(p.limit);
        }
 
        p.pnl = 0;
-       p.status = POS_OPEN;
+       //p.status = POS_OPEN;
        //adds position to the backtest history.
-       p.open_time = inmem_records[0]->data[backtest_pos].timestamp;
+       p.open_date = inmem_records[0].get_data()[backtest_pos].timestamp;
        tse_mm->addPosition(p);
       
     }
@@ -393,8 +386,8 @@ void btEngine::execute_() {
     std::string dealid = order_params.at(1);
 
     //stores position to be removed to the positions history.
-    position* pinv = tse_mm->getPositionByDealid(dealid);
-    pinv->close_time = inmem_records[0]->data[backtest_pos].timestamp;
+    quotek::core::position* pinv = tse_mm->getPositionByDealid(dealid);
+    pinv->close_date = inmem_records[0].get_data()[backtest_pos].timestamp;
     positions_history.push_back(*pinv);
 
     tse_mm->remPosition(dealid);       
@@ -409,8 +402,8 @@ void btEngine::execute_() {
 
     for (int k=0;k<dealids.size();k++) {
 
-      position* pinv = tse_mm->getPositionByDealid(dealids[k]);
-      pinv->close_time = inmem_records[0]->data[backtest_pos].timestamp;
+      quotek::core::position* pinv = tse_mm->getPositionByDealid(dealids[k]);
+      pinv->close_date = inmem_records[0].get_data()[backtest_pos].timestamp;
       positions_history.push_back(*pinv);
       
       tse_mm->remPosition(dealids[k]);
@@ -437,21 +430,22 @@ adamresult* btEngine::run() {
 
   int bpp = 0;
 
-  for(int i=0;i<backtest_inmem_records[0]->size -1 ;i++) {
+  for(int i=0;i<backtest_inmem_records[0].size() -1 ;i++) {
 
     //displace data from backtest_inmem to inmem
     for ( int j=0; j< backtest_inmem_records.Size(); j++  )  {
-      records_push( inmem_records[j], backtest_inmem_records[j]->data[i]);
+      inmem_records[j].append(backtest_inmem_records[j][i]);
+
     }
 
-    progress_tstamp = backtest_inmem_records[0]->data[backtest_pos].timestamp ;
+    progress_tstamp = backtest_inmem_records[0].get_data()[backtest_pos].timestamp ;
 
     for (int k=0;k<eval_pointers.Size();k++) {
 
       std::string evname_ = eval_pointers.GetItemName(k);
       int state = state_array[evname_];
-      int nstate = evaluate_(evname_, eval_pointers[k], state );
-      state_array[evname_] = nstate;
+      //int nstate = evaluate_(evname_, eval_pointers[k], state );
+      //state_array[evname_] = nstate;
     }
 
     moneyman_();
@@ -460,7 +454,7 @@ adamresult* btEngine::run() {
     backtest_pos++;
 
     //Computes backtest Progress.
-    backtest_progress =  ( (float) backtest_pos / (float) ( backtest_inmem_records[0]->size -1) ) * 100;
+    backtest_progress =  ( (float) backtest_pos / (float) ( backtest_inmem_records[0].size() -1) ) * 100;
     //cout << backtest_progress << endl;
     if (backtest_progress % 10 == 0 && backtest_progress > bpp) {
       bpp = backtest_progress;
@@ -473,11 +467,11 @@ adamresult* btEngine::run() {
   result->stop = time(0);
 
   //Adds remaining pos to history
-  cvector<position>* rpos = tse_mm->getPositions();
+  quotek::data::cvector<quotek::core::position>* rpos = tse_mm->getPositions();
   result->remainingpos = rpos->size();
 
   for (int i=0;i<result->remainingpos;i++) {
-    rpos->at(i).close_time = inmem_records[0]->data[backtest_pos].timestamp;
+    rpos->at(i).close_date = inmem_records[0].get_data()[backtest_pos].timestamp;
     positions_history.push_back(rpos->at(i));
   }
 
@@ -542,7 +536,7 @@ adamGeneticsResult* btEngine::runGenetics() {
         iv->result = tse_mm->getEndResult();
 
         //Clean components for next iteration
-        store_clear(getStore());
+        //store_clear(getStore());
         tse_mm->clear();
         positions_history.clear();
 
@@ -592,10 +586,10 @@ void btEngine::addAStats(adamresult* result) {
 
     assetstats* a1 = new assetstats();
     a1->name = inmem_records.GetItemName(i);
-    a1->variation = percentDelta(inmem_records[a1->name]);
-    a1->deviation = stdDeviation(inmem_records[a1->name]);
-    a1->highest = max(inmem_records[i]);
-    a1->lowest = min(inmem_records[i]);
+    a1->variation = quotek::quant::percent_delta(inmem_records[a1->name].get_data());
+    a1->deviation = quotek::quant::standard_deviation(inmem_records[a1->name].get_data(),false);
+    a1->highest = quotek::quant::max(inmem_records[i].get_data());
+    a1->lowest = quotek::quant::min(inmem_records[i].get_data());
     
     result->astats.push_back(a1);
 

@@ -52,7 +52,7 @@ class btEngine: public tsEngine {
     int backtest_to; 
     vector<quotek::core::position> positions_history;
 
-    AssocArray< std::vector<quotek::data::record> > backtest_inmem_records;
+    AssocArray<quotek::data::records> backtest_inmem_records;
 
     AssocArray<void*> eval_pointers; 
 

@@ -20,9 +20,9 @@ public:
     virtual ~backend() {}
     virtual int init(string) {return 0;}
     virtual int connect() {return 0;}
-    virtual std::vector<quotek::data::record> query(string) { std::vector<quotek::data::record> v1;
+    virtual quotek::data::records query(string) { quotek::data::records v1;
                                                               return v1; }
-    virtual std::vector<quotek::data::record> query(string, int, int) {std::vector<quotek::data::record> v1;
+    virtual quotek::data::records query(string, int, int) {quotek::data::records v1;
                                                                        return v1; }
                                                                        
     virtual int store(string,quotek::data::record&) {return 0;}

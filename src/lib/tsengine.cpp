@@ -255,9 +255,8 @@ void tsEngine::moneyman() {
     for(vector<quotek::core::position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
 
       p = &*iter;
-      r = records_last(this->getIndiceRecords(p->asset_name));
-      if (r != NULL) cval = r->value;
-      else continue;
+      r = this->getAssetRecords(p->asset_name).last();
+      cval = r.value;
 
       //checking of Real Stops
       if ( p->size < 0  &&  cval >= p->stop ) {
@@ -307,7 +306,7 @@ void tsEngine::moneyman() {
         pos_io.stop = p->stop;
         pos_io.vstop = p->get_vstop();
         pos_io.vlimit = p->get_vlimit();
-        pos_io.nb_inc = p->nb_inc; 
+        //pos_io.nb_inc = p->nb_inc; 
         pos_io.limit = p->limit;
 
         (*tl)(&pos_io,&tl_io);
@@ -333,10 +332,8 @@ void tsEngine::moneyman() {
           free(logstr);
         }
 
-        r = records_last(this->getIndiceRecords(p->asset_name));
-        if (r != NULL) cval = r->value;
-        else continue;
-        
+        r = this->getAssetRecords(p->asset_name).last();
+
         //Checking of Virtual Stops/Limits
         if ( p->size < 0  &&  cval >= p->get_vstop() ) {
           orders_queue->push("closepos:" + p->ticket_id );
@@ -346,7 +343,7 @@ void tsEngine::moneyman() {
           orders_queue->push("closepos:" + p->ticket_id );
         }
           
-        if (p->vlimit != 0) {
+        if (p->get_vlimit() != 0) {
 
           /* CLose on virtual limit */
           if ( p->size > 0  &&  cval >= p->get_vlimit() ) {
@@ -366,15 +363,12 @@ void tsEngine::moneyman() {
 
     for(int j=0;j<si.size();j++) {
       
-      records* mrecs = this->getIndiceRecords(si.at(j));
-      if (mrecs != NULL) {
-        record* mr = records_last(mrecs);
-        if (mr!= NULL) { 
-          v = mr->value;
-          //cout << v << endl;
-          mm->computePNLs(si.at(j),v);
-        }
-      }
+      quotek::data::records& mrecs = this->getAssetRecords(si.at(j));
+
+        quotek::data::record& mr = mrecs.last();
+        v = mr.value;
+        //cout << v << endl;
+        mm->computePNLs(si.at(j),v);
     }
 
     if (inc == 10) {
@@ -412,27 +406,24 @@ void tsEngine::saveToBackend() {
       }
     }
 
-    AssocArray<records*>* inmem_records = this->getRecords();
+    AssocArray<quotek::data::records>& inmem_records = this->getRecords();
     int rsize_snapshot;
-    for (int i=0; i< inmem_records->Size(); i++) {
+    for (int i=0; i< inmem_records.Size(); i++) {
 
-      string iname = inmem_records->GetItemName(i);
-      records* recs = inmem_records->at(i);
+      string iname = inmem_records.GetItemName(i);
+      quotek::data::records& recs = inmem_records.at(i);
 
       //snap records size only once for first element.
       //(next elements should always have at leaest the same size)
-      if (i==0) rsize_snapshot = recs->size;
+      if (i==0) rsize_snapshot = recs.size();
       backend_save_pos = this->getBSP();
 
       //cout << "BACKEND_SAVE_POS:" << backend_save_pos << endl;
       //cout << "RSIZE_SNAPSHOT:" << rsize_snapshot << endl;
       
       for (int j= backend_save_pos;j < rsize_snapshot ;j++) {
-        record* r = (record*) malloc(sizeof(record));
-        memcpy(r,&(recs->data[j]),sizeof(record));
-        //cout << "{" << r->value << "," << r->spread << "}" << endl;
+        quotek::data::record& r = recs[i];
         back0->store(iname, r );
-        free(r);
       }
 
     }
@@ -480,7 +471,7 @@ void tsEngine::poll() {
 
       for (int i=0;i<values.size();i++) {
 
-        record r;
+        quotek::data::record r;
         epic = values[i].epic;
         buy = values[i].bid;
         sell = values[i].offer;
@@ -492,7 +483,7 @@ void tsEngine::poll() {
         indice* idx = iResolve(ilist, epic);
         if (idx != NULL) {
           mepic = idx->name;
-          this->pushRecord(mepic,&r);
+          this->pushRecord(mepic,r);
 
         }
       }
@@ -511,6 +502,7 @@ void tsEngine::poll() {
 }
 
 
+/*
 void tsEngine::evaluate(void* arg) {
 
   typedef void* (*eval_fct)(uint32_t,float,float, evaluate_io*);
@@ -538,7 +530,7 @@ void tsEngine::evaluate(void* arg) {
   ev_io.genes = NULL;
   ev_io.state = 0;
 
-  ev_io.recs = this->getIndiceRecords(eval_name);
+  ev_io.recs = this->getAssetRecords(eval_name);
 
   ticks_t ticks = this->getTicks();
 
@@ -604,7 +596,7 @@ void tsEngine::evaluate(void* arg) {
   }
 
 }
-
+*/
 
 void tsEngine::evaluate2(quotek::core::strategy* s) {
 
@@ -617,11 +609,11 @@ void tsEngine::evaluate2(quotek::core::strategy* s) {
   ticks_t ticks = this->getTicks();
 
   //makes the strategy records pointer point to the correct memmory space
-  //s->recs = this->getIndiceRecords(s->asset_name);
+  //s->recs = this->getAssetRecords(s->asset_name);
   //s->s = this->getStore();
 
   //waits for some data to be collected before starting to process;
-  while(s->recs->size == 0) { 
+  while(s->recs.size() == 0) { 
     cout << "Waiting for data population.." << endl;
     sleep(1);
   }
@@ -631,10 +623,10 @@ void tsEngine::evaluate2(quotek::core::strategy* s) {
     auto tt0 = std::chrono::high_resolution_clock::now();
 
     //setting of evaluation context.
-    record* last_rec = records_last(s->recs);
-    s->value = last_rec->value;
-    s->spread = last_rec->spread;
-    
+    quotek::data::record& last_rec = s->recs.last();
+    s->value = last_rec.value;
+    s->spread = last_rec.spread;
+
     //user algo tick evaluation.
     s->evaluate();
 
@@ -736,7 +728,7 @@ void tsEngine::execute() {
         std::string dealid = order_params.at(1);
         quotek::core::position* cpos  = mm->getPositionByDealid(dealid);
         if (cpos != NULL) {
-          cpos->status = POS_PENDING_CLOSE;
+          //cpos->status = POS_PENDING_CLOSE;
           this->closePosition(dealid);
         }
       }
@@ -782,7 +774,7 @@ tsEngine::tsEngine(adamCfg* conf,
   cout << "Initializing TS Engine.." << endl;
 
   //initializing store
-  store_init(&tse_store);
+  //store_init(&tse_store);
   tse_genes = NULL;
   tse_broker = b;
   tse_ticks = conf->getTicks();
@@ -812,15 +804,9 @@ tsEngine::tsEngine(adamCfg* conf,
   else {
     logger->log("[broker] Connection to Broker successful");
   }
-  
+
+
   vector<string> si = iGetNames(indices_list);
-  for(int i=0;i<si.size();i++) {
-
-    inmem_records[si[i]] = (records*) malloc(sizeof(records));
-    //initializing records structures for each found indice
-    records_init(inmem_records[si[i]],10000);
-
-  }
 
   //uptime init
   uptime = 0;
@@ -865,7 +851,7 @@ tsEngine::tsEngine(adamCfg* conf,
   for (int i=0;i<eval_threads.size();i++) {
     void* etptr = (void*) &eval_threads[i];
 
-    eval_threads[i].th = new std::thread( [&] {  this->evaluate( (void*) &eval_threads[i] ); } );
+    //eval_threads[i].th = new std::thread( [&] {  this->evaluate( (void*) &eval_threads[i] ); } );
   }
 
   printf ("Starting clock..\n");
@@ -935,17 +921,17 @@ AssocArray<void*>* tsEngine::getEvalPointers() {
   return &eval_ptrs;
 }
 
-int tsEngine::pushRecord(string mepic,record* r) {
-  records_push(inmem_records[mepic],*r);
+int tsEngine::pushRecord(string mepic, quotek::data::record& r) {
+  inmem_records[mepic].append(r);
   return 0;
 }
 
 
-AssocArray<records*>* tsEngine::getRecords() {
-  return &inmem_records;
+AssocArray<quotek::data::records>& tsEngine::getRecords() {
+  return inmem_records;
 }
 
-records* tsEngine::getIndiceRecords(string mepic) {
+quotek::data::records& tsEngine::getAssetRecords(string mepic) {
   return inmem_records[mepic];
 }
 
@@ -957,7 +943,7 @@ int tsEngine::loadHistory() {
     vector<string> inames = iGetNames(indices_list);
     for (int i=0;i<inames.size();i++) {
 
-      records* recs = tse_back->query(inames[i], -1 * tse_inmem_history, -1 );
+      quotek::data::records recs = tse_back->query(inames[i], -1 * tse_inmem_history, -1 );
       inmem_records[inames[i]] = recs;
       
     }

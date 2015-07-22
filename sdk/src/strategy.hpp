@@ -33,7 +33,7 @@ namespace quotek {
          * @param store shared algo in-memory map.
          * @return new strategy object.
       	 */
-        strategy(std::vector<quotek::data::record>& recs,
+        strategy(quotek::data::records& recs,
                  std::map<std::string, quotek::data::any>& store,
                  std::vector<quotek::core::position>& portfolio);
 
@@ -98,7 +98,7 @@ namespace quotek {
         /**
          * recs variable points to the inmem values history of the processed asset.
          */
-        std::vector<quotek::data::record>& recs;
+        quotek::data::records& recs;
 
         /**
          * store is a special object meant to share data between strategies threads.

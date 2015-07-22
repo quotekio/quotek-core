@@ -43,6 +43,21 @@ namespace quotek {
       this->data.emplace_back( record(timestamp , value, spread) ); 
     }
 
+    void records::append(quotek::data::record& r) {
+      this->timestamps.emplace_back(r.timestamp);
+      this->values.emplace_back(r.value);
+      this->spreads.emplace_back(r.spread);
+      this->data.emplace_back(r); 
+    }
+
+    quotek::data::record& records::last() {
+      return this->data.back();
+    }
+
+    size_t records::size() {
+      return this->data.size();
+    }
+
 
     record::record() {
 

@@ -8,6 +8,7 @@
 #include "lib/backends/influxdb.cpp"
 
 
+
 using namespace std;
 
 AssocArray<int> findOffsets(vector<string> header) {
@@ -58,22 +59,9 @@ int main(int argc,char** argv) {
 
 
   AssocArray<int> offsets;
-  AssocArray<records*> reclist;
+  AssocArray<quotek::data::records> reclist;
 
-  reclist["CAC_MINI"] = (records*) malloc(sizeof(records));
-  reclist["NIKKEI_MINI"] = (records*) malloc(sizeof(records));
-  reclist["ITALY40_MINI"] = (records*) malloc(sizeof(records));
-  reclist["DAX_MINI"] = (records*) malloc(sizeof(records));
-  reclist["DOW_MINI"] = (records*) malloc(sizeof(records));
-  reclist["GOLD_MINI"] = (records*) malloc(sizeof(records));
-
-  records_init(reclist["CAC_MINI"],150);
-  records_init(reclist["NIKKEI_MINI"],150);
-  records_init(reclist["ITALY40_MINI"],150);
-  records_init(reclist["DAX_MINI"],150);
-  records_init(reclist["DOW_MINI"],150);
-  records_init(reclist["GOLD_MINI"],150);
-
+  
   ifstream ifh  (argv[1]);
   influxdb* back = new influxdb();
   back->init(argv[2]);
@@ -101,7 +89,7 @@ int main(int argc,char** argv) {
     if (fields.size() > 3 ) {
 
       string cdate = fields[1] + " " + fields[2];
-      record rec;
+      quotek::data::record rec;
 
       rec.timestamp = str2time2(cdate);
 
@@ -113,16 +101,19 @@ int main(int argc,char** argv) {
 
         rec.value = price;
         rec.spread = (price_buy - price_sell) / (float) 2;
-        records_push(reclist[offsets.GetItemName(i)],rec);
+        
+        reclist[offsets.GetItemName(i)].append(rec);
       }
     }
   
 
     for (int j=0;j< reclist.Size();j++ ) {
-      if (reclist[j]->size == 100) {
+      if (reclist[j].size() == 100) {
         back->store(reclist.GetItemName(j), reclist[j]); 
-        records_clear(reclist[j]);
-        records_init(reclist[j],150);
+        //records_clear(reclist[j]);
+
+
+       
       }
     }
   }

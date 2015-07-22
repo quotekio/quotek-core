@@ -105,20 +105,20 @@ std::string aep_poslist(tsEngine* t0) {
   moneyManager* mm = t0->getMoneyManager();
   std::string ret = "[";
 
-  cvector<position>* plist = mm->getPositions();
+  quotek::data::cvector<quotek::core::position>* plist = mm->getPositions();
 
   for (int i=0;i<plist->size();i++) {
 
     ret += "{";
 
-    ret += "\"indice\":\"" + plist->at(i).indice + "\",";
-    ret += "\"epic\":\"" + plist->at(i).epic + "\",";
+    ret += "\"indice\":\"" + plist->at(i).asset_name + "\",";
+    ret += "\"epic\":\"" + plist->at(i).asset_id + "\",";
     ret += "\"size\":\"" + int2string(plist->at(i).size) + "\",";
     ret += "\"open\":\"" + float2string(plist->at(i).open) + "\",";
     ret += "\"stop\":\"" + float2string(plist->at(i).stop) + "\",";
     ret += "\"limit\":\"" + float2string(plist->at(i).limit) + "\",";
     ret += "\"pnl\":\""  + float2string(plist->at(i).pnl)  + "\",";
-    ret += "\"dealid\":\"" + plist->at(i).dealid + "\"";
+    ret += "\"dealid\":\"" + plist->at(i).ticket_id + "\"";
     
     ret += "}"; 
 

@@ -81,10 +81,10 @@ class tsEngine{
     moneyManager* getMoneyManager();
     genetics* getGE();
 
-    AssocArray< std::vector<quotek::data::record> >& getRecords();
-    std::vector<quotek::data::record>& getIndiceRecords(string);
+    AssocArray<quotek::data::records>& getRecords();
+    quotek::data::records& getAssetRecords(string);
     int pushValues(string mepic,float v);
-    int pushRecord(string,quotek::data::record);
+    int pushRecord(string,quotek::data::record& r);
 
     adamCfg** getAdamConfig();
 
@@ -125,7 +125,7 @@ class tsEngine{
      * called periodically (at each tick) to evaluate an asset and ultimately
      * takes a decision to take a position or not.
      */
-    void evaluate(void*);
+    //void evaluate(void*);
 
     void evaluate2(quotek::core::strategy* s);
 
@@ -177,7 +177,7 @@ class tsEngine{
     AssocArray<indice*> indices_list;    
 
     quotek::data::cqueue<std::string> orders_queue;
-    AssocArray< std::vector<quotek::data::record> > inmem_records;
+    AssocArray<quotek::data::records> inmem_records;
 
     AssocArray<void*> eval_ptrs;
     igmLogger* logger;

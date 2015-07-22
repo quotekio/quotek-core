@@ -67,9 +67,9 @@ public:
       return 0;
     }
 
-    virtual std::vector<quotek::data::record> query(string q) {
+    virtual quotek::data::records query(string q) {
       
-      std::vector<quotek::data::record> result;
+      quotek::data::records result;
 
       http* hhdl = prepare_http_handler();
       std::string url = pre_url;
@@ -95,21 +95,21 @@ public:
            r.timestamp = points[0u].GetInt();
            r.value = points[3].GetDouble();
            r.spread = points[2].GetDouble();
-           result.push_back(r);
+           result.append(r);
         }
       }
 
       return result;
     }
 
-    virtual std::vector<quotek::data::record> query(string indice, int tinf, int tsup) {
+    virtual quotek::data::records query(string indice, int tinf, int tsup) {
 
-      std::vector<quotek::data::record> result ;
+      quotek::data::records result ;
       http* hhdl = prepare_http_handler();
       std::string url = pre_url;
       std::ostringstream qstream;
       std::string outp;
-      record r;
+      quotek::data::record r;
 
       if (tinf >= 0) {
         qstream << "SELECT value, spread FROM " << indice <<
@@ -148,7 +148,7 @@ public:
            r.timestamp = points[0u].GetInt();
            r.value = points[3].GetDouble();
            r.spread = points[2].GetDouble();
-           result.push_back(r);
+           result.append(r);
         }
       }
 
@@ -156,7 +156,7 @@ public:
 
     }
 
-    virtual int store(string indice, records* recs) {
+    virtual int store(string indice, quotek::data::records& recs) {
 
       std::ostringstream sdata;
       http* hhdl = prepare_http_handler();
@@ -174,7 +174,7 @@ public:
       return 0;
     }
 
-    virtual int store(string indice, record* rec) {
+    virtual int store(string indice, quotek::data::record& rec) {
 
       std::ostringstream sdata;
       http* hhdl = prepare_http_handler();
@@ -192,7 +192,7 @@ public:
       return 0;
     }
 
-    virtual int saveHistory(position* pos)  {
+    virtual int saveHistory(quotek::core::position* pos)  {
 
       std::ostringstream sdata;
       http* hhdl = prepare_http_handler();
@@ -200,7 +200,7 @@ public:
 
       sdata << "[\n";
       sdata << "\t{ \"name\": \"__history__\",\n";
-      sdata << "\t  \"columns\" : [ \"indice\", \"epic\", \"dealid\", \"size\", \"stop\", \"limit\", \"open\", \"pnl\", \"pnl_peak\", \"open_time\", \"close_time\" ],\n";
+      sdata << "\t  \"columns\" : [ \"indice\", \"epic\", \"dealid\", \"size\", \"stop\", \"limit\", \"open\", \"pnl\", \"pnl_peak\", \"open_date\", \"close_date\" ],\n";
       sdata << "\t  \"points\" : [" << pos2json(pos) << "]\n"; 
       sdata << "\t}\n";
       sdata << "]";
@@ -211,7 +211,7 @@ public:
 
     }
 
-    virtual int saveHistory(cvector<position>* plist) {
+    virtual int saveHistory(quotek::data::cvector<quotek::core::position>* plist) {
 
       std::ostringstream sdata;
       http* hhdl = prepare_http_handler();
@@ -219,7 +219,7 @@ public:
 
       sdata << "[\n";
       sdata << "\t{ \"name\": \"__history__\",\n";
-      sdata << "\t  \"columns\" : [ \"indice\", \"epic\", \"dealid\", \"size\", \"stop\", \"limit\", \"open\", \"pnl\", \"pnl_peak\", \"open_time\", \"close_time\" ],\n";
+      sdata << "\t  \"columns\" : [ \"indice\", \"epic\", \"dealid\", \"size\", \"stop\", \"limit\", \"open\", \"pnl\", \"pnl_peak\", \"open_date\", \"close_date\" ],\n";
       sdata << "\t  \"points\" : [" << poslist2json(plist) << "]\n"; 
       sdata << "\t}\n";
       sdata << "]";
@@ -238,40 +238,40 @@ private:
   string database;
   string pre_url;
 
-  std::string record2json(record* rec)  {
+  std::string record2json(quotek::data::record& rec)  {
 
     std::ostringstream jstream;
-    jstream << "[" << rec->timestamp << ", " << rec->value << ", " << rec->spread << "]";
+    jstream << "[" << rec.timestamp << ", " << rec.value << ", " << rec.spread << "]";
     return jstream.str();
   };
 
-  std::string records2json(records* recs) {
+  std::string records2json(quotek::data::records& recs) {
 
     std::ostringstream jstream;    
-    for (int i=0;i<recs->size;i++)  {
-      jstream << record2json(&(recs->data[i]));
-      if (i !=  (recs->size - 1 ) ) jstream << ",";
+    for (int i=0;i<recs.size();i++)  {
+      jstream << record2json(recs.get_data()[i]);
+      if (i !=  (recs.size() - 1 ) ) jstream << ",";
 
     }
     return jstream.str();
   };
 
-  std::string pos2json(position* pos)  {
+  std::string pos2json(quotek::core::position* pos)  {
   
     std::ostringstream jstream;
-    jstream << "[" << "\"" << pos->indice << "\", "
-            << "\"" << pos->epic << "\", "
-            << "\"" << pos->dealid << "\", "
+    jstream << "[" << "\"" << pos->asset_name << "\", "
+            << "\"" << pos->asset_id << "\", "
+            << "\"" << pos->ticket_id << "\", "
             << pos->size << ", " << pos->stop << ", "
             << pos->limit << ", " << pos->open << ", "
-            << pos->pnl << ", " << pos->pnl_peak << ", "
-            << pos->open_time << ", " << pos->close_time << "]";
+            << pos->pnl << ", " << pos->stats->pnl_peak << ", "
+            << pos->open_date << ", " << pos->close_date << "]";
 
     return jstream.str();
 
   }
 
-  std::string poslist2json(cvector<position>* plist) {
+  std::string poslist2json(quotek::data::cvector<quotek::core::position>* plist) {
 
     std::ostringstream jstream;    
     for (int i=0;i<plist->size();i++)  {
