@@ -21,18 +21,13 @@ function bctl_cleanup() {
 
 }
 
-function bctl_package_SDK() {
+#function bctl_package_SDK() {
+#
+#}
 
-  tar -cvzf SDK.tgz /usr/local/include/adam/
-
-}
-
-function bctl_install_SDK() {
-
- mkdir -p /usr/local/include/adam
- cp src/lib/igmlogger.h src/lib/store.h src/lib/tsexport.hpp src/lib/tsemodule.hpp src/lib/utils.h /usr/local/include/adam
- cp src/lib/position.h /usr/local/include/adam
-}
+#function bctl_install_SDK() {
+#
+#}
 
 function bctl_cmake() {
   cmake -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -DCMAKE_CXX_FLAGS="-O3 -std=c++11 -stdlib=libc++ -fPIC" -DCMAKE_INSTALL_PREFIX=$PREFIX
@@ -48,17 +43,15 @@ function bctl_compile() {
 }
 
 function bctl_compile_all() {
-  make
-  cd qsa
-  ./compile.sh
+  cd sdk
+  cmake && make; make
+  make install
   cd ..
+  make
 }
 
-function bctl_release() {
-  cd qsa
-  ./release.sh
-  cd ..
-}
+#function bctl_release() {
+#}
 
 function bctl_append_buildnum() {
 
@@ -92,18 +85,19 @@ case $1 in
     bctl_append_buildnum
     bctl_cmake
     bctl_compile_all
-    bctl_release
-    bctl_install_SDK
-    bctl_package_SDK
+    #bctl_release
+    #bctl_install_SDK
+    #bctl_package_SDK
   ;;
 
   buildall-debug)
     bctl_append_buildnum
     bctl_cmake_debug
     bctl_compile_all
-    bctl_release
-    bctl_install_SDK
-    bctl_package_SDK
+
+    #bctl_release
+    #bctl_install_SDK
+    #bctl_package_SDK
   ;;
   
 
