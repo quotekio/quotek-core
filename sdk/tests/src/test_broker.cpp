@@ -96,7 +96,7 @@ void test_closepos(quotek::core::strategy& s) {
 
 int main() {
 
-  std::vector<quotek::data::record> recs;
+  quotek::data::records recs;
   std::map<std::string, quotek::data::any> store;
   std::vector<quotek::core::position> portfolio;
 

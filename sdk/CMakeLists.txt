@@ -18,6 +18,7 @@ SET (CMAKE_INSTALL_PREFIX  "/usr")
 add_library(
        quotek STATIC
        src/broker.cpp
+       src/generators.cpp
        src/position.cpp
        src/quant.cpp
        src/record.cpp
@@ -39,6 +40,7 @@ install (FILES "src/broker.hpp" DESTINATION include/quotek)
 install (FILES "src/core.hpp" DESTINATION include/quotek)
 install (FILES "src/cqueue.hpp" DESTINATION include/quotek)
 install (FILES "src/cvector.hpp" DESTINATION include/quotek)
+install (FILES "src/generators.hpp" DESTINATION include/quotek)
 install (FILES "src/position.hpp" DESTINATION include/quotek)
 install (FILES "src/quant.hpp" DESTINATION include/quotek)
 install (FILES "src/record.hpp" DESTINATION include/quotek)
