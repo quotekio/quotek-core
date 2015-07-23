@@ -19,6 +19,7 @@ add_library(
        quotek STATIC
        src/broker.cpp
        src/generators.cpp
+       src/option.cpp
        src/position.cpp
        src/quant.cpp
        src/record.cpp
