@@ -17,7 +17,7 @@ SET (CMAKE_INSTALL_PREFIX  "/usr")
 
 add_library(
        quotek STATIC
-       src/blacksholes.cpp
+       src/blackscholes.cpp
        src/broker.cpp
        src/generators.cpp
        src/option.cpp

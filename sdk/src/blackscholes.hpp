@@ -15,11 +15,11 @@ namespace quotek {
   namespace quant {
         
 
-    /** blacksholes provides an option pricing modelisation context. 
+    /** blackscholes provides an option pricing modelisation context. 
      *  Please note that this class only support vanilla options pricing by default,
      *  and if you want to price exotics contracts with this class you'll probably have to inherit it.
      */
-    class blacksholes {
+    class blackscholes {
 
       public:
         
@@ -28,11 +28,11 @@ namespace quotek {
          *  @param safe_interest_rate interest safe rate to use for option price calculation.
          *  @param implied_volatility implied volatility to use for option price calculation. 
          */
-      	blacksholes(option& modelized_option,
+      	blackscholes(option& modelized_option,
                     float safe_interest_rate,
                     float implied_volatility);
-      	/** blacksholes object destructor */
-      	~blacksholes();
+      	/** blackscholes object destructor */
+      	~blackscholes();
 
         /** compute greeks.
          *  @return a greeks_ structure containing beta, gamme, delta..

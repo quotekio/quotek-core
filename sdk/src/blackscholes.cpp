@@ -3,13 +3,13 @@ Quotek Strategies SDK 2.0
 Copyright 2013-2015 Quotek SAS
 */
 
-#include "blacksholes.hpp"
+#include "blackscholes.hpp"
 
 namespace quotek {
 
   namespace quant {
         
-      	blacksholes::blacksholes(option& modelized_option,
+      	blackscholes::blackscholes(option& modelized_option,
       		                       float safe_interest_rate,
                                  float implied_volatility): modelized_option(modelized_option) {
 
@@ -18,11 +18,11 @@ namespace quotek {
 
       	}
 
-      	blacksholes::~blacksholes() {
+      	blackscholes::~blackscholes() {
 
       	}
 
-      	_greeks blacksholes::compute_greeks() {
+      	_greeks blackscholes::compute_greeks() {
 
           _greeks result;
 
@@ -65,18 +65,18 @@ namespace quotek {
       }
 
 
-     float blacksholes::price_option() {
+     float blackscholes::price_option() {
        float result;
        return result;
      }
      
-     float blacksholes::compute_d1() {
+     float blackscholes::compute_d1() {
       float result;
       this->d1 = result;
       return result;
      }
 
-     float blacksholes::compute_d2() {
+     float blackscholes::compute_d2() {
        float result;
        this->d2 = result;
        return result;
