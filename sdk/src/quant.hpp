@@ -52,14 +52,34 @@ namespace quotek {
 
   	/** This structure stores trend percentage analysis. */
   	typedef struct trend_p {
+
       /** stores bull percentage of a dataset */
   	  float bull;
+
       /** stores bear percentage of a dataset. */
   	  float bear;
+
       /** stores neutral percentage of a dataset. */
   	  float neutral;
   	} trend_p;
 
+
+    /** greeks is a structure meant to store greek values involved in portfolio modeling. */
+    typedef struct _greeks {
+
+      /** stores beta part of the greeks */
+      float beta;
+
+      /** stores gamma part of the greeks */
+      float gamma;
+
+      /** stores delta part of the greeks */
+      float delta;
+
+      /** stores vega part of the greeks */
+      float vega;
+
+    };
 
     /**
      * above tells if the values contained in the provided dataset are mostly above 
