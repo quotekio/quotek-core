@@ -9,12 +9,6 @@ namespace quotek {
 
   namespace quant {
     
-    int option::european_call = 0x00;
-    int option::european_put = 0x02;
-    
-    int option::us_call = 0x10;
-    int option::us_put = 0x11;
-
     option::option() {
 
     }

@@ -53,15 +53,16 @@ namespace quotek {
         /** returns wether the option is IN or OUT of the money */
       	bool is_in_money();
 
-        static int european_call;
-        static int european_put;
+        static const int european_call = 0x00;
+        static const int european_put = 0x01;
 
-        static int us_call;
-        static int us_put;
+        static const int us_call = 0x10;
+        static const int us_put = 0x11;
 
       private:
 
       	bool in_money;
+
 
 
     };

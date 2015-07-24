@@ -30,31 +30,31 @@ namespace quotek {
           switch (modelized_option.type) {
 
           	case option::european_call:
-              result.beta = ;
-              result.gamma = ;
-              result.delta = ;
-              result.vega = ;
+              result.beta = 0;
+              result.gamma = 0;
+              result.delta = 0;
+              result.vega = 0;
           	  break;
 
           	case option::european_put:
-              result.beta = ;
-              result.gamma = ;
-              result.delta = ;
-              result.vega = ;
+              result.beta = 0;
+              result.gamma = 0;
+              result.delta = 0;
+              result.vega = 0;
           	  break;
 
           	case option::us_call:
-              result.beta = ;
-              result.gamma = ;
-              result.delta = ;
-              result.vega = ;
+              result.beta = 0;
+              result.gamma = 0;
+              result.delta = 0;
+              result.vega = 0;
           	  break;
 
           	case option::us_put:
-              result.beta = ;
-              result.gamma = ;
-              result.delta = ;
-              result.vega = ;
+              result.beta = 0;
+              result.gamma = 0;
+              result.delta = 0;
+              result.vega = 0;
           	  break;
 
           	default:
@@ -65,15 +65,21 @@ namespace quotek {
       }
 
 
-     float price_option() {
-
+     float blacksholes::price_option() {
+       float result;
+       return result;
      }
-
+     
      float blacksholes::compute_d1() {
-
+      float result;
+      this->d1 = result;
+      return result;
      }
-     float blacksholes::compute_d2() {
 
+     float blacksholes::compute_d2() {
+       float result;
+       this->d2 = result;
+       return result;
      }
   }
 }

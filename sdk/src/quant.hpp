@@ -79,7 +79,7 @@ namespace quotek {
       /** stores vega part of the greeks */
       float vega;
 
-    };
+    } _greeks;
 
     /**
      * above tells if the values contained in the provided dataset are mostly above 
