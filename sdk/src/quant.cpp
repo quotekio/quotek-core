@@ -303,6 +303,9 @@ namespace quotek {
 
     }
 
+    float normal_cumulative_distribution(float value) {
+      return 0.5 * erfc(-value * M_SQRT1_2);
+    }
 
   }
 

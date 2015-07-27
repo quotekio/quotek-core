@@ -38,7 +38,7 @@ namespace quotek {
         /** Underlying contains the asset_id of the option's underlying */
         std::string underlying;
 
-        /** gives the option expiration */ 
+        /** gives the option expiration, in years */ 
         long expires;
 
         /** price stores the current price of the modelized option */

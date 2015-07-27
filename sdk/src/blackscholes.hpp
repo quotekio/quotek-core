@@ -25,12 +25,15 @@ namespace quotek {
         
         /** black-sholes model object constructor.
          *  @param modelized_option Option object to modelize within Black & Sholes context.
+         *  @param underlying_price current price of the underlying asset for modelized option.
          *  @param safe_interest_rate interest safe rate to use for option price calculation.
-         *  @param implied_volatility implied volatility to use for option price calculation. 
+         *  @param implied_volatility implied price volatility of the underlying asset for modelized option.
          */
       	blackscholes(option& modelized_option,
+                    float underlying_price,
                     float safe_interest_rate,
                     float implied_volatility);
+        
       	/** blackscholes object destructor */
       	~blackscholes();
 
@@ -49,6 +52,7 @@ namespace quotek {
       	option& modelized_option;
         float safe_interest_rate;
         float implied_volatility;
+        float underlying_price;
 
         float d1;
         float d2;

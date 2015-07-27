@@ -30,6 +30,9 @@ namespace quotek {
     #define PLR polynomial_regression
     #define RRR risk_reward_ratio
 
+    #define N(_a) normal_cumulative_distribution(_a)
+    #define PHI(_a) normal_cumulative_distribution(_a)
+
   	/** This structure aims to store slope-intercept equations parameters. */
   	typedef struct affine {
       /** slope */
@@ -67,17 +70,21 @@ namespace quotek {
     /** greeks is a structure meant to store greek values involved in portfolio modeling. */
     typedef struct _greeks {
 
-      /** stores beta part of the greeks */
-      float beta;
+      
+      /** stores delta part of the greeks */
+      float delta;
 
       /** stores gamma part of the greeks */
       float gamma;
 
-      /** stores delta part of the greeks */
-      float delta;
+      /** stores theta part of the greeks */
+      float theta;
 
       /** stores vega part of the greeks */
       float vega;
+
+      /** stores rho part of the greeks */
+      float rho;
 
     } _greeks;
 
@@ -268,6 +275,13 @@ namespace quotek {
                             int stop, 
                             int leverage);
 
+ 
+    /**
+     * This function returns the cumulative normal density (CDF) for a given value.
+     * @param value The value to compute CFD from.
+     * @return CDF for value.
+     */
+    float normal_cumulative_distribution(float value);
 
   }
 }
