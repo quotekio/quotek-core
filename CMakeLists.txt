@@ -43,7 +43,6 @@ add_executable(
 
 add_executable(
   csv2influx
-  src/lib/http.cpp
   src/lib/narrays.cpp
   src/csv2influx.cpp
   src/lib/utils.cpp
@@ -59,7 +58,6 @@ add_library(
        influxdbbe SHARED
        src/lib/backends/backend.h
        src/lib/backends/influxdb.cpp
-       src/lib/http.cpp
 
 )
 

@@ -19,6 +19,7 @@ add_library(
        quotek STATIC
        src/blackscholes.cpp
        src/broker.cpp
+       src/http.cpp
        src/generators.cpp
        src/option.cpp
        src/position.cpp
@@ -29,10 +30,12 @@ add_library(
 )
 
 find_library (PTHREAD pthread) 
+find_library (CURL curl) 
 
 target_link_libraries(
         quotek
         pthread
+        curl
 )
 
 install (TARGETS quotek DESTINATION lib )
@@ -44,6 +47,7 @@ install (FILES "src/core.hpp" DESTINATION include/quotek)
 install (FILES "src/cqueue.hpp" DESTINATION include/quotek)
 install (FILES "src/cvector.hpp" DESTINATION include/quotek)
 install (FILES "src/generators.hpp" DESTINATION include/quotek)
+install (FILES "src/http.hpp" DESTINATION include/quotek)
 install (FILES "src/option.hpp" DESTINATION include/quotek)
 install (FILES "src/position.hpp" DESTINATION include/quotek)
 install (FILES "src/quant.hpp" DESTINATION include/quotek)

@@ -1,10 +1,11 @@
 #include "backend.h"
-#include <stdlib.h>
-#include <influxdb/influxdb.h>
 #include "../rapidjson/document.h"
-#include "../http.hpp"
 #include "../utils.h"
+
+#include <influxdb/influxdb.h>
+#include <quotek/http.hpp>
 #include <sstream>
+#include <stdlib.h>
 
 class influxdb : public backend {
 public:
@@ -71,7 +72,7 @@ public:
       
       quotek::data::records result;
 
-      http* hhdl = prepare_http_handler();
+      quotek::http* hhdl = prepare_http_handler();
       std::string url = pre_url;
       std::string outp;
       
@@ -105,7 +106,7 @@ public:
     virtual quotek::data::records query(string indice, int tinf, int tsup) {
 
       quotek::data::records result ;
-      http* hhdl = prepare_http_handler();
+      quotek::http* hhdl = prepare_http_handler();
       std::string url = pre_url;
       std::ostringstream qstream;
       std::string outp;
@@ -159,7 +160,7 @@ public:
     virtual int store(string indice, quotek::data::records& recs) {
 
       std::ostringstream sdata;
-      http* hhdl = prepare_http_handler();
+      quotek::http* hhdl = prepare_http_handler();
       string outp;
 
       sdata << "[\n";
@@ -177,7 +178,7 @@ public:
     virtual int store(string indice, quotek::data::record& rec) {
 
       std::ostringstream sdata;
-      http* hhdl = prepare_http_handler();
+      quotek::http* hhdl = prepare_http_handler();
       string outp;
 
       sdata << "[\n";
@@ -195,7 +196,7 @@ public:
     virtual int saveHistory(quotek::core::position* pos)  {
 
       std::ostringstream sdata;
-      http* hhdl = prepare_http_handler();
+      quotek::http* hhdl = prepare_http_handler();
       string outp;
 
       sdata << "[\n";
@@ -214,7 +215,7 @@ public:
     virtual int saveHistory(quotek::data::cvector<quotek::core::position>* plist) {
 
       std::ostringstream sdata;
-      http* hhdl = prepare_http_handler();
+      quotek::http* hhdl = prepare_http_handler();
       string outp;
 
       sdata << "[\n";
@@ -283,8 +284,8 @@ private:
   }
 
 
-  http* prepare_http_handler() {
-    http* hhdl = new http();
+  quotek::http* prepare_http_handler() {
+    quotek::http* hhdl = new quotek::http();
     hhdl->add_header("Content: Application/Json");
     hhdl->add_header("Accept: Application/Json");
     return hhdl;
