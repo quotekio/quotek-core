@@ -17,7 +17,7 @@ namespace quotek {
         	   std::string underlying,
         	   float price,
         	   float strike,
-        	   long expires) {
+        	   float expires) {
 
       this->type = type;
       this->underlying = underlying;

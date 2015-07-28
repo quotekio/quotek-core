@@ -30,7 +30,7 @@ namespace quotek {
         	   std::string underlying,
         	   float price,
         	   float strike,
-        	   long expires);
+        	   float expires);
 
       	/** option destructor */
       	~option();
@@ -39,7 +39,7 @@ namespace quotek {
         std::string underlying;
 
         /** gives the option expiration, in years */ 
-        long expires;
+        float expires;
 
         /** price stores the current price of the modelized option */
         float price;

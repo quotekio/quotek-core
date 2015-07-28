@@ -45,6 +45,12 @@ add_executable(
     src/test_generators.cpp
 )
 
+add_executable(
+    test_blackscholes
+    src/test_blackscholes.cpp
+)
+
+
 
 find_library (quotek QUOTEK) 
 
@@ -80,6 +86,12 @@ target_link_libraries(
 
 target_link_libraries(
         test_generators
+        quotek
+        pthread
+)
+
+target_link_libraries(
+        test_blackscholes
         quotek
         pthread
 )

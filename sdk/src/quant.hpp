@@ -32,6 +32,7 @@ namespace quotek {
 
     #define N(_a) normal_cumulative_distribution(_a)
     #define PHI(_a) normal_cumulative_distribution(_a)
+    #define Z(_a) standard_normal_distribution(_a)
 
   	/** This structure aims to store slope-intercept equations parameters. */
   	typedef struct affine {
@@ -277,11 +278,18 @@ namespace quotek {
 
  
     /**
-     * This function returns the cumulative normal density (CDF) for a given value.
-     * @param value The value to compute CFD from.
+     * This function returns the cumulative normal density (PHI) for a given value.
+     * @param value The value to compute PHI from.
      * @return CDF for value.
      */
     float normal_cumulative_distribution(float value);
+
+    /**
+     *  This function returns the standard normal distribution of a given value.
+     *  @param value The value to compute SND from.
+     *  @return Normal distribution for value.
+     */
+     float standard_normal_distribution(float value);
 
   }
 }

@@ -307,7 +307,10 @@ namespace quotek {
       return 0.5 * erfc(-value * M_SQRT1_2);
     }
 
-  }
+    float standard_normal_distribution(float value) {
+      return (1.0/sqrt(2.0* 3.141592653589793238462643 )) * exp(-0.5* pow(value,2) );
+    }
 
+  }
 
 }

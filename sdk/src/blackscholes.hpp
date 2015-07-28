@@ -46,13 +46,12 @@ namespace quotek {
       	
         float price_option();
 
-
-      private:
-
-      	option& modelized_option;
+        option& modelized_option;
         float safe_interest_rate;
         float implied_volatility;
         float underlying_price;
+
+      private:
 
         float d1;
         float d2;
