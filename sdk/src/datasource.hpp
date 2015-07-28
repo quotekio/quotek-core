@@ -16,12 +16,22 @@ namespace quotek {
      
     /**
      * datasource is a meta class meant to retrieve data from multiple data sources.
-     */   
+     */ 
     class datasource {
 
       public:
 
+        /** Tells where is the location of the datasource.
+         *  It must have the following template: "scheme://[username:password]@location".
+         *  supported schemes are:
+         *    - http:// : for remote http content.
+         *    - s3://   : for fetching content from an S3 bucket.
+         *    - sql://  : fetching remote database content.
+         *    - file:// : for local data files.
+         */
+
       	std::string source;
+
         
     };
 
