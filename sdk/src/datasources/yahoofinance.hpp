@@ -16,8 +16,8 @@ namespace quotek {
 
   namespace datasource {
    
-    /** yahoofinance is a class which allows to query the Yahoo! Finance API service to search for 
-     *  
+    /** yahoofinance is a class which allows to query the Yahoo! Finance API service to 
+     *  fetch historical data on stocks and indices.
      */
     class yahoofinance: public datasource {
 

@@ -30,7 +30,6 @@ namespace quotek {
   
   void http::destroy() {
    curl_easy_cleanup(ch);
-   delete this;
   }
 
   void http::add_header(std::string header) {

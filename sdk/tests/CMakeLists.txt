@@ -55,6 +55,11 @@ add_executable(
     src/test_yahoofinance.cpp
 )
 
+add_executable(
+    test_rss
+    src/test_rss.cpp
+)
+
 
 find_library (quotek QUOTEK) 
 find_library (curl CURL) 
@@ -104,6 +109,13 @@ target_link_libraries(
 
 target_link_libraries(
         test_yahoofinance
+        quotek
+        pthread
+        curl
+)
+
+target_link_libraries(
+        test_rss
         quotek
         pthread
         curl
