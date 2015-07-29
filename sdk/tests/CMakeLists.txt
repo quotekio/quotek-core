@@ -50,9 +50,15 @@ add_executable(
     src/test_blackscholes.cpp
 )
 
+add_executable(
+    test_yahoofinance
+    src/test_yahoofinance.cpp
+)
 
 
 find_library (quotek QUOTEK) 
+find_library (curl CURL) 
+
 
 target_link_libraries(
         test_quant
@@ -94,4 +100,11 @@ target_link_libraries(
         test_blackscholes
         quotek
         pthread
+)
+
+target_link_libraries(
+        test_yahoofinance
+        quotek
+        pthread
+        curl
 )

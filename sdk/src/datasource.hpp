@@ -7,7 +7,6 @@ Copyright 2013-2015 Quotek SAS
 #define DATASOURCE_HPP
 
 #include <string>
-
 #include "record.hpp"
 
 namespace quotek {
@@ -32,18 +31,8 @@ namespace quotek {
 
       	std::string source;
 
-        
-    };
-
-    class text_datasource: public datasource {
-
-      public:
-
-      	std::string source;
-        
-    };
-
-    class value_datasource: public datasource {
+      	datasource() {}
+      	~datasource() {}
 
     };
 

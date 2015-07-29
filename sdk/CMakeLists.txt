@@ -19,6 +19,7 @@ add_library(
        quotek STATIC
        src/blackscholes.cpp
        src/broker.cpp
+       src/history.cpp
        src/http.cpp
        src/generators.cpp
        src/option.cpp
@@ -27,6 +28,8 @@ add_library(
        src/record.cpp
        src/strategy.cpp
        src/timeutils.cpp
+       
+       src/datasources/yahoofinance.cpp
 )
 
 find_library (PTHREAD pthread) 
@@ -46,7 +49,9 @@ install (FILES "src/broker.hpp" DESTINATION include/quotek)
 install (FILES "src/core.hpp" DESTINATION include/quotek)
 install (FILES "src/cqueue.hpp" DESTINATION include/quotek)
 install (FILES "src/cvector.hpp" DESTINATION include/quotek)
+install (FILES "src/datasource.hpp" DESTINATION include/quotek)
 install (FILES "src/generators.hpp" DESTINATION include/quotek)
+install (FILES "src/history.hpp" DESTINATION include/quotek)
 install (FILES "src/http.hpp" DESTINATION include/quotek)
 install (FILES "src/option.hpp" DESTINATION include/quotek)
 install (FILES "src/position.hpp" DESTINATION include/quotek)
@@ -54,3 +59,5 @@ install (FILES "src/quant.hpp" DESTINATION include/quotek)
 install (FILES "src/record.hpp" DESTINATION include/quotek)
 install (FILES "src/strategy.hpp" DESTINATION include/quotek)
 install (FILES "src/timeutils.hpp" DESTINATION include/quotek)
+
+install (FILES "src/datasources/yahoofinance.hpp" DESTINATION include/quotek/datasources)
