@@ -17,6 +17,7 @@ SET (CMAKE_INSTALL_PREFIX  "/usr")
 
 add_library(
        quotek STATIC
+       src/alchemy.cpp
        src/blackscholes.cpp
        src/broker.cpp
        src/history.cpp
@@ -45,6 +46,7 @@ target_link_libraries(
 
 install (TARGETS quotek DESTINATION lib )
 
+install (FILES "src/alchemy.hpp" DESTINATION include/quotek)
 install (FILES "src/any.hpp" DESTINATION include/quotek)
 install (FILES "src/blackscholes.hpp" DESTINATION include/quotek)
 install (FILES "src/broker.hpp" DESTINATION include/quotek)
