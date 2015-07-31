@@ -36,6 +36,18 @@ namespace quotek {
           }
 
         }
+
+        std::string alchemy::ranked_taxonomy(std::string payload, 
+                                             std::string target, 
+                                             std:string format) {
+
+        }
+
+        std::string alchemy::get_image(std::string url) {
+
+        }
+        
+
         
     }
 }
