@@ -39,14 +39,14 @@ namespace quotek {
        *  @param post_data POST data string having the form "field1=data2&field2=data2..&fieldn=datan".
        *  @return the HTTP server response, as a string.
        */
-  	  std::string post(std::string url, std::string post_data);
+  	  std::string post(std::string url, std::string& post_data);
 
       /** Performs an HTTP POST query on provided URL and returns result as a string.
        *  @param url HTTP URL to perform query on.
        *  @param post_data std::map containing the post data (eg post_data["name"] = "john" will send "name=john" as POST data).
        *  @return the HTTP server response, as a string.
        */
-  	  std::string post(std::string url,std::map<std::string, std::string> post_data);
+  	  std::string post(std::string url,std::map<std::string, std::string>& post_data);
 
       /** Performs an HTTP DELETE QUERY on provided URL and returns result as a string.
        *  @param url HTTP URL to perform query on.

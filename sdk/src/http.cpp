@@ -54,7 +54,7 @@ namespace quotek {
     return wdata;
   }
 
-  std::string http::post(std::string url,std::string pdata) {
+  std::string http::post(std::string url,std::string& pdata) {
 
     std::string wdata = "";
     curl_easy_setopt(ch,CURLOPT_URL,url.c_str());
@@ -69,7 +69,7 @@ namespace quotek {
    
   }
 
-  std::string http::post(std::string url, std::map<std::string, std::string> post_data) {
+  std::string http::post(std::string url, std::map<std::string, std::string>& post_data) {
 
     std::string wdata = "";
     std::string wpost = "";
@@ -77,7 +77,7 @@ namespace quotek {
     std::map<std::string, std::string >::iterator it;
     int i=0;
     for(it=post_data.begin();it!=post_data.end();it++) {
-      wpost = it->first + "=" + it->second;
+      wpost += it->first + "=" + it->second;
       if (i != post_data.size() -1) wpost += "&";
       i++;
     }

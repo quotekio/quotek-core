@@ -27,6 +27,7 @@ add_library(
        src/position.cpp
        src/quant.cpp
        src/record.cpp
+       src/sentiment.cpp
        src/strategy.cpp
        src/timeutils.cpp
        
@@ -62,6 +63,7 @@ install (FILES "src/option.hpp" DESTINATION include/quotek)
 install (FILES "src/position.hpp" DESTINATION include/quotek)
 install (FILES "src/quant.hpp" DESTINATION include/quotek)
 install (FILES "src/record.hpp" DESTINATION include/quotek)
+install (FILES "src/sentiment.hpp" DESTINATION include/quotek)
 install (FILES "src/strategy.hpp" DESTINATION include/quotek)
 install (FILES "src/timeutils.hpp" DESTINATION include/quotek)
 

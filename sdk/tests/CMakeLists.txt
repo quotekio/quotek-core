@@ -60,6 +60,12 @@ add_executable(
     src/test_rss.cpp
 )
 
+add_executable(
+    test_alchemy
+    src/test_alchemy.cpp
+)
+
+
 
 find_library (quotek QUOTEK) 
 find_library (curl CURL) 
@@ -116,6 +122,13 @@ target_link_libraries(
 
 target_link_libraries(
         test_rss
+        quotek
+        pthread
+        curl
+)
+
+target_link_libraries(
+        test_alchemy
         quotek
         pthread
         curl
