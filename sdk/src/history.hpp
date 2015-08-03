@@ -19,7 +19,7 @@ namespace quotek {
     class history {
 
       public:
-         
+      
        /** history constructor */
        history();       
 
@@ -47,7 +47,6 @@ namespace quotek {
 
        /** stores the lowest price of the asset for the period. */
        float low;
-
     };
 
   }

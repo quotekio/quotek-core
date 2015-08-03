@@ -21,6 +21,11 @@ add_executable(
 )
 
 add_executable(
+       test_record
+       src/test_record.cpp
+)
+
+add_executable(
 		test_timeutils
 		src/test_timeutils.cpp
 )
@@ -73,6 +78,12 @@ find_library (curl CURL)
 
 target_link_libraries(
         test_quant
+        quotek
+        pthread
+)
+
+target_link_libraries(
+        test_record
         quotek
         pthread
 )

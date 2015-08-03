@@ -18,6 +18,14 @@ void test_above(std::vector<quotek::data::record>& recs) {
 
 }
 
+void test_crosses(std::vector<quotek::data::record>& recs1,
+                  std::vector<quotek::data::record>& recs2) {
+
+  assert(quotek::quant::crosses(recs1,recs2));
+  
+
+}
+
 void test_min(std::vector<quotek::data::record>& recs) {
   float minval = quotek::quant::min(recs);
   assert(minval == 4144);
@@ -139,16 +147,21 @@ int main() {
                                 1437143907, 
                                 1437143908 };
 
+  std::vector<float> vals2 = { 4730, 4775, 5090, 4135, 4044, 4256, 4488, 4620, 4889 };
+
   std::vector<float> vals = { 4530, 4575, 4890, 4235, 4144, 4356, 4588, 4720, 4989 };
 
 
+
   std::vector<quotek::data::record> r1 = quotek::data::record::values_import(vals);
+  std::vector<quotek::data::record> r2 = quotek::data::record::values_import(vals2);
 
   for (int i=0;i< r1.size(); i++ ) {
     r1[i].timestamp = tstamps[i];
   }
 
   test_above(r1);
+  test_crosses(r1,r2);
   test_min(r1);
   test_max(r1);
   test_average(r1);

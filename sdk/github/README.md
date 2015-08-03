@@ -62,6 +62,7 @@ and new datasource connectors.
 - Support of Twitter and twitter-streaming APIs.
 - Support of CSV Datasources.
 - Adding of a JSON parser/serializer.
+- Support of quandl API. 
 
 2.2 (Q2 2016)
 -------------

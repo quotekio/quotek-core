@@ -8,6 +8,7 @@ Copyright 2013-2015 Quotek SAS
 
 #include <time.h>
 #include <vector>
+#include <string>
 
 namespace quotek {
 
@@ -93,6 +94,20 @@ namespace quotek {
         */
        static std::vector<record> values_import(std::vector<float>& recs);
 
+       /** 
+        * min is a replicate of quotek::quant::min in record namespace.
+        * @param recs dataset to find minimum for.
+        * @return lowest value inside dataset.
+        */
+       static float min(std::vector<record>& recs);
+
+       /** 
+        * max is a replicate of quotek::quant::max in record namespace.
+        * @param recs dataset to find maximum for.
+        * @return highest value inside dataset.
+        */
+       static float max(std::vector<record>& recs);
+
        /** stores the epoch timestamp at which the asset was worth value. */
        long timestamp;
 
@@ -111,6 +126,13 @@ namespace quotek {
         /** Class Constructor */
         records();
 
+        /** Class constructor 2.
+         *  Takes a  vector of (timestamp,value,spread) tuples to 
+         *  construct a records object.
+         *  @param data vector of (long,float,float) tuples.
+         */
+        records(std::vector<std::tuple<long,float,float>>& data);
+
         /** Class Destructor */
         ~records();
 
@@ -118,6 +140,28 @@ namespace quotek {
         quotek::data::record& operator [] (const int&  i) {
           return this->data[i];
         }
+        
+        /** Downsample reduces the amount of points in the dataset by 
+         *  agrregating data in "period" intervals.
+         *  @param period size of the aggregate, in seconds.
+         *  @param tick tick exprimed in seconds of records dataset.
+         *  @method down sampling method. Method can be either "close", "HL2", "typical", "OHLC4".
+         *  @return the new, down sampled dataset.
+         *
+         *  How down sampling methods work:
+         *  - close: Simply takes the last price over aggregated time period.
+         *  - HL2: Takes high and low price over aggregated time period and makes average.
+         *  - typical: Takes high, low and close prices over time period and makes average.
+         *  - OHLC4: Takes open, high, low and close prices over time period and makes average.
+         
+         * Note about down sampling: spread values are not kept in resulting dataset
+         * it would not make any sense to do so. therefore, they're all 0 in resulting dataset.
+         */
+
+        quotek::data::records down_sample(int period, 
+                                         float tick, 
+                                         std::string method);
+
 
         /** Retrieves a vector of quotek::data::record. */
         std::vector<quotek::data::record>& get_data();

@@ -41,13 +41,7 @@ namespace quotek {
           return quotek::ml::sentiment(0,false,false);
 
         }
-
-        std::string alchemy::ranked_taxonomy(std::string payload, 
-                                             std::string target, 
-                                             std::string format) {
-
-        }
-
+        
         std::string alchemy::query(std::string fct, std::string payload, std::string format) {
 
           std::string url = this->endpoint;

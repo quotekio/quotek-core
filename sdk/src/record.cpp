@@ -8,10 +8,65 @@ Copyright 2013-2015 Quotek SAS
 namespace quotek {
   namespace data {
 
-
     records::records() {}
-    
+
+    records::records(std::vector<std::tuple<long,float,float>>& data) {
+
+      for (int i=0;i<data.size();i++) {
+        
+        this->append(std::get<0>(data[i]), std::get<1>(data[i]), std::get<2>(data[i]) );
+      }
+
+    }
+
     records::~records() {}
+
+    quotek::data::records records::down_sample(int period, 
+                                     float tick, 
+                                     std::string method) {
+
+      quotek::data::records result;
+
+      int recs_per_aggregate = period / tick ;
+
+      // there was an issue here, no aggregate
+      if ( recs_per_aggregate == 0 ) return result;
+
+      // issue, invalid method
+      if ( method != "close" && 
+           method != "HL2" && 
+           method != "typical" && 
+           method != "OHLC4" ) {
+        return result;
+      }
+
+      for (int i=0;i<this->data.size();i+=recs_per_aggregate) {
+
+        std::vector<quotek::data::record> exrecs = quotek::data::record::extract(this->data,i,recs_per_aggregate);
+
+        if ( method == "close" ) {
+          result.append(exrecs.back().timestamp, exrecs.back().value, 0);
+        }
+
+        else {
+
+          float high = quotek::data::record::max(exrecs);
+          float low = quotek::data::record::min(exrecs);
+          float open = exrecs.front().value;
+          float close = exrecs.back().value;
+          long tstamp = exrecs.back().timestamp;
+          float val = 0;
+
+          if (method == "HL2") val = (low + high) / 2.0 ;
+          else if (method == "typical") val = (low + high + close) /3.0;
+          else if (method == "OHLC4") val = ( low + high + close + open ) / 4.0;
+          result.append(tstamp, val,0);
+
+        }
+
+      }
+      return result;
+    }
 
     std::vector<quotek::data::record>& records::get_data() {
       return this->data;
@@ -116,6 +171,9 @@ namespace quotek {
       std::vector<record>::const_iterator first = recs.begin() + start_offset;
       std::vector<record>::const_iterator last = recs.begin() + start_offset + size;
 
+      if (last > recs.end() ) last = recs.end();
+
+
       std::vector<record> new_extract(first, last);
       return new_extract;
 
@@ -157,6 +215,34 @@ namespace quotek {
       }
 
       return result;
+    }
+
+    float record::min(std::vector<quotek::data::record>& recs) {
+
+      float min = 300000000;
+      float cur = 0;
+
+      for(int i=0;i<recs.size();i++) {
+         cur = recs[i].value;
+         if ( cur < min ) {
+           min = cur;
+         }
+      }
+      return min;
+    }
+
+    float record::max(std::vector<quotek::data::record>& recs) {
+      
+      float max = -300000000;
+      float cur = 0;
+
+      for(int i=0;i<recs.size();i++) {
+         cur = recs[i].value;
+         if ( cur > max ) {
+           max = cur;
+         }
+      }
+      return max;
     }
 
   }

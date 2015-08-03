@@ -103,12 +103,24 @@ namespace quotek {
     	      float value,
     	      float thereshold);
 
+
+    /**
+     * Detects if 2 value datasets cross each other.
+     * @param recs1 first values dataset.
+     * @param recs2 second values dataset.
+     * @return true if 2 datasets cross each other, false otherwise.
+     */
+    bool crosses(std::vector<quotek::data::record>& recs1,
+                             std::vector<quotek::data::record>& recs2);
+
+
     /**
      * min() returns the smallest value contained in the provided
      * recs dataset to work on.
      * @param recs dataset to work on.
      * @return the smallest value stored in recs dataset.
      */
+
     float min(std::vector<quotek::data::record>& recs);
 
     
@@ -149,7 +161,7 @@ namespace quotek {
     /**
      * variance_q is a performance-shaped function that will compute variance of the values 
      * for the provided recs dataset but also provided that you already know the average of the values from
-     * previous compute.
+     * a previous compute.
      * @param recs dataset to work on.
      * @param sampled when you need to make a variance estimate, elimites bias by dividing by N-1 instead of N.
      * @param average pre-computed average of the dataset (for instance coming from previous calculus).
@@ -241,18 +253,18 @@ namespace quotek {
     void linear_regression(std::vector<quotek::data::record>& recs, std::vector<float>& result);
     
     /**
-     * Computes the linear regretion of the values contained in the dataset and
-     * gives the result as an affine structure such as the line equation is y = affine.a * x + affine.b
+     * Computes the linear regression of the values contained in the dataset using an ordinary least
+     * squares method, and gives the result as an affine structure such as the line equation is y = affine.a * x + affine.b
      * Note about linear regression: in order to avoid troublesome scaling problems,
      * it is computed which sequence(1..dataset_size) as x coordinates. So in order 
      * to work properly, it assumes constant interval on x between points of the dataset.
      * @param recs dataset to work on.
-     * @return affine structure containing slope in tercept values.
+     * @return affine structure containing slope and intercept values.
      */
     affine linear_regression(std::vector<quotek::data::record>& recs);
 
     /**
-     * polynomial regression computes a polynomia regression from a provided recs dataset.
+     * This fucntion computes a polynomial regression from a provided recs dataset.
      * @param recs dataset to work on.
      * @return vector of floats representing the polynomial regression of dataset.
      */

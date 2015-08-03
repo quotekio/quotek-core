@@ -33,7 +33,7 @@ namespace quotek {
         ~alchemy();
         
         /** Sentiment Analysis method. The payload text/url passed as argument is sent to the API
-         *  for further analysis. The detected sentiment is then returned as a string.
+         *  for further analysis. The detected sentiment is then returned as a quotek::ml::sentiment object.
          *  @param payload Text or URL of text to analyse.
          *  @param target tells for which target sentiment must be processed.
          *  Target is optional and therefore can be an empty string.
@@ -43,13 +43,23 @@ namespace quotek {
                               std::string target, 
                               std::string format);
 
+
+        
+
+        /** relations is able to summerize a text and basically return it under a "Who doest what" form.
+        */
+        /*quotek::ml::relations relations(std::string payload, 
+                              std::string target, 
+                              std::string format);*/      
+
         /** Ranked concepts is a function that is able to deduce the different concepts developped
          *  in the provided text and to create relationships between them. 
          *  @param payload Text or URL of text to analyse.
          *  @param format tells wether payload is text, html, or url.
          *  @return the map of concepts computed by Alchemy. */
-        quotek::ml::concepts ranked_concepts(std::string payload,
-                                                         std::string format);
+
+        /*quotek::ml::concepts ranked_concepts(std::string payload,
+                                             std::string format);*/
 
         /** language function guesses the language used to write the text passed as argument.
          *  @param payload Text or URL of text to analyse.

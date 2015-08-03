@@ -27,6 +27,18 @@ namespace quotek {
 
     }
 
+    bool crosses(std::vector<quotek::data::record>& recs1,
+                             std::vector<quotek::data::record>& recs2) {
+
+      if (recs1.size() < 2 || recs2.size() < 2) return false;
+      
+      for (int i=1;i<recs1.size();i++) {
+
+        if ( recs1[i-1].value >= recs2[i-1].value && recs1[i].value <= recs2[i].value ) return true;
+        else if ( recs2[i-1].value >= recs1[i-1].value && recs2[i].value <= recs1[i].value ) return true;
+      }
+      return false;
+    }
 
     float min(std::vector<quotek::data::record>& recs) {
 
