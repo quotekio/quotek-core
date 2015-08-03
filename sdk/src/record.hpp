@@ -140,7 +140,7 @@ namespace quotek {
         quotek::data::record& operator [] (const int&  i) {
           return this->data[i];
         }
-        
+
         /** Downsample reduces the amount of points in the dataset by 
          *  agrregating data in "period" intervals.
          *  @param period size of the aggregate, in seconds.
@@ -180,7 +180,6 @@ namespace quotek {
 
         /** returns size of container. */
         size_t size();
-
 
         /** Adds new entry to records container (no spread) */
         void append(long timestamp, float value);

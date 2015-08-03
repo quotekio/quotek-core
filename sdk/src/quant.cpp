@@ -250,6 +250,23 @@ namespace quotek {
 
     }
 
+
+    void moving_average_convergeance_divergeance(std::vector<quotek::data::record>& recs,
+                                                 int periods_ema1, 
+                                                 int periods_ema2,
+                                                 int periods_trendline) {
+
+      std::vector<float> ema1 = quotek::quant::EMA(recs,periods_ema1);
+      std::vector<float> ema2 = quotek::quant::EMA(recs,periods_ema2);
+
+      std::vector<float> trendline = quotek::quant::EMA(recs,periods_trendline);
+
+      for (int i=0;i < ema1.size();i++) {
+        
+      }
+
+    }
+
     void linear_regression(std::vector<quotek::data::record>& recs, std::vector<float>& result) {
 
       affine af = linear_regression(recs);
