@@ -1,6 +1,7 @@
 /*
 Quotek Strategies SDK 2.0
 Copyright 2013-2015 Quotek SAS
+http://www.quotek.io
 */
 
 #include <quotek/strategy.hpp>

@@ -1,3 +1,9 @@
+/*
+Quotek Strategies SDK 2.0
+Copyright 2013-2015 Quotek SAS
+http://www.quotek.io
+*/
+
 #include "alchemy.hpp"
 #include <rapidjson/document.h>
 #include <iostream>
@@ -42,6 +48,23 @@ namespace quotek {
 
         }
         
+
+        std::string alchemy::language(std::string payload,
+                             std::string format) {
+
+          std::string data = this->query("GetLanguage", payload , format);          
+
+          rapidjson::Document d;
+          d.Parse<0>(data.c_str());
+          
+          if ( d["language"].IsString() ) {
+            return d["language"].GetString();
+          }
+          return "";
+          
+        }
+
+
         std::string alchemy::query(std::string fct, std::string payload, std::string format) {
 
           std::string url = this->endpoint;

@@ -1,6 +1,7 @@
 /*
 Quotek Strategies SDK 2.0
 Copyright 2013-2015 Quotek SAS
+http://www.quotek.io
 */
 
 #include "quant.hpp"
@@ -247,23 +248,6 @@ namespace quotek {
         result.push_back(avg);
       }
       return result;
-
-    }
-
-
-    void moving_average_convergeance_divergeance(std::vector<quotek::data::record>& recs,
-                                                 int periods_ema1, 
-                                                 int periods_ema2,
-                                                 int periods_trendline) {
-
-      std::vector<float> ema1 = quotek::quant::EMA(recs,periods_ema1);
-      std::vector<float> ema2 = quotek::quant::EMA(recs,periods_ema2);
-
-      std::vector<float> trendline = quotek::quant::EMA(recs,periods_trendline);
-
-      for (int i=0;i < ema1.size();i++) {
-        
-      }
 
     }
 

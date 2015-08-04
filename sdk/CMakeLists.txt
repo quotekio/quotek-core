@@ -29,6 +29,7 @@ add_library(
        src/record.cpp
        src/sentiment.cpp
        src/strategy.cpp
+       src/techanalysis.cpp
        src/timeutils.cpp
        
        src/datasources/yahoofinance.cpp
