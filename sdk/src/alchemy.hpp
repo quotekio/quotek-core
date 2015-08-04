@@ -11,7 +11,7 @@ http://www.quotek.io
 #include <regex>
 
 #include "http.hpp"
-#include "sentiment.hpp"
+#include "mlstructures.hpp"
 
 namespace quotek {
 

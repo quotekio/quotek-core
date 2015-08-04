@@ -15,7 +15,7 @@ std::string sent_neg = "I hate strawberries, these totally suck";
 
 std::string es_corpus = "El coordinador general de Convergencia mantiene que la independencia mejorara las condiciones de vida";
 
-/*
+
 void test_sentiment(quotek::ml::alchemy& ac) {
   
   extern std::string sent_pos;
@@ -33,7 +33,7 @@ void test_sentiment(quotek::ml::alchemy& ac) {
   assert(!s1.positive);
   assert(!s1.mixed);
 
-}*/
+}
 
 void test_language(quotek::ml::alchemy& ac) {
 
@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
 
   quotek::ml::alchemy ac(argv[1],"http://access.alchemyapi.com");
 
-  //test_sentiment(ac);
+  test_sentiment(ac);
   test_language(ac);
 
   

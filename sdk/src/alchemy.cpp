@@ -30,6 +30,8 @@ namespace quotek {
 
           std::string data = this->query("GetTextSentiment", payload , format);
 
+          quotek::ml::sentiment s1;
+
           rapidjson::Document d;
           d.Parse<0>(data.c_str());
 
@@ -38,13 +40,13 @@ namespace quotek {
             std::string score_str = d["docSentiment"]["score"].GetString();
             std::string type_str = d["docSentiment"]["type"].GetString();
 
-            bool pos = ( type_str == "positive" ) ? true : false ;
-            float score = atof(score_str.c_str());
-            bool mixed = ( d["docSentiment"]["mixed"].IsString() ) ? true : false ;
-            return quotek::ml::sentiment(score, pos, mixed);
+            s1.positive = ( type_str == "positive" ) ? true : false ;
+            s1.score = atof(score_str.c_str());
+            s1.mixed = ( d["docSentiment"]["mixed"].IsString() ) ? true : false ;
+            return s1;
           }
 
-          return quotek::ml::sentiment(0,false,false);
+          return s1 ;
 
         }
         
