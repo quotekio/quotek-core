@@ -66,6 +66,8 @@ namespace quotek {
           
         }
 
+        std::vector<quotek::ml::relation> alchemy::relations(std::string payload, 
+                                                             std::string format);
 
         std::string alchemy::query(std::string fct, std::string payload, std::string format) {
 

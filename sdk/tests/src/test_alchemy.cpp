@@ -35,6 +35,14 @@ void test_sentiment(quotek::ml::alchemy& ac) {
 
 }
 
+void test_relations(quotek::ml::alchemy& ac) {
+
+  std::vector<quotek::ml::relation> rels = ac.relations(sent_pos,"text");
+
+
+}
+
+
 void test_language(quotek::ml::alchemy& ac) {
 
   extern std::string sent_pos;

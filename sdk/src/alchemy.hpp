@@ -49,14 +49,15 @@ namespace quotek {
                               std::string target, 
                               std::string format);
 
+        /** relations is able to summerize a text and basically return it under a 
+         *  "Who doest what" form.
+         *  @param payload Text or URL of text to analyse relashionships for.
+         *  @param format tells wether payload is text, html, or url.
+         *  @return a vector a relations. under the form of an quotek::core:
+         */
 
-        
-
-        /** relations is able to summerize a text and basically return it under a "Who doest what" form.
-        */
-        /*quotek::ml::relations relations(std::string payload, 
-                              std::string target, 
-                              std::string format);*/      
+        std::vector<quotek::ml::relation> relations(std::string payload,
+                                                    std::string format); 
 
         /** Ranked concepts is a function that is able to deduce the different concepts developped
          *  in the provided text and to create relationships between them. 
