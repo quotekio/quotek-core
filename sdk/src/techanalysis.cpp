@@ -8,24 +8,33 @@ http://www.quotek.io
 
 namespace quotek {
 
-  /** ta namespace contains a set of functions meant to facilitate automated technical
-   *  analysis.
-   */
+  
   namespace ta {
 
-    void moving_average_convergeance_divergeance(std::vector<quotek::data::record>& recs,
-                                                 int periods_ema1, 
-                                                 int periods_ema2,
+     std::vector<quotek::data::records> moving_average_convergeance_divergeance(std::vector<quotek::data::record>& recs,
+                                                 int periods_short_ema, 
+                                                 int periods_long_ema,
                                                  int periods_signal_line) {
 
-      std::vector<float> ema1 = quotek::quant::EMA(recs,periods_ema1);
-      std::vector<float> ema2 = quotek::quant::EMA(recs,periods_ema2);
+      std::vector<quotek::data::records> result;
 
-      std::vector<float> trendline = quotek::quant::EMA(recs,periods_signal_line);
+      quotek::data::records r1;
+      result.emplace_back(r1);
 
-      for (int i=0;i < ema1.size();i++) {
-        
+      std::vector<float> ema1 = quotek::quant::EMA(recs,periods_short_ema);
+      std::vector<float> ema2 = quotek::quant::EMA(recs,periods_long_ema);
+
+      int sdiff_offset = ema1.size() - ema2.size();
+      for (int i=0;i < ema2.size();i++) {
+        float cmacd = ema1[i+sdiff_offset] - ema2[i];
+        result[0].append( i, cmacd, 0 );
       }
+
+      std::vector<float> sigline = quotek::quant::EMA(result[0].get_data(),9);
+
+      quotek::data::records r2(sigline);
+      result.emplace_back(r2);
+      return result;
 
     }
     

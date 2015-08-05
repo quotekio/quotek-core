@@ -134,6 +134,21 @@ namespace quotek {
          */
         records(std::vector<std::tuple<long,float,float>>& data);
 
+        /** Class constructor 3.
+         * Takes a vector of float values to construct a records object.
+         * With this constructor, spread is systematically left to 0 and timestamp ranges (1..data.size())
+         * @param data vector of float.
+         */
+         records(std::vector<float>& data);
+
+         /** Class constructor 4.
+          * Takes a vector of quotek::data::record values to construct a records object.
+          * @param data vector of quotek::data::record.
+          */
+        records(std::vector<quotek::data::record>& data);
+         
+
+
         /** Class Destructor */
         ~records();
 

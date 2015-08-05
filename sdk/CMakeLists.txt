@@ -66,6 +66,7 @@ install (FILES "src/position.hpp" DESTINATION include/quotek)
 install (FILES "src/quant.hpp" DESTINATION include/quotek)
 install (FILES "src/record.hpp" DESTINATION include/quotek)
 install (FILES "src/strategy.hpp" DESTINATION include/quotek)
+install (FILES "src/techanalysis.hpp" DESTINATION include/quotek)
 install (FILES "src/timeutils.hpp" DESTINATION include/quotek)
 
 install (FILES "src/datasources/yahoofinance.hpp" DESTINATION include/quotek/datasources)

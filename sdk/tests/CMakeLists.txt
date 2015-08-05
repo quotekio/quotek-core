@@ -70,6 +70,10 @@ add_executable(
     src/test_alchemy.cpp
 )
 
+add_executable(
+    test_techanalysis
+    src/test_techanalysis.cpp
+)
 
 
 find_library (quotek QUOTEK) 
@@ -140,6 +144,13 @@ target_link_libraries(
 
 target_link_libraries(
         test_alchemy
+        quotek
+        pthread
+        curl
+)
+
+target_link_libraries(
+        test_techanalysis
         quotek
         pthread
         curl

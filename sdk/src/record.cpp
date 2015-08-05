@@ -20,6 +20,21 @@ namespace quotek {
 
     }
 
+
+    records::records(std::vector<float>& data) {
+
+      for (int i=0;i<data.size();i++) { 
+        this->append(i+1,data[i],0);
+      }
+    }
+
+    records::records(std::vector<quotek::data::record>& data) {
+      for (int i=0;i<data.size();i++) { 
+        this->append(data[i]);
+      }
+    }
+
+
     records::~records() {}
 
     quotek::data::records records::down_sample(int period, 
