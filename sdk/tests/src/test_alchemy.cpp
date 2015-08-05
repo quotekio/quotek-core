@@ -39,6 +39,18 @@ void test_relations(quotek::ml::alchemy& ac) {
 
   std::vector<quotek::ml::relation> rels = ac.relations(sent_pos,"text");
 
+  assert(rels.size() == 3) ;
+
+  for (int i=0;i<3;i++) {
+    assert(rels[i].subject != "");
+    assert(rels[i].action.text != "");
+    assert(rels[i].action.tense != "");
+    assert(rels[i].object != "");
+  }
+   assert (rels[0].subject == "I" );
+   assert (rels[0].action.text == "enjoy" );
+   assert (rels[0].action.tense == "present" );
+   assert (rels[0].object == "strawberries" );
 
 }
 
@@ -56,14 +68,30 @@ void test_language(quotek::ml::alchemy& ac) {
 
 }
 
+
+void test_raw(quotek::ml::alchemy& ac) {
+
+  extern std::string sent_pos;
+
+  std::map<std::string, std::string> params;
+
+  params["url"] = "http://www.wired.com";
+  params["outputMode"] = "json";
+
+  std::string res = ac.raw("URLGetLanguage",params);
+
+  assert(res.find("english") != std::string::npos);
+
+}
+
+
 int main(int argc, char** argv) {
 
   quotek::ml::alchemy ac(argv[1],"http://access.alchemyapi.com");
 
   test_sentiment(ac);
   test_language(ac);
-
+  test_relations(ac);
+  test_raw(ac);
   
-
-
 }

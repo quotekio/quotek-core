@@ -67,7 +67,34 @@ namespace quotek {
         }
 
         std::vector<quotek::ml::relation> alchemy::relations(std::string payload, 
-                                                             std::string format);
+                                                             std::string format) {
+
+          std::vector<quotek::ml::relation> result;
+          std::string data = this->query("GetRelations",payload,format);
+
+          rapidjson::Document d;
+          d.Parse<0>(data.c_str());
+
+          if (d["relations"].IsArray()) {
+            for (int i=0;i<d["relations"].Size();i++) {
+
+              quotek::ml::relation r0;
+
+              r0.sentence = d["relations"][i]["sentence"].GetString();
+              r0.subject = d["relations"][i]["subject"]["text"].GetString();
+              r0.action.text =  d["relations"][i]["action"]["text"].GetString();
+              r0.action.tense = d["relations"][i]["action"]["verb"]["tense"].GetString();
+              r0.action.negated = d["relations"][i]["action"]["verb"]["negated"].IsObject() ;
+              r0.object = d["relations"][i]["object"]["text"].GetString();
+
+              result.emplace_back(r0);
+
+            }
+          }
+
+          return result;
+        }
+
 
         std::string alchemy::query(std::string fct, std::string payload, std::string format) {
 
@@ -92,6 +119,23 @@ namespace quotek {
           }
           
           return http_handler.post(url,pdata);
+
+        }
+
+
+        std::string alchemy::raw(std::string call,
+                                 std::map<std::string, std::string> parameters) {
+
+          std::string url = this->endpoint;
+          quotek::http http_handler;
+
+          parameters["apikey"] = this->key;
+
+          if (  call.find("Text") == 0 ) url += "/calls/text/" + call;
+          else if (  call.find("HTML") == 0 ) url += "/calls/html/" + call;
+          else if (  call.find("URL") == 0 ) url += "/calls/url/" + call;
+
+          return http_handler.post(url,parameters);
 
         }
 

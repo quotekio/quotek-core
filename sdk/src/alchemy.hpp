@@ -76,6 +76,21 @@ namespace quotek {
         std::string language(std::string payload,
                              std::string format);
 
+        /** Since alchemy binding is only partially supported, raw() allows to perform an API call 
+         *  by letting the user choose which call to use and also which parameters to pass it.
+         *  It will then return the Alchemy server response in raw form (no parsing).
+         *  @param call: name of the Alchemy API call (without URI format prefix).
+         *  @param parameters: POST parameters to send with the call.
+         *  @return ALchemy server response as raw text.
+         *
+         *  Note about API calls: You can find the whole list of Alchemy API Calls and full documentation here: http://www.alchemyapi.com/api
+         *  Note about call parameters: You are not required to add apikey in the parameters list, 
+         *  since raw() will append it for you.
+         */
+        std::string raw(std::string call,
+                        std::map<std::string, std::string> parameters);
+
+
         std::string key;
         std::string endpoint;
 
