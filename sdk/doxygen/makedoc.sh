@@ -1,10 +1,10 @@
 #!/bin/bash
 
-if [-d ../doc/html ]; then
+if [ -d ../doc/html ]; then
  rm -rf ../doc/html
 fi
 
-if [-d ../doc/xml ]; then
+if [ -d ../doc/xml ]; then
  rm -rf ../doc/xml
 fi
 

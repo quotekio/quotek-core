@@ -1,10 +1,9 @@
 Machine Learning
 ================
 
-.. doxygennamespace:: quotek::ml
-
 .. toctree::
    :hidden:
 
+   mlstruct
    alchemy
 

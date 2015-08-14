@@ -53,20 +53,11 @@ namespace quotek {
          *  "Who doest what" form.
          *  @param payload Text or URL of text to analyse relashionships for.
          *  @param format tells wether payload is text, html, or url.
-         *  @return a vector a relations. under the form of an quotek::core:
+         *  @return a vector quotek::ml::relations
          */
 
         std::vector<quotek::ml::relation> relations(std::string payload,
                                                     std::string format); 
-
-        /** Ranked concepts is a function that is able to deduce the different concepts developped
-         *  in the provided text and to create relationships between them. 
-         *  @param payload Text or URL of text to analyse.
-         *  @param format tells wether payload is text, html, or url.
-         *  @return the map of concepts computed by Alchemy. */
-
-        /*quotek::ml::concepts ranked_concepts(std::string payload,
-                                             std::string format);*/
 
         /** language function guesses the language used to write the text passed as argument.
          *  @param payload Text or URL of text to analyse.
@@ -83,7 +74,7 @@ namespace quotek {
          *  @param parameters: POST parameters to send with the call.
          *  @return ALchemy server response as raw text.
          *
-         *  Note about API calls: You can find the whole list of Alchemy API Calls and full documentation here: http://www.alchemyapi.com/api
+         *  Note about API calls: You can find the whole list of Alchemy API Calls and full documentation here: <a href="http://www.alchemyapi.com/api">http://www.alchemyapi.com/api</a>
          *  Note about call parameters: You are not required to add apikey in the parameters list, 
          *  since raw() will append it for you.
          */

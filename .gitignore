@@ -11,3 +11,5 @@ modules/vstore/vstore2dump
 modules/vstore/dump2vstore
 modules/vstore/libvstore.so
 SDK.tgz
+sdk/doxygen/breathe/build/
+sdk/doc/
