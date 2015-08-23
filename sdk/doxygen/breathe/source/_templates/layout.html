@@ -1,0 +1,143 @@
+<head>
+  <meta charset="utf-8">
+  {% block htmltitle %}
+  <title>{{ title|striptags|e }}{{ titlesuffix }}</title>
+  {% endblock %}
+  <link href='_static/css/bootstrap.css' rel='stylesheet' type='text/css'>
+  <link href='_static/css/bootstrap-theme.css' rel='stylesheet' type='text/css'>
+
+  {% if not READTHEDOCS %}
+      <link rel="stylesheet" href="{{ pathto('_static/' + style, 1) }}" type="text/css" />
+  {% endif %}
+
+  {% for cssfile in css_files %}
+      <link rel="stylesheet" href="{{ pathto(cssfile, 1) }}" type="text/css" />
+  {% endfor %}
+
+  <link href='_static/css/quotek.css' rel='stylesheet' type='text/css'>
+
+  <script type="text/javascript" src="_static/js/jquery.js"></script>
+
+  <script type="text/javascript" src="_static/js/bootstrap.min.js">
+  </script>
+
+</head>
+<!-- <body style="background:#333333;color:white;"> -->
+<body>
+
+    <div class="header">
+    <div class="container">
+
+        <div class="row-fluid">
+
+          <div class="col-md-4">
+            <a href="http://quotek.io/"><img id="header-logo" src="_static/img/quotek-logo.png"/></a>
+          </div>
+
+          <div class="col-md-8 header-menu">
+
+             <a id="header-pbtn" href="#">Products</a>
+             <!-- <a href="http://demo.quotek.io">Demo</a> -->
+             <span style="color:#cccccc;font-size:18px;margin-left:20px">Demo</span>
+
+             <a href="http://docs.quotek.io">Documentation</a>
+             <a href="http://quotek.io/contact">Contact</a>
+
+             <div id="product-dropdown">
+
+              <div id="product-dropdown-ct">
+                <div>
+                  <a href="http://quotek.io/products/saas">Quotek&copy; SaaS</a>
+                </div>
+                <div style="margin-top:5px">
+                <a href="http://quotek.io/products/sdk">Quotek&copy; SDK</a>
+                </div>
+                <div style="margin-top:5px">
+                  <a href="http://quotek.io/products/pricing">Pricing</a>
+                </div>
+              </div>
+
+             </div>
+
+          </div>
+        </div>
+    </div>
+  </div>
+  <div class="content-3"></div>
+
+
+   <div style="overflow:hidden;width:100%;margin-top:-50px">
+ 
+   <!-- Left Menu -->
+   <div style="width:270px;padding-right:30px;padding-top:60px;float:left">
+
+          <div class="wy-menu wy-menu-vertical" style="position:inherits!important">
+            {% set toctree = toctree(maxdepth=2, collapse=False, includehidden=True) %}
+            {% if toctree %}
+                {{ toctree }}
+            {% else %}
+                <!-- Local TOC -->
+                <div class="local-toc">{{ toc }}</div>
+            {% endif %}
+          </div>
+
+   </div>
+
+   <div style="float:left;width:800px">
+    <div class="rst-content">
+    {% block body %}{% endblock %}
+    </div>
+   </div>
+  </div>
+
+  <script type="text/javascript">
+
+    $("#header-pbtn").click(function() { product_dropdown_toggle(); });
+
+    function product_dropdown_toggle() {
+
+      $('#product-dropdown').css({ left: $('#header-pbtn').position().left + 20 + 'px'  });
+
+      if ( $('#product-dropdown').width() == 0 ) {
+
+
+        $('#product-dropdown').animate({ width:"140px", duration: 1000})
+        .after(function() { $('#product-dropdown-ct').show(); } );
+
+      }
+
+      else {
+        
+        $('#product-dropdown').animate({width:"0px",duration: 1000})
+        .after( function() { $('#product-dropdown-ct').hide(); } );   
+      }
+    }
+  </script>
+
+</body>
+
+
+
+
+
+
+{% block footer %}
+
+<div class="footer-top">
+
+</div>
+
+<div class="footer-bottom">
+
+  <div class="container">
+
+    <div class="row-fluid">
+
+      <div class="col-md-6">
+        <a href="http://quotek.io/"><img style="height:20px;opacity:.7" src="_static/img/quotek-logo-ws.png"/></a>
+      </div>
+      <div class="col-md-6" style="text-align:center"></div>
+    </div>
+  </div>
+
+{% endblock %}
