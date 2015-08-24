@@ -65,30 +65,26 @@
   </div>
   <div class="content-3"></div>
 
+  <div id="doc-leftmenu">
 
-   <div style="overflow:hidden;width:100%;margin-top:-50px">
- 
-   <!-- Left Menu -->
-   <div style="width:270px;padding-right:30px;padding-top:60px;float:left">
+    {% set ttt = toctree(includehidden=True, maxdepth=2 )
+        | replace("</a>", "")
+        | replace(" href=\"", "></a>")
+        | replace("</li>", "</li>;")
+        | striptags
+        | replace("\">", "%") %}
 
-          <div class="wy-menu wy-menu-vertical" style="position:inherits!important">
-            {% set toctree = toctree(maxdepth=2, collapse=False, includehidden=True) %}
-            {% if toctree %}
-                {{ toctree }}
-            {% else %}
-                <!-- Local TOC -->
-                <div class="local-toc">{{ toc }}</div>
-            {% endif %}
-          </div>
+     {{  ttt }}
+     
 
-   </div>
-
-   <div style="float:left;width:800px">
-    <div class="rst-content">
-    {% block body %}{% endblock %}
-    </div>
-   </div>
   </div>
+
+  <div class="container" style="margin-top:-80px">
+    <div class="rst-content">
+      {% block body %}{% endblock %}
+    </div>
+  </div>
+
 
   <script type="text/javascript">
 

@@ -420,10 +420,31 @@ font-family: "Open Sans",Arial,sans-serif!important;
  color:white;
 }
 
-.namespace dt, .class dt {
-  border:0px!important;
-  color: white!important;
-  background:rgb(247,152,56)!important;
-  border-radius: 5px;
-  padding:5px;
+
+#doc-leftmenu {
+  position:absolute;
+
+}
+
+#doc-leftmenu li {
+  list-style-type: none;
+}
+
+#doc-leftmenu .toctree-l1 a {
+  background:#cccccc;
+  color:#333333;
+  border-radius:5px;
+  padding:10px;
+  width:100%!important
+  
+}
+
+
+#doc-leftmenu .toctree-l2 {
+  padding:10px;
+}
+
+#doc-leftmenu .toctree-l2 a {
+  background:transparent;
+  border-radius:0px;
 }
