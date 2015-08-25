@@ -11,7 +11,6 @@ This section explains how to import and store structured financial data with wit
    history
    news
 
-
 Time Series Data
 ----------------
 
@@ -20,11 +19,28 @@ There are three main time-series formats usable with Quotek SDK functions:
 quotek::data::record
 ^^^^^^^^^^^^^^^^^^^^
 
+quotek::data::record is the main tick data container. Its purpose is to store raw, real-time data provided by your broker. It has 3 main attributes:
+  
+  * ``timestamp:`` epoch timestamp of the tick (in seconds).
+  * ``value:`` value of asset at time 'timestamp'.
+  * ``spread:`` spread offered by broker at time 'timestamp'.
+
+**Note about spread:** This attribute is not mandatory to create record objects, so you can work with it only if you have it.
+
+for further infos, please read the :doc:`quotek::data::record documentation <record>`
+
 quotek::data::records
 ^^^^^^^^^^^^^^^^^^^^^
 
+quotek::data::records is a container of quotek::data::record.
+
 quotek::data::history
 ^^^^^^^^^^^^^^^^^^^^^
+
+The history container was created to store **(open,close,high,low)** time-series data, 
+which is the typical data structure returned by financial databases like yahoo! finance, quandl, etc..
+
+If you need to store full history time-series, you can vectorize the class by declaring an ``std::vector<quotek::data::history>`` 
 
 Extracting and Down-Sampling
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -39,7 +55,7 @@ Text Data
 Along with time series, text information can be vital to assess market contexts, especially financial news.
 That's why the quotek::data::news class was created, and every news datasource class in the SDK uses it to return news content.
 
-Namespace Doc
--------------
+Namespace Documentation
+-----------------------
 
 .. doxygennamespace:: quotek::data
