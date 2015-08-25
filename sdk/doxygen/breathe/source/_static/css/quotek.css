@@ -390,7 +390,7 @@ font-family: "Open Sans",Arial,sans-serif!important;
 }
 
 .paper h3 {
- color:rgb(255,182,90);  
+ color:rgb(255,182,90);
 }
 
 
@@ -420,31 +420,23 @@ font-family: "Open Sans",Arial,sans-serif!important;
  color:white;
 }
 
-
-#doc-leftmenu {
-  position:absolute;
+.rst-content h2 {
+  color: rgb(247,152,56);
 
 }
 
-#doc-leftmenu li {
-  list-style-type: none;
-}
-
-#doc-leftmenu .toctree-l1 a {
-  background:#cccccc;
-  color:#333333;
-  border-radius:5px;
-  padding:10px;
-  width:100%!important
+.rst-content h3 {
+  font-size:16px!important;
+  font-weight: bold!important;
   
 }
 
-
-#doc-leftmenu .toctree-l2 {
-  padding:10px;
+#doc-leftmenu {
+  position:absolute;
+  margin-top:30px;
 }
 
-#doc-leftmenu .toctree-l2 a {
-  background:transparent;
-  border-radius:0px;
+.qimg {
+  margin-top:40px;
 }
+

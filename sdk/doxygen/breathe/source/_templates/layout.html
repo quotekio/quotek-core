@@ -26,7 +26,7 @@
 <body>
 
     <div class="header">
-    <div class="container">
+    <div class="container" id="doc-mcontainer">
 
         <div class="row-fluid">
 
@@ -67,17 +67,19 @@
 
   <div id="doc-leftmenu">
 
-    {% set ttt = toctree(includehidden=True, maxdepth=2 )
-        | replace("</a>", "")
-        | replace(" href=\"", "></a>")
-        | replace("</li>", "</li>;")
-        | striptags
-        | replace("\">", "%") %}
-
-     {{  ttt }}
-     
+    {% set ttt = toctree(includehidden=True, maxdepth=2, collapse=False) %}
+    {{  ttt }}
 
   </div>
+
+  <script type="text/javascript">
+    $('#doc-leftmenu').css('left', $('#doc-mcontainer').position().left - 350 );
+    $(window).resize( function() {
+      $('#doc-leftmenu').css('left', $('#doc-mcontainer').position().left - 350 );
+    });
+    
+  </script>
+
 
   <div class="container" style="margin-top:-80px">
     <div class="rst-content">
