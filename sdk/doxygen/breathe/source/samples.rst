@@ -3,18 +3,17 @@ SDK Examples
 
 Disclaimer
 ----------
-
-The strategies provided here are for educating purposes ONLY, and MUST NOT be used as 
+*The strategies provided here are for educating purposes ONLY, and MUST NOT be used as 
 real investment strategies. Therefore, Quotek SAS declines all responsability for
 potential loss or missed investment opportunities resulting of the misuse of these 
-algorithms in real situations.
+algorithms in real situations.*
 
 Stock market sentiment analysis with Alchemy API
 ------------------------------------------------
 
 In this example we will use the Alchemy API service to evaluate the overall sentiment of the US equity market using the content provided by the Wall-Street Journal RSS feed.
 
-.. code:: c++
+.. code-block:: c++
 
   #include <iostream>
   #include <quotek/alchemy.hpp>
@@ -59,6 +58,7 @@ In this example we will use the Alchemy API service to evaluate the overall sent
     }
 
   }
+
 
 Moving Averages evolution on multiple time scales
 -------------------------------------------------

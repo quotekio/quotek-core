@@ -28,6 +28,7 @@ The scheme below shows the distribution of functionalities among the namespaces 
    :includehidden:
    :titlesonly:
 
+   self
    data_struct
    quant
    ml
