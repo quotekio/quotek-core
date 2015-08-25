@@ -34,6 +34,7 @@ The scheme below shows the distribution of functionalities among the namespaces 
    data_sources
    ta
    broker_interact
+   samples
 
 
 Now we'll make a short description of each important namespace and what they contain.
