@@ -63,9 +63,62 @@ In this example we will use the Alchemy API service to evaluate the overall sent
 Moving Averages evolution on multiple time scales
 -------------------------------------------------
 
+For this example we will try to deduce buy and sell signals for an asset by using 2 SMA20 moving averages on 50seconds and 15minutes time scales.
 
+Predicates
+^^^^^^^^^^
 
+  * If the 2 moving averages go up at the same time, then we might have a buy signal. 
+  * On the other side if they both go down at the same time we may have a sell signal.
+  * If the 2 moving average don't go the same way, then we have no signal at all.
+  
+Also in order see some things, we will simulate a full day of dow-jones quotation by using a random, normally distributed sample (17000, sigma of 100).
 
+.. highlight ::c++
 
+.. code-block:: c++
 
+  #include <quotek/record.hpp>
+  #include <quotek/generators.hpp>
+  #include <quotek/quant.hpp>
+  #include <iostream>
 
+  int main() {
+
+    quotek::data::records current;
+
+    /* we generate a full day of fake Dow-Jones quotations, which represents about 25000 ticks of 1 second */
+    quotek::data::records dquotes = quotek::rand::generators::normal(25000, 17000, 100);
+
+    /* Next we'll simulate the running of the quotation day */
+    for (int i=0;i< dquotes.size(); i++) {
+
+      current.append(dquotes[i]);
+
+      /* We compute the 2 moving average every 10 ticks */
+      if ( i % 10 == 0  ) {
+
+        //we down-sample current for 15-minute ticks
+        quotek::data::records current_ds1 = current.down_sample(900,1,"typical");
+
+        //we down-sample current for 50secs ticks.
+        quotek::data::records current_ds2 = current.down_sample(50,1,"typical");
+
+        //we compute 20 periods SMA for 15 minutes sample
+        std::vector<quotek::data::record> avg1 = quotek::quant::SMA(current_ds1.get_data(),20);
+
+        //we compute 20 periods SMA for 50 seconds sample
+        std::vector<quotek::data::record> avg2 = quotek::quant::SMA(current_ds2.get_data(),20);
+
+        if (  percent_delta(avg1) > 0 && percent_delta(avg2) > 0 ) {
+          std::cout << "We got a BUY Signal at " << dquotes[i].value << "!" << std::endl;
+          // .. We get a potential buy signal, do something..
+        }
+
+        else if ( percent_delta(avg1) < 0 && percent_delta(avg2) < 0 ) {
+          std::cout << "We got a SELL Signal at " << dquotes[i].value << "!" << std::endl;
+          // .. We get a potential sell signal at, do something..
+        }
+      }
+    }
+  }
