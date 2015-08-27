@@ -12,8 +12,15 @@ Windows Install
   file which is located at the root of the decompressed directory. The SDK will then be installed in 
   **C:\\Program Files\\quotek\\sdk**.
 
-  Building & Linking
-  ------------------
+Building & Linking
+^^^^^^^^^^^^^^^^^^ 
+
+  When using Quotek SDK on windows, The first thing you have to do is to let your IDE / Compiling Toolchain know where the
+  headers and libraries are located.
+
+  For Visual studio 2013, the procedure is the following:
+
+  
 
 Linux Install
 -------------
