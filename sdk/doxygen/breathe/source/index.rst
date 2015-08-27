@@ -29,6 +29,7 @@ The scheme below shows the distribution of functionalities among the namespaces 
    :titlesonly:
 
    self
+   start
    data_struct
    quant
    ml

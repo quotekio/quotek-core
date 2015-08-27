@@ -17,7 +17,7 @@ In this example we will use the Alchemy API service to evaluate the overall sent
 
   #include <iostream>
   #include <quotek/alchemy.hpp>
-  #include <quotek/rss.hpp>
+  #include <quotek/datasources/rss.hpp>
 
   int main() {
 
@@ -40,7 +40,7 @@ In this example we will use the Alchemy API service to evaluate the overall sent
     for (int i=0;i< wsj_nlist.size();i++) {
 
       /* we send each news to the Alchemy API service for sentiment analysis. */
-      quotek::ml::sentiment sent = a1.sentiment( wsj_list[i].content );
+      quotek::ml::sentiment sent = a1.sentiment( wsj_nlist[i].content,"","text");
 
       if (sent.positive) pos_sent++;
       else neg_sent++;
@@ -56,7 +56,6 @@ In this example we will use the Alchemy API service to evaluate the overall sent
       std::cout << "sentiment on US markets is negative overall" << std::endl;
       /* .. take another decision here */
     }
-
   }
 
 
