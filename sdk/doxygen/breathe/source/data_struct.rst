@@ -32,7 +32,14 @@ for further infos, please read the :doc:`quotek::data::record documentation <rec
 quotek::data::records
 ^^^^^^^^^^^^^^^^^^^^^
 
-quotek::data::records is a container of quotek::data::record.
+quotek::data::records is a container of quotek::data::record. It embeddeds an internal vector container and various methods for processing this container.
+The scheme displayed below represents the description of the quotek::data::records data structure:
+
+.. image:: /img/recs_datastruct.png
+
+
+
+
 
 quotek::data::history
 ^^^^^^^^^^^^^^^^^^^^^

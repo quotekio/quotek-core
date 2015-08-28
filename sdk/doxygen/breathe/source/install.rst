@@ -21,7 +21,6 @@ Building & Linking
   For Visual studio 2013, the procedure is the following:
 
   
-
 Linux Install
 -------------
 
