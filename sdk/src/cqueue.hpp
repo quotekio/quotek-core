@@ -7,7 +7,9 @@ http://www.quotek.io
 #ifndef CQUEUE_HPP
 #define CQUEUE_HPP
 
-#include <pthread.h>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
 #include <queue>
 
 namespace quotek {
@@ -29,36 +31,33 @@ namespace quotek {
       private:
 
         std::queue<T>   m_queue;
-        pthread_mutex_t m_mutex;
-        pthread_cond_t  m_condition;
+        std::mutex mtx;
+
+        std::condition_variable m_condition;
 
     };
 
     template<class T> cqueue<T>::cqueue() {
-      pthread_mutex_init( &m_mutex, NULL );
-      pthread_cond_init( &m_condition, NULL );
+
     }
 
-
-
     template<class T> void cqueue<T>::push(T value) {
-
-      pthread_mutex_lock( &m_mutex );
+      std::lock_guard<std::mutex> lock(mtx);
       m_queue.push(value);
       if( !m_queue.empty() ) {
-         pthread_cond_signal( &m_condition );
+         m_condition.notify_all();
       }
-      pthread_mutex_unlock( &m_mutex );
+      
     }
 
 
     template<class T> bool cqueue<T>::pop(T& value, bool block) {
         
       bool rtn = false;
-      pthread_mutex_lock( &m_mutex );
+      std::lock_guard<std::mutex> lock(mtx);
       if( block ) {
          while( m_queue.empty() ) {
-           pthread_cond_wait( &m_condition, &m_mutex );
+           m_condition.wait(lock);
          }
       }
       if( !m_queue.empty() ) {
@@ -66,7 +65,7 @@ namespace quotek {
           m_queue.pop();  
           rtn = true;
       }
-      pthread_mutex_unlock( &m_mutex );
+      
       return rtn;
 
     }
