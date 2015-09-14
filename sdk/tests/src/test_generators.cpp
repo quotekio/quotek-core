@@ -28,11 +28,9 @@ void test_normal() {
 
 void test_lognormal() {
 
-  std::vector<quotek::data::record> uni = quotek::rand::generators::lognormal(10,5000,20);
-
-  for (int i=0;i<uni.size();i++) {
-    std::cout << uni[i].value << std::endl;
-  }
+  std::vector<quotek::data::record> uni = quotek::rand::generators::lognormal(10,3,.0000000001);
+  assert( uni.size() == 10 );
+  
 
 }
 

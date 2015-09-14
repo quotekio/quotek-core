@@ -42,7 +42,7 @@ namespace quotek {
     }
 
     template<class T> void cqueue<T>::push(T value) {
-      std::lock_guard<std::mutex> lock(mtx);
+      std::unique_lock<std::mutex> lock(mtx);
       m_queue.push(value);
       if( !m_queue.empty() ) {
          m_condition.notify_all();
@@ -54,7 +54,7 @@ namespace quotek {
     template<class T> bool cqueue<T>::pop(T& value, bool block) {
         
       bool rtn = false;
-      std::lock_guard<std::mutex> lock(mtx);
+      std::unique_lock<std::mutex> lock(mtx);
       if( block ) {
          while( m_queue.empty() ) {
            m_condition.wait(lock);

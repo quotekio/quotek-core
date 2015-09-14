@@ -17,7 +17,7 @@ namespace quotek {
         std::vector<quotek::data::record> result;
 
         std::uniform_real_distribution<float> unif(min,max);
-        std::default_random_engine re;
+        std::default_random_engine re(std::random_device{}());
 
         for (int i=0;i<size;i++) {
           result.emplace_back(quotek::data::record(0,unif(re),0));
@@ -30,7 +30,7 @@ namespace quotek {
         std::vector<quotek::data::record> result;
 
         std::normal_distribution<float> norm(mean,sigma);
-        std::default_random_engine re;
+        std::default_random_engine re(std::random_device{}());
 
         for (int i=0;i<size;i++) {
           result.emplace_back(quotek::data::record(0,norm(re),0));
@@ -45,7 +45,7 @@ namespace quotek {
         std::vector<quotek::data::record> result;
 
         std::lognormal_distribution<float> lnorm(mean,sigma);
-        std::default_random_engine re;
+        std::default_random_engine re(std::random_device{}());
 
         for (int i=0;i<size;i++) {
           result.emplace_back(quotek::data::record(0,lnorm(re),0));
@@ -59,7 +59,7 @@ namespace quotek {
 
         std::vector<quotek::data::record> result;
         std::binomial_distribution<int> binom(experiments,success_probability);
-        std::default_random_engine re;
+        std::default_random_engine re(std::random_device{}());
 
         for (int i=0;i<size;i++) {
           result.emplace_back(quotek::data::record(0,(float) binom(re),0));
@@ -71,7 +71,7 @@ namespace quotek {
 
         std::vector<quotek::data::record> result;
         std::poisson_distribution<int> poiss(average_occurence);
-        std::default_random_engine re;
+        std::default_random_engine re(std::random_device{}());
 
         for (int i=0;i<size;i++) {
           result.emplace_back(quotek::data::record(0,(float) poiss(re),0));
