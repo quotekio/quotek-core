@@ -11,56 +11,55 @@ namespace quotek {
       
     namespace time {
        
+
         bool is_time(std::string time_string, long timestamp) {
 
           int hour, minute, second;
 
-          const time_t curtime = (const time_t) timestamp;
-          struct tm c_time ;
-          localtime_r(&curtime,&c_time);
-
           size_t nb_sep = std::count(time_string.begin(), time_string.end(), ':');
+
+          const std::time_t ttstamp = (const std::time_t) timestamp;
+          std::tm* c_time =  std::localtime(&ttstamp);
 
           if (nb_sep == 2) {
 
             sscanf(time_string.c_str(),"%d:%d:%d",&hour,&minute,&second);
 
-            if (  c_time.tm_hour == hour && 
-            	  c_time.tm_min == minute && 
-            	  c_time.tm_sec == second ) return true;
+            if (  c_time->tm_hour == hour && 
+                c_time->tm_min == minute && 
+                c_time->tm_sec == second ) return true;
 
             return false;
           }
 
           else if (nb_sep == 1) {
             sscanf(time_string.c_str(),"%d:%d",&hour,&minute);
-            if ( c_time.tm_hour == hour && 
-            	 c_time.tm_min == minute ) return true;
+            if ( c_time->tm_hour == hour && 
+               c_time->tm_min == minute ) return true;
             return false;
           }
           else return false;
-        
+
         }
-       
+
         bool trade_hours(std::string time_open, 
         	             std::string time_close, 
         	             long timestamp) {
 
-          //Da fuck ??
-          timestamp +=3600;
-
-          struct tm* c_time; 
+          
+          std::time_t ttstamp = (const std::time_t) timestamp;
+          std::tm* c_time; 
 
           std::ostringstream dt_open;
           std::ostringstream dt_close;
 
-          struct tm tm_h1;
-          struct tm tm_h2;
+          std::tm tm_h1;
+          std::tm tm_h2;
 
-          time_t t_h1;
-          time_t t_h2;
+          std::time_t t_h1;
+          std::time_t t_h2;
 
-          c_time = localtime((const time_t*) &timestamp); 
+          c_time = localtime(&ttstamp); 
 
           dt_open << c_time->tm_year+1900 << "-";
           dt_open << std::setfill('0') << std::setw(2) << c_time->tm_mon+1 << "-";
@@ -71,16 +70,40 @@ namespace quotek {
           dt_open << " " << time_open;
           dt_close << " " << time_close;
 
-          strptime(dt_open.str().c_str(),"%Y-%m-%d %H:%M:%S",&tm_h1);
-          t_h1 = mktime(&tm_h1);
+          sscanf(dt_open.str().c_str(),"%d-%d-%d %d:%d:%d",
+          &tm_h1.tm_year,
+          &tm_h1.tm_mon,
+          &tm_h1.tm_mday,
+          &tm_h1.tm_hour,
+          &tm_h1.tm_min,
+          &tm_h1.tm_sec  
+          );
 
-          strptime(dt_close.str().c_str(),"%Y-%m-%d %H:%M:%S",&tm_h2);
+          tm_h1.tm_year -= 1900;
+          tm_h1.tm_mon -= 1;
+
+          t_h1 = std::mktime(&tm_h1);
+
+          sscanf(dt_close.str().c_str(),"%d-%d-%d %d:%d:%d",
+          &tm_h2.tm_year,
+          &tm_h2.tm_mon,
+          &tm_h2.tm_mday,
+          &tm_h2.tm_hour,
+          &tm_h2.tm_min,
+          &tm_h2.tm_sec  
+          );
+
+          tm_h2.tm_year -= 1900;
+          tm_h2.tm_mon -= 1;
+
           t_h2 = mktime(&tm_h2);
 
           if (timestamp >= t_h1 && timestamp <= t_h2 ) return true;
           else return false;
 
         }
+
+
 
         std::string week_day(long timestamp) {
 
@@ -92,16 +115,16 @@ namespace quotek {
                                                 "saturday",
                                                 "sunday" };
           int cweekday = 1;
-          time_t curtime = (time_t) timestamp;
-          cweekday = localtime(&curtime)->tm_wday;
+          const std::time_t curtime = (const std::time_t) timestamp;
+          cweekday = std::localtime(&curtime)->tm_wday;
           return weekdays[cweekday-1];
         }
 
         int month_day(long timestamp) {
 
           int cmday = 1;
-          time_t curtime = (time_t) timestamp;
-          cmday = localtime(&curtime)->tm_mday;
+          const std::time_t curtime = (const std::time_t) timestamp;
+          cmday = std::localtime(&curtime)->tm_mday;
           return cmday;
 
         }

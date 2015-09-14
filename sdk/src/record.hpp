@@ -10,6 +10,8 @@ http://www.quotek.io
 #include <time.h>
 #include <vector>
 #include <string>
+#include <algorithm>
+#include <tuple>
 
 namespace quotek {
 

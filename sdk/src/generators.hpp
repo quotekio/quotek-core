@@ -9,7 +9,9 @@ http://www.quotek.io
 
 #include <random>
 #include <string>
+#include <algorithm>
 #include "record.hpp"
+
 
 namespace quotek {
 

@@ -11,8 +11,11 @@ Copyright 2013-2015 Quotek SAS
 #include <string>
 #include <sstream>
 #include <vector>
+#include <ctime>
 
-#include <time.h>
+#ifdef _WIN64
+#define sscanf sscanf_s
+#endif
 
 namespace quotek {
 
@@ -45,6 +48,7 @@ namespace quotek {
          * @param timestamp epoch
          * @return true if current time is in asset trade hours, false otherwise.
          */
+
         bool trade_hours(std::string time_open, 
                          std::string time_close, 
                          long timestamp);

@@ -58,7 +58,7 @@ namespace quotek {
                                                  float success_probability) {
 
         std::vector<quotek::data::record> result;
-        std::normal_distribution<int> binom(experiments,success_probability);
+        std::binomial_distribution<int> binom(experiments,success_probability);
         std::default_random_engine re;
 
         for (int i=0;i<size;i++) {
