@@ -45,7 +45,8 @@ namespace quotek {
             s1.mixed = ( d["docSentiment"]["mixed"].IsString() ) ? true : false ;
             return s1;
           }
-
+          
+          s1.score = -1;
           return s1 ;
 
         }

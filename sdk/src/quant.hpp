@@ -13,6 +13,10 @@ http://www.quotek.io
 #include "record.hpp"
 #include "math.h"
 
+#ifdef _WIN64
+#define M_SQRT1_2 1.0 / sqrt(2);
+#endif
+
 namespace quotek {
 
   /** the quant namespace contains all the required function to work on asset value 
