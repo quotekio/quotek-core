@@ -440,3 +440,32 @@ font-family: "Open Sans",Arial,sans-serif!important;
   margin-top:40px;
 }
 
+.highlight .cm {
+  color:#666666;
+}
+
+.highlight .cp {
+  color: #A71D5D;
+}
+
+.highlight .s {
+  color: blue;
+
+}
+
+.highlight .kt {
+  color: #0086B3;
+}
+
+.highlight .mi {
+  color: #0086B3;
+}
+
+.highlight .k {
+  color: #A71D5D;
+}
+
+.highlight .n {
+  color: #795DA3;
+}
+

@@ -5,8 +5,6 @@ Quantitative Analysis
 
 .. toctree::
    :includehidden:
-
-   ts_analysis
+   
    generators
-   options
    blackscholes
