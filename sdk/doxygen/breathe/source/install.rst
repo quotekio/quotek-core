@@ -38,12 +38,30 @@ For Visual studio 2015, the procedure is the following:
 
 Then you are good to go, you can start your project and compile it without any trouble.
 
+**Note:** You will have to perform this operation for evey new visual studio project you start with quotek SDK.
+
 Linux Install
 -------------
 
 Download and unzip the quotek SDK archive file, and launch the "installer_linux.sh" script 
 located at the root of the decompressed directory. All of the Quotek SDK will then be installed 
 in /opt/quotek/sdk. The libraries are located in **/opt/quotek/sdk/lib** and headers are in **/opt/quotek/sdk/include**.
+
+Dependancies
+^^^^^^^^^^^^
+
+În order to work properly on Linux, Quotek SDK needs libcurl as a dependancy. This is
+a very common package which is probably already installed on your system. In any case,
+the install procedure for libcurl is as follow:
+
+**For Debian/Ubuntu**
+
+``sudo apt-get install libcurl4
+``
+**For CentOS/Fedora**
+
+``sudo yum install libcurl
+``
 
 Building & Linking
 ^^^^^^^^^^^^^^^^^^
@@ -54,13 +72,3 @@ add a few arguments to your compilation line. Also, because libquotek needs them
 So the typical compilation line of a program using quotek SDK on Linux is the following:
 
 ``g++ -I/opt/quotek/sdk/include -L/opt/quotek/sdk/lib -o <YOUR_PROGRAM> <YOUR_C++_FILE> -lpthread -lcurl -lquotek``
-
-
-
-
-
-
-
-
-
-

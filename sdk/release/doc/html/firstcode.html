@@ -70,9 +70,11 @@
       <div id="doc-leftmenu">
 
         
-        <ul>
+        <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Welcome to Quotek SDK documentation!</a></li>
-<li class="toctree-l1"><a class="reference internal" href="start.html">Quick Start</a><ul class="simple">
+<li class="toctree-l1 current"><a class="reference internal" href="start.html">Quick Start</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="install.html">Install</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">First Program</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="data_struct.html">Data Structures</a><ul>
@@ -122,7 +124,8 @@ exactly like an hello world if you want.</p>
 <h2>Let&#8217;s begin<a class="headerlink" href="#let-s-begin" title="Permalink to this headline">¶</a></h2>
 <p>First we start by generating some fake yet realistic prices data for an asset, say the DOW JONES index. We will assume a full day of quotation, meaning ~ 25000 values if we&#8217;d get 1 tick per second.</p>
 <p>To do that with quotek there&#8217;s nothing more simple, we&#8217;ll just call the quotek::rand::generators::normal function:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">quotek</span><span class="o">::</span><span class="n">data</span><span class="o">::</span><span class="n">record</span><span class="o">&gt;</span> <span class="n">dow_data</span> <span class="o">=</span> <span class="n">quotek</span><span class="o">::</span><span class="n">rand</span><span class="o">::</span><span class="n">generators</span><span class="o">::</span><span class="n">normal</span><span class="p">(</span><span class="mi">25000</span><span class="p">,</span><span class="mi">17000</span><span class="p">,</span><span class="mi">200</span><span class="p">);</span>
+<div class="highlight-c++"><div class="highlight"><pre><span class="c1">//we generate a sample of 25000 ticks with mean 17000 and standard deviation 25</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">quotek</span><span class="o">::</span><span class="n">data</span><span class="o">::</span><span class="n">record</span><span class="o">&gt;</span> <span class="n">dow_data</span> <span class="o">=</span> <span class="n">quotek</span><span class="o">::</span><span class="n">rand</span><span class="o">::</span><span class="n">generators</span><span class="o">::</span><span class="n">normal</span><span class="p">(</span><span class="mi">25000</span><span class="p">,</span><span class="mi">17000</span><span class="p">,</span><span class="mi">25</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>Once we have our fake data sample, what we&#8217;ll do is to extract some properties from it.
@@ -130,7 +133,7 @@ We will compute the minimum value, the maximum value, the mean and finally the s
 <div class="highlight-c++"><div class="highlight"><pre><span class="kt">float</span> <span class="n">dow_min</span> <span class="o">=</span> <span class="n">quotek</span><span class="o">::</span><span class="n">quant</span><span class="o">::</span><span class="n">min</span><span class="p">(</span><span class="n">dow_data</span><span class="p">);</span>
 <span class="kt">float</span> <span class="n">dow_max</span> <span class="o">=</span> <span class="n">quotek</span><span class="o">::</span><span class="n">quant</span><span class="o">::</span><span class="n">max</span><span class="p">(</span><span class="n">dow_data</span><span class="p">);</span>
 <span class="kt">float</span> <span class="n">dow_mean</span> <span class="o">=</span> <span class="n">quotek</span><span class="o">::</span><span class="n">quant</span><span class="o">::</span><span class="n">AVG</span><span class="p">(</span><span class="n">dow_data</span><span class="p">);</span>
-<span class="kt">float</span> <span class="n">dow_sigma</span> <span class="o">=</span> <span class="n">quotek</span><span class="o">::</span><span class="n">quant</span><span class="o">::</span><span class="n">SIGMA</span><span class="p">(</span><span class="n">dow_data</span><span class="p">);</span>
+<span class="kt">float</span> <span class="n">dow_sigma</span> <span class="o">=</span> <span class="n">quotek</span><span class="o">::</span><span class="n">quant</span><span class="o">::</span><span class="n">SIGMA</span><span class="p">(</span><span class="n">dow_data</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>Finally, we will display all the computed value of the series on the standard output:</p>
@@ -145,19 +148,20 @@ We will compute the minimum value, the maximum value, the mean and finally the s
 <div class="section" id="full-source-code">
 <h2>Full source code<a class="headerlink" href="#full-source-code" title="Permalink to this headline">¶</a></h2>
 <p>You&#8217;ll find below the full, merged source code which can be compiled as is:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include &lt;quotek/generator.hpp&gt;</span>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include &lt;quotek/generators.hpp&gt;</span>
+<span class="cp">#include &lt;quotek/quant.hpp&gt;</span>
 <span class="cp">#include &lt;iostream&gt;</span>
 
 <span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
 
   <span class="cm">/* We generate a random sample of values to simulate our Dow Jones Data */</span>
-  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">quotek</span><span class="o">::</span><span class="n">data</span><span class="o">::</span><span class="n">record</span><span class="o">&gt;</span> <span class="n">dow_data</span> <span class="o">=</span> <span class="n">quotek</span><span class="o">::</span><span class="n">rand</span><span class="o">::</span><span class="n">generators</span><span class="o">::</span><span class="n">normal</span><span class="p">(</span><span class="mi">25000</span><span class="p">,</span><span class="mi">17000</span><span class="p">,</span><span class="mi">200</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">quotek</span><span class="o">::</span><span class="n">data</span><span class="o">::</span><span class="n">record</span><span class="o">&gt;</span> <span class="n">dow_data</span> <span class="o">=</span> <span class="n">quotek</span><span class="o">::</span><span class="n">rand</span><span class="o">::</span><span class="n">generators</span><span class="o">::</span><span class="n">normal</span><span class="p">(</span><span class="mi">25000</span><span class="p">,</span><span class="mi">17000</span><span class="p">,</span><span class="mi">25</span><span class="p">);</span>
 
   <span class="cm">/* We compute all the properties we want from the asset data */</span>
   <span class="kt">float</span> <span class="n">dow_min</span> <span class="o">=</span> <span class="n">quotek</span><span class="o">::</span><span class="n">quant</span><span class="o">::</span><span class="n">min</span><span class="p">(</span><span class="n">dow_data</span><span class="p">);</span>
   <span class="kt">float</span> <span class="n">dow_max</span> <span class="o">=</span> <span class="n">quotek</span><span class="o">::</span><span class="n">quant</span><span class="o">::</span><span class="n">max</span><span class="p">(</span><span class="n">dow_data</span><span class="p">);</span>
   <span class="kt">float</span> <span class="n">dow_mean</span> <span class="o">=</span> <span class="n">quotek</span><span class="o">::</span><span class="n">quant</span><span class="o">::</span><span class="n">AVG</span><span class="p">(</span><span class="n">dow_data</span><span class="p">);</span>
-  <span class="kt">float</span> <span class="n">dow_sigma</span> <span class="o">=</span> <span class="n">quotek</span><span class="o">::</span><span class="n">quant</span><span class="o">::</span><span class="n">SIGMA</span><span class="p">(</span><span class="n">dow_data</span><span class="p">);</span>
+  <span class="kt">float</span> <span class="n">dow_sigma</span> <span class="o">=</span> <span class="n">quotek</span><span class="o">::</span><span class="n">quant</span><span class="o">::</span><span class="n">SIGMA</span><span class="p">(</span><span class="n">dow_data</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
 
   <span class="cm">/* We display all the results */</span>
   <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;DOW MIN:&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">dow_min</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span> <span class="p">;</span>

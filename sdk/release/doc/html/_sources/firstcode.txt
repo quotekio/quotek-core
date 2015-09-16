@@ -13,18 +13,18 @@ To do that with quotek there's nothing more simple, we'll just call the quotek::
 
 .. code-block:: c++
   
-  std::vector<quotek::data::record> dow_data = quotek::rand::generators::normal(25000,17000,200);
+  //we generate a sample of 25000 ticks with mean 17000 and standard deviation 25
+  std::vector<quotek::data::record> dow_data = quotek::rand::generators::normal(25000,17000,25);
 
 Once we have our fake data sample, what we'll do is to extract some properties from it. 
 We will compute the minimum value, the maximum value, the mean and finally the standard deviation of the series. To do that, we'll make call to the functions located inside the quotek::quant namespace:
-
 
 .. code-block:: c++
 
   float dow_min = quotek::quant::min(dow_data);
   float dow_max = quotek::quant::max(dow_data);
   float dow_mean = quotek::quant::AVG(dow_data);
-  float dow_sigma = quotek::quant::SIGMA(dow_data);
+  float dow_sigma = quotek::quant::SIGMA(dow_data, false);
 
 
 Finally, we will display all the computed value of the series on the standard output:
@@ -47,19 +47,20 @@ You'll find below the full, merged source code which can be compiled as is:
 
 .. code-block:: c++
 
-  #include <quotek/generator.hpp>
+  #include <quotek/generators.hpp>
+  #include <quotek/quant.hpp>
   #include <iostream>
 
   int main(int argc, char** argv) {
 
     /* We generate a random sample of values to simulate our Dow Jones Data */
-    std::vector<quotek::data::record> dow_data = quotek::rand::generators::normal(25000,17000,200);
- 
+    std::vector<quotek::data::record> dow_data = quotek::rand::generators::normal(25000,17000,25);
+
     /* We compute all the properties we want from the asset data */
     float dow_min = quotek::quant::min(dow_data);
     float dow_max = quotek::quant::max(dow_data);
     float dow_mean = quotek::quant::AVG(dow_data);
-    float dow_sigma = quotek::quant::SIGMA(dow_data);
+    float dow_sigma = quotek::quant::SIGMA(dow_data, false);
 
     /* We display all the results */
     std::cout << "DOW MIN:" << dow_min << std::endl ;
@@ -68,5 +69,6 @@ You'll find below the full, merged source code which can be compiled as is:
     std::cout << "DOW SIGMA:" << dow_sigma << std::endl;
 
   }
+
 
 
