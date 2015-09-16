@@ -12,7 +12,7 @@ namespace quotek {
   namespace data {
 
     /**
-     * news is a container which aims to store 
+     * news is a container which aims to store data comming from remote financial news feeds, being RSS, twitter, etc..
      */
     class news {
 
