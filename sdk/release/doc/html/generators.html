@@ -1,0 +1,280 @@
+<head>
+  <meta charset="utf-8">
+  
+  <title>Random Distributions Generators</title>
+  
+  <link href='_static/css/bootstrap.css' rel='stylesheet' type='text/css'>
+  <link href='_static/css/bootstrap-theme.css' rel='stylesheet' type='text/css'>
+
+  
+      <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+  
+
+  
+
+  <link href='_static/css/quotek.css' rel='stylesheet' type='text/css'>
+
+  <script type="text/javascript" src="_static/js/jquery.js"></script>
+
+  <script type="text/javascript" src="_static/js/bootstrap.min.js">
+  </script>
+
+</head>
+<!-- <body style="background:#333333;color:white;"> -->
+<body>
+
+    <div class="header">
+    <div class="container" id="doc-mcontainer">
+
+        <div class="row-fluid">
+
+          <div class="col-md-4">
+            <a href="http://quotek.io/"><img id="header-logo" src="_static/img/quotek-logo.png"/></a>
+          </div>
+
+          <div class="col-md-8 header-menu">
+
+             <a id="header-pbtn" href="#">Products</a>
+             <!-- <a href="http://demo.quotek.io">Demo</a> -->
+             <span style="color:#cccccc;font-size:18px;margin-left:20px">Demo</span>
+
+             <a href="http://docs.quotek.io">Documentation</a>
+             <a href="http://quotek.io/contact">Contact</a>
+
+             <div id="product-dropdown">
+
+              <div id="product-dropdown-ct">
+                <div>
+                  <a href="http://quotek.io/products/saas">Quotek&copy; SaaS</a>
+                </div>
+                <div style="margin-top:5px">
+                <a href="http://quotek.io/products/sdk">Quotek&copy; SDK</a>
+                </div>
+                <div style="margin-top:5px">
+                  <a href="http://quotek.io/products/pricing">Pricing</a>
+                </div>
+              </div>
+
+             </div>
+
+          </div>
+        </div>
+    </div>
+  </div>
+  <div class="content-3"></div>
+
+  <div class="container" style="margin-top:-80px">
+ 
+
+    <div class="col-md-3" style="margin-top:80px">
+      <div id="doc-leftmenu">
+
+        
+        <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Welcome to Quotek SDK documentation!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_struct.html">Data Structures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="record.html">Record</a></li>
+<li class="toctree-l2"><a class="reference internal" href="records.html">Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l2"><a class="reference internal" href="news.html">News</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="quant.html">Quantitative Analysis</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">Random Distributions Generators</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ml.html">Machine Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mlstruct.html">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alchemy.html">Alchemy API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data_sources.html">Data Sources</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="yahoo.html">Yahoo! Finance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rss.html">RSS Feeds</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ta.html">Technical Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="broker_interact.html">Broker Interactions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="broker.html">Broker API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="samples.html">SDK Examples</a><ul class="simple">
+</ul>
+</li>
+</ul>
+
+      </div>
+    </div>
+
+    <div class="col-md-9">
+
+      <div class="rst-content">
+        
+  <div class="section" id="random-distributions-generators">
+<h1>Random Distributions Generators<a class="headerlink" href="#random-distributions-generators" title="Permalink to this headline">¶</a></h1>
+<dl class="type">
+<dt id="_CPPv2N6quotek4rand10generatorsE">
+<span id="quotek::rand::generators"></span><span class="target" id="project0namespacequotek_1_1rand_1_1generators"></span><em class="property">namespace </em><code class="descclassname">quotek::rand::</code><code class="descname">generators</code><a class="headerlink" href="#_CPPv2N6quotek4rand10generatorsE" title="Permalink to this definition">¶</a></dt>
+<dd><p>The quotek rand generators namespace contains c++11 distributions wrappers which add an extra abstraction layer and also fit the quotek dataset format. It mainly allows to generate randoml value datasets having different kinds of distributions, which can prove really useful for financial modeling. </p>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt id="_CPPv2N6quotek4rand10generators7uniformEiff">
+<span id="quotek::rand::generators::uniform__i.float.float"></span><span class="target" id="project0namespacequotek_1_1rand_1_1generators_1af1a49aa57144da32da3545a1809ec1b9"></span>std::vector&lt;quotek::<a class="reference internal" href="data_struct.html#_CPPv2N6quotek4dataE" title="quotek::data">data</a>::<a class="reference internal" href="data_struct.html#_CPPv2N6quotek4data6recordE" title="quotek::data::record">record</a>&gt; <code class="descname">uniform</code><span class="sig-paren">(</span>int <em>size</em>, float <em>min</em>, float <em>max</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N6quotek4rand10generators7uniformEiff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a set of random values which are uniformly distributed. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the generated dataset. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">size</span></code> - <p>number of values we want in the dataset. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">min</span></code> - <p>Minimum value that must be present inside result dataset. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">max</span></code> - <p>Maximum value that must be present inside result dataset. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv2N6quotek4rand10generators6normalEiff">
+<span id="quotek::rand::generators::normal__i.float.float"></span><span class="target" id="project0namespacequotek_1_1rand_1_1generators_1aef24ec4b51e1ab329450ab8865631dfa"></span>std::vector&lt;quotek::<a class="reference internal" href="data_struct.html#_CPPv2N6quotek4dataE" title="quotek::data">data</a>::<a class="reference internal" href="data_struct.html#_CPPv2N6quotek4data6recordE" title="quotek::data::record">record</a>&gt; <code class="descname">normal</code><span class="sig-paren">(</span>int <em>size</em>, float <em>mean</em>, float <em>sigma</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N6quotek4rand10generators6normalEiff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a set of random values which are normally distributed. (probaly the most useful to modelize asset prices) <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the generated dataset. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">size</span></code> - <p>number of values we want in the dataset. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">mean</span></code> - <p>average value we want for our generator. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">sigma</span></code> - <p>wanted standard deviation. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv2N6quotek4rand10generators9lognormalEiff">
+<span id="quotek::rand::generators::lognormal__i.float.float"></span><span class="target" id="project0namespacequotek_1_1rand_1_1generators_1a4007089440b8104aee1d18f57340ccff"></span>std::vector&lt;quotek::<a class="reference internal" href="data_struct.html#_CPPv2N6quotek4dataE" title="quotek::data">data</a>::<a class="reference internal" href="data_struct.html#_CPPv2N6quotek4data6recordE" title="quotek::data::record">record</a>&gt; <code class="descname">lognormal</code><span class="sig-paren">(</span>int <em>size</em>, float <em>mean</em>, float <em>sigma</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N6quotek4rand10generators9lognormalEiff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a set of random values which are log-normally distributed. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the generated dataset. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">size</span></code> - <p>number of values we want in the dataset. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">mean</span></code> - <p>mean we want to use for the underlying normal distribution. value we want for our generator. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">sigma</span></code> - <p>standard deviation we want to use for the underlying normal distribution. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv2N6quotek4rand10generators8binomialEiif">
+<span id="quotek::rand::generators::binomial__i.i.float"></span><span class="target" id="project0namespacequotek_1_1rand_1_1generators_1a27c1c0df31ce46f9b8f2954a2f7fec50"></span>std::vector&lt;quotek::<a class="reference internal" href="data_struct.html#_CPPv2N6quotek4dataE" title="quotek::data">data</a>::<a class="reference internal" href="data_struct.html#_CPPv2N6quotek4data6recordE" title="quotek::data::record">record</a>&gt; <code class="descname">binomial</code><span class="sig-paren">(</span>int <em>size</em>, int <em>experiments</em>, float <em>success_probability</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N6quotek4rand10generators8binomialEiif" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a set of random values which are distributed using a binomial law. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the generated dataset. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">size</span></code> - <p>number of values we want in the dataset. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">experiments</span></code> - <p>the number of tries for a number </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">success_probability</span></code> - <p>probability that each experiment succeeds . </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv2N6quotek4rand10generators7poissonEii">
+<span id="quotek::rand::generators::poisson__i.i"></span><span class="target" id="project0namespacequotek_1_1rand_1_1generators_1a8bf7605071f9a29bfbc37a5f754edc37"></span>std::vector&lt;quotek::<a class="reference internal" href="data_struct.html#_CPPv2N6quotek4dataE" title="quotek::data">data</a>::<a class="reference internal" href="data_struct.html#_CPPv2N6quotek4data6recordE" title="quotek::data::record">record</a>&gt; <code class="descname">poisson</code><span class="sig-paren">(</span>int <em>size</em>, int <em>average_occurence</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N6quotek4rand10generators7poissonEii" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a set of random values which are distributed using a poisson law. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the generated dataset. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">size</span></code> - <p>number of values we want in the dataset. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">average_occurence</span></code> - <p>number of times an event must occur on everage for the series. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+      </div>
+    </div>
+
+  </div>
+
+
+  <script type="text/javascript">
+
+    $("#header-pbtn").click(function() { product_dropdown_toggle(); });
+
+    function product_dropdown_toggle() {
+
+      $('#product-dropdown').css({ left: $('#header-pbtn').position().left + 20 + 'px'  });
+
+      if ( $('#product-dropdown').width() == 0 ) {
+
+
+        $('#product-dropdown').animate({ width:"140px", duration: 1000})
+        .after(function() { $('#product-dropdown-ct').show(); } );
+
+      }
+
+      else {
+        
+        $('#product-dropdown').animate({width:"0px",duration: 1000})
+        .after( function() { $('#product-dropdown-ct').hide(); } );   
+      }
+    }
+  </script>
+
+</body>
+
+
+
+
+
+
+
+
+<div class="footer-top">
+
+</div>
+
+<div class="footer-bottom">
+
+  <div class="container">
+
+    <div class="row-fluid">
+
+      <div class="col-md-6">
+        <a href="http://quotek.io/"><img style="height:20px;opacity:.7" src="_static/img/quotek-logo-ws.png"/></a>
+      </div>
+      <div class="col-md-6" style="text-align:center"></div>
+    </div>
+  </div>
+

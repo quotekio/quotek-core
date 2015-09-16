@@ -1,0 +1,218 @@
+<head>
+  <meta charset="utf-8">
+  
+  <title>Quick Start</title>
+  
+  <link href='_static/css/bootstrap.css' rel='stylesheet' type='text/css'>
+  <link href='_static/css/bootstrap-theme.css' rel='stylesheet' type='text/css'>
+
+  
+      <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+  
+
+  
+
+  <link href='_static/css/quotek.css' rel='stylesheet' type='text/css'>
+
+  <script type="text/javascript" src="_static/js/jquery.js"></script>
+
+  <script type="text/javascript" src="_static/js/bootstrap.min.js">
+  </script>
+
+</head>
+<!-- <body style="background:#333333;color:white;"> -->
+<body>
+
+    <div class="header">
+    <div class="container" id="doc-mcontainer">
+
+        <div class="row-fluid">
+
+          <div class="col-md-4">
+            <a href="http://quotek.io/"><img id="header-logo" src="_static/img/quotek-logo.png"/></a>
+          </div>
+
+          <div class="col-md-8 header-menu">
+
+             <a id="header-pbtn" href="#">Products</a>
+             <!-- <a href="http://demo.quotek.io">Demo</a> -->
+             <span style="color:#cccccc;font-size:18px;margin-left:20px">Demo</span>
+
+             <a href="http://docs.quotek.io">Documentation</a>
+             <a href="http://quotek.io/contact">Contact</a>
+
+             <div id="product-dropdown">
+
+              <div id="product-dropdown-ct">
+                <div>
+                  <a href="http://quotek.io/products/saas">Quotek&copy; SaaS</a>
+                </div>
+                <div style="margin-top:5px">
+                <a href="http://quotek.io/products/sdk">Quotek&copy; SDK</a>
+                </div>
+                <div style="margin-top:5px">
+                  <a href="http://quotek.io/products/pricing">Pricing</a>
+                </div>
+              </div>
+
+             </div>
+
+          </div>
+        </div>
+    </div>
+  </div>
+  <div class="content-3"></div>
+
+  <div class="container" style="margin-top:-80px">
+ 
+
+    <div class="col-md-3" style="margin-top:80px">
+      <div id="doc-leftmenu">
+
+        
+        <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Welcome to Quotek SDK documentation!</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html">Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firstcode.html">First Program</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data_struct.html">Data Structures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="record.html">Record</a></li>
+<li class="toctree-l2"><a class="reference internal" href="records.html">Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l2"><a class="reference internal" href="news.html">News</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quant.html">Quantitative Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generators.html">Random Distributions Generators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="blackscholes.html">Options pricing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ml.html">Machine Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mlstruct.html">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alchemy.html">Alchemy API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data_sources.html">Data Sources</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="yahoo.html">Yahoo! Finance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rss.html">RSS Feeds</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ta.html">Technical Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="broker_interact.html">Broker Interactions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="broker.html">Broker API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="samples.html">SDK Examples</a><ul class="simple">
+</ul>
+</li>
+</ul>
+
+      </div>
+    </div>
+
+    <div class="col-md-9">
+
+      <div class="rst-content">
+        
+  <div class="section" id="quick-start">
+<h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
+<p>The following section will help you te get started with the Quotek SDK. It explains in details how to
+install the SDK, how to setup your developement environment and how to build Programs that use the SDK.</p>
+<p>Then, we will start coding our first program that uses the SDK.</p>
+<div class="section" id="getting-started-table-of-content">
+<h2>Getting Started Table of Content<a class="headerlink" href="#getting-started-table-of-content" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Install</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#windows-install">Windows Install</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="install.html#building-linking">Building &amp; Linking</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#linux-install">Linux Install</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="install.html#id1">Building &amp; Linking</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="firstcode.html">First Program</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="firstcode.html#let-s-begin">Let&#8217;s begin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firstcode.html#full-source-code">Full source code</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+</div>
+
+
+      </div>
+    </div>
+
+  </div>
+
+
+  <script type="text/javascript">
+
+    $("#header-pbtn").click(function() { product_dropdown_toggle(); });
+
+    function product_dropdown_toggle() {
+
+      $('#product-dropdown').css({ left: $('#header-pbtn').position().left + 20 + 'px'  });
+
+      if ( $('#product-dropdown').width() == 0 ) {
+
+
+        $('#product-dropdown').animate({ width:"140px", duration: 1000})
+        .after(function() { $('#product-dropdown-ct').show(); } );
+
+      }
+
+      else {
+        
+        $('#product-dropdown').animate({width:"0px",duration: 1000})
+        .after( function() { $('#product-dropdown-ct').hide(); } );   
+      }
+    }
+  </script>
+
+</body>
+
+
+
+
+
+
+
+
+<div class="footer-top">
+
+</div>
+
+<div class="footer-bottom">
+
+  <div class="container">
+
+    <div class="row-fluid">
+
+      <div class="col-md-6">
+        <a href="http://quotek.io/"><img style="height:20px;opacity:.7" src="_static/img/quotek-logo-ws.png"/></a>
+      </div>
+      <div class="col-md-6" style="text-align:center"></div>
+    </div>
+  </div>
+
