@@ -35,7 +35,7 @@ The scheme below shows the distribution of functionalities among the namespaces 
    ml
    data_sources
    ta
-   broker_interact
+   broker
    samples
 
 

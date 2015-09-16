@@ -15,8 +15,7 @@ file which is located at the root of the decompressed directory, then finally cl
 Building & Linking
 ^^^^^^^^^^^^^^^^^^ 
 
-When using Quotek SDK on windows, The first thing you have to do is to let your IDE / Compiling Toolchain know where the
-headers and libraries are located.
+When using Quotek SDK on windows, The first thing you have to do is to let your IDE / Compiling Toolchain know where the Quotek SDK headers and libraries are located.
 
 For Visual studio 2015, the procedure is the following:
 
@@ -35,6 +34,7 @@ For Visual studio 2015, the procedure is the following:
 |
 
 .. image:: _static/img/vs15_screen2.png
+|
 
 Then you are good to go, you can start your project and compile it without any trouble.
 
@@ -56,12 +56,11 @@ the install procedure for libcurl is as follow:
 
 **For Debian/Ubuntu**
 
-``sudo apt-get install libcurl4
-``
+``sudo apt-get install libcurl4``
+
 **For CentOS/Fedora**
 
-``sudo yum install libcurl
-``
+``sudo yum install libcurl``
 
 Building & Linking
 ^^^^^^^^^^^^^^^^^^

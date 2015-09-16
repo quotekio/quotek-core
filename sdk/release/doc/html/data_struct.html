@@ -72,7 +72,9 @@
         
         <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Welcome to Quotek SDK documentation!</a></li>
-<li class="toctree-l1"><a class="reference internal" href="start.html">Quick Start</a><ul class="simple">
+<li class="toctree-l1"><a class="reference internal" href="start.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html">Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firstcode.html">First Program</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Data Structures</a><ul>
@@ -98,10 +100,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ta.html">Technical Analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="broker_interact.html">Broker Interactions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="broker.html">Broker API</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="broker.html">Broker API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="samples.html">SDK Examples</a><ul class="simple">
 </ul>
 </li>
@@ -196,13 +195,13 @@ That&#8217;s why the quotek::data::news class was created, and every news dataso
 <dl class="class">
 <dt id="_CPPv2N6quotek4data7historyE">
 <span id="quotek::data::history"></span><span class="target" id="project0classquotek_1_1data_1_1history"></span><em class="property">class </em><code class="descname">history</code><a class="headerlink" href="#_CPPv2N6quotek4data7historyE" title="Permalink to this definition">¶</a></dt>
-<dd><em>#include &lt;history.hpp&gt;</em><p>history is a container which aims to store historical data of an asset fetched from a remote or local datasource. While <a class="reference internal" href="#project0classquotek_1_1data_1_1record"><span>quotek::data::record</span></a> is meant to store raw asset values provided by broker in real-time, history is more about storing historical data having a longer tick, usually the kind of data available from quotes information providers. </p>
+<dd><em>#include &lt;history.hpp&gt;</em><p>history is a container which aims to store historical data of an asset fetched from a remote or local datasource. While <a class="reference internal" href="record.html#project0classquotek_1_1data_1_1record"><span>quotek::data::record</span></a> is meant to store raw asset values provided by broker in real-time, history is more about storing historical data having a longer tick, usually the kind of data available from quotes information providers. </p>
 </dd></dl>
 
 <dl class="class">
 <dt id="_CPPv2N6quotek4data4newsE">
 <span id="quotek::data::news"></span><span class="target" id="project0classquotek_1_1data_1_1news"></span><em class="property">class </em><code class="descname">news</code><a class="headerlink" href="#_CPPv2N6quotek4data4newsE" title="Permalink to this definition">¶</a></dt>
-<dd><em>#include &lt;news.hpp&gt;</em><p>news is a container which aims to store </p>
+<dd><em>#include &lt;news.hpp&gt;</em><p>news is a container which aims to store data comming from remote financial news feeds, being RSS, twitter, etc.. </p>
 </dd></dl>
 
 <dl class="class">
@@ -214,7 +213,7 @@ That&#8217;s why the quotek::data::news class was created, and every news dataso
 <dl class="class">
 <dt id="_CPPv2N6quotek4data7recordsE">
 <span id="quotek::data::records"></span><span class="target" id="project0classquotek_1_1data_1_1records"></span><em class="property">class </em><code class="descname">records</code><a class="headerlink" href="#_CPPv2N6quotek4data7recordsE" title="Permalink to this definition">¶</a></dt>
-<dd><em>#include &lt;record.hpp&gt;</em><p>records is a class that is is a <a class="reference internal" href="#project0classquotek_1_1data_1_1record"><span>quotek::data::record</span></a> container </p>
+<dd><em>#include &lt;record.hpp&gt;</em><p>records is a class that is is a <a class="reference internal" href="record.html#project0classquotek_1_1data_1_1record"><span>quotek::data::record</span></a> container </p>
 </dd></dl>
 
 </dd></dl>

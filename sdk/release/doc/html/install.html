@@ -128,8 +128,7 @@ file which is located at the root of the decompressed directory, then finally cl
 <strong>C:\Program Files\quotek\sdk</strong>, and ready to go.</p>
 <div class="section" id="building-linking">
 <h3>Building &amp; Linking<a class="headerlink" href="#building-linking" title="Permalink to this headline">¶</a></h3>
-<p>When using Quotek SDK on windows, The first thing you have to do is to let your IDE / Compiling Toolchain know where the
-headers and libraries are located.</p>
+<p>When using Quotek SDK on windows, The first thing you have to do is to let your IDE / Compiling Toolchain know where the Quotek SDK headers and libraries are located.</p>
 <p>For Visual studio 2015, the procedure is the following:</p>
 <ul class="simple">
 <li>Start a new, empty C++ Project.</li>
@@ -153,6 +152,9 @@ headers and libraries are located.</p>
 <div class="line"><br /></div>
 </div>
 <img alt="_images/vs15_screen2.png" src="_images/vs15_screen2.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
 <p>Then you are good to go, you can start your project and compile it without any trouble.</p>
 <p><strong>Note:</strong> You will have to perform this operation for evey new visual studio project you start with quotek SDK.</p>
 </div>
@@ -168,14 +170,12 @@ in /opt/quotek/sdk. The libraries are located in <strong>/opt/quotek/sdk/lib</st
 a very common package which is probably already installed on your system. In any case,
 the install procedure for libcurl is as follow:</p>
 <p><strong>For Debian/Ubuntu</strong></p>
-<p><a href="#id1"><span class="problematic" id="id2">``</span></a>sudo apt-get install libcurl4
-``
-<strong>For CentOS/Fedora</strong></p>
-<p><a href="#id3"><span class="problematic" id="id4">``</span></a>sudo yum install libcurl
-``</p>
+<p><code class="docutils literal"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">libcurl4</span></code></p>
+<p><strong>For CentOS/Fedora</strong></p>
+<p><code class="docutils literal"><span class="pre">sudo</span> <span class="pre">yum</span> <span class="pre">install</span> <span class="pre">libcurl</span></code></p>
 </div>
-<div class="section" id="id5">
-<h3>Building &amp; Linking<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id1">
+<h3>Building &amp; Linking<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>Given that the headers and libraries are not installed at the usual places in the system, you will need to
 add a few arguments to your compilation line. Also, because libquotek needs them, you will need to link the programs you code with libcurl and pthread.</p>
 <p>So the typical compilation line of a program using quotek SDK on Linux is the following:</p>

@@ -72,6 +72,11 @@
         
         <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Welcome to Quotek SDK documentation!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html">Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firstcode.html">First Program</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="data_struct.html">Data Structures</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="record.html">Record</a></li>
 <li class="toctree-l2"><a class="reference internal" href="records.html">Records</a></li>
@@ -81,6 +86,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="quant.html">Quantitative Analysis</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="generators.html">Random Distributions Generators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="blackscholes.html">Options pricing</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="ml.html">Machine Learning</a><ul class="current">
@@ -94,10 +100,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ta.html">Technical Analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="broker_interact.html">Broker Interactions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="broker.html">Broker API</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="broker.html">Broker API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="samples.html">SDK Examples</a><ul class="simple">
 </ul>
 </li>
@@ -166,7 +169,7 @@
 <span id="quotek::ml::alchemy::relations__ss.ss"></span><span class="target" id="project0classquotek_1_1ml_1_1alchemy_1ad20b99affa0724dcdeef15b35f6c4e57"></span>std::vector&lt;quotek::ml::<a class="reference internal" href="mlstruct.html#_CPPv2N6quotek2ml8relationE" title="quotek::ml::relation">relation</a>&gt; <code class="descname">relations</code><span class="sig-paren">(</span>std::string <em>payload</em>, std::string <em>format</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N6quotek2ml7alchemy9relationsENSt6stringENSt6stringE" title="Permalink to this definition">¶</a></dt>
 <dd><p>relations is able to summerize a text and basically return it under a &#8220;Who doest what&#8221; form. <dl class="docutils">
 <dt><strong>Return</strong></dt>
-<dd>a vector a relations. under the form of an quotek::core: </dd>
+<dd>a vector quotek::ml::relations </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
 <li><code class="first docutils literal"><span class="pre">payload</span></code> - <p>Text or URL of text to analyse relashionships for. </p>
@@ -182,19 +185,9 @@
 <dl class="function">
 <dt id="_CPPv2N6quotek2ml7alchemy8languageENSt6stringENSt6stringE">
 <span id="quotek::ml::alchemy::language__ss.ss"></span><span class="target" id="project0classquotek_1_1ml_1_1alchemy_1af68abd0cc99a1b9be5ee5ecece850dc8"></span>std::string <code class="descname">language</code><span class="sig-paren">(</span>std::string <em>payload</em>, std::string <em>format</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N6quotek2ml7alchemy8languageENSt6stringENSt6stringE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Ranked concepts is a function that is able to deduce the different concepts developped in the provided text and to create relationships between them. <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>the map of concepts computed by Alchemy. language function guesses the language used to write the text passed as argument. </dd>
+<dd><p>language function guesses the language used to write the text passed as argument. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>Detect Language string. </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">payload</span></code> - <p>Text or URL of text to analyse. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">format</span></code> - <p>tells wether payload is text, html, or url. </p>
-</li>
-</ul>
-</dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
 <li><code class="first docutils literal"><span class="pre">payload</span></code> - <p>Text or URL of text to analyse. </p>
