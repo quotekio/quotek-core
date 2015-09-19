@@ -129,6 +129,21 @@ namespace quotek {
 
         }
 
+        std::time_t p_strptime(std::string datestr, std::string format) {
+
+          std::tm tm;
+
+          #ifndef _WIN64
+            strptime(datestr.c_str(),format.c_str(),&tm);
+          #else
+            std::stringstream ss(datestr);
+            ss >> std::get_time(&tm, format.c_str());
+          #endif
+
+          return mktime(&tm);
+          
+        }
+
     }
   }
 }

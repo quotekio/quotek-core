@@ -61,6 +61,12 @@ add_executable(
 )
 
 add_executable(
+    test_csv
+    src/test_csv.cpp
+)
+
+
+add_executable(
     test_rss
     src/test_rss.cpp
 )
@@ -130,6 +136,13 @@ target_link_libraries(
 
 target_link_libraries(
         test_yahoofinance
+        quotek
+        pthread
+        curl
+)
+
+target_link_libraries(
+        test_csv
         quotek
         pthread
         curl

@@ -25,6 +25,12 @@ namespace quotek {
     #define M1 2592000
     #define Y1 31104000
     
+    #ifdef _WIN64
+    #define TMPDIR "%%Temp%%"
+    #else
+    #define TMPDIR "/tmp/"
+    #endif
+    
   }
 }
 

@@ -4,7 +4,7 @@ project(quotek)
 
 SET (CMAKE_CXX_COMPILER "/usr/bin/clang++")
 SET (CMAKE_C_COMPILER "/usr/bib/clang")
-SET (CMAKE_CXX_FLAGS "-O3 -std=c++11 -fPIC")
+SET (CMAKE_CXX_FLAGS "-O3 -std=c++11 -stdlib=libc++ -fPIC")
 
 SET (CMAKE_LINKER_FLAGS    "-rdynamic")
 
@@ -30,7 +30,9 @@ add_library(
        src/strategy.cpp
        src/techanalysis.cpp
        src/timeutils.cpp
+       src/utils.cpp
        
+       src/datasources/csv.cpp
        src/datasources/yahoofinance.cpp
        src/datasources/rss.cpp
 
@@ -68,6 +70,8 @@ install (FILES "src/record.hpp" DESTINATION include/quotek)
 install (FILES "src/strategy.hpp" DESTINATION include/quotek)
 install (FILES "src/techanalysis.hpp" DESTINATION include/quotek)
 install (FILES "src/timeutils.hpp" DESTINATION include/quotek)
+install (FILES "src/utils.hpp" DESTINATION include/quotek)
 
+install (FILES "src/datasources/csv.hpp" DESTINATION include/quotek/datasources)
 install (FILES "src/datasources/yahoofinance.hpp" DESTINATION include/quotek/datasources)
 install (FILES "src/datasources/rss.hpp" DESTINATION include/quotek/datasources)

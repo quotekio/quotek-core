@@ -12,6 +12,7 @@ Copyright 2013-2015 Quotek SAS
 #include <sstream>
 #include <vector>
 #include <ctime>
+#include <time.h>
 
 #ifdef _WIN64
 #define sscanf sscanf_s
@@ -62,6 +63,10 @@ namespace quotek {
         /** month_day provids the number of the day of the month according to provided timestamp. */
         int month_day(long timestamp);
 
+        /** This function implements a portable strptime() function. p_ is for "portable" */
+        std::time_t p_strptime(std::string datestr, std::string format);
+
+  
     }
   }
 }
