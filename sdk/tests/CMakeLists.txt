@@ -4,7 +4,7 @@ project(quotek)
 
 SET (CMAKE_CXX_COMPILER "/usr/bin/clang++")
 SET (CMAKE_C_COMPILER "/usr/bib/clang")
-SET (CMAKE_CXX_FLAGS "-O3 -std=c++11 -fPIC")
+SET (CMAKE_CXX_FLAGS "-O3 -std=c++11 -stdlib=libc++ -fPIC")
 
 SET (CMAKE_LINKER_FLAGS    "-rdynamic")
 
@@ -60,6 +60,11 @@ add_executable(
     src/test_yahoofinance.cpp
 )
 
+add_executable(
+    test_twitter
+    src/test_twitter.cpp
+)
+   
 add_executable(
     test_csv
     src/test_csv.cpp
@@ -154,6 +159,14 @@ target_link_libraries(
         pthread
         curl
 )
+
+target_link_libraries(
+        test_twitter
+        quotek
+        pthread
+        curl
+)
+
 
 target_link_libraries(
         test_alchemy

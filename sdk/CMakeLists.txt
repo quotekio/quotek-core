@@ -35,6 +35,14 @@ add_library(
        src/datasources/csv.cpp
        src/datasources/yahoofinance.cpp
        src/datasources/rss.cpp
+       src/datasources/twitter.cpp
+
+       src/twitcurl/base64.cpp
+       src/twitcurl/HMAC_SHA1.cpp
+       src/twitcurl/oauthlib.cpp
+       src/twitcurl/SHA1.cpp
+       src/twitcurl/twitcurl.cpp
+       src/twitcurl/urlencode.cpp
 
 )
 
@@ -75,3 +83,4 @@ install (FILES "src/utils.hpp" DESTINATION include/quotek)
 install (FILES "src/datasources/csv.hpp" DESTINATION include/quotek/datasources)
 install (FILES "src/datasources/yahoofinance.hpp" DESTINATION include/quotek/datasources)
 install (FILES "src/datasources/rss.hpp" DESTINATION include/quotek/datasources)
+install (FILES "src/datasources/twitter.hpp" DESTINATION include/quotek/datasources)
