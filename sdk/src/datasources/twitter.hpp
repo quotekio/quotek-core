@@ -10,6 +10,7 @@ http://www.quotek.io
 #include <string>
 #include "../datasource.hpp"
 #include "../news.hpp"
+#include "../timeutils.hpp"
 
 namespace quotek {
 
@@ -21,7 +22,14 @@ namespace quotek {
 
       public:
 
-        /** twitter class constructor */
+        /** twitter class constructor. To get all the constructor parameters, 
+         *  just go to https://apps.twitter.com/, create a new app and go to "Keys and Access Tokens".
+         *
+         *  @param consumer_key: Twitter app consumer key.
+         *  @param consumer_secret: Twitter app consumer secret.
+         *  @param token: Twitter app token.
+         *  @param token_secret: Twitter app token secret.
+         */
       	twitter(std::string consumer_key, 
                 std::string consumer_secret,
                 std::string token,
@@ -31,12 +39,26 @@ namespace quotek {
       	~twitter();
 
         /** fetches the last tweets of given user.
+         *
          *  @param screen_name: The name of account to fetch tweets for.
          *  @param nb_tweets: The number of tweets to fetch (sorted by descending date)
       	 *  @return a vector of quotek news objects.
          */     
       	std::vector<quotek::data::news> fetch(std::string screen_name,
                                               int nb_tweets);
+
+
+
+        /** searches the tweets matching the term provided as argument.
+         *
+         *  @param term: term to search in the global tweets feed?
+         *  @param nb_tweets: The number of found tweets to retrieve.
+         *  @return a vector of quotek news objects.
+         */
+
+        std::vector<quotek::data::news> search(std::string term,
+                                               int nb_tweets);
+
 
       private:
 

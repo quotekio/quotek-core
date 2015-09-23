@@ -7,35 +7,40 @@ http://www.quotek.io
 #include <quotek/broker.hpp>
 #include <quotek/datasources/twitter.hpp>
 #include <iostream>
+#include "time.h"
 
-void test_twitter() {
 
-  quotek::datasource::twitter tw("hp9gZjRQzuz1vq88P0vqevEE2",
-                                 "0R9VnDuJn0yCnfdXXUHaG3fJcFx5cf5ARpES49ThejYmKb62KS",
-                                 "2998838957-7yfKiu7bUIasBQXasI4IXVOiaVoLyHgy2WIRiIo",
-                                 "szrpOO7X8f66irda1HyjLlpkDGyAW2R9TfSy3ZFhJJFOb");
+void test_fetch(quotek::datasource::twitter& tw) {
 
-}
-
-void test_fetch() {
-
-  quotek::datasource::twitter tw("hp9gZjRQzuz1vq88P0vqevEE2",
-                                 "0R9VnDuJn0yCnfdXXUHaG3fJcFx5cf5ARpES49ThejYmKb62KS",
-                                 "2998838957-7yfKiu7bUIasBQXasI4IXVOiaVoLyHgy2WIRiIo",
-                                 "szrpOO7X8f66irda1HyjLlpkDGyAW2R9TfSy3ZFhJJFOb");
-
-  std::vector<quotek::data::news> lnews = tw.fetch("wintermew", 5);
+  std::vector<quotek::data::news> lnews = tw.fetch("WSJmarkets", 5);
 
   assert(lnews.size() == 5) ;
   assert(lnews[0].content != "");
-
-  std::cout << lnews[1].content << std::endl;
+  assert(lnews[0].date + 86400 > time(NULL) );
+  assert(lnews[0].source == "twitter:WSJmarkets");
 
 }
 
+void test_search(quotek::datasource::twitter& tw) {
 
+  std::vector<quotek::data::news> lnews = tw.search("DAX", 5);
+  assert(lnews.size() == 5) ;
+  assert(lnews[0].content != "");
+  
+  std::cout << lnews[0].source << std::endl;
+  std::cout << lnews[0].content << std::endl;
 
-int main() {
-  test_twitter();
-  test_fetch();
+}
+
+int main(int argc, char** argv) {
+
+  if ( argc < 5 ) exit(1);
+  
+  quotek::datasource::twitter tw(argv[1],
+                                 argv[2],
+                                 argv[3],
+                                 argv[4]);
+
+  test_fetch(tw);
+  test_search(tw);
 }
