@@ -6,5 +6,7 @@ Data Sources
 .. toctree::
    :hidden:
 
+   csv
+   twitter
    yahoo
    rss
