@@ -84,3 +84,5 @@ install (FILES "src/datasources/csv.hpp" DESTINATION include/quotek/datasources)
 install (FILES "src/datasources/yahoofinance.hpp" DESTINATION include/quotek/datasources)
 install (FILES "src/datasources/rss.hpp" DESTINATION include/quotek/datasources)
 install (FILES "src/datasources/twitter.hpp" DESTINATION include/quotek/datasources)
+
+install (FILES "src/quotek.hpp" DESTINATION include/quotek)

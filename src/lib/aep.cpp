@@ -1,5 +1,5 @@
 #include "aep.h"
-
+#include <quotek/core.hpp>
 
 std::string aep_answer(std::string data,tsEngine* t0) {
 
@@ -79,7 +79,7 @@ std::string aep_version(tsEngine* t0) {
   std::string ret;
 
   ret = "{";
-  ret += "\"version\":\"" +  std::string(ADAM_VERSION)  + "\"";
+  ret += "\"version\":\"" +  std::string(ADAM_VERSION)  +  ", " + quotek::core::version() + "\"";
   ret += "}"; 
 
   return ret;

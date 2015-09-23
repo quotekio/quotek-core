@@ -1,7 +1,7 @@
 #include "strategyhandler.hpp"
 
 const string strategyHandler::cc = "clang++";
-const string strategyHandler::cflags = "-g -Wall -shared -rdynamic -fPIC";
+const string strategyHandler::cflags = "-std=c++11 -stdlib=libc++ -g -shared -rdynamic -fPIC";
 
 const string strategyHandler::cpath = "/tmp/adam/cenv";
 
@@ -66,13 +66,10 @@ int strategyHandler::decorate() {
   ifstream fh (std::string(strats_path + "/" + name).c_str());
   ofstream wh (std::string(strategyHandler::cpath + "/" + name + ".c").c_str());
 
-  wh << "#include \"strats.h\"" << endl;  
+  wh << "#include <quotek/quotek.hpp>" << endl;  
 
   while(fh.good()){
     getline(fh,line);
-
-    
-
 
     lines.push_back(line);
   }
