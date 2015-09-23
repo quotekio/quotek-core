@@ -167,6 +167,12 @@ namespace quotek {
           result.emplace_back(h1);     
 
         }
+        
+        /*else {
+          std::cout << "LINE SKIPPED:" << line << std::endl;
+          line = "";
+        }*/
+
       }
 
       return result;
@@ -191,12 +197,11 @@ namespace quotek {
     bool csv::readline(std::ifstream* csvi, std::string& line) {
 
       getline(*csvi,line);
+      linepos++;
 
-      std::cout << line << std::endl;
-
-      this->linepos++;
-
-      if ( this->linepos < this->offset ) return false;
+      if ( linepos <= offset ) {
+        return false;
+      }
 
       bool failed = false;
       for (int i=0;i< this->compiled_filters.size();i++) {

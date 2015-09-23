@@ -5,8 +5,11 @@ http://www.quotek.io
 */
 
 #include <quotek/broker.hpp>
+#include <quotek/quant.hpp>
 #include <quotek/datasources/csv.hpp>
 #include <iostream>
+
+#define EPSILON 0.01
 
 void test_import_records() {
 
@@ -41,15 +44,22 @@ void test_import_records_with_filters() {
 
 }
 
-/*
-void test_import_records_with_offset() {
+
+void test_import_history() {
+
+  quotek::datasource::csv c1("file://fixtures/test2.csv",';');
+  c1.setOffset(1);
+  std::vector<quotek::data::history> cac_hist = c1.import_history(10,0,1,2,3);
+
+  assert(cac_hist.size() == 10);
+  assert( fabs(cac_hist[0].open - 4001.2) < EPSILON  );
 
 }
 
-*/
 
 int main() {
   test_import_records();
   test_import_records_with_timestamp();
   test_import_records_with_filters();
+  test_import_history();
 }
