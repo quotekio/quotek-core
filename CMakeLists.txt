@@ -41,13 +41,6 @@ add_executable(
   src/lib/narrays.cpp
 )
 
-add_executable(
-  csv2influx
-  src/lib/narrays.cpp
-  src/csv2influx.cpp
-  src/lib/utils.cpp
-
-)
 
 #add_executable(
 #  nntrain
@@ -76,13 +69,6 @@ target_link_libraries(
 )
 
 target_link_libraries(
-  csv2influx
-  quotek
-  curl
-)
-
-
-target_link_libraries(
   influxdbbe
   quotek
   influxdb
@@ -91,7 +77,6 @@ target_link_libraries(
 
 
 install (TARGETS adam DESTINATION bin)
-install (TARGETS csv2influx DESTINATION tools)
 #install (TARGETS nntrain DESTINATION tools)
 
 install (TARGETS influxdbbe DESTINATION lib)
