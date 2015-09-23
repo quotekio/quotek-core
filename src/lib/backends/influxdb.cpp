@@ -170,7 +170,9 @@ public:
       sdata << "\t}\n";
       sdata << "]";
 
-      outp = hhdl->post(pre_url,sdata.str());
+      std::string sdata_str = sdata.str();
+
+      outp = hhdl->post(pre_url,sdata_str);
       hhdl->destroy();
       return 0;
     }
@@ -188,7 +190,9 @@ public:
       sdata << "\t}\n";
       sdata << "]";
 
-      outp = hhdl->post(pre_url,sdata.str());
+      std::string sdata_str = sdata.str();
+
+      outp = hhdl->post(pre_url,sdata_str);
       hhdl->destroy();
       return 0;
     }
@@ -206,7 +210,9 @@ public:
       sdata << "\t}\n";
       sdata << "]";
 
-      outp = hhdl->post(pre_url,sdata.str());      
+      std::string sdata_str = sdata.str();
+
+      outp = hhdl->post(pre_url,sdata_str);      
       hhdl->destroy();
       return 0;
 
@@ -225,7 +231,9 @@ public:
       sdata << "\t}\n";
       sdata << "]";
 
-      outp = hhdl->post(pre_url,sdata.str());
+      std::string sdata_str = sdata.str();
+
+      outp = hhdl->post(pre_url,sdata_str);
       hhdl->destroy();
       return 0;
 
