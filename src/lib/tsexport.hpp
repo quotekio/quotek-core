@@ -4,6 +4,8 @@
 #include "igmlogger.h"
 #include "store.h"
 #include <quotek/cvector.hpp>
+#include <quotek/any.hpp>
+#include <map>
 
 
 /** tsexport is a class meant to expose some poarts 
@@ -26,13 +28,12 @@ public:
   	       igmLogger* logger,
   	       float* cur_pnl,
   	       float* cumulative_pnl,
-  	       quotek::data::cvector<quotek::core::position>* positions,
-  	       store* s) {
+  	       quotek::data::cvector<quotek::core::position>& positions,
+  	       std::map<std::string,quotek::data::any>* s) : positions(positions) {
 
     this->mode = mode;
     this->logger = logger;
     this->cur_pnl = cur_pnl;
-    this->positions = positions;
     this->s = s;
 
   }
@@ -43,8 +44,8 @@ public:
   igmLogger* logger;
   float* cur_pnl;
   float* cumulative_pnl;
-  quotek::data::cvector<quotek::core::position>* positions;
-  store* s;
+  quotek::data::cvector<quotek::core::position>& positions;
+  std::map<std::string, quotek::data::any>* s;
   void* eptr;
 
 };

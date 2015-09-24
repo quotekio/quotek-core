@@ -8,7 +8,7 @@ http://www.quotek.io
 
 namespace quotek {
 
-  broker::broker(quotek::core::strategy* s) {
+  broker::broker(strategy* s) {
     this->s = s;
   }
 

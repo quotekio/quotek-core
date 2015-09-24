@@ -27,7 +27,7 @@ namespace quotek {
       * @param strategy back link to parent strategy object
       * @return new broker object.
       */
-     broker(quotek::core::strategy* s);
+     broker(strategy* s);
 
      /**
       * buy sends a buy order to the broker. it will then open a long position having the caracteristics defined
@@ -101,8 +101,8 @@ namespace quotek {
      void close_position(std::string ticket_id);
 
     private:
-
-      quotek::core::strategy* s;
+      
+      strategy* s;
 
   };
 }

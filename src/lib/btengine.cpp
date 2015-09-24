@@ -150,7 +150,7 @@ void btEngine::moneyman_() {
 
   tradelife_io tl_io;
 
-  quotek::data::cvector<quotek::core::position>* poslist = tse_mm->getPositions();
+  quotek::data::cvector<quotek::core::position>& poslist = tse_mm->getPositions();
 
   if ( tl_fct_fref != NULL) {
 
@@ -159,11 +159,11 @@ void btEngine::moneyman_() {
 
     tl_io.orders = &orders_q;
     tl_io.logs = &logs_q;
-    tl_io.s = &tse_store;
+    //tl_io.s = &tse_store;
 
     tl_fct tl = (tl_fct) tl_fct_fref;
 
-    for (int i=0;i<poslist->size();i++) {
+    for (int i=0;i<poslist.size();i++) {
 
       /** USELESS/To Rewrite SECTION
       pos_c pos_io;
@@ -215,9 +215,11 @@ void btEngine::moneyman_() {
     tse_mm->computePNLs(si.at(j),v);
 
     //close positions where limit/stop is reached
-    for(vector<quotek::core::position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
+    for(vector<quotek::core::position>::iterator iter = poslist.begin(); 
+        iter != poslist.end();
+        ++iter) {
 
-      if ( poslist->size() == 0 ) break;
+      if ( poslist.size() == 0 ) break;
 
       quotek::core::position p0 = *iter;
       quotek::core::position* p = &p0;
@@ -273,7 +275,7 @@ void btEngine::moneyman_() {
           else if (rmpos == REMPOS_VLIMIT) logstr = logstr + " (VLIMIT)";
 
           logger->log(logstr, progress_tstamp);
-          if (iter == poslist->end() ) break;
+          if (iter == poslist.end() ) break;
 
         }
 
@@ -468,12 +470,12 @@ adamresult* btEngine::run() {
   result->stop = time(0);
 
   //Adds remaining pos to history
-  quotek::data::cvector<quotek::core::position>* rpos = tse_mm->getPositions();
-  result->remainingpos = rpos->size();
+  quotek::data::cvector<quotek::core::position>& rpos = tse_mm->getPositions();
+  result->remainingpos = rpos.size();
 
   for (int i=0;i<result->remainingpos;i++) {
-    rpos->at(i).close_date = inmem_records[0].get_data()[backtest_pos].timestamp;
-    positions_history.push_back(rpos->at(i));
+    rpos.at(i).close_date = inmem_records[0].get_data()[backtest_pos].timestamp;
+    positions_history.push_back(rpos.at(i));
   }
 
   //adds CFD/whatever assets statistics like

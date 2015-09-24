@@ -4,7 +4,7 @@ project(adam)
 
 SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++")
 SET (CMAKE_C_COMPILER		    "/usr/bib/clang")
-SET (CMAKE_CXX_FLAGS                "-g -O3 -std=c++11 -stdlib=libc++ -fPIC")
+SET (CMAKE_CXX_FLAGS                "-O3 -g -std=c++11 -stdlib=libc++ -fPIC")
 
 SET (CMAKE_LINKER_FLAGS    "-rdynamic")
 

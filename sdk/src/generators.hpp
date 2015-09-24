@@ -7,6 +7,7 @@ http://www.quotek.io
 #ifndef GENERATORS_HPP
 #define GENERATORS_HPP
 
+
 #include <random>
 #include <string>
 #include <algorithm>

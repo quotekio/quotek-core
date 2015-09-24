@@ -208,8 +208,8 @@ void moneyManager::remPosition(string dealid) {
 
 
 
-quotek::data::cvector<quotek::core::position>* moneyManager::getPositions() {
-  return &positions;
+quotek::data::cvector<quotek::core::position>& moneyManager::getPositions() {
+  return positions;
 }
 
 quotek::data::cvector<quotek::core::position>* moneyManager::getPositionsHistory() {

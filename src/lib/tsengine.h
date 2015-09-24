@@ -91,7 +91,7 @@ class tsEngine{
     AssocArray<void*>* getEvalPointers();
     igmLogger* getLogger();
 
-    store* getStore();
+    std::map<std::string, quotek::data::any>& getStore();
     store* getGeneticsStore();
     void setGeneticsStore(store*);
 
@@ -127,7 +127,7 @@ class tsEngine{
      */
     //void evaluate(void*);
 
-    void evaluate2(quotek::core::strategy* s);
+    void evaluate2(strategy* s);
 
     /**
      * This function is the orders execution threads callback.
@@ -182,7 +182,11 @@ class tsEngine{
     AssocArray<void*> eval_ptrs;
     igmLogger* logger;
     vector<string> modules_list;
-    store tse_store;
+
+    
+
+    std::map<std::string, quotek::data::any> tse_store;
+
     store *tse_genes;
 
     std::thread* poller;

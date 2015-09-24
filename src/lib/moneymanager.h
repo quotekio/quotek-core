@@ -72,7 +72,7 @@ class moneyManager {
     void remPosition(string);
     bool hasPos(string);
     bool hasPos(string,string);
-    quotek::data::cvector<quotek::core::position>* getPositions();
+    quotek::data::cvector<quotek::core::position>& getPositions();
     quotek::data::cvector<quotek::core::position>* getPositionsHistory();
     quotek::core::position* getPositionByDealid(string);
     string cleanPositions(vector<string>);

@@ -122,7 +122,7 @@ void tsEngine::broker_sync_start() {
   moneyManager* mm = this->getMoneyManager();
   broker* b0 = this->getBroker();
   ticks_t ticks = this->getTicks();
-  quotek::data::cvector<quotek::core::position>* poslist = mm->getPositions();
+  quotek::data::cvector<quotek::core::position>& poslist = mm->getPositions();
   igmLogger* logger = this->getLogger();
 
   AssocArray<indice*> ilist = this->getIndicesList();
@@ -144,7 +144,6 @@ void tsEngine::broker_sync_start() {
   vector<bpex> broker_poslist;
   vector<string> alive_pos;
 
-  poslist = mm->getPositions();
   broker_poslist = b0->getPositions();
 
   alive_pos.clear();
@@ -229,7 +228,7 @@ void tsEngine::moneyman() {
   typedef void* (*tl_fct)(pos_c*,tradelife_io*);
   //void* tl_fct_fref = sh->getTLFct();
   void* tl_fct_fref = NULL; 
-  quotek::data::cvector<quotek::core::position>* poslist = mm->getPositions();
+  quotek::data::cvector<quotek::core::position>& poslist = mm->getPositions();
 
   //pnl-needed vars
   float v;
@@ -248,12 +247,12 @@ void tsEngine::moneyman() {
 
   tl_io.orders = &orders_q;
   tl_io.logs = &logs_q;
-  tl_io.s = this->getStore();
+  //tl_io.s = this->getStore();
 
   while (1) {
 
     //checks STOPS & LIMIT and cleans positions if needed.
-    for(vector<quotek::core::position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
+    for(vector<quotek::core::position>::iterator iter = poslist.begin(); iter != poslist.end();++iter) {
 
       p = &*iter;
       r = this->getAssetRecords(p->asset_name).last();
@@ -293,7 +292,7 @@ void tsEngine::moneyman() {
 
       tl_fct tl = (tl_fct) tl_fct_fref;
 
-      for(vector<quotek::core::position>::iterator iter = poslist->begin(); iter != poslist->end();++iter) {
+      for(vector<quotek::core::position>::iterator iter = poslist.begin(); iter != poslist.end();++iter) {
 
         
         p = &*iter;
@@ -599,7 +598,7 @@ void tsEngine::evaluate(void* arg) {
 }
 */
 
-void tsEngine::evaluate2(quotek::core::strategy* s) {
+void tsEngine::evaluate2(strategy* s) {
 
   //declares work variables
   std::string order;
@@ -617,7 +616,7 @@ void tsEngine::evaluate2(quotek::core::strategy* s) {
   s->initialize();
 
   //waits for some data to be collected before starting to process;
-  while(s->recs.size() == 0) { 
+  while(s->recs->size() == 0) { 
     cout << "Waiting for data population.." << endl;
     sleep(1);
   }
@@ -627,7 +626,7 @@ void tsEngine::evaluate2(quotek::core::strategy* s) {
     auto tt0 = std::chrono::high_resolution_clock::now();
 
     //setting of evaluation context.
-    quotek::data::record& last_rec = s->recs.last();
+    quotek::data::record& last_rec = s->recs->last();
     s->value = last_rec.value;
     s->spread = last_rec.spread;
 
@@ -855,9 +854,15 @@ tsEngine::tsEngine(adamCfg* conf,
   }
 
   for (int i=0;i<eval_threads.size();i++) {
-    void* etptr = (void*) &eval_threads[i];
+ 
+    //function pointer to extern C create_st symbol.
+    create_st* c_strat = (create_st*) eval_threads[i].eval_ptr ;
+    
+    //we instanciate a new strategy object.
+    strategy* st = c_strat ();
 
-    //eval_threads[i].th = new std::thread( [&] {  this->evaluate( (void*) &eval_threads[i] ); } );
+    eval_threads[i].th = new std::thread( [&] {  this->evaluate2(st); } );
+
   }
 
   printf ("Starting clock..\n");
@@ -962,8 +967,8 @@ igmLogger* tsEngine::getLogger() {
   return logger;
 }
 
-store* tsEngine::getStore() {
-  return &tse_store;
+std::map<std::string, quotek::data::any>& tsEngine::getStore() {
+  return tse_store;
 }
 
 store* tsEngine::getGeneticsStore() {

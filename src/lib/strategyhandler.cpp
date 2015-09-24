@@ -1,7 +1,7 @@
 #include "strategyhandler.hpp"
 
 const string strategyHandler::cc = "clang++";
-const string strategyHandler::cflags = "-std=c++11 -stdlib=libc++ -g -shared -rdynamic -fPIC -lcurl -lpthread -lquotek";
+const string strategyHandler::cflags = "-std=c++11 -stdlib=libc++ -g -shared -rdynamic -fPIC";
 const string strategyHandler::cpath = "/tmp/adam/cenv";
 
 strategyHandler::strategyHandler(string stpath, string n) {
@@ -80,8 +80,8 @@ int strategyHandler::preprocess() {
   }
 
   // the class factories
-  wh << "extern \"C\" strategy* create(quotek::data::records& recs,\nstd::map<std::string, quotek::data::any>& store,\nstd::vector<quotek::core::position>& portfolio) {\n";
-  wh << "\treturn new " << classname << "(recs,store,portfolio);\n";
+  wh << "extern \"C\" strategy* create() {\n";
+  wh << "\treturn new " << classname << "();\n";
   wh << "}\n";
 
   wh << "extern \"C\" void destroy(strategy* s) {\n";
