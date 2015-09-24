@@ -613,6 +613,9 @@ void tsEngine::evaluate2(quotek::core::strategy* s) {
   //s->recs = this->getAssetRecords(s->asset_name);
   //s->s = this->getStore();
 
+  //starts strategy initialization
+  s->initialize();
+
   //waits for some data to be collected before starting to process;
   while(s->recs.size() == 0) { 
     cout << "Waiting for data population.." << endl;
@@ -841,9 +844,9 @@ tsEngine::tsEngine(adamCfg* conf,
   std::regex asset_match(tse_strathandler->getAssetMatch());
 
   for (int i=0;i<evnames.size();i++) {
-    eval_thread et;
-    
+
     if (strat_ptr &&  std::regex_match(evnames.at(i), asset_match) ) {
+      eval_thread et;
       cout << "loading eval for indice "  << evnames.at(i)  << endl;
       et.eval_ptr = strat_ptr;
       et.eval_name = evnames.at(i);
