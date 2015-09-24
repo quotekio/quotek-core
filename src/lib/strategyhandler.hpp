@@ -26,16 +26,15 @@ class strategyHandler {
   public:
 
     strategyHandler(string stpath, string name);
-    strategyHandler(string stpath, string name,genetics* ge);
+    strategyHandler(string stpath, string name, genetics* ge);
     void setGE(genetics* ge);
     int prepareCompile();
+    int preprocess();
     int compile(int);
     int dlibOpen(int);
-    void* resolveFunction(string,string);
-    void* getTLFct();
+    void* getExportFct();
     void* getHandle();
-    int include(string,vector<string>*);
-    int decorate();
+    std::string getAssetMatch();
 
     static const string cc;
     static const string cflags;
@@ -44,7 +43,9 @@ class strategyHandler {
   private:
 
     void* handle;
-    string name;
+    std::string name;
+    std::string classname;
+    std::string asset_match;
     string strats_path;
     genetics* genetics_engine;
 

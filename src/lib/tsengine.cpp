@@ -227,7 +227,8 @@ void tsEngine::moneyman() {
 
   //TRADELIFE struct for fctptr
   typedef void* (*tl_fct)(pos_c*,tradelife_io*);
-  void* tl_fct_fref = sh->getTLFct(); 
+  //void* tl_fct_fref = sh->getTLFct();
+  void* tl_fct_fref = NULL; 
   quotek::data::cvector<quotek::core::position>* poslist = mm->getPositions();
 
   //pnl-needed vars
@@ -836,13 +837,15 @@ tsEngine::tsEngine(adamCfg* conf,
   printf ("initializing evaluators..\n");
   vector<string> evnames = iGetNames(getIndicesList());
 
+  void* strat_ptr = tse_strathandler->getExportFct();
+  std::regex asset_match(tse_strathandler->getAssetMatch());
 
   for (int i=0;i<evnames.size();i++) {
     eval_thread et;
-    void* evptr = tse_strathandler->resolveFunction(evnames.at(i),"EVAL");
-    if (evptr) {
+    
+    if (strat_ptr &&  std::regex_match(evnames.at(i), asset_match) ) {
       cout << "loading eval for indice "  << evnames.at(i)  << endl;
-      et.eval_ptr = evptr;
+      et.eval_ptr = strat_ptr;
       et.eval_name = evnames.at(i);
       eval_threads.push_back(et);
     }

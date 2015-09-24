@@ -51,18 +51,7 @@ void signal_callback_handler(int signum) {
     s->compile(so_iter);
     cout << "reloading compiled strategy.."<<endl;
     s->dlibOpen(so_iter);
-
-    AssocArray<void*>* eval_ptrs = tse->getEvalPointers();
-
-    for (i=0;i<(*eval_ptrs).Size();i++) {
-
-      iname = (*eval_ptrs).GetItemName(i);
-      void* fct_ptr = s->resolveFunction(iname,"EVAL");
-      if (fct_ptr) {
-        cout << "reloaded eval for indice " << iname << endl;
-        (*eval_ptrs)[iname] = fct_ptr;
-      }
-    }
+    
   }
 
 }

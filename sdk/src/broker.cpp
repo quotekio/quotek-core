@@ -8,8 +8,8 @@ http://www.quotek.io
 
 namespace quotek {
 
-  broker::broker(quotek::core::strategy& s): s(s) {
-
+  broker::broker(quotek::core::strategy* s) {
+    this->s = s;
   }
 
   void broker::buy(std::string asset,
@@ -19,7 +19,7 @@ namespace quotek {
 
     std::ostringstream os;
     os << "openpos:" << asset << ":buy:" << quantity << ":" << stop << ":" << limit ;
-  	s.order(os.str());
+  	s->order(os.str());
   }
 
 
@@ -30,7 +30,7 @@ namespace quotek {
 
     std::ostringstream os;
     os << "openpos:" << asset << ":sell:" << quantity << ":" << stop << ":" << limit ;
-  	s.order(os.str());
+  	s->order(os.str());
   }
 
   
@@ -64,21 +64,21 @@ namespace quotek {
 
     std::ostringstream os;
     os << "smartpos:" << asset << ":buy:" << expexted_risk_reward;
-    s.order(os.str());
+    s->order(os.str());
 
   }
 
   void broker::smartsell(std::string asset, int expexted_risk_reward) {
     std::ostringstream os;
     os << "smartpos:" << asset << ":sell:" << expexted_risk_reward;
-    s.order(os.str());
+    s->order(os.str());
   }
 
 
   void broker::close_position(std::string ticket_id) {
     std::ostringstream os;
     os << "closepos:" << ticket_id;
-    s.order(os.str());
+    s->order(os.str());
   }
 
 

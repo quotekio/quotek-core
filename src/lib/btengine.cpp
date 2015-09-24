@@ -51,14 +51,14 @@ btEngine::btEngine(adamCfg* conf,
   printf ("loading evaluators..\n");
   vector<string> evnames = iGetNames(getIndicesList());
 
+  void* strat_ptr = tse_strathandler->getExportFct();
+
   for (int i=0;i<evnames.size();i++) {
-    void* evptr = tse_strathandler->resolveFunction(evnames.at(i),"EVAL");
-    if (evptr) {
+    if (strat_ptr) {
       cout << "loading eval for indice "  << evnames.at(i)  << endl;
-      eval_pointers[evnames.at(i)] = evptr;
+      eval_pointers[evnames.at(i)] = strat_ptr;
     }
   }
-
 }
 
 // Loads indices history from backend to memory
@@ -145,7 +145,8 @@ void btEngine::moneyman_() {
 
   //TRADELIFE struct for fctptr
   typedef void* (*tl_fct)(pos_c*,tradelife_io*);
-  void* tl_fct_fref = tse_strathandler->getTLFct(); 
+  //void* tl_fct_fref = tse_strathandler->getTLFct(); 
+  void* tl_fct_fref = NULL;
 
   tradelife_io tl_io;
 
