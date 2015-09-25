@@ -38,6 +38,7 @@ class strategyHandler {
 
     static const string cc;
     static const string cflags;
+    static const string dependencies;
     static const string cpath;
 
   private:

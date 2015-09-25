@@ -2,6 +2,7 @@
 
 const string strategyHandler::cc = "clang++";
 const string strategyHandler::cflags = "-std=c++11 -stdlib=libc++ -g -shared -rdynamic -fPIC";
+const string strategyHandler::dependencies = "-lcurl -lpthread -lquotek";
 const string strategyHandler::cpath = "/tmp/adam/cenv";
 
 strategyHandler::strategyHandler(string stpath, string n) {
@@ -99,7 +100,9 @@ int strategyHandler::compile(int iter) {
   ostringstream oss;
   oss << iter;
 
-  string ccmd = strategyHandler::cc + " " + strategyHandler::cflags + " " + name + ".cpp -o " + name +  oss.str()  + ".so" ;
+  string ccmd = strategyHandler::cc + " " + strategyHandler::cflags + " " + name + ".cpp -o " + name +  oss.str()  + ".so" + " " + strategyHandler::dependencies;
+  
+  std::cout << ccmd << std::endl;
 
   chdir(strategyHandler::cpath.c_str()); 
   system(ccmd.c_str());

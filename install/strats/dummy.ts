@@ -1,36 +1,28 @@
-#asset_match "FX_(.*)"
+//#asset_match (.*)
 
 using namespace quotek;
+using namespace quotek::core;
 
 class moving_average_crossing : public strategy {
 
   public:
+    //we inherit constructor
+    using strategy::strategy;
 
-    std::vector<float> sma20;
-    std::vector<float> sma50;
-    std::vector<float> ema50;
-
-    broker b0;
+    broker* b0;
 
     int initialize() {
-      return 0;
-
-      data::records closing_100; 
-
-      sma20 = quant::SMA(closing_100,20);
-      sma50 = quant::SMA(closing_100,50);
-      ema50 = quant::EMA(closing_100,50);
-
+      std::cout << "INIT!" << std::endl;
       b0 = new broker(this);
-
+      return 0;
     }
 
     void evaluate() {
 
-      
-
+      std::cout << "EVAL" << std::endl;    
 
 
     }
 
-}
+};
+
