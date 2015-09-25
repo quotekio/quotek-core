@@ -48,9 +48,10 @@ int strategyHandler::preprocess() {
   std::regex classname_regex("^class(.*)");
   std::regex asset_match_regex("^\\/\\/\\#asset_match(.*)");
   std::regex strat_include_regex("^\\/\\/\\#strat_include(.*)");
+  std::regex ex_eval_regex ("(.*)\\/\\/#ex_eval(.*)");
 
   wh << "#include <quotek/quotek.hpp>\n";
-
+  wh << "#include <unistd.h>\n";
   while(fh.good()){
     getline(fh,line);
 
@@ -73,6 +74,25 @@ int strategyHandler::preprocess() {
       trim(this->asset_match);
       std::cout << "Found asset matching regex in Strategy: " << this->asset_match << std::endl;
     }
+
+    else if ( std::regex_match(line,ex_eval_regex) ) {
+      stringstream ss;
+      int period;
+      std::string fct;
+      std::string direc;     
+      ss << line;
+      ss >> direc;
+      ss >> period;
+      ss >> fct;
+
+      stringstream ss2;
+      ss2 << "new std::thread( [&] {  while(1) { sleep(" << period << ");" << fct << "; }});";
+
+      lines.pop_back();
+      lines.emplace_back(ss2.str());
+
+    }
+
 
   }
 
@@ -102,8 +122,6 @@ int strategyHandler::compile(int iter) {
 
   string ccmd = strategyHandler::cc + " " + strategyHandler::cflags + " " + name + ".cpp -o " + name +  oss.str()  + ".so" + " " + strategyHandler::dependencies;
   
-  std::cout << ccmd << std::endl;
-
   chdir(strategyHandler::cpath.c_str()); 
   system(ccmd.c_str());
 

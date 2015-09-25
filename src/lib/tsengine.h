@@ -205,6 +205,9 @@ class tsEngine{
 
     vector<std::thread> modules_threads_list;
     vector<eval_thread> eval_threads;
+
+    vector<strategy*> spool;
+
     int uptime;
 };
 
@@ -215,7 +218,6 @@ typedef struct eval_thread {
   std::thread* th;
   void* eval_ptr;
   string eval_name;
-
 } eval_thread;
 
 #endif

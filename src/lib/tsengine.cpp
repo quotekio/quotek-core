@@ -608,17 +608,17 @@ void tsEngine::evaluate2(strategy* s) {
   igmLogger* logger = this->getLogger();
   ticks_t ticks = this->getTicks();
 
+  //s->asset_name = eval_name;
   //makes the strategy records pointer point to the correct memmory space
-  //s->recs = this->getAssetRecords(s->asset_name);
+  //s->recs = &this->getAssetRecords(eval_name);
   //s->s = this->getStore();
-
   //starts strategy initialization
+
   s->initialize();
 
-  //waits for some data to be collected before starting to process;
   while(s->recs->size() == 0) { 
-    cout << "Waiting for data population.." << endl;
-    sleep(1);
+    std::cout << "Waiting for data population.." << std::endl;
+    usleep(ticks.eval);
   }
 
   while(1) {
@@ -849,19 +849,21 @@ tsEngine::tsEngine(adamCfg* conf,
       cout << "loading eval for indice "  << evnames.at(i)  << endl;
       et.eval_ptr = strat_ptr;
       et.eval_name = evnames.at(i);
-      eval_threads.push_back(et);
+      eval_threads.emplace_back(et);
     }
   }
-
+  
   for (int i=0;i<eval_threads.size();i++) {
- 
+
     //function pointer to extern C create_st symbol.
     create_st* c_strat = (create_st*) eval_threads[i].eval_ptr ;
-    
-    //we instanciate a new strategy object.
-    strategy* st = c_strat ();
+    strategy* st = c_strat();
 
-    eval_threads[i].th = new std::thread( [&] {  this->evaluate2(st); } );
+    st->recs = &this->getAssetRecords(eval_threads[i].eval_name);
+    st->asset_name = eval_threads[i].eval_name;
+
+    eval_threads[i].th = new std::thread( [st, this] {  this->evaluate2(st); });   
+    eval_threads[i].th->detach();
 
   }
 

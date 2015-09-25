@@ -16,6 +16,7 @@ http://www.quotek.io
 #include "position.hpp"
 #include "record.hpp"
 
+
 /**
 * strategy class is one of the most important of quotek adam bot.
 * When a strategy is created by an user, it inherits from it.
