@@ -68,7 +68,7 @@ class adamCfg {
     string backend_params;
     int inmem_history;
     AssocArray<indice*> indices_list;
-    string strat;
+    std::vector<std::string> active_strats;
     string strats_path;
     vector<string> modules_list;
     mm_params mmp;
@@ -100,7 +100,7 @@ class adamCfg {
     mm_params* getMMP();
     genetics_params* getGP();
     aep_params* getAEPP();
-    string getStrat();
+    std::vector<std::string> getActiveStrats();
     string getStratsPath();
 
     int getBFrom();
@@ -117,7 +117,7 @@ class adamCfg {
     /* Setters */
 
     void setMode(int);
-    void setStrat(string);
+    void setActiveStrats(std::vector<std::string>);
 
     void setAEPPort(int);
 

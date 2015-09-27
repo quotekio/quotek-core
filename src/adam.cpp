@@ -45,13 +45,15 @@ void signal_callback_handler(int signum) {
 
     chdir(ADAM_PREFIX);
 
-    strategyHandler* s = tse->getStratHandler();
-    s->prepareCompile();
-    cout << "recompiling strategy.." << endl;
-    s->compile(so_iter);
-    cout << "reloading compiled strategy.."<<endl;
-    s->dlibOpen(so_iter);
-    
+    std::vector<strategyHandler*> sh_list = tse->getStratHandlers();
+
+    for (int i=0;i<sh_list.size();i++) {
+      sh_list[i]->prepareCompile();
+      cout << "recompiling algo " << sh_list[i]->getName() << endl;
+      sh_list[i]->compile(so_iter);
+      cout << "reloading compiled algo " << sh_list[i]->getName() << endl; 
+      sh_list[i]->dlibOpen(so_iter);
+    }
   }
 
 }
@@ -95,9 +97,11 @@ void parse_cmdline(adamCfg* conf,int argc,char** argv) {
         conf->setMode(ADAM_MODE_GENETICS);
         cout << "Starting Adam in Genetics mode.." << endl;
         break;
-      case 's':
-        conf->setStrat(std::string(optarg));
+      case 's': {
+        std::vector<std::string> st = split(std::string(optarg),',');
+        conf->setActiveStrats(st);
         break;
+      }
       case 'f':
         conf->setBFrom(atoi(optarg));
         break;
@@ -212,6 +216,11 @@ int main(int argc,char** argv) {
 
   //getting Extra Modules List
   vector<string> mlist = c->getModulesList();
+  
+  //getting active strats
+  std::vector<std::string> astrats = c->getActiveStrats();
+
+  std::vector<strategyHandler*> sh_list;
 
   if ( c->getMode() == ADAM_MODE_GENETICS  ) {
 
@@ -226,12 +235,16 @@ int main(int argc,char** argv) {
                                 gp->genetics_max_generations,
                                 gp->genetics_recompute_winners);
 
-    sh = new strategyHandler(c->getStratsPath(), c->getStrat(), ge);
+    sh_list.emplace_back( new strategyHandler(c->getStratsPath(), astrats[0], ge) );
 
   }
 
   else {
-    sh = new strategyHandler(c->getStratsPath(), c->getStrat());
+
+    for (int i=0;i<astrats.size();i++) {
+      sh_list.emplace_back (new strategyHandler(c->getStratsPath(), astrats[i]) );
+    }
+
   }
 
   broker* b = load_broker(c->getBroker())();
@@ -253,12 +266,16 @@ int main(int argc,char** argv) {
     back->connect();
   }
 
-  cout << "preparing strategy compilation.." << endl;
-  sh->prepareCompile();
-  cout << "compiling strategy.." << endl;
-  sh->compile(0);
-  cout << "loading compiled strategy.."<<endl;
-  sh->dlibOpen(0);
+  for (int i=0;i<sh_list.size();i++) {
+
+    cout << "preparing strategy compilation for algo " << sh_list[i]->getName() << endl;
+    sh_list[i]->prepareCompile();
+    cout << "compiling algo " << sh_list[i]->getName() << endl;
+    sh_list[i]->compile(0);
+    cout << "loading compiled algo " << sh_list[i]->getName() << endl;
+    sh_list[i]->dlibOpen(0);
+
+  }
 
   adamGeneticsResult* gres;
   adamresult* res;
@@ -267,11 +284,11 @@ int main(int argc,char** argv) {
 
     case ADAM_MODE_REAL:
       cout << "starting Engine in real mode.." << endl;
-      tse = new tsEngine(c,b,back,ilist,sh,mm,ge,mlist);
+      tse = new tsEngine(c,b,back,ilist,sh_list,mm,ge,mlist);
       break;
     case ADAM_MODE_BACKTEST:
       cout << "starting Engine in backtest mode.." << endl;
-      bte = new btEngine(c,b,back,ilist,sh,mm,ge,mlist);
+      bte = new btEngine(c,b,back,ilist,sh_list[0],mm,ge,mlist);
       res = bte->run();
 
       if ( c->getBTResultFile() != "" ) {
@@ -282,7 +299,7 @@ int main(int argc,char** argv) {
 
     case ADAM_MODE_GENETICS:
       cout << "starting Engine in genetics mode.." << endl;
-      bte = new btEngine(c,b,back,ilist,sh,mm,ge,mlist);
+      bte = new btEngine(c,b,back,ilist,sh_list[0],mm,ge,mlist);
       gres = bte->runGenetics();
 
       if ( c->getBTResultFile() != "" ) {

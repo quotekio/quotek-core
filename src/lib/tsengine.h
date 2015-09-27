@@ -67,7 +67,7 @@ class tsEngine{
              broker*,
              backend*, 
              AssocArray<indice*>,
-             strategyHandler*,
+             std::vector<strategyHandler*>,
              moneyManager*,
              genetics*,
              vector<string>);
@@ -77,7 +77,7 @@ class tsEngine{
     ticks_t getTicks();
     quotek::data::cqueue <std::string>* getOrdersQueue();
     AssocArray<indice*> getIndicesList();
-    strategyHandler* getStratHandler();
+    std::vector<strategyHandler*> getStratHandlers();
     moneyManager* getMoneyManager();
     genetics* getGE();
 
@@ -127,7 +127,7 @@ class tsEngine{
      */
     //void evaluate(void*);
 
-    void evaluate2(strategy* s);
+    void evaluate(strategy* s);
 
     /**
      * This function is the orders execution threads callback.
@@ -168,7 +168,7 @@ class tsEngine{
     ticks_t tse_ticks;
     int tse_inmem_history;
     backend* tse_back;
-    strategyHandler* tse_strathandler;
+    std::vector<strategyHandler*> tse_strathandlers;
     moneyManager* tse_mm;
     genetics* tse_ge;
 

@@ -222,7 +222,7 @@ void tsEngine::moneyman() {
   vector<string> si = iGetNames(ilist);
   igmLogger* logger = this->getLogger();
   quotek::data::cqueue<std::string> *orders_queue = this->getOrdersQueue();
-  strategyHandler* sh = this->getStratHandler();
+  std::vector<strategyHandler*> sh_list = this->getStratHandlers();
 
   //TRADELIFE struct for fctptr
   typedef void* (*tl_fct)(pos_c*,tradelife_io*);
@@ -502,103 +502,7 @@ void tsEngine::poll() {
 }
 
 
-/*
-void tsEngine::evaluate(void* arg) {
-
-  typedef void* (*eval_fct)(uint32_t,float,float, evaluate_io*);
-
-  eval_thread* et = (eval_thread*) arg;
-  eval_fct f = (eval_fct) et->eval_ptr;
-  string eval_name = et->eval_name;
-
-  quotek::data::cqueue<std::string> *orders_queue = this->getOrdersQueue();
-  igmLogger* logger = this->getLogger();
-
-  //######## EVALUATION-NEEDED VALUES
-  uint32_t t;
-  float v;
-  float spread;
-  evaluate_io ev_io;
-  uint64_t previous_t = 0;
-
-  Queue_c orders_q = CreateQueue(50);
-  Queue_c logs_q = CreateQueue(50);
-
-  ev_io.orders = &orders_q;
-  ev_io.logs = &logs_q;
-  ev_io.s = this->getStore();
-  ev_io.genes = NULL;
-  ev_io.state = 0;
-
-  ev_io.recs = this->getAssetRecords(eval_name);
-
-  ticks_t ticks = this->getTicks();
-
-  string order_str;
-  string log_str;
-
-  indice* idx = iResolve(this->getIndicesList(),eval_name);
-
-  //waits for some data to be collected before starting to process;
-  while(ev_io.recs->size == 0) { 
-    cout << "Waiting for data population.." << endl;
-    sleep(1);
-  }
-
-  while(1) {
-
-    //perf profiling
-    auto tt0 = std::chrono::high_resolution_clock::now();
-
-    ev_io.indice_name = eval_name.c_str();
-
-    record* last_rec = records_last(ev_io.recs);
-
-    t = last_rec->timestamp;
-    v = last_rec->value;
-    spread = last_rec->spread;
-
-    if ( this->eval_running(idx,t) == 1 && t != previous_t ) {
-      
-      //execution of found eval function
-      (*f)(t,v, spread, &ev_io);
-      
-      while( ! IsEmpty( orders_q ) ) {
-        char* order = (char*) FrontAndDequeue( orders_q );
-        std::string order_str = std::string(order);
-        if ( order_str != "") {
-          orders_queue->push(order_str);
-        }
-        free(order);
-      }
-
-      while( ! IsEmpty( logs_q ) ) {
-        char* logstr = (char*) FrontAndDequeue( logs_q );
-        std::string log_str = std::string(logstr);
-        if ( log_str != "") {
-          logger->log(log_str);
-        }
-        free(logstr);
-      }
-
-    }
-
-    previous_t = t;
-
-    auto tt1 = std::chrono::high_resolution_clock::now();
-    auto elapsed_t = tt1 - tt0;
-    uint64_t elapsed = std::chrono::duration_cast<std::chrono::microseconds>(elapsed_t).count();
-
-    if (elapsed < ticks.eval) {  
-      usleep(ticks.eval - elapsed);
-    }
-
-  }
-
-}
-*/
-
-void tsEngine::evaluate2(strategy* s) {
+void tsEngine::evaluate(strategy* s) {
 
   //declares work variables
   std::string order;
@@ -608,12 +512,7 @@ void tsEngine::evaluate2(strategy* s) {
   igmLogger* logger = this->getLogger();
   ticks_t ticks = this->getTicks();
 
-  //s->asset_name = eval_name;
-  //makes the strategy records pointer point to the correct memmory space
-  //s->recs = &this->getAssetRecords(eval_name);
-  //s->s = this->getStore();
   //starts strategy initialization
-
   s->initialize();
 
   while(s->recs->size() == 0) { 
@@ -769,7 +668,7 @@ tsEngine::tsEngine(adamCfg* conf,
                    broker* b,
                    backend* back,
                    AssocArray<indice*> ilist,
-                   strategyHandler* sh,
+                   std::vector<strategyHandler*> sh_list,
                    moneyManager* mm,
                    genetics* ge,
                    vector<string> mlist) {
@@ -783,7 +682,7 @@ tsEngine::tsEngine(adamCfg* conf,
   tse_ticks = conf->getTicks();
   tse_inmem_history = conf->getInMemHistory();
   tse_back = back;
-  tse_strathandler = sh;
+  tse_strathandlers = sh_list;
   tse_mm = mm;
   tse_ge = ge;
   indices_list = ilist;
@@ -839,20 +738,23 @@ tsEngine::tsEngine(adamCfg* conf,
   printf ("initializing evaluators..\n");
   vector<string> evnames = iGetNames(getIndicesList());
 
-  void* strat_ptr = tse_strathandler->getExportFct();
-  std::regex asset_match(tse_strathandler->getAssetMatch());
+  for (int j=0;j<tse_strathandlers.size();j++) {
 
-  for (int i=0;i<evnames.size();i++) {
+    void* strat_ptr = tse_strathandlers[j]->getExportFct();
+    std::regex asset_match(tse_strathandlers[j]->getAssetMatch());
 
-    if (strat_ptr &&  std::regex_match(evnames.at(i), asset_match) ) {
-      eval_thread et;
-      cout << "loading eval for indice "  << evnames.at(i)  << endl;
-      et.eval_ptr = strat_ptr;
-      et.eval_name = evnames.at(i);
-      eval_threads.emplace_back(et);
+    for (int i=0;i<evnames.size();i++) {
+
+      if (strat_ptr &&  std::regex_match(evnames.at(i), asset_match) ) {
+        eval_thread et;
+        cout << "loading eval for indice "  << evnames.at(i)  << endl;
+        et.eval_ptr = strat_ptr;
+        et.eval_name = evnames.at(i);
+        eval_threads.emplace_back(et);
+      }
     }
   }
-  
+
   for (int i=0;i<eval_threads.size();i++) {
 
     //function pointer to extern C create_st symbol.
@@ -862,7 +764,7 @@ tsEngine::tsEngine(adamCfg* conf,
     st->recs = &this->getAssetRecords(eval_threads[i].eval_name);
     st->asset_name = eval_threads[i].eval_name;
 
-    eval_threads[i].th = new std::thread( [st, this] {  this->evaluate2(st); });   
+    eval_threads[i].th = new std::thread( [st, this] {  this->evaluate(st); });   
     eval_threads[i].th->detach();
 
   }
@@ -918,8 +820,8 @@ quotek::data::cqueue<std::string>* tsEngine::getOrdersQueue() {
   return &orders_queue;
 }
 
-strategyHandler* tsEngine::getStratHandler() {
-  return tse_strathandler;
+std::vector<strategyHandler*> tsEngine::getStratHandlers() {
+  return tse_strathandlers;
 }
 
 moneyManager* tsEngine::getMoneyManager() {

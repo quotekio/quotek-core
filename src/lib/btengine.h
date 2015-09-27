@@ -53,9 +53,10 @@ class btEngine: public tsEngine {
     vector<quotek::core::position> positions_history;
 
     AssocArray<quotek::data::records> backtest_inmem_records;
-
     AssocArray<void*> eval_pointers; 
 
+    strategyHandler* tse_strathandler;
+    
 };
 
 #endif

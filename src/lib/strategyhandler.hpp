@@ -35,6 +35,8 @@ class strategyHandler {
     void* getExportFct();
     void* getHandle();
     std::string getAssetMatch();
+    std::string getName();
+
 
     static const string cc;
     static const string cflags;

@@ -43,8 +43,8 @@ vector<string> adamCfg::getModulesList() {
 }
 
 
-string adamCfg::getStrat() {
-  return strat;
+std::vector<std::string> adamCfg::getActiveStrats() {
+  return active_strats;
 }
 
 string adamCfg::getStratsPath() {
@@ -94,8 +94,8 @@ void adamCfg::setMode(int md) {
   mode = md;
 }
 
-void adamCfg::setStrat(string st) {
-  strat = st;
+void adamCfg::setActiveStrats(std::vector<std::string> st) {
+  active_strats = st;
 }
 
 void adamCfg::setBFrom(int from) {
@@ -185,7 +185,13 @@ int adamCfg::read() {
           }
         }
         
-        else if (param == "strat") strat = arg;
+        else if (param == "active_strats") {
+          active_strats = split(arg,',');
+          for (int i=0;i<active_strats.size();i++) {
+            active_strats[i] = trim(active_strats[i]);
+          }
+        }
+
         else if (param == "strats_path") strats_path = arg;
         else if (param == "mm_capital") mmp.mm_capital = atof(arg.c_str());
         else if (param == "mm_max_openpos") mmp.mm_max_openpos = atoi(arg.c_str());

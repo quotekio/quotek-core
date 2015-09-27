@@ -11,7 +11,6 @@ strategyHandler::strategyHandler(string stpath, string n) {
   classname = n;
   asset_match = "(.*)";
   genetics_engine = NULL;
-
 }
 
 strategyHandler::strategyHandler(string stpath, string n, genetics* ge) {
@@ -158,4 +157,8 @@ void* strategyHandler::getHandle() {
 
 std::string strategyHandler::getAssetMatch() {
   return asset_match;
+}
+
+std::string strategyHandler::getName() {
+  return name;
 }
