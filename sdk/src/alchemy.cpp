@@ -33,13 +33,20 @@ namespace quotek {
           std::cout << data << std::endl;
 
           quotek::ml::sentiment s1;
-          s1.score = -1;
+          s1.score = 0;
+          s1.error = false;
+          s1.error_message = "";
 
           rapidjson::Document d;
           d.Parse<0>(data.c_str());
 
-          /*
           if ( d["status"].GetString() == std::string("OK") ) {
+
+            if ( ! d["docSentiment"].IsObject() ) {
+              s1.error = true;
+              s1.error_message = "Alchemy API didn't return any sentiment object";
+              return s1;
+            }
 
             std::string score_str = "";
             std::string type_str = "";
@@ -52,9 +59,13 @@ namespace quotek {
             s1.mixed = ( d["docSentiment"]["mixed"].IsString() ) ? true : false ;
             return s1;
           }
-          */
           
-          return s1 ;
+          /* Something went wrong ! */
+          else {
+            s1.error = true;
+            s1.error_message = "Alchemy API returned an error status!";
+            return s1;
+          }
 
         }
         

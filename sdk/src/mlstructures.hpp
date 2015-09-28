@@ -62,6 +62,12 @@ namespace quotek {
          */
         bool mixed;
 
+        /** Tells if sentiment analysis failed or not */
+        bool error;
+
+        /** Stores the analysis error message in case of failure */
+        std::string error_message;
+
     } sentiment;
     
   }
