@@ -6,9 +6,8 @@ http://www.quotek.io
 
 #include "alchemy.hpp"
 #include <rapidjson/document.h>
+#include <rapidjson/error/en.h>
 #include <iostream>
-
-#include <rapidjson/document.h>
 
 namespace quotek {
 
@@ -40,9 +39,21 @@ namespace quotek {
           rapidjson::Document d;
           d.Parse<0>(data.c_str());
 
+          if ( d.HasParseError() ) {
+            s1.error = true;
+            s1.error_message = rapidjson::GetParseError_En(d.GetParseError());
+            return s1;
+          }
+
+          if ( ! d["status"].IsString() ) {
+            s1.error = true;
+            s1.error_message = "Alchemy API returned Invalid JSON response";
+            return s1;
+          }
+
           if ( d["status"].GetString() == std::string("OK") ) {
 
-            if ( ! d["docSentiment"].IsObject() ) {
+            if ( ! d.HasMember("docSentiment") ) {
               s1.error = true;
               s1.error_message = "Alchemy API didn't return any sentiment object";
               return s1;
@@ -51,12 +62,13 @@ namespace quotek {
             std::string score_str = "";
             std::string type_str = "";
 
-            if ( d["docSentiment"]["score"].IsString() ) score_str = d["docSentiment"]["score"].GetString();
-            if ( d["docSentiment"]["type"].IsString() ) type_str = d["docSentiment"]["type"].GetString();
+            if ( d["docSentiment"].HasMember("score") ) score_str = d["docSentiment"]["score"].GetString();
+            if ( d["docSentiment"].HasMember("type") ) type_str = d["docSentiment"]["type"].GetString();
 
             s1.positive = ( type_str == "positive" ) ? true : false ;
             s1.score = atof(score_str.c_str());
-            s1.mixed = ( d["docSentiment"]["mixed"].IsString() ) ? true : false ;
+            if (d["docSentiment"].HasMember("mixed") ) s1.mixed = true;
+            else s1.mixed = false;
             return s1;
           }
           

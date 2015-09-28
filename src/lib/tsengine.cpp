@@ -364,11 +364,12 @@ void tsEngine::moneyman() {
     for(int j=0;j<si.size();j++) {
       
       quotek::data::records& mrecs = this->getAssetRecords(si.at(j));
-
-        quotek::data::record& mr = mrecs.last();
-        v = mr.value;
-        //cout << v << endl;
-        mm->computePNLs(si.at(j),v);
+        if ( mrecs.size() > 0 ) {
+          quotek::data::record& mr = mrecs.last();
+          v = mr.value;
+          //cout << v << endl;
+          mm->computePNLs(si.at(j),v);
+      }
     }
 
     if (inc == 10) {
