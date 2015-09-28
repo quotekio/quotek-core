@@ -271,7 +271,13 @@ int main(int argc,char** argv) {
     cout << "preparing strategy compilation for algo " << sh_list[i]->getName() << endl;
     sh_list[i]->prepareCompile();
     cout << "compiling algo " << sh_list[i]->getName() << endl;
-    sh_list[i]->compile(0);
+    int cerr = sh_list[i]->compile(0);
+
+    if (cerr > 0) {
+      std::cout << "[CRITICAL] Strategy "<< sh_list[i]->getName() << " failed to compile !" << std::endl;
+      exit(1);
+    }
+
     cout << "loading compiled algo " << sh_list[i]->getName() << endl;
     sh_list[i]->dlibOpen(0);
 

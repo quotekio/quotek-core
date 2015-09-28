@@ -119,13 +119,20 @@ int strategyHandler::compile(int iter) {
   ostringstream oss;
   oss << iter;
 
-  string ccmd = strategyHandler::cc + " " + strategyHandler::cflags + " " + name + ".cpp -o " + name +  oss.str()  + ".so" + " " + strategyHandler::dependencies;
+  string ccmd = strategyHandler::cc + 
+                " " + strategyHandler::cflags + " " + 
+                name + ".cpp -o " + name +  oss.str()  + ".so" + 
+                " " + strategyHandler::dependencies + 
+                " 2>/tmp/adam/compiler.errors.log";
   
   chdir(strategyHandler::cpath.c_str()); 
+  system("> /tmp/adam/compiler.errors.log");
   system(ccmd.c_str());
 
-  return 0;
-
+  struct stat errstatus;
+  stat("/tmp/adam/compiler.errors.log", &errstatus );
+  
+  return errstatus.st_size;
 }
 
 int strategyHandler::dlibOpen(int iter) {
