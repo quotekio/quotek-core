@@ -59,6 +59,11 @@ namespace quotek {
         std::vector<quotek::data::news> search(std::string term,
                                                int nb_tweets);
 
+        std::vector<quotek::data::news> search(std::string term,
+                                               int nb_tweets,
+                                               std::string result_type,
+                                               std::string lang);
+
 
       private:
 

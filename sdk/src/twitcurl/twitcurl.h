@@ -46,7 +46,8 @@ public:
     void setTwitterPassword( const std::string& passWord /* in */ );
 
     /* Twitter search APIs */
-    bool search( const std::string& searchQuery /* in */, const std::string resultCount = "" /* in */ );
+    //bool search( const std::string& searchQuery /* in */, const std::string resultCount = "" /* in */ );
+    bool search( const std::string& searchQuery, const std::string resultCount = "", const std::string resultType = "", const std::string lang = "" );
 
     /* Twitter status APIs */
     bool statusUpdate( const std::string& newStatus /* in */, const std::string inReplyToStatusId = "" /* in */ );

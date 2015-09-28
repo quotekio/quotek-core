@@ -381,7 +381,7 @@ void twitCurl::setInterface( const std::string& Interface )
 * @note: Only ATOM and JSON format supported.
 *
 *--*/
-bool twitCurl::search( const std::string& searchQuery, const std::string resultCount )
+bool twitCurl::search( const std::string& searchQuery, const std::string resultCount, const std::string resultType, const std::string lang )
 {
     /* Prepare URL */
     std::string buildUrl = twitCurlDefaults::TWITCURL_PROTOCOLS[m_eProtocolType] +
@@ -395,6 +395,14 @@ bool twitCurl::search( const std::string& searchQuery, const std::string resultC
     {
         buildUrl += twitCurlDefaults::TWITCURL_URL_SEP_AMP +
                     twitCurlDefaults::TWITCURL_COUNT + urlencode( resultCount );
+    }
+
+    if (resultType.size()) {
+      buildUrl += twitCurlDefaults::TWITCURL_URL_SEP_AMP + "result_type=" + urlencode(resultType);
+    }
+
+    if (lang.size()) {
+      buildUrl += twitCurlDefaults::TWITCURL_URL_SEP_AMP + "lang=" + urlencode(lang);
     }
 
     /* Perform GET */
