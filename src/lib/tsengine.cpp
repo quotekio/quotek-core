@@ -177,9 +177,10 @@ void tsEngine::broker_sync_start() {
         p.limit = limit;
         p.size = size;
         p.pnl = 0;
+
         //p.status = POS_OPEN;
         mm->addPosition(p);
- 
+         
       }    
     }
   }
@@ -529,6 +530,7 @@ void tsEngine::evaluate(strategy* s) {
     quotek::data::record& last_rec = s->recs->last();
     s->value = last_rec.value;
     s->spread = last_rec.spread;
+    s->t = last_rec.timestamp;
 
     //user algo tick evaluation.
     s->evaluate();

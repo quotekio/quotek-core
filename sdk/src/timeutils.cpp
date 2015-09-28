@@ -10,7 +10,21 @@ namespace quotek {
   namespace core {
       
     namespace time {
-       
+
+
+        std::string hour(long timestamp) {
+        
+          const std::time_t ttstamp = (const std::time_t) timestamp;
+          std::tm* c_time =  std::localtime(&ttstamp);
+          std::stringstream ss;
+          
+          ss << std::setfill('0') << std::setw(2) << c_time->tm_hour << ":" ;
+          ss << std::setfill('0') << std::setw(2) << c_time->tm_min << ":" ;
+          ss << std::setfill('0') << std::setw(2) << c_time->tm_sec;
+
+          return ss.str();
+
+        }       
 
         bool is_time(std::string time_string, long timestamp) {
 

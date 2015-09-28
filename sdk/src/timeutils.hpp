@@ -32,14 +32,25 @@ namespace quotek {
      */
     namespace time {
 
+
+        /** hour takes an epoch timestamp and returns an "HH:MM:SS" string corresponding.
+         *  @param timestamp: epoch timestamp to get hour string from.
+         *  @return hour string with the form "HH:MM:SS"
+         */
+         
+        std::string hour(long timestamp);
+
+
         /**
          * is_time tells if a time string matches with the epoch timestamp provided
          * as an argument.
          * @param time_string string representing time, can be under the form "HH:MM:SS" or "HH:MM"
          * @return true if time_string is current time, false otherwise.
          */
+
         bool is_time(std::string time_string, 
                      long timestamp);
+
 
         /**
          * trade_hours tells if the market is open or not according to open and close hours

@@ -17,7 +17,7 @@ namespace quotek {
     }
 
     position::~position() {
-      delete stats;
+      
     }
 
     void position::set_vstop(int new_vstop) {

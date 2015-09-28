@@ -29,8 +29,6 @@ namespace quotek {
 
           std::string data = this->query("GetTextSentiment", payload , format);
 
-          std::cout << data << std::endl;
-
           quotek::ml::sentiment s1;
           s1.score = 0;
           s1.error = false;
@@ -45,17 +43,11 @@ namespace quotek {
             return s1;
           }
 
-          if ( ! d["status"].IsString() ) {
-            s1.error = true;
-            s1.error_message = "Alchemy API returned Invalid JSON response";
-            return s1;
-          }
-
           if ( d["status"].GetString() == std::string("OK") ) {
 
             if ( ! d.HasMember("docSentiment") ) {
               s1.error = true;
-              s1.error_message = "Alchemy API didn't return any sentiment object";
+              s1.error_message = "Alchemy API returned no sentiment object.";
               return s1;
             }
 
@@ -65,7 +57,7 @@ namespace quotek {
             if ( d["docSentiment"].HasMember("score") ) score_str = d["docSentiment"]["score"].GetString();
             if ( d["docSentiment"].HasMember("type") ) type_str = d["docSentiment"]["type"].GetString();
 
-            s1.positive = ( type_str == "positive" ) ? true : false ;
+            s1.sentiment = type_str;
             s1.score = atof(score_str.c_str());
             if (d["docSentiment"].HasMember("mixed") ) s1.mixed = true;
             else s1.mixed = false;
@@ -75,7 +67,7 @@ namespace quotek {
           /* Something went wrong ! */
           else {
             s1.error = true;
-            s1.error_message = "Alchemy API returned an error status!";
+            s1.error_message = "Alchemy API returned an error status.";
             return s1;
           }
 

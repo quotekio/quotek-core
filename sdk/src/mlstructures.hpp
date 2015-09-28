@@ -53,9 +53,9 @@ namespace quotek {
         /** stores the computed sentiment score. */
         float score;
         
-        /** Stores whether the computed sentiment is felt overall as positive or negative.
-         *  If positive if false, then sentiment is persived as negative. */
-        bool positive;
+        /** Stores whether the computed sentiment is felt overall as positive, negative or neutral.
+         *  so data stored in here can be "positive", "negative" or "neutral"  */
+        std::string sentiment;
 
         /** Stores whether the sentiment is felt as mixed or not.
          *  If sentiment is mixed, you should take the result carefully.
