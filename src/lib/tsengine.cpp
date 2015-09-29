@@ -420,11 +420,12 @@ void tsEngine::saveToBackend() {
       if (i==0) rsize_snapshot = recs.size();
       backend_save_pos = this->getBSP();
 
-      cout << "BACKEND_SAVE_POS:" << backend_save_pos << endl;
-      cout << "RSIZE_SNAPSHOT:" << rsize_snapshot << endl;
+      //cout << "BACKEND_SAVE_POS:" << backend_save_pos << endl;
+      //cout << "RSIZE_SNAPSHOT:" << rsize_snapshot << endl;
       
       for (int j= backend_save_pos;j < rsize_snapshot ;j++) {
-        quotek::data::record& r = recs[i];
+        quotek::data::record& r = recs[j];
+        
         back0->store(iname, r );
       }
 
