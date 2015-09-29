@@ -438,8 +438,8 @@ void tsEngine::saveToBackend() {
     auto elapsed_t = tt1 - tt0;
     uint64_t elapsed = std::chrono::duration_cast<std::chrono::microseconds>(elapsed_t).count();
     
-    if (elapsed < 10000000) {  
-      usleep(10000000 - elapsed);
+    if (elapsed < 1000000) {  
+      usleep(1000000 - elapsed);
     }
 
   }
