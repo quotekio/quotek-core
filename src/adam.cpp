@@ -167,7 +167,7 @@ int main(int argc,char** argv) {
 
   extern tsEngine* t;
 
-  cout << "ADAM TRADING BOT " << ADAM_VERSION << endl << "(c) 2013-2014 Clément Gamé" << endl;
+  cout << "ADAM TRADING BOT " << ADAM_VERSION << endl << "(c) 2013-2016 Clément Gamé" << endl;
 
   //init signals
   struct sigaction sigact;
