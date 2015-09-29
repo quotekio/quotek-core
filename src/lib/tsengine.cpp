@@ -420,8 +420,8 @@ void tsEngine::saveToBackend() {
       if (i==0) rsize_snapshot = recs.size();
       backend_save_pos = this->getBSP();
 
-      //cout << "BACKEND_SAVE_POS:" << backend_save_pos << endl;
-      //cout << "RSIZE_SNAPSHOT:" << rsize_snapshot << endl;
+      cout << "BACKEND_SAVE_POS:" << backend_save_pos << endl;
+      cout << "RSIZE_SNAPSHOT:" << rsize_snapshot << endl;
       
       for (int j= backend_save_pos;j < rsize_snapshot ;j++) {
         quotek::data::record& r = recs[i];
@@ -437,8 +437,8 @@ void tsEngine::saveToBackend() {
     auto elapsed_t = tt1 - tt0;
     uint64_t elapsed = std::chrono::duration_cast<std::chrono::microseconds>(elapsed_t).count();
     
-    if (elapsed < 1000000) {  
-      usleep(1000000 - elapsed);
+    if (elapsed < 10000000) {  
+      usleep(10000000 - elapsed);
     }
 
   }

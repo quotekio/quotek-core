@@ -190,9 +190,15 @@ public:
       sdata << "\t}\n";
       sdata << "]";
 
+      //debug
+      std::cout << "SDATA:" << sdata << std::enl;
+
       std::string sdata_str = sdata.str();
 
       outp = hhdl->post(pre_url,sdata_str);
+
+      std::cout << "INFLUX_RESP:" << outp << std::endl;
+
       hhdl->destroy();
       return 0;
     }
