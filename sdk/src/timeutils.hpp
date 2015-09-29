@@ -34,7 +34,7 @@ namespace quotek {
 
 
         /** hour takes an epoch timestamp and returns an "HH:MM:SS" string corresponding.
-         *  @param timestamp: epoch timestamp to get hour string from.
+         *  @param timestamp epoch timestamp to get hour string from.
          *  @return hour string with the form "HH:MM:SS"
          */
          

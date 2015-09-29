@@ -7,9 +7,9 @@ http://www.quotek.io
 #include <quotek/broker.hpp>
 #include <iostream>
 
-void test_buy(quotek::core::strategy& s) {
+void test_buy(strategy& s) {
 
-  quotek::broker* b0 = new quotek::broker(s);
+  quotek::broker* b0 = new quotek::broker(&s);
   b0->buy("CAC40",2,20,20);
 
   std::string gen_order;
@@ -19,9 +19,9 @@ void test_buy(quotek::core::strategy& s) {
 
 }
 
-void test_sell(quotek::core::strategy& s) {
+void test_sell(strategy& s) {
 
-  quotek::broker* b0 = new quotek::broker(s);
+  quotek::broker* b0 = new quotek::broker(&s);
   b0->sell("CAC40",2,20,20);
 
   std::string gen_order;
@@ -31,9 +31,9 @@ void test_sell(quotek::core::strategy& s) {
 
 }
 
-void test_smartbuy(quotek::core::strategy& s) {
+void test_smartbuy(strategy& s) {
 
-  quotek::broker* b0 = new quotek::broker(s);
+  quotek::broker* b0 = new quotek::broker(&s);
   b0->smartbuy("CAC40",2);
 
   std::string gen_order;
@@ -42,9 +42,9 @@ void test_smartbuy(quotek::core::strategy& s) {
 
 }
 
-void test_smartsell(quotek::core::strategy& s) {
+void test_smartsell(strategy& s) {
 
-  quotek::broker* b0 = new quotek::broker(s);
+  quotek::broker* b0 = new quotek::broker(&s);
   b0->smartsell("CAC40",2);
 
   std::string gen_order;
@@ -53,9 +53,9 @@ void test_smartsell(quotek::core::strategy& s) {
   
 }
 
-void test_buy_hedged(quotek::core::strategy& s) {
+void test_buy_hedged(strategy& s) {
 
-  quotek::broker* b0 = new quotek::broker(s);
+  quotek::broker* b0 = new quotek::broker(&s);
   b0->buy_hedged("CAC40","EURUSD",2,20,20);
 
   std::string gen_order;
@@ -69,9 +69,9 @@ void test_buy_hedged(quotek::core::strategy& s) {
 }
 
 
-void test_buy_hedged_asym(quotek::core::strategy& s) {
+void test_buy_hedged_asym(strategy& s) {
 
-  quotek::broker* b0 = new quotek::broker(s);
+  quotek::broker* b0 = new quotek::broker(&s);
   b0->buy_hedged_asym("CAC40",2,20,20,"EURUSD",5,40,20);
 
   std::string gen_order;
@@ -85,9 +85,9 @@ void test_buy_hedged_asym(quotek::core::strategy& s) {
 }
 
 
-void test_closepos(quotek::core::strategy& s) {
+void test_closepos(strategy& s) {
 
-  quotek::broker* b0 = new quotek::broker(s);
+  quotek::broker* b0 = new quotek::broker(&s);
   b0->close_position("DSSJKDSL44");
 
   std::string gen_order;
@@ -98,11 +98,7 @@ void test_closepos(quotek::core::strategy& s) {
 
 int main() {
 
-  quotek::data::records recs;
-  std::map<std::string, quotek::data::any> store;
-  std::vector<quotek::core::position> portfolio;
-
-  quotek::core::strategy s(recs,store,portfolio);
+  strategy s;
   test_buy(s);
   test_sell(s);
   test_smartbuy(s);

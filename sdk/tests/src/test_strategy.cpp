@@ -7,7 +7,7 @@ http://www.quotek.io
 #include <quotek/strategy.hpp>
 #include <iostream>
 
-void test_order(quotek::core::strategy& s) {
+void test_order(strategy& s) {
 
   s.order("foobar");
 
@@ -17,7 +17,7 @@ void test_order(quotek::core::strategy& s) {
 
 }
 
-void test_log(quotek::core::strategy& s) {
+void test_log(strategy& s) {
 
   s.log("foobar");
 
@@ -28,11 +28,7 @@ void test_log(quotek::core::strategy& s) {
 
 int main() {
 
-  quotek::data::records recs;
-  std::map<std::string, quotek::data::any> store;
-  std::vector<quotek::core::position> portfolio;
-
-  quotek::core::strategy s(recs,store,portfolio);
+  strategy s;
   test_order(s);
   test_log(s);
 

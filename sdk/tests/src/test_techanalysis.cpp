@@ -10,6 +10,8 @@ http://www.quotek.io
 #include <quotek/quant.hpp>
 #include <iostream>
 
+#define EPSILON 0.01
+
 void test_macd(std::vector<quotek::data::record>& recs) {
 
   std::vector<quotek::data::records> macdr = quotek::ta::MACD(recs,12,26,9);
@@ -22,9 +24,28 @@ void test_macd(std::vector<quotek::data::record>& recs) {
   
 }
 
+void test_fibo() {
+ 
+  quotek::data::records recs;
+  recs.append(0,0);
+  recs.append(1,100);
+
+  quotek::quant::fibo_levels fl = quotek::ta::fibo_retrace(recs.get_data());
+
+  assert(fl.p0 == 0);
+  assert( fabs( fl.p23 - 23.6) < EPSILON );
+  assert(fl.p50 == 50); 
+  assert( fabs( fl.p38 - 38.2) < EPSILON );
+  assert( fabs( fl.p61 - 61.8) < EPSILON );
+  assert(fl.p100 == 100);
+  
+}
+
+
 
 int main() {
   std::vector<quotek::data::record> f1 = quotek::rand::generators::normal(100,4500,30);
   test_macd(f1);
+  test_fibo();
 
 }

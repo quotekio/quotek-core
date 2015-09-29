@@ -24,13 +24,13 @@ void test_sentiment(quotek::ml::alchemy& ac) {
   quotek::ml::sentiment s1 = ac.sentiment(sent_pos,"","text");
 
   assert(s1.score > 0);
-  assert(s1.positive);
+  assert(s1.sentiment == "positive");
   assert(!s1.mixed);
 
   s1 = ac.sentiment(sent_neg,"","text") ;
 
   assert(s1.score < 0);
-  assert(!s1.positive);
+  assert(s1.sentiment == "negative");
   assert(!s1.mixed);
 
 }

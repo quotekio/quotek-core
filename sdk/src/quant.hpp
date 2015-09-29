@@ -94,6 +94,32 @@ namespace quotek {
 
     } _greeks;
 
+    /** fibo_levels is a structure that stores the different fibonacci retracements for a time-serie */
+
+    typedef struct fibo_levels {
+
+      /** Stores level 0% */
+      float p0;
+      
+      /** Stores level 23.6 % */
+      float p23;
+      
+      /** Stores level 38.2 % */
+      float p38;
+
+      /** Stores level 50%. Please note that this is not really a fibo level 
+       *  but since it is highly used, it is also computed. */
+      float p50;
+
+      /* Stores level 61.8 % */
+      float p61;
+
+      /* Stores level 100 % */
+      float p100;
+
+    } fibo_levels;
+
+
     /**
      * above tells if the values contained in the provided dataset are mostly above 
      * or below value. accuracy will depend on provided thereshold (between 0 and 1) , 
