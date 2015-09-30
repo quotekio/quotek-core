@@ -720,6 +720,11 @@ tsEngine::tsEngine(adamCfg* conf,
   //loads potential previous cumulative PNL
   mm->loadCPNL();
 
+  //initializes inmem_history (else we get some pretty bad shit)
+  for (int i=0;i<si.size();i++) {
+    inmem_records[si[i]] = quotek::data::records();
+  }
+
   //loads history
   if (tse_back != NULL) {
     cout << "Loading history from backend.." << endl;

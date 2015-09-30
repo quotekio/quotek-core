@@ -83,6 +83,7 @@ class tsEngine{
 
     AssocArray<quotek::data::records>& getRecords();
     quotek::data::records& getAssetRecords(string);
+
     int pushValues(string mepic,float v);
     int pushRecord(string,quotek::data::record& r);
 
