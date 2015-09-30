@@ -48,16 +48,24 @@ namespace quotek {
                                               int nb_tweets);
 
 
-
         /** searches the tweets matching the term provided as argument.
          *
-         *  @param term: term to search in the global tweets feed?
+         *  @param term: term to search in the global tweets feed.
          *  @param nb_tweets: The number of found tweets to retrieve.
-         *  @return a vector of quotek news objects.
+         *  @return a vector of quotek news objects matching the search.
          */
 
         std::vector<quotek::data::news> search(std::string term,
                                                int nb_tweets);
+
+        /** searches the tweets matching the term provided as argument.
+         *  This method refines the usual search() method by adding 2 extra
+         *  parameters: result_type and language.
+         *  @param term: term to search in the global tweets feed.
+         *  @param nb_tweets: The number of found tweets to retrieve.
+         *  @param result_type: Type of the search result, can be either "popular", "recent" or "mixed".
+         *  @param language of the tweets, eg for english only tweets put lang = "en".
+         *  @return a vector of quotek news objects matching the search. */
 
         std::vector<quotek::data::news> search(std::string term,
                                                int nb_tweets,

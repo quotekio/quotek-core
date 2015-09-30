@@ -111,10 +111,10 @@ namespace quotek {
        *  but since it is highly used, it is also computed. */
       float p50;
 
-      /* Stores level 61.8 % */
+      /** Stores level 61.8 % */
       float p61;
 
-      /* Stores level 100 % */
+      /** Stores level 100 % */
       float p100;
 
     } fibo_levels;

@@ -42,8 +42,8 @@ In this example we will use the Alchemy API service to evaluate the overall sent
       /* we send each news to the Alchemy API service for sentiment analysis. */
       quotek::ml::sentiment sent = a1.sentiment( wsj_nlist[i].content,"","text");
 
-      if (sent.positive) pos_sent++;
-      else neg_sent++;
+      if (sent.sentiment == "positive") pos_sent++;
+      else if (sent.sentiment == "negative") neg_sent++;
 
     }
 
