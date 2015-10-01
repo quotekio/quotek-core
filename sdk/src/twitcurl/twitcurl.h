@@ -1,6 +1,7 @@
 #ifndef _TWITCURL_H_
 #define _TWITCURL_H_
 
+#include <algorithm>
 #include <string>
 #include <sstream>
 #include <cstring>

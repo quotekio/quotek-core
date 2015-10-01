@@ -57,7 +57,7 @@ namespace quotek {
             if ( d["docSentiment"].HasMember("score") ) score_str = d["docSentiment"]["score"].GetString();
             if ( d["docSentiment"].HasMember("type") ) type_str = d["docSentiment"]["type"].GetString();
 
-            s1.sentiment = type_str;
+            s1.sentimentstr = type_str;
             s1.score = atof(score_str.c_str());
             if (d["docSentiment"].HasMember("mixed") ) s1.mixed = true;
             else s1.mixed = false;
