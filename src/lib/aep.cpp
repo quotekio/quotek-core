@@ -11,15 +11,17 @@ std::string aep_answer(std::string data,tsEngine* t0) {
     res = aep_corestats(t0);
   }
 
+  else if ( data == "algos\r\n") {
+    res = aep_algos(t0);
+  }
+
   else if (data == "poslist\r\n") {
     res = aep_poslist(t0);
   }
-
   
   else if (data == "btprogress\r\n") {
     res = aep_btprogress(t0);
   }
-
 
   else if (data == "version\r\n") {
     res = aep_version(t0);
@@ -86,6 +88,26 @@ std::string aep_version(tsEngine* t0) {
 
 }
 
+std::string aep_algos(tsEngine* t0) {
+
+  stringstream ret;
+  std::vector<algo> running_algos = t0->getAlgos();
+
+  ret << "[" ;
+
+  for (int i = 0; i< running_algos.size();i++) {
+    
+    ret << "{\"identifier\":\"" << running_algos[i].strategy << "@" <<  running_algos[i].eval_name << "\",";
+    ret << "\"pnl\":\"" << running_algos[i].pnl << "\"}";
+
+    if ( i < running_algos.size() - 1 ) ret << ",";
+
+  }
+
+  ret << "]";
+  return ret.str();
+
+}
 
 std::string aep_order(tsEngine* t0, std::vector<string> args) {
 

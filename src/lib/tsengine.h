@@ -59,9 +59,18 @@ typedef struct evaluate_io {
 } evaluate_io;
 
 
+typedef struct algo {
+      std::thread* th;
+      void* eval_ptr;
+      string eval_name;
+      string strategy;
+      float pnl;
+} algo;
+
 class tsEngine{
 
   public:
+
     tsEngine();
     tsEngine(adamCfg*,
              broker*,
@@ -90,6 +99,7 @@ class tsEngine{
     adamCfg** getAdamConfig();
 
     AssocArray<void*>* getEvalPointers();
+    std::vector<algo> getAlgos();
     igmLogger* getLogger();
 
     std::map<std::string, quotek::data::any>& getStore();
@@ -106,7 +116,7 @@ class tsEngine{
     int getBSP();
     void setBSP(int);
 
-    void openPosition(string epic, string way, int nbc, int stop, int limit);
+    void openPosition(string id, string epic, string way, int nbc, int stop, int limit);
     void closePosition(string dealid);
 
     /** Creates a new object to expose some parts of the engine. */
@@ -197,28 +207,12 @@ class tsEngine{
     std::thread* clkth;
     std::thread* backioth;
 
-    typedef struct eval_thread {
-      tsEngine* engine;
-      std::thread* th;
-      void* eval_ptr;
-      string eval_name;
-    } eval_thread;
-
     vector<std::thread> modules_threads_list;
-    vector<eval_thread> eval_threads;
+    vector<algo> algos;
 
     vector<strategy*> spool;
 
     int uptime;
 };
-
-
-typedef struct eval_thread {
-
-  tsEngine* engine;
-  std::thread* th;
-  void* eval_ptr;
-  string eval_name;
-} eval_thread;
 
 #endif

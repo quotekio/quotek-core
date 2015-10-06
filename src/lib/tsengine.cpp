@@ -48,7 +48,7 @@ void tsEngine::modulethread_wrapper() {
   */
 } 
 
-void tsEngine::openPosition(string epic, string way, int nbc, int stop, int limit) {
+void tsEngine::openPosition(string id, string epic, string way, int nbc, int stop, int limit) {
 
   //API Performance profiling.
   auto tt0 = std::chrono::high_resolution_clock::now();
@@ -61,6 +61,7 @@ void tsEngine::openPosition(string epic, string way, int nbc, int stop, int limi
   if (ex1.status == "ACCEPTED")  {
 
     quotek::core::position p;
+    p.identifier = id;
     p.asset_id = epic;
     p.asset_name = idx->name;
     p.ticket_id = ex1.dealid;
@@ -164,9 +165,12 @@ void tsEngine::broker_sync_start() {
       alive_pos.push_back(dealid);
 
       if (! mm->hasPos(dealid) ) {
+
+        std::cout << "New position found:" << dealid << std::endl;
         logger->log("New position found:" + dealid);       
-   
+
         quotek::core::position p;
+        p.identifier = "none";
         p.asset_id = epic;
         p.asset_name = indice;
         p.ticket_id = dealid;
@@ -180,32 +184,10 @@ void tsEngine::broker_sync_start() {
 
         //p.status = POS_OPEN;
         mm->addPosition(p);
-         
       }    
     }
   }
 }
-
-/*
-void* broker_force_close(void* arg) {
-
-  tsEngine* t0 = (tsEngine*) arg;
-  moneyManager* mm = this->getMoneyManager();
-  broker* b0 = this->getBroker();
-  vector<position>* poslist = mm->getPositions();
-  Queue<std::string> *orders_queue = this->getOrdersQueue();
-
-  while(1) {
-    for (int i=0;i<poslist->size();i++) {
-      if (poslist->at(i).status == POS_PENDING_CLOSE) {
-        orders_queue->push("closepos:" + poslist->at(i).dealid );
-      }
-    }
-    sleep(5);
-  }
-}
-*/
-
 
 void tsEngine::aclock() {
 
@@ -217,7 +199,6 @@ void tsEngine::aclock() {
 
 void tsEngine::moneyman() {
 
-  broker* b0 = this->getBroker();
   moneyManager* mm = this->getMoneyManager();
   AssocArray<indice*> ilist = this->getIndicesList();
   vector<string> si = iGetNames(ilist);
@@ -225,142 +206,60 @@ void tsEngine::moneyman() {
   quotek::data::cqueue<std::string> *orders_queue = this->getOrdersQueue();
   std::vector<strategyHandler*> sh_list = this->getStratHandlers();
 
-  //TRADELIFE struct for fctptr
-  typedef void* (*tl_fct)(pos_c*,tradelife_io*);
-  //void* tl_fct_fref = sh->getTLFct();
-  void* tl_fct_fref = NULL; 
   quotek::data::cvector<quotek::core::position>& poslist = mm->getPositions();
 
   //pnl-needed vars
   float v;
-
   float cval;
   quotek::data::record r;
- 
-  quotek::core::position* p;
 
-  tradelife_io tl_io;
-  
   int inc = 0;
-
-  Queue_c orders_q = CreateQueue(50);
-  Queue_c logs_q = CreateQueue(50);
-
-  tl_io.orders = &orders_q;
-  tl_io.logs = &logs_q;
-  //tl_io.s = this->getStore();
 
   while (1) {
 
     //checks STOPS & LIMIT and cleans positions if needed.
-    for(vector<quotek::core::position>::iterator iter = poslist.begin(); iter != poslist.end();++iter) {
+    for(int i=0;i< poslist.size();i++ ) {
 
-      p = &*iter;
-      r = this->getAssetRecords(p->asset_name).last();
+      quotek::core::position& p = poslist[i];
+
+      if ( this->getAssetRecords(p.asset_name).size() == 0 ) continue;
+
+      r = this->getAssetRecords(p.asset_name).last();
       cval = r.value;
 
       //checking of Real Stops
-      if ( p->size < 0  &&  cval >= p->stop ) {
-        mm->remPosition(iter);
-        logger->log("Position " +  p->ticket_id + " closed ! (STOP)");
+      /*
+      if ( p.size < 0  &&  cval >= p.stop ) {
+        mm->remPosition(p.ticket_id);
+        logger->log("Position " +  p.ticket_id + " closed ! (STOP)");
         continue;
       }
 
-      else if ( p->size > 0  &&  cval <= p->stop ) {
-        mm->remPosition(iter);
-        logger->log("Position " +  p->ticket_id + " closed ! (STOP)");
+      else if ( p.size > 0  &&  cval <= p.stop ) {
+        mm->remPosition(p.ticket_id);
+        logger->log("Position " +  p.ticket_id + " closed ! (STOP)");
         continue;
       }
 
-      if (p->limit > 0) {
+      if (p.limit > 0) {
 
-        if ( p->size < 0  &&  cval < p->limit ) {
-          mm->remPosition(iter);
-          logger->log("Position " +  p->ticket_id + " closed ! (LIMIT)");
+        if ( p.size < 0  &&  cval < p.limit ) {
+          mm->remPosition(p.ticket_id);
+          logger->log("Position " +  p.ticket_id + " closed ! (LIMIT)");
           continue;
         }
 
-        else if ( p->size > 0  &&  cval > p->limit ) {
-          mm->remPosition(iter);
-          logger->log("Position " +  p->ticket_id + " closed ! (LIMIT)");
+        else if ( p.size > 0  &&  cval > p.limit ) {
+          mm->remPosition(p.ticket_id);
+          logger->log("Position " +  p.ticket_id + " closed ! (LIMIT)");
           continue;
         }
       }
+      */
     }
 
     //plays tradelife callback inside strategy.
-    if ( tl_fct_fref != NULL) {
-
-      tl_fct tl = (tl_fct) tl_fct_fref;
-
-      for(vector<quotek::core::position>::iterator iter = poslist.begin(); iter != poslist.end();++iter) {
-
-        
-        p = &*iter;
-
-        pos_c pos_io;
-        pos_io.indice = p->asset_name.c_str();
-        pos_io.dealid = p->ticket_id.c_str();
-        pos_io.pnl = p->pnl;
-        pos_io.open = p->open;
-        pos_io.size = p->size;
-        pos_io.stop = p->stop;
-        pos_io.vstop = p->get_vstop();
-        pos_io.vlimit = p->get_vlimit();
-        //pos_io.nb_inc = p->nb_inc; 
-        pos_io.limit = p->limit;
-
-        (*tl)(&pos_io,&tl_io);
-
-        p->set_vstop(pos_io.vstop);
-        p->set_vlimit(pos_io.vlimit);
-
-        while( ! IsEmpty( orders_q ) ) {
-          char* order = (char*) FrontAndDequeue( orders_q );
-          std::string order_str = std::string(order);
-          if ( order_str != "") {
-            orders_queue->push(order_str);
-          }
-          free(order);
-        }
-
-        while( ! IsEmpty( logs_q ) ) {
-          char* logstr = (char*) FrontAndDequeue( logs_q );
-          std::string log_str = std::string(logstr);
-          if ( log_str != "") {
-            logger->log(log_str);
-          }
-          free(logstr);
-        }
-
-        r = this->getAssetRecords(p->asset_name).last();
-
-        //Checking of Virtual Stops/Limits
-        if ( p->size < 0  &&  cval >= p->get_vstop() ) {
-          orders_queue->push("closepos:" + p->ticket_id );
-        }
-
-        else if ( p->size > 0  &&  cval <= p->get_vstop() ) {
-          orders_queue->push("closepos:" + p->ticket_id );
-        }
-          
-        if (p->get_vlimit() != 0) {
-
-          /* CLose on virtual limit */
-          if ( p->size > 0  &&  cval >= p->get_vlimit() ) {
-            orders_queue->push("closepos:" + p->ticket_id );
-          }
-            
-          /* CLose on virtual limit */
-          else if ( p->size < 0  &&  cval <= p->get_vlimit() ) {
-            orders_queue->push("closepos:" + p->ticket_id );
-          }
-
-        }
-
-      }
-
-    }
+    //STUBBED
 
     for(int j=0;j<si.size();j++) {
       
@@ -393,13 +292,16 @@ void tsEngine::saveToBackend() {
   this->setBSP(0);
   int backend_save_pos = this->getBSP();
   quotek::data::cvector<quotek::core::position>* pos_history = this->getMoneyManager()->getPositionsHistory();
-   
+
   int prev_t = 0;
 
   while(1) {
 
     auto tt0 = std::chrono::high_resolution_clock::now();
 
+    std::cout << "SAVE" << std::endl;
+
+    
     //saves history
     for (int i=0; i< pos_history->size();i++ ) {
       if ( pos_history->at(i).close_date > prev_t ) {
@@ -420,8 +322,8 @@ void tsEngine::saveToBackend() {
       if (i==0) rsize_snapshot = recs.size();
       backend_save_pos = this->getBSP();
 
-      //cout << "BACKEND_SAVE_POS:" << backend_save_pos << endl;
-      //cout << "RSIZE_SNAPSHOT:" << rsize_snapshot << endl;
+      cout << "BACKEND_SAVE_POS:" << backend_save_pos << endl;
+      cout << "RSIZE_SNAPSHOT:" << rsize_snapshot << endl;
       
       for (int j= backend_save_pos;j < rsize_snapshot ;j++) {
         quotek::data::record& r = recs[j];
@@ -432,14 +334,14 @@ void tsEngine::saveToBackend() {
     }
 
     backend_save_pos = rsize_snapshot;
-    this->setBSP(backend_save_pos);
+    this->setBSP(backend_save_pos);  
 
     auto tt1 = std::chrono::high_resolution_clock::now();
     auto elapsed_t = tt1 - tt0;
     uint64_t elapsed = std::chrono::duration_cast<std::chrono::microseconds>(elapsed_t).count();
     
-    if (elapsed < 1000000) {  
-      usleep(1000000 - elapsed);
+    if (elapsed < 5000000) {  
+      usleep(5000000 - elapsed);
     }
 
   }
@@ -582,6 +484,7 @@ void tsEngine::execute() {
         std::string indice = order_params.at(1);
         std::string epic = iResolve(ilist,indice)->bmapping;
         std::string way = order_params.at(2);
+        std::string id = order_params.at(6);
 
         int nbc = 0;
         int stop = 0;
@@ -621,7 +524,7 @@ void tsEngine::execute() {
            for (int k=0;k<reverse_dealids.size();k++) this->closePosition(reverse_dealids[k]);
          }
 
-          this->openPosition(epic,way,nbc,stop,limit) ;
+          this->openPosition(id,epic,way,nbc,stop,limit);
 
         }
      
@@ -720,7 +623,7 @@ tsEngine::tsEngine(adamCfg* conf,
   //loads potential previous cumulative PNL
   mm->loadCPNL();
 
-  //initializes inmem_history (else we get some pretty bad shit)
+  //initializes inmem_records (else we get some pretty bad shit)
   for (int i=0;i<si.size();i++) {
     inmem_records[si[i]] = quotek::data::records();
   }
@@ -755,26 +658,31 @@ tsEngine::tsEngine(adamCfg* conf,
     for (int i=0;i<evnames.size();i++) {
 
       if (strat_ptr &&  std::regex_match(evnames.at(i), asset_match) ) {
-        eval_thread et;
+
+        algo al;
         cout << "loading eval for indice "  << evnames.at(i)  << endl;
-        et.eval_ptr = strat_ptr;
-        et.eval_name = evnames.at(i);
-        eval_threads.emplace_back(et);
+        al.eval_ptr = strat_ptr;
+        al.eval_name = evnames.at(i);
+        al.strategy = tse_strathandlers[j]->getName();
+        al.pnl = 0;
+        algos.emplace_back(al);
+
       }
     }
   }
 
-  for (int i=0;i<eval_threads.size();i++) {
+  for (int i=0;i<algos.size();i++) {
 
     //function pointer to extern C create_st symbol.
-    create_st* c_strat = (create_st*) eval_threads[i].eval_ptr ;
+    create_st* c_strat = (create_st*) algos[i].eval_ptr ;
     strategy* st = c_strat();
 
-    st->recs = &this->getAssetRecords(eval_threads[i].eval_name);
-    st->asset_name = eval_threads[i].eval_name;
+    st->recs = &this->getAssetRecords(algos[i].eval_name);
+    st->asset_name = algos[i].eval_name;
+    st->identifier = algos[i].strategy + "@" + algos[i].eval_name;
 
-    eval_threads[i].th = new std::thread( [st, this] {  this->evaluate(st); });   
-    eval_threads[i].th->detach();
+    algos[i].th = new std::thread( [st, this] {  this->evaluate(st); });   
+    algos[i].th->detach();
 
   }
 
@@ -784,14 +692,18 @@ tsEngine::tsEngine(adamCfg* conf,
   printf ("Initializing executor..\n");
   executor = new std::thread([this] { execute(); });
 
+  
   printf ("Initializing money manager..\n");
   mmth = new std::thread([this] { moneyman(); });
-
+  
   printf ("Synchronizing broker Positions with adam..\n");
   broker_sync_start();
 
-  printf ("Initializing backend I/O Thread..\n");
-  backioth = new std::thread( [this] { saveToBackend(); }  );
+
+  
+  //printf ("Initializing backend I/O Thread..\n");
+  //backioth = new std::thread( [this] { saveToBackend(); }  );
+
 
 }
 
@@ -840,6 +752,11 @@ moneyManager* tsEngine::getMoneyManager() {
  genetics* tsEngine::getGE() {
   return tse_ge;
  }
+
+std::vector<algo> tsEngine::getAlgos() {
+  return algos;
+}
+
 
 AssocArray<void*>* tsEngine::getEvalPointers() {
   return &eval_ptrs;

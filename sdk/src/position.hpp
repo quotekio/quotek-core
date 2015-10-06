@@ -113,6 +113,10 @@ namespace quotek {
 
         posstats* stats;
 
+        /** Identifier is a special string meant to identify the position taker. 
+         *  It is not mandatory if you don't need to know who/what actually opened the position. */
+        std::string identifier;
+
       private:
 
       	/** vstop is a virtual stop-loss */

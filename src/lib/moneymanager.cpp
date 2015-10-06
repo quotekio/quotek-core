@@ -145,7 +145,7 @@ vector<string> moneyManager::findPos(string indice ,string way) {
 
 
 int moneyManager::addPosition(quotek::core::position p) {
-  positions.push_back(p);
+  positions.emplace_back(p);
   return 0;
 }
 
@@ -177,7 +177,7 @@ vector<quotek::core::position>::iterator moneyManager::remPosition(vector<quotek
       p->close_date = time(0);
 
       //stores position to history
-      positions_history.push_back(*p);
+      positions_history.emplace_back(*p);
 
       //deletes position from poslist
       cumulative_pnl += p->pnl;
@@ -187,7 +187,7 @@ vector<quotek::core::position>::iterator moneyManager::remPosition(vector<quotek
 
 void moneyManager::remPosition(string dealid) {
   
-  for (std::vector<quotek::core::position>::iterator iter =  positions.begin() ;iter != positions.end();++iter) {
+  for (vector<quotek::core::position>::iterator iter =  positions.begin() ;iter != positions.end();++iter) {
     
     quotek::core::position *p = &*iter;
 
@@ -195,7 +195,7 @@ void moneyManager::remPosition(string dealid) {
     p->close_date = time(0);
 
     //stores position to history
-    positions_history.push_back(*p);
+    positions_history.emplace_back(*p);
 
     //deletes position from poslist
     if (p->ticket_id == dealid) {

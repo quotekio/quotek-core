@@ -100,6 +100,10 @@ float spread;
 /** Asset name stores the asset for which the strategy instance is running */
 std::string asset_name;
 
+/** Strategy Thread Identifier. If you use Quotek SaaS, NEVER overwrite this variable */
+std::string identifier;
+
+
 /** t stores the current epoch timestamp */
 long t;
 
