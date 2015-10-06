@@ -154,6 +154,8 @@ void tsEngine::broker_sync_start() {
 
     if (idx != NULL) {
           
+      
+
       epic = broker_poslist[i].epic;
       indice = idx->name;
       dealid = broker_poslist[i].dealid;
@@ -228,7 +230,7 @@ void tsEngine::moneyman() {
       cval = r.value;
 
       //checking of Real Stops
-      /*
+    
       if ( p.size < 0  &&  cval >= p.stop ) {
         mm->remPosition(p.ticket_id);
         logger->log("Position " +  p.ticket_id + " closed ! (STOP)");
@@ -255,7 +257,6 @@ void tsEngine::moneyman() {
           continue;
         }
       }
-      */
     }
 
     //plays tradelife callback inside strategy.
@@ -289,19 +290,21 @@ void tsEngine::moneyman() {
 void tsEngine::saveToBackend() {
 
   backend* back0 = this->getBackend();
-  this->setBSP(0);
-  int backend_save_pos = this->getBSP();
   quotek::data::cvector<quotek::core::position>* pos_history = this->getMoneyManager()->getPositionsHistory();
-
   int prev_t = 0;
+
+  std::map<std::string, savepos> save_positions;
+
+  //initializes save_positions
+  for (int i=0; i< inmem_records.Size(); i++) {
+      string iname = inmem_records.GetItemName(i);
+      save_positions[iname].saved = 0;
+  }
 
   while(1) {
 
     auto tt0 = std::chrono::high_resolution_clock::now();
 
-    std::cout << "SAVE" << std::endl;
-
-    
     //saves history
     for (int i=0; i< pos_history->size();i++ ) {
       if ( pos_history->at(i).close_date > prev_t ) {
@@ -310,38 +313,32 @@ void tsEngine::saveToBackend() {
       }
     }
 
-    AssocArray<quotek::data::records>& inmem_records = this->getRecords();
     int rsize_snapshot;
     for (int i=0; i< inmem_records.Size(); i++) {
 
       string iname = inmem_records.GetItemName(i);
-      quotek::data::records& recs = inmem_records.at(i);
+      quotek::data::records& recs = inmem_records[i];
 
-      //snap records size only once for first element.
-      //(next elements should always have at leaest the same size)
-      if (i==0) rsize_snapshot = recs.size();
-      backend_save_pos = this->getBSP();
+      save_positions[iname].size = recs.size();
 
-      cout << "BACKEND_SAVE_POS:" << backend_save_pos << endl;
-      cout << "RSIZE_SNAPSHOT:" << rsize_snapshot << endl;
+      //cout << "BACKEND_SAVE_POS:" << save_positions[iname].saved << endl;
+      //cout << "RSIZE_SNAPSHOT:" << save_positions[iname].size << endl;
       
-      for (int j= backend_save_pos;j < rsize_snapshot ;j++) {
+      for (int j=  save_positions[iname].saved ;j <  save_positions[iname].size ;j++) {
         quotek::data::record& r = recs[j];
-        
         back0->store(iname, r );
       }
 
-    }
+      save_positions[iname].saved = save_positions[iname].size;
 
-    backend_save_pos = rsize_snapshot;
-    this->setBSP(backend_save_pos);  
+    }
 
     auto tt1 = std::chrono::high_resolution_clock::now();
     auto elapsed_t = tt1 - tt0;
     uint64_t elapsed = std::chrono::duration_cast<std::chrono::microseconds>(elapsed_t).count();
     
-    if (elapsed < 5000000) {  
-      usleep(5000000 - elapsed);
+    if (elapsed < 2000000) {  
+      usleep(2000000 - elapsed);
     }
 
   }
@@ -700,9 +697,8 @@ tsEngine::tsEngine(adamCfg* conf,
   broker_sync_start();
 
 
-  
-  //printf ("Initializing backend I/O Thread..\n");
-  //backioth = new std::thread( [this] { saveToBackend(); }  );
+  printf ("Initializing backend I/O Thread..\n");
+  backioth = new std::thread( [this] { saveToBackend(); }  );
 
 
 }

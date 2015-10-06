@@ -142,70 +142,10 @@ void btEngine::moneyman_() {
 
   vector<string> si = iGetNames(indices_list);
   float v;
-
-  //TRADELIFE struct for fctptr
-  typedef void* (*tl_fct)(pos_c*,tradelife_io*);
-  //void* tl_fct_fref = tse_strathandler->getTLFct(); 
-  void* tl_fct_fref = NULL;
-
-  tradelife_io tl_io;
-
+  
   quotek::data::cvector<quotek::core::position>& poslist = tse_mm->getPositions();
 
-  if ( tl_fct_fref != NULL) {
-
-    Queue_c orders_q = CreateQueue(50);
-    Queue_c logs_q =  CreateQueue(50);
-
-    tl_io.orders = &orders_q;
-    tl_io.logs = &logs_q;
-    //tl_io.s = &tse_store;
-
-    tl_fct tl = (tl_fct) tl_fct_fref;
-
-    for (int i=0;i<poslist.size();i++) {
-
-      /** USELESS/To Rewrite SECTION
-      pos_c pos_io;
-      pos_io.asset_name = poslist->at(i).asset_name.c_str();
-      pos_io.ticket_id = poslist->at(i).ticket_id.c_str();
-      pos_io.pnl = poslist->at(i).pnl;
-      pos_io.open = poslist->at(i).open;
-      pos_io.size = poslist->at(i).size;
-      pos_io.stop = poslist->at(i).stop;
-      pos_io.vstop = poslist->at(i).vstop;
-      pos_io.vlimit = poslist->at(i).vlimit;
-      pos_io.nb_inc = poslist->at(i).nb_inc; 
-      pos_io.limit = poslist->at(i).limit;
-
-      (*tl)(&pos_io,&tl_io);
-
-      poslist->at(i).vstop = pos_io.vstop;
-      poslist->at(i).vlimit = pos_io.vlimit;
-      poslist->at(i).nb_inc = pos_io.nb_inc;
-      */
-
-      while( ! IsEmpty( orders_q ) ) {
-        char* order = (char*) FrontAndDequeue( orders_q );
-        std::string order_str = std::string(order);
-        if ( order_str != "") {
-          orders_queue.push(order_str);
-        }
-        free(order);
-      }
-
-      while( ! IsEmpty( logs_q ) ) {
-        char* logstr = (char*) FrontAndDequeue( logs_q );
-        std::string log_str = std::string(logstr);
-        if ( log_str != "") {
-          logger->log(log_str);
-        }
-        free(logstr);
-      }
- 
-    }
-
-  }
+  //tradelife evaluate
 
   for(int j=0;j<si.size();j++) {
     

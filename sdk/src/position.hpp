@@ -99,11 +99,11 @@ namespace quotek {
         /** position open price */
       	float open;
       	
-      	/** position stop-loss, in BPS */
-      	int stop;
+      	/** position stop-loss. */
+      	float stop;
 
-        /** position limit, in BPS */
-      	int limit;
+        /** position limit. */
+      	float limit;
         
         /** position open date, as epoch timestamp */
         long open_date;

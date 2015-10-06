@@ -40,25 +40,6 @@
 
 using namespace rapidjson;
 
-typedef struct tradelife_io {
-  Queue_c* orders;
-  Queue_c* logs;
-  store* s;
-  store* genes;
-} tradelife_io;
-
-
-typedef struct evaluate_io {
-  const char* indice_name;
-  std::vector<quotek::data::record>& recs;
-  Queue_c* orders;
-  Queue_c* logs;
-  store* s;
-  store* genes;
-  int state;
-} evaluate_io;
-
-
 typedef struct algo {
       std::thread* th;
       void* eval_ptr;
@@ -66,6 +47,12 @@ typedef struct algo {
       string strategy;
       float pnl;
 } algo;
+
+typedef struct savepos {
+  int saved;
+  int size;
+} savepos ;
+
 
 class tsEngine{
 
