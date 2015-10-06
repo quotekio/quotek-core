@@ -307,13 +307,13 @@ void tsEngine::saveToBackend() {
 
     //saves history
     for (int i=0; i< pos_history->size();i++ ) {
-      if ( pos_history->at(i).close_date > prev_t ) {
-        prev_t = pos_history->at(i).close_date;
-        back0->saveHistory(&(pos_history->at(i)));
+      quotek::core::position p = pos_history->at(i);
+      if ( p.close_date > prev_t ) {
+        prev_t = p.close_date;
+        back0->saveHistory(p);
       }
     }
 
-    int rsize_snapshot;
     for (int i=0; i< inmem_records.Size(); i++) {
 
       string iname = inmem_records.GetItemName(i);

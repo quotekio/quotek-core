@@ -33,14 +33,14 @@ public:
      * @param plist: pointer to vector of positions to save.
      * @returns: 0 on success, >0 either.
      */
-    virtual int saveHistory(quotek::data::cvector<quotek::core::position>* plist) {return 0;}
+    virtual int saveHistory(quotek::data::cvector<quotek::core::position>& plist) {return 0;}
 
     /**
      * Saves a position history to backend database.
      * @param pos: pointer to position object to save.
      * @returns: 0 on success, >0 either.
      */
-    virtual int saveHistory(quotek::core::position* pos) {return 0;}
+    virtual int saveHistory(quotek::core::position& pos) {return 0;}
 
 };
 

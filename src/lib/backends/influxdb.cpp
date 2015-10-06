@@ -198,7 +198,7 @@ public:
       return 0;
     }
 
-    virtual int saveHistory(quotek::core::position* pos)  {
+    virtual int saveHistory(quotek::core::position& pos)  {
 
       std::ostringstream sdata;
       quotek::http* hhdl = prepare_http_handler();
@@ -206,7 +206,7 @@ public:
 
       sdata << "[\n";
       sdata << "\t{ \"name\": \"__history__\",\n";
-      sdata << "\t  \"columns\" : [ \"indice\", \"epic\", \"dealid\", \"size\", \"stop\", \"limit\", \"open\", \"pnl\", \"pnl_peak\", \"open_date\", \"close_date\" ],\n";
+      sdata << "\t  \"columns\" : [ \"indice\", \"epic\", \"dealid\", \"size\", \"stop\", \"limit\", \"open\", \"pnl\", \"pnl_peak\", \"open_date\", \"close_date\", \"identifier\" ],\n";
       sdata << "\t  \"points\" : [" << pos2json(pos) << "]\n"; 
       sdata << "\t}\n";
       sdata << "]";
@@ -219,7 +219,7 @@ public:
 
     }
 
-    virtual int saveHistory(quotek::data::cvector<quotek::core::position>* plist) {
+    virtual int saveHistory(quotek::data::cvector<quotek::core::position>& plist) {
 
       std::ostringstream sdata;
       quotek::http* hhdl = prepare_http_handler();
@@ -266,28 +266,28 @@ private:
     return jstream.str();
   };
 
-  std::string pos2json(quotek::core::position* pos)  {
+  std::string pos2json(quotek::core::position& pos)  {
   
     std::ostringstream jstream;
-    jstream << "[" << "\"" << pos->asset_name << "\", "
-            << "\"" << pos->asset_id << "\", "
-            << "\"" << pos->ticket_id << "\", "
-            << pos->size << ", " << pos->stop << ", "
-            << pos->limit << ", " << pos->open << ", "
-            << pos->pnl << ", " << pos->stats->pnl_peak << ", "
-            << pos->open_date << ", " << pos->close_date <<  ", " 
-            << pos->identifier << "]";
+    jstream << "[" << "\"" << pos.asset_name << "\", "
+            << "\"" << pos.asset_id << "\", "
+            << "\"" << pos.ticket_id << "\", "
+            << pos.size << ", " << pos.stop << ", "
+            << pos.limit << ", " << pos.open << ", "
+            << pos.pnl << ", " << pos.stats->pnl_peak << ", "
+            << pos.open_date << ", " << pos.close_date <<  ", " 
+            << "\"" << pos.identifier << "\"" << "]";
 
     return jstream.str();
 
   }
 
-  std::string poslist2json(quotek::data::cvector<quotek::core::position>* plist) {
+  std::string poslist2json(quotek::data::cvector<quotek::core::position>& plist) {
 
     std::ostringstream jstream;    
-    for (int i=0;i<plist->size();i++)  {
-      jstream << pos2json(&(plist->at(i)));
-      if (i !=  (plist->size() - 1 ) ) jstream << ",";
+    for (int i=0;i<plist.size();i++)  {
+      jstream << pos2json(plist[i]);
+      if (i !=  (plist.size() - 1 ) ) jstream << ",";
 
     }
     return jstream.str();
