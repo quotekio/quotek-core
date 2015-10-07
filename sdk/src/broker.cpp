@@ -29,7 +29,7 @@ namespace quotek {
   	               int limit) {
 
     std::ostringstream os;
-    os << "openpos:" << asset << ":sell:" << quantity << ":" << stop << ":" << limit ;
+    os << "openpos:" << asset << ":sell:" << quantity << ":" << stop << ":" << limit << ":" << s->identifier;
   	s->order(os.str());
   }
 
