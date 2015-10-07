@@ -67,8 +67,7 @@ std::string aep_corestats(tsEngine* t0) {
   }
 
   ret = "{";
-  ret += "\"pnl\":\"" + float2string(mm->getCurResult())  + "\",";
-  ret += "\"cumulative_pnl\":\"" + float2string(*(mm->getCumulativePNL()))  + "\",";
+  ret += "\"unrealized_pnl\":\"" + float2string(mm->getUnrealizedPNL())  + "\",";
   ret += "\"nbpos\":\"" + int2string( mm->getPositions().size() ) + "\",";
   ret += "\"uptime\":\"" + int2string( t0->getUptime() ) + "\"";
   ret += "}"; 

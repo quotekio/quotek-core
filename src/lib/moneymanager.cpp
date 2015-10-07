@@ -368,6 +368,10 @@ float moneyManager::getCurResult() {
   return cur_pnl + cumulative_pnl;
 }
 
+float moneyManager::getUnrealizedPNL() {
+  return cur_pnl;
+}
+
 
 int moneyManager::getReversePosForceClose() {
   return reverse_pos_force_close;

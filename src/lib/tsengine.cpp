@@ -275,6 +275,7 @@ void tsEngine::moneyman() {
 
     if (inc == 10) {
       //logger->log("Current PNL:" + float2string(mm->computeWholePNL()) );
+      mm->computeWholePNL();
       mm->saveCPNL();
       inc = 0;
     }

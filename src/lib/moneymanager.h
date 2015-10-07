@@ -80,6 +80,7 @@ class moneyManager {
     float* getCurPNL();
     float* getCumulativePNL();
     float getCurResult();
+    float getUnrealizedPNL();
 
     int getReversePosForceClose();
     vector<string> findPos(string,string);
