@@ -90,8 +90,25 @@ std::string aep_version(tsEngine* t0) {
 
 std::string aep_algos(tsEngine* t0) {
 
+  moneyManager* mm = t0->getMoneyManager();
+
   stringstream ret;
   std::vector<algo> running_algos = t0->getAlgos();
+
+  //computes algos pnl;
+  quotek::data::cvector<quotek::core::position>& plist = mm->getPositions();
+
+  for (int i=0;i<plist.size();i++) {
+
+    for ( int j=0;j<running_algos.size();j++ ) {
+  
+      std::string algo_id = running_algos[j].strategy + "@" + running_algos[j].eval_name;
+
+      if ( plist[i].identifier == algo_id ) {
+        running_algos[j].pnl += plist[i].pnl;
+      }
+    }
+  }
 
   ret << "[" ;
 
