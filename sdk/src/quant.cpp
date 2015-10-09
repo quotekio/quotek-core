@@ -171,6 +171,7 @@ namespace quotek {
     }
 
     float percent_delta(std::vector<quotek::data::record>& recs) {
+      if (recs.size() == 0) return 0;
       float v0 = recs[0].value;
       float v1 = recs[recs.size()-1].value;
       return ( (v1 - v0) / v0 ) * 100 ;
