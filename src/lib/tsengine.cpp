@@ -294,14 +294,6 @@ void tsEngine::saveToBackend() {
   quotek::data::cvector<quotek::core::position>* pos_history = this->getMoneyManager()->getPositionsHistory();
   int prev_t = 0;
 
-  std::map<std::string, savepos> save_positions;
-
-  //initializes save_positions
-  for (int i=0; i< inmem_records.Size(); i++) {
-      string iname = inmem_records.GetItemName(i);
-      save_positions[iname].saved = 0;
-  }
-
   while(1) {
 
     auto tt0 = std::chrono::high_resolution_clock::now();
@@ -621,9 +613,10 @@ tsEngine::tsEngine(adamCfg* conf,
   //loads potential previous cumulative PNL
   mm->loadCPNL();
 
-  //initializes inmem_records (else we get some pretty bad shit)
+  //initializes inmem_records and backend save pointer (else we get some pretty bad shit)
   for (int i=0;i<si.size();i++) {
     inmem_records[si[i]] = quotek::data::records();
+    save_positions[si[i]].saved = 0;
   }
 
   //loads history
@@ -782,6 +775,11 @@ int tsEngine::loadHistory() {
     for (int i=0;i<inames.size();i++) {
 
       inmem_records[inames[i]] = tse_back->query(inames[i], -1 * tse_inmem_history, -1 );
+
+      //we place backend save pointer forward to avoid double data in backend.
+      save_positions[inames[i]].size = inmem_records[inames[i]].size();
+      save_positions[inames[i]].saved = inmem_records[inames[i]].size();
+
       std::cout << "Loaded " << inmem_records[inames[i]].size() << " records for asset " << inames[i] << std::endl; 
 
     }

@@ -185,6 +185,8 @@ class tsEngine{
 
     std::map<std::string, quotek::data::any> tse_store;
 
+    std::map<std::string, savepos> save_positions;
+
     store *tse_genes;
 
     std::thread* poller;
