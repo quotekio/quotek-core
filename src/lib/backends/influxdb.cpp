@@ -125,13 +125,16 @@ public:
                    "s AND time < now() + " << tsup << "s ORDER ASC";
       }
 
-    
+      
 
       url += "&q=" + hhdl->escape(qstream.str());
       // Perform http request to influxdb backend and get result.
       outp = hhdl->get(url);
       // Destroy http handler to free memory.
       hhdl->destroy();
+      
+      //shortcut avoiding parsing if no result
+      if ( outp == "[]"  ) return result;
       
       // Effectively parse result
       rapidjson::Document d;

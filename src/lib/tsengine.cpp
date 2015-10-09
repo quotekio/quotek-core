@@ -781,9 +781,9 @@ int tsEngine::loadHistory() {
     vector<string> inames = iGetNames(indices_list);
     for (int i=0;i<inames.size();i++) {
 
-      quotek::data::records recs = tse_back->query(inames[i], -1 * tse_inmem_history, -1 );
-      inmem_records[inames[i]] = recs;
-      
+      inmem_records[inames[i]] = tse_back->query(inames[i], -1 * tse_inmem_history, -1 );
+      std::cout << "Loaded " << inmem_records[inames[i]].size() << " records for asset " << inames[i] << std::endl; 
+
     }
 
   return 0;
