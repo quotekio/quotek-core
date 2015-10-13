@@ -4,6 +4,7 @@ Copyright 2013-2015 Quotek SAS
 */
 
 #include "timeutils.hpp"
+#include <iostream>
 
 namespace quotek {
 
@@ -146,16 +147,16 @@ namespace quotek {
         std::time_t p_strptime(std::string datestr, std::string format) {
 
           std::tm tm;
+          memset(&tm, 0, sizeof(std::tm) );
 
           #ifndef _WIN64
             strptime(datestr.c_str(),format.c_str(),&tm);
           #else
             std::stringstream ss(datestr);
-            ss >> std::get_time(&tm, format.c_str());
+            ss >> std::get_time(&tm, format);
           #endif
-
           return mktime(&tm);
-          
+
         }
 
     }

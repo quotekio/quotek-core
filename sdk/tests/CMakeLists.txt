@@ -77,6 +77,11 @@ add_executable(
 )
 
 add_executable(
+    test_quandl
+    src/test_quandl.cpp
+)
+
+add_executable(
     test_alchemy
     src/test_alchemy.cpp
 )
@@ -155,6 +160,13 @@ target_link_libraries(
 
 target_link_libraries(
         test_rss
+        quotek
+        pthread
+        curl
+)
+
+target_link_libraries(
+        test_quandl
         quotek
         pthread
         curl

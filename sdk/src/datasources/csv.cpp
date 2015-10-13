@@ -35,10 +35,16 @@ namespace quotek {
       this->dt_format = "";
       this->linepos = 0;
 
+      this->content = "";
+
     }
 
     csv::~csv() {
 
+    }
+
+    void csv::from_string(std::string content) {
+      this->content = content;
     }
 
     void csv::setTimeColumn(int dt_colnum, std::string dt_format) {
@@ -68,9 +74,9 @@ namespace quotek {
     }
 
        
-    std::vector<quotek::data::record> csv::import_records(int nb_records, int value_colnum) {
+    quotek::data::records csv::import_records(int nb_records, int value_colnum) {
 
-      std::vector<quotek::data::record> result;
+      quotek::data::records result;
 
       std::ifstream* csvi;
       std::string line;
@@ -81,36 +87,79 @@ namespace quotek {
         csvi  = http_fetch();
       }
 
+      else if ( this->scheme == "null://" || this->scheme == "string://" ) {
+        //do nothing.
+      }
+
       else {
         csvi = new std::ifstream(this->source_file.c_str());
       }
 
-      while(csvi->good() && result.size() < nb_records ){
-        //line can be processed.
-        if (this->readline(csvi,line)) {
+      if (this->content == "") {
+
+        while(csvi->good() && result.size() < nb_records ){
+          //line can be processed.
+          if (this->readline(csvi,line)) {
   
-          //splits and parses line
-          std::vector<std::string> sline = quotek::core::utils::split(line,separator);
+            //splits and parses line
+            std::vector<std::string> sline = quotek::core::utils::split(line,separator);
 
-          if ( value_colnum >= sline.size()  ) {
-            std::cout << "ERROR: line doesn't have enough columns to fetch value, skipping!" << std::endl; 
+            if ( value_colnum >= sline.size()  ) {
+              std::cout << "ERROR: line doesn't have enough columns to fetch value, skipping!" << std::endl; 
+            }
+
+            quotek::data::record r1;
+
+            if ( this->dt_colnum != -1 ) {
+              r1.timestamp = quotek::core::time::p_strptime( sline[dt_colnum], dt_format);
+            }
+
+            else r1.timestamp = 0;
+
+
+            r1.value = atof(sline[value_colnum].c_str());
+            r1.spread = 0;
+
+            result.append(r1);     
+
           }
-
-          quotek::data::record r1;
-
-          if ( this->dt_colnum != -1 ) {
-            r1.timestamp = quotek::core::time::p_strptime( sline[dt_colnum], dt_format);
-          }
-
-          else r1.timestamp = 0;
-
-
-          r1.value = atof(sline[value_colnum].c_str());
-          r1.spread = 0;
-
-          result.emplace_back(r1);     
-
         }
+      }
+
+      else {
+
+        std::vector<std::string> lines = quotek::core::utils::split(content,'\n');
+
+        for (int i=0;i< lines.size();i++) {
+
+          line = lines[i];
+          
+          if (readline(line)) {
+
+            //splits and parses line
+            std::vector<std::string> sline = quotek::core::utils::split(line,separator);
+
+            if ( value_colnum >= sline.size()  ) {
+              std::cout << "ERROR: line doesn't have enough columns to fetch value, skipping!" << std::endl; 
+            }
+
+            quotek::data::record r1;
+
+            if ( this->dt_colnum != -1 ) {
+
+              r1.timestamp = quotek::core::time::p_strptime(sline[dt_colnum], dt_format);
+
+            }
+
+            else r1.timestamp = 0;
+
+            r1.value = atof(sline[value_colnum].c_str());
+            r1.spread = 0;
+
+            result.append(r1);
+          }
+        }
+
       }
 
       return result;
@@ -118,9 +167,9 @@ namespace quotek {
 
     std::vector<quotek::data::history> csv::import_history(int nb_lines, 
                                                           int open_colnum, 
-                                                          int close_colnum,
+                                                          int high_colnum,
                                                           int low_colnum,
-                                                          int high_colnum) {
+                                                          int close_colnum) {
 
       std::vector<quotek::data::history> result;
 
@@ -133,50 +182,89 @@ namespace quotek {
         csvi  = http_fetch();
       }
 
+      else if ( this->scheme == "null://" || this->scheme == "string://" ) {
+        //do nothing.
+      }
+
       else {
         csvi = new std::ifstream(this->source_file.c_str());
       }
 
-      while(csvi->good() && result.size() < nb_lines ){
-        //line can be processed.
-        if (this->readline(csvi,line)) {
+      if (this->content == "") {
+
+        while(csvi->good() && result.size() < nb_lines ){
+          //line can be processed.
+          if (this->readline(csvi,line)) {
       
-          //splits and parses line
-          std::vector<std::string> sline = quotek::core::utils::split(line,separator);
+            //splits and parses line
+            std::vector<std::string> sline = quotek::core::utils::split(line,separator);
 
-          if ( open_colnum >= sline.size() || 
-               close_colnum >= sline.size() ||
-               high_colnum >= sline.size() ||
-               low_colnum >= sline.size() ) {
-            std::cout << "ERROR: line doesn't have enough columns, skipping!" << std::endl; 
+            if ( open_colnum >= sline.size() || 
+                 close_colnum >= sline.size() ||
+                 high_colnum >= sline.size() ||
+                 low_colnum >= sline.size() ) {
+              std::cout << "ERROR: line doesn't have enough columns, skipping!" << std::endl; 
+            }
+
+            quotek::data::history h1;
+
+            if ( this->dt_colnum != -1 ) {
+              h1.timestamp = quotek::core::time::p_strptime( sline[dt_colnum], dt_format);
+            }
+
+            else h1.timestamp = 0;
+
+            h1.open = atof(sline[open_colnum].c_str());
+            h1.close = atof(sline[close_colnum].c_str());
+            h1.low = atof(sline[low_colnum].c_str());
+            h1.high = atof(sline[high_colnum].c_str());
+
+            result.emplace_back(h1);     
+
           }
-
-          quotek::data::history h1;
-
-          if ( this->dt_colnum != -1 ) {
-            h1.timestamp = quotek::core::time::p_strptime( sline[dt_colnum], dt_format);
-          }
-
-          else h1.timestamp = 0;
-
-          h1.open = atof(sline[open_colnum].c_str());
-          h1.close = atof(sline[close_colnum].c_str());
-          h1.low = atof(sline[low_colnum].c_str());
-          h1.high = atof(sline[high_colnum].c_str());
-
-          result.emplace_back(h1);     
-
         }
-        
-        /*else {
-          std::cout << "LINE SKIPPED:" << line << std::endl;
-          line = "";
-        }*/
+      }
+
+      else {
+
+        std::vector<std::string> lines = quotek::core::utils::split(content,'\n');
+
+        for (int i=0;i< lines.size();i++) {
+          
+          line = lines[i];
+
+          if ( readline(line) ) {
+
+            //splits and parses line
+            std::vector<std::string> sline = quotek::core::utils::split(line,separator);
+
+            if ( open_colnum >= sline.size() || 
+                 close_colnum >= sline.size() ||
+                 high_colnum >= sline.size() ||
+                 low_colnum >= sline.size() ) {
+              std::cout << "ERROR: line doesn't have enough columns, skipping!" << std::endl; 
+            }
+
+            quotek::data::history h1;
+
+            if ( this->dt_colnum != -1 ) {
+              h1.timestamp = quotek::core::time::p_strptime( sline[dt_colnum], dt_format);
+            }
+
+            else h1.timestamp = 0;
+
+            h1.open = atof(sline[open_colnum].c_str());
+            h1.close = atof(sline[close_colnum].c_str());
+            h1.low = atof(sline[low_colnum].c_str());
+            h1.high = atof(sline[high_colnum].c_str());
+
+            result.emplace_back(h1);
+          }
+        }
 
       }
 
       return result;
-
     }
 
     std::ifstream* csv::http_fetch() {
@@ -203,7 +291,6 @@ namespace quotek {
         return false;
       }
 
-      bool failed = false;
       for (int i=0;i< this->compiled_filters.size();i++) {
         if ( ! std::regex_match(line,this->compiled_filters[i]) ) {
           return false;
@@ -211,5 +298,21 @@ namespace quotek {
       }
       return true;
     }
+
+    bool csv::readline(std::string& line) {
+
+      linepos++;
+      if ( linepos <= offset ) {
+        return false;
+      }
+
+      for (int i=0;i< this->compiled_filters.size();i++) {
+        if ( ! std::regex_match(line,this->compiled_filters[i]) ) {
+          return false;
+        }
+      }
+      return true;
+    }
+
   }
 }
