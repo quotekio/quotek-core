@@ -9,7 +9,7 @@ http://www.quotek.io
 
 #define EPSILON 0.01
 
-void test_above(std::vector<quotek::data::record>& recs) {
+void test_above(quotek::data::records& recs) {
 
   assert( quotek::quant::above(recs,5000,1) == true );
   assert (quotek::quant::above(recs,4000,1) == false);
@@ -19,33 +19,33 @@ void test_above(std::vector<quotek::data::record>& recs) {
 
 }
 
-void test_crosses(std::vector<quotek::data::record>& recs1,
-                  std::vector<quotek::data::record>& recs2) {
+void test_crosses(quotek::data::records& recs1,
+                  quotek::data::records& recs2) {
 
   assert(quotek::quant::crosses(recs1,recs2));
   
 
 }
 
-void test_min(std::vector<quotek::data::record>& recs) {
+void test_min(quotek::data::records& recs) {
   float minval = quotek::quant::min(recs);
   assert(minval == 4144);
 
 }
 
-void test_max(std::vector<quotek::data::record>& recs) {
+void test_max(quotek::data::records& recs) {
 
   float maxval = quotek::quant::max(recs);
   assert(maxval == 4989);
 
 }
 
-void test_average(std::vector<quotek::data::record>& recs) {
+void test_average(quotek::data::records& recs) {
   float avg = quotek::quant::average(recs);
   assert( fabs(avg - 4558.56) < EPSILON );
 }
 
-void test_weighted_average(std::vector<quotek::data::record>& recs) {
+void test_weighted_average(quotek::data::records& recs) {
 
   std::vector<int> weights = {1,2,3,4,5,6,7,8,9};
   float wavg = quotek::quant::weighted_average(recs, weights); 
@@ -55,13 +55,13 @@ void test_weighted_average(std::vector<quotek::data::record>& recs) {
 }
 
 
-void test_variance(std::vector<quotek::data::record>& recs) {
+void test_variance(quotek::data::records& recs) {
   float var = quotek::quant::variance(recs,false);
   assert( fabs(var - 71192.024) < EPSILON ); 
 
 }
 
-void test_standard_deviation(std::vector<quotek::data::record>& recs) {
+void test_standard_deviation(quotek::data::records& recs) {
   float stddev = quotek::quant::SD(recs,false);
   assert( fabs( stddev - 266.818 ) < EPSILON );
   stddev = quotek::quant::SD(recs,true);
@@ -69,7 +69,7 @@ void test_standard_deviation(std::vector<quotek::data::record>& recs) {
 
 }
 
-void test_moving_average(std::vector<quotek::data::record>& recs) {
+void test_moving_average(quotek::data::records& recs) {
 
   std::vector<float> v1 = quotek::quant::SMA(recs,2);
 
@@ -79,7 +79,7 @@ void test_moving_average(std::vector<quotek::data::record>& recs) {
   
 }
 
-void test_exponential_moving_average(std::vector<quotek::data::record>& recs) {
+void test_exponential_moving_average(quotek::data::records& recs) {
 
   std::vector<float> v1 = quotek::quant::EMA(recs,2);
   std::vector<float> v2 = quotek::quant::EMA(recs,5);
@@ -97,7 +97,7 @@ void test_exponential_moving_average(std::vector<quotek::data::record>& recs) {
   
 }
 
-void test_weighted_moving_average(std::vector<quotek::data::record>& recs) {
+void test_weighted_moving_average(quotek::data::records& recs) {
 
   std::vector<float> v1 = quotek::quant::WMA(recs,2);
   std::vector<float> v2 = quotek::quant::WMA(recs,4);
@@ -116,7 +116,7 @@ void test_weighted_moving_average(std::vector<quotek::data::record>& recs) {
 }
 
 
-void test_trend_percentage(std::vector<quotek::data::record>& recs) {
+void test_trend_percentage(quotek::data::records& recs) {
 
   quotek::quant::trend_p trend = quotek::quant::trend_percentages(recs);
   assert( fabs( trend.bull - ( (6.0 / 8.0) * 100 ) ) < EPSILON );
@@ -125,7 +125,7 @@ void test_trend_percentage(std::vector<quotek::data::record>& recs) {
   
 }
 
-void test_linear_regression(std::vector<quotek::data::record>& recs) {
+void test_linear_regression(quotek::data::records& recs) {
 
   quotek::quant::affine af = quotek::quant::linear_regression(recs);
 
@@ -152,10 +152,8 @@ int main() {
 
   std::vector<float> vals = { 4530, 4575, 4890, 4235, 4144, 4356, 4588, 4720, 4989 };
 
-
-
-  std::vector<quotek::data::record> r1 = quotek::data::record::values_import(vals);
-  std::vector<quotek::data::record> r2 = quotek::data::record::values_import(vals2);
+  quotek::data::records r1 = quotek::data::records(vals);
+  quotek::data::records r2 = quotek::data::records(vals2);
 
   for (int i=0;i< r1.size(); i++ ) {
     r1[i].timestamp = tstamps[i];

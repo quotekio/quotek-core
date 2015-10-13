@@ -11,7 +11,7 @@ http://www.quotek.io
 
 void test_uniform() {
 
-  std::vector<quotek::data::record> uni = quotek::rand::generators::uniform(10,4000,5000);
+  quotek::data::records uni = quotek::rand::generators::uniform(10,4000,5000);
 
   assert( uni.size() == 10 );
   assert( quotek::quant::min(uni) >= 4000 );
@@ -21,24 +21,18 @@ void test_uniform() {
 
 void test_normal() {
 
-  std::vector<quotek::data::record> uni = quotek::rand::generators::normal(10,5000,20);
+  quotek::data::records uni = quotek::rand::generators::normal(10,5000,20);
   assert( uni.size() == 10 );
 
 }
 
 void test_lognormal() {
 
-  std::vector<quotek::data::record> uni = quotek::rand::generators::lognormal(10,3,.0000000001);
+  quotek::data::records uni = quotek::rand::generators::lognormal(10,3,.0000000001);
   assert( uni.size() == 10 );
   
 
 }
-
-void test_binomial() {
-
-}
-
-
 
 int main() {
   test_uniform();

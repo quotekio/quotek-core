@@ -31,7 +31,7 @@ namespace quotek {
        *  @param max Maximum value that must be present inside result dataset.
        *  @return the generated dataset.
        */
-      std::vector<quotek::data::record> uniform(int size, float min, float max);
+      quotek::data::records uniform(int size, float min, float max);
 
       /** Generates a set of random values which are normally distributed. 
        *  (probaly the most useful to modelize asset prices)
@@ -40,7 +40,7 @@ namespace quotek {
        *  @param sigma wanted standard deviation.
        *  @return the generated dataset.
        */
-       std::vector<quotek::data::record> normal(int size, float mean, float sigma);
+       quotek::data::records normal(int size, float mean, float sigma);
 
        /** Generates a set of random values which are log-normally distributed. 
         *  @param size number of values we want in the dataset.
@@ -48,7 +48,7 @@ namespace quotek {
         *  @param sigma standard deviation we want to use for the underlying normal distribution.
         *  @return the generated dataset.
         */
-        std::vector<quotek::data::record> lognormal(int size, float mean, float sigma);
+        quotek::data::records lognormal(int size, float mean, float sigma);
 
         /** Generates a set of random values which are distributed using a binomial law. 
          *  @param size number of values we want in the dataset.
@@ -56,14 +56,14 @@ namespace quotek {
          *  @param success_probability probability that each experiment succeeds .
          *  @return the generated dataset.
          */
-        std::vector<quotek::data::record> binomial(int size, int experiments , float success_probability );
+        quotek::data::records binomial(int size, int experiments , float success_probability );
 
         /** Generates a set of random values which are distributed using a poisson law. 
          *  @param size number of values we want in the dataset.
          *  @param average_occurence number of times an event must occur on everage for the series.
          *  @return the generated dataset.
          */
-        std::vector<quotek::data::record> poisson(int size, int average_occurence);
+        quotek::data::records poisson(int size, int average_occurence);
 
 
   	}

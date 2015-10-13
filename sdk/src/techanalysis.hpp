@@ -34,7 +34,7 @@ namespace quotek {
      *  @param periods_signal_line period of the signal line EMA.
      *  @return the 2 MACD lines as a vector of quotek::data::records.
      */
-    std::vector<quotek::data::records> moving_average_convergeance_divergeance(std::vector<quotek::data::record>& recs,
+    std::vector<quotek::data::records> moving_average_convergeance_divergeance(quotek::data::records& recs,
                                                  int periods_short_ema, 
                                                  int periods_long_ema,
                                                  int periods_signal_line);
@@ -45,7 +45,7 @@ namespace quotek {
      *  @return a quotek::quant::fibo_levels structure 
      */
 
-    quotek::quant::fibo_levels fibo_retrace(std::vector<quotek::data::record>& recs);
+    quotek::quant::fibo_levels fibo_retrace(quotek::data::records& recs);
 
   }
 }

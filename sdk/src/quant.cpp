@@ -11,7 +11,7 @@ namespace quotek {
 
   namespace quant {
 
-    bool above(std::vector<quotek::data::record>& recs, 
+    bool above(quotek::data::records& recs, 
     	         float value,
     	         float thereshold) {
 
@@ -28,8 +28,8 @@ namespace quotek {
 
     }
 
-    bool crosses(std::vector<quotek::data::record>& recs1,
-                             std::vector<quotek::data::record>& recs2) {
+    bool crosses(quotek::data::records& recs1,
+                             quotek::data::records& recs2) {
 
       if (recs1.size() < 2 || recs2.size() < 2) return false;
       
@@ -41,7 +41,7 @@ namespace quotek {
       return false;
     }
 
-    float min(std::vector<quotek::data::record>& recs) {
+    float min(quotek::data::records& recs) {
 
       float min = 300000000;
       float cur = 0;
@@ -56,7 +56,7 @@ namespace quotek {
     }
 
 
-    float max(std::vector<quotek::data::record>& recs) {
+    float max(quotek::data::records& recs) {
       
       float max = -300000000;
       float cur = 0;
@@ -70,7 +70,7 @@ namespace quotek {
       return max;
     }
 
-    float average(std::vector<quotek::data::record>& recs) {
+    float average(quotek::data::records& recs) {
       float sum = 0;
       for(int i=0;i<recs.size();i++) {
         sum += recs[i].value;
@@ -78,7 +78,7 @@ namespace quotek {
       return sum / recs.size();
     }
     
-    float weighted_average(std::vector<quotek::data::record>& recs,
+    float weighted_average(quotek::data::records& recs,
                            std::vector<int>& weights) {
 
       float sum = 0;
@@ -98,7 +98,7 @@ namespace quotek {
     }
 
 
-    float variance(std::vector<quotek::data::record>& recs,
+    float variance(quotek::data::records& recs,
     	           bool sampled) {
 
       float mean = average(recs);
@@ -117,7 +117,7 @@ namespace quotek {
       return variance;
     }
 
-    float variance_q(std::vector<quotek::data::record>& recs, 
+    float variance_q(quotek::data::records& recs, 
     	             bool sampled,
     	             float average) {
 
@@ -137,8 +137,8 @@ namespace quotek {
       return variance;
     }
     
-    float covariance(std::vector<quotek::data::record>& recs1,
-    	             std::vector<quotek::data::record>& recs2) {
+    float covariance(quotek::data::records& recs1,
+    	             quotek::data::records& recs2) {
 
       float covariance= 0;
       float v1_a = average(recs1);
@@ -151,8 +151,8 @@ namespace quotek {
       return covariance;
     }
 
-    float covariance_q(std::vector<quotek::data::record>& recs1,
-    	               std::vector<quotek::data::record>& recs2,
+    float covariance_q(quotek::data::records& recs1,
+    	               quotek::data::records& recs2,
     	               float avg1,
     	               float avg2) {
 
@@ -166,11 +166,11 @@ namespace quotek {
       return covariance;
     }
 
-    float standard_deviation(std::vector<quotek::data::record>& recs, bool sample) {
+    float standard_deviation(quotek::data::records& recs, bool sample) {
       return (float) sqrt(variance(recs,sample));
     }
 
-    float percent_delta(std::vector<quotek::data::record>& recs) {
+    float percent_delta(quotek::data::records& recs) {
       if (recs.size() == 0) return 0;
       float v0 = recs[0].value;
       float v1 = recs[recs.size()-1].value;
@@ -178,7 +178,7 @@ namespace quotek {
     }
 
    
-    std::vector<float> moving_average(std::vector<quotek::data::record>& recs,
+    std::vector<float> moving_average(quotek::data::records& recs,
                                       int periods) {
     
       std::vector<float> result;
@@ -188,7 +188,7 @@ namespace quotek {
 
       for(int i = 0 ; i < recs.size() - periods + 1 ;i++) {
 
-        std::vector<quotek::data::record> tmprec = quotek::data::record::extract(recs, i,periods);
+        quotek::data::records tmprec = recs.extract(i,periods);
         float avg = average(tmprec);
         result.push_back(avg);
 
@@ -198,10 +198,10 @@ namespace quotek {
 
     }
 
-    std::vector<float> exponential_moving_average(std::vector<quotek::data::record>& recs, 
+    std::vector<float> exponential_moving_average(quotek::data::records& recs, 
                                                   int periods) {
 
-      std::vector<quotek::data::record> v_ema_first;
+      quotek::data::records v_ema_first;
       std::vector<float> result;
       //dataset is too short or periods invalid
       if ( recs.size() < periods || periods < 2 ) return result;
@@ -211,7 +211,7 @@ namespace quotek {
       int start = (periods - 1) / 2  + (periods - 1) % 2 ; 
 
       //compute first EMA
-      v_ema_first = quotek::data::record::extract(recs,0, start );
+      v_ema_first = recs.extract(0, start );
 
       float ema_first = average(v_ema_first);
       result.push_back(ema_first);
@@ -228,7 +228,7 @@ namespace quotek {
     }
 
 
-    std::vector<float> weighted_moving_average(std::vector<quotek::data::record>& recs, 
+    std::vector<float> weighted_moving_average(quotek::data::records& recs, 
                                                   int periods) {
 
       std::vector<float> result;
@@ -244,7 +244,7 @@ namespace quotek {
 
       for(int i = 0 ; i < recs.size() - periods + 1 ;i++) {
 
-        std::vector<quotek::data::record> tmprec = quotek::data::record::extract(recs, i,periods);
+        quotek::data::records tmprec = recs.extract(i,periods);
         float avg = weighted_average(tmprec,weight_vector);
         result.push_back(avg);
       }
@@ -252,7 +252,7 @@ namespace quotek {
 
     }
 
-    void linear_regression(std::vector<quotek::data::record>& recs, std::vector<float>& result) {
+    void linear_regression(quotek::data::records& recs, std::vector<float>& result) {
 
       affine af = linear_regression(recs);
       
@@ -262,14 +262,15 @@ namespace quotek {
 
     }
     
-    affine linear_regression(std::vector<quotek::data::record>& recs) {
+    affine linear_regression(quotek::data::records& recs) {
 
         affine result;
 
-        std::vector<quotek::data::record> T_series;
+        quotek::data::records T_series;
 
         for (int i=1;i<recs.size()+1;i++) {
-          T_series.emplace_back( quotek::data::record(0, i, 0) );
+          quotek::data::record r(0,i,0);
+          T_series.append(r);
         }
 
         float T_average = average(T_series);
@@ -281,7 +282,7 @@ namespace quotek {
         return result;
     }
 
-    trend_p trend_percentages(std::vector<quotek::data::record>& recs) {
+    trend_p trend_percentages(quotek::data::records& recs) {
 
       trend_p result;
       result.bull = 0;

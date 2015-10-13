@@ -11,7 +11,7 @@ namespace quotek {
   
   namespace ta {
 
-     std::vector<quotek::data::records> moving_average_convergeance_divergeance(std::vector<quotek::data::record>& recs,
+     std::vector<quotek::data::records> moving_average_convergeance_divergeance(quotek::data::records& recs,
                                                  int periods_short_ema, 
                                                  int periods_long_ema,
                                                  int periods_signal_line) {
@@ -30,7 +30,7 @@ namespace quotek {
         result[0].append( i, cmacd, 0 );
       }
 
-      std::vector<float> sigline = quotek::quant::EMA(result[0].get_data(),9);
+      std::vector<float> sigline = quotek::quant::EMA(result[0],9);
 
       quotek::data::records r2(sigline);
       result.emplace_back(r2);
@@ -38,7 +38,7 @@ namespace quotek {
 
     }
 
-    quotek::quant::fibo_levels fibo_retrace(std::vector<quotek::data::record>& recs) {
+    quotek::quant::fibo_levels fibo_retrace(quotek::data::records& recs) {
 
       quotek::quant::fibo_levels result;
 

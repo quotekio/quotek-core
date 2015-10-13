@@ -130,7 +130,7 @@ namespace quotek {
      * @param thereshold integer in [0,1] that indicates the percentage of value in the dataset that must be above value.
      * @return true if dataset is above value, false otherwise.
      */     
-    bool above(std::vector<quotek::data::record>& recs, 
+    bool above(quotek::data::records& recs, 
     	      float value,
     	      float thereshold);
 
@@ -141,8 +141,8 @@ namespace quotek {
      * @param recs2 second values dataset.
      * @return true if 2 datasets cross each other, false otherwise.
      */
-    bool crosses(std::vector<quotek::data::record>& recs1,
-                             std::vector<quotek::data::record>& recs2);
+    bool crosses(quotek::data::records& recs1,
+                 quotek::data::records& recs2);
 
 
     /**
@@ -152,7 +152,7 @@ namespace quotek {
      * @return the smallest value stored in recs dataset.
      */
 
-    float min(std::vector<quotek::data::record>& recs);
+    float min(quotek::data::records& recs);
 
     
     /**
@@ -160,7 +160,7 @@ namespace quotek {
      * @param recs dataset to work on.
      * @return the largest value stored in recs dataset.
      */
-    float max(std::vector<quotek::data::record>& recs);
+    float max(quotek::data::records& recs);
 
     /**
      * This function returns an average of the values contained in
@@ -168,7 +168,7 @@ namespace quotek {
      * @param recs dataset to work on.
      * @return the mean value of the dataset, as a float value.
      */
-    float average(std::vector<quotek::data::record>& recs);
+    float average(quotek::data::records& recs);
     
     /**
      * This function returns a weight average of the values contained in
@@ -177,7 +177,7 @@ namespace quotek {
      * @param weights weights vector.
      * @return the mean value of the dataset, as a float value.
      */
-    float weighted_average(std::vector<quotek::data::record>& recs,
+    float weighted_average(quotek::data::records& recs,
                            std::vector<int>& weights);
 
     /**
@@ -186,7 +186,7 @@ namespace quotek {
      * @param sampled when you need to make a variance estimate, elimites bias by dividing by N-1 instead of N.
      * @return variance of the recs dataset, as a float value.
      */
-    float variance(std::vector<quotek::data::record>& recs,
+    float variance(quotek::data::records& recs,
     	           bool sampled);
 
     /**
@@ -199,7 +199,7 @@ namespace quotek {
      * @return variance of the recs dataset, as a float value.
      */
 
-    float variance_q(std::vector<quotek::data::record>& recs, 
+    float variance_q(quotek::data::records& recs, 
     	             bool sampled,
     	             float average);
     
@@ -209,8 +209,8 @@ namespace quotek {
      * @param recs2 the second dataset to work on.
      * @return the covariance between the 2 provided datasets, as a float.
      */
-    float covariance(std::vector<quotek::data::record>& recs1,
-    	             std::vector<quotek::data::record>& recs2);
+    float covariance(quotek::data::records& recs1,
+    	               quotek::data::records& recs2);
 
     /**
      * Quick version of covariance, provided that you already know the averages of the 2 datasets.
@@ -220,10 +220,10 @@ namespace quotek {
      * @param average_2 prec-computed average of second dataset.
      * @return the covariance between the 2 provided datasets, as a float.
      */
-    float covariance_q(std::vector<quotek::data::record>& recs1,
-    	               std::vector<quotek::data::record>& recs2,
-    	               float average_1,
-    	               float average_2);
+    float covariance_q(quotek::data::records& recs1,
+    	                 quotek::data::records& recs2,
+    	                 float average_1,
+    	                 float average_2);
 
     /**
      * Computes the standard deviation for the values contained in the recs dataset.
@@ -231,14 +231,14 @@ namespace quotek {
      * @sample if true, computes sample standard deviation, population standard deviation otherwise.
      * @return the standard deviation of the provided dataset, as a float.
      */
-    float standard_deviation(std::vector<quotek::data::record>& recs, bool sample);
+    float standard_deviation(quotek::data::records& recs, bool sample);
 
     /**
      * Computes the delta in percent between first and last value of the recs dataset.
      * @param recs dataset to work on.
      * @return the variation in percents from the beginning to the end of the dataset.
      */
-    float percent_delta(std::vector<quotek::data::record>& recs);
+    float percent_delta(quotek::data::records& recs);
 
     /**
      * Computes the simple moving average of the provided dataset for n periods.
@@ -247,7 +247,7 @@ namespace quotek {
      * @param periods the number of dataset values that must be aggregated together to compute a single point of the SMA.
      * @return a vector of floats containing the graph values of the moving average for the dataset.
      */
-    std::vector<float> moving_average(std::vector<quotek::data::record>& recs,
+    std::vector<float> moving_average(quotek::data::records& recs,
                                       int  periods);
 
     /**
@@ -258,7 +258,7 @@ namespace quotek {
      * @param periods the number of dataset values that must be aggregated together to compute a single point of the EMA.
      * @return a vector of floats containing the graph values of the moving average for the dataset.
      */
-    std::vector<float> exponential_moving_average(std::vector<quotek::data::record>& recs, 
+    std::vector<float> exponential_moving_average(quotek::data::records& recs, 
                                                   int periods);
 
 
@@ -269,7 +269,7 @@ namespace quotek {
      *  @param periods Number of periods for the moving average.
      */
 
-    std::vector<float> weighted_moving_average(std::vector<quotek::data::record>& recs, 
+    std::vector<float> weighted_moving_average(quotek::data::records& recs, 
                                                   int periods);
 
     /**
@@ -281,7 +281,7 @@ namespace quotek {
      * @param result reference, to store the result of the linear regression.
      * @return none.
      */
-    void linear_regression(std::vector<quotek::data::record>& recs, std::vector<float>& result);
+    void linear_regression(quotek::data::records& recs, std::vector<float>& result);
     
     /**
      * Computes the linear regression of the values contained in the dataset using an ordinary least
@@ -292,14 +292,14 @@ namespace quotek {
      * @param recs dataset to work on.
      * @return affine structure containing slope and intercept values.
      */
-    affine linear_regression(std::vector<quotek::data::record>& recs);
+    affine linear_regression(quotek::data::records& recs);
 
     /**
      * This fucntion computes a polynomial regression from a provided recs dataset.
      * @param recs dataset to work on.
      * @return vector of floats representing the polynomial regression of dataset.
      */
-     std::vector<float> polynomial_regression(std::vector<quotek::data::record>& recs);
+     std::vector<float> polynomial_regression(quotek::data::records& recs);
 
     /** 
      * Computes the bull, bear and neutral ratios for the provided dataset.
@@ -307,7 +307,7 @@ namespace quotek {
      * @param recs dataset to work on.
      * @return a trend_p structure containing the bull, bear and neutral trend percentages for the dataset.
      */
-    trend_p trend_percentages(std::vector<quotek::data::record>& recs);
+    trend_p trend_percentages(quotek::data::records& recs);
 
     /**
      * This function returns the risk/reward ratio for a potential trade having the provided caracteristics.
