@@ -153,7 +153,7 @@ namespace quotek {
             strptime(datestr.c_str(),format.c_str(),&tm);
           #else
             std::stringstream ss(datestr);
-            ss >> std::get_time(&tm, format);
+            ss >> std::get_time(&tm, format.c_str());
           #endif
           return mktime(&tm);
 
