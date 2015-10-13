@@ -529,10 +529,10 @@ void btEngine::addAStats(adamresult* result) {
 
     assetstats* a1 = new assetstats();
     a1->name = inmem_records.GetItemName(i);
-    a1->variation = quotek::quant::percent_delta(inmem_records[a1->name].get_data());
-    a1->deviation = quotek::quant::standard_deviation(inmem_records[a1->name].get_data(),false);
-    a1->highest = quotek::quant::max(inmem_records[i].get_data());
-    a1->lowest = quotek::quant::min(inmem_records[i].get_data());
+    a1->variation = quotek::quant::percent_delta(inmem_records[a1->name]);
+    a1->deviation = quotek::quant::standard_deviation(inmem_records[a1->name],false);
+    a1->highest = quotek::quant::max(inmem_records[i]);
+    a1->lowest = quotek::quant::min(inmem_records[i]);
     
     result->astats.push_back(a1);
 
