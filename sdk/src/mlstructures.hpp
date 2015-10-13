@@ -70,6 +70,22 @@ namespace quotek {
 
     } sentiment;
     
+
+    /** taxonomy is a structure created to store text categorization */
+    typedef struct category {
+
+      /** Stores the data detected category as a string */
+      std::string name;
+
+      /** Stores the categorization score (level of confidence) */
+      float score;
+
+      /** Level of confidence summurizing. True if confident, false otherwise. */
+      bool confident;
+
+    } category;
+
+
   }
 }
 

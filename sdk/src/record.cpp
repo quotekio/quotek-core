@@ -189,7 +189,7 @@ namespace quotek {
       return this->data.size();
     }
 
-    quotek::data::record records::min() {
+    quotek::data::record records::min(){
 
       if ( data.size() == 0 ) return quotek::data::record(0,0,0);
 

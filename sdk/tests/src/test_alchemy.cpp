@@ -14,6 +14,7 @@ std::string sent_pos = "I really enjoy strawberries, this is the most delicious 
 std::string sent_neg = "I hate strawberries, these totally suck";
 
 std::string es_corpus = "El coordinador general de Convergencia mantiene que la independencia mejorara las condiciones de vida";
+std::string taxo_corpus = "Islamic State victories against the Taliban have not weakened the overall insurgency, but have mostly inflicted more chaos and misery upon Afghan civilians.";
 
 
 void test_sentiment(quotek::ml::alchemy& ac) {
@@ -55,6 +56,16 @@ void test_relations(quotek::ml::alchemy& ac) {
 }
 
 
+void test_taxonomy(quotek::ml::alchemy& ac) {
+
+  extern std::string taxo_corpus;
+  std::vector<quotek::ml::category> cats = ac.taxonomy(taxo_corpus,"text");
+  assert(cats.size() > 0);
+  assert(cats[0].name == "/law, govt and politics/government");
+
+}
+
+
 void test_language(quotek::ml::alchemy& ac) {
 
   extern std::string sent_pos;
@@ -89,9 +100,10 @@ int main(int argc, char** argv) {
 
   quotek::ml::alchemy ac(argv[1],"http://access.alchemyapi.com");
 
-  test_sentiment(ac);
+  test_sentiment(ac); 
   test_language(ac);
   test_relations(ac);
   test_raw(ac);
+  test_taxonomy(ac);
   
 }

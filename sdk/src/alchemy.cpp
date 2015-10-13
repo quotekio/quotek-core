@@ -105,9 +105,16 @@ namespace quotek {
 
               r0.sentence = d["relations"][i]["sentence"].GetString();
               r0.subject = d["relations"][i]["subject"]["text"].GetString();
-              r0.action.text =  d["relations"][i]["action"]["text"].GetString();
-              r0.action.tense = d["relations"][i]["action"]["verb"]["tense"].GetString();
-              r0.action.negated = d["relations"][i]["action"]["verb"]["negated"].IsObject() ;
+
+              if ( d["relations"][i].HasMember("action") ) {
+                r0.action.text =  d["relations"][i]["action"]["text"].GetString();
+                r0.action.tense = d["relations"][i]["action"]["verb"]["tense"].GetString();
+
+                if ( d["relations"][i]["action"]["verb"].HasMember("negated") ) {
+                  r0.action.negated = true;
+                }
+                else r0.action.negated = false;
+              }
               r0.object = d["relations"][i]["object"]["text"].GetString();
 
               result.emplace_back(r0);
@@ -118,6 +125,35 @@ namespace quotek {
           return result;
         }
 
+
+        std::vector<quotek::ml::category> alchemy::taxonomy(std::string payload,
+                                                   std::string format) {
+
+          std::vector<quotek::ml::category> result;
+          std::string data = this->query("GetRankedTaxonomy",payload,format);
+
+          rapidjson::Document d;
+          d.Parse<0>(data.c_str());
+
+          if (d.HasMember("taxonomy")) {
+
+            for (int i=0;i<d["taxonomy"].Size();i++) {
+
+              quotek::ml::category cat0;
+              cat0.name = d["taxonomy"][i]["label"].GetString()  ;
+              std::string score_str = d["taxonomy"][i]["score"].GetString();
+              cat0.score = atof(score_str.c_str()) ;
+
+              if ( d["taxonomy"][i].HasMember("confident")  ) cat0.confident = false;
+              else cat0.confident = true;
+
+              result.emplace_back(cat0);
+
+            }
+          }
+          return result;
+
+        }
 
         std::string alchemy::query(std::string fct, std::string payload, std::string format) {
 

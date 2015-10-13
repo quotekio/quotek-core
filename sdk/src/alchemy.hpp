@@ -59,6 +59,16 @@ namespace quotek {
         std::vector<quotek::ml::relation> relations(std::string payload,
                                                     std::string format); 
 
+
+        /** taxonomy categorizes a text corpus in a pre-existing category-tree.
+         *  You can get the full category-tree at http://www.alchemyapi.com/sites/default/files/taxonomyCategories.zip
+         *  @param payload Text or URL of text to get taxonomy for.
+         *  @param format tells wether payload is text, html, or url.
+         */
+
+        std::vector<quotek::ml::category> taxonomy(std::string payload,
+                                                   std::string format);
+
         /** language function guesses the language used to write the text passed as argument.
          *  @param payload Text or URL of text to analyse.
          *  @param format tells wether payload is text, html, or url.
