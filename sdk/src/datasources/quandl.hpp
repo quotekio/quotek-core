@@ -86,7 +86,12 @@ namespace quotek {
 
       public:
 
-        /** quandl class constructor. */
+        /** quandl class constructor. 
+         *  @param api_key Account API Key provided by quandl.
+         *  
+         *  Note: you can add an empty api_key "" but then are limited to 50 queries/day.
+         */
+         
       	quandl(std::string api_key);
 
       	/** quandl class destructor. */
@@ -114,9 +119,6 @@ namespace quotek {
          *  @param dataset dataset in database to get data from.
          *  @param format return format needed. Can be "csv", "json" and "xml".
          *  @return the resulting dataset returned by quandl API, as a string.
-         *  
-         *  Optional Parameters:
-         *
          *  @param start_date YYYY-mm-dd string representation of the first day of data you want in the set.
          *  @param end_date YYYY-mm-dd string representation of the last day of data you want in the set.
          *  @param collapse aggregation of your data. Can be "daily", "weekly", "monthly", "quarterly", "annual".
@@ -148,9 +150,6 @@ namespace quotek {
          *  @param database database to query prices from.
          *  @param dataset dataset to query prices from.
          *  @return a quotek::data::records container, containing all the datas of the set.
-         *
-         *  Optional Parameters:
-         *
          *  @param start_date YYYY-mm-dd string representation of the first day of cotation you want in the set.
          *  @param send_date YYYY-mm-dd string representation of the last day of cotation you want in the set.
          *  @param collapse aggregation level of your data. Can be "daily", "weekly", "monthly", "quarterly", "annual".
@@ -169,9 +168,6 @@ namespace quotek {
          *  @param database database to query prices from.
          *  @param dataset dataset to query prices from.
          *  @return a vector of quotek::data::history objects, containing all the datas of the set.
-         *
-         *  Optional Parameters:
-         *
          *  @param start_date YYYY-mm-dd string representation of the first day of cotation you want in the set.
          *  @param send_date YYYY-mm-dd string representation of the last day of cotation you want in the set.
          *  @param collapse aggregation level of your data. Can be "daily", "weekly", "monthly", "quarterly", "annual".
@@ -190,9 +186,6 @@ namespace quotek {
          *  @param dataset dataset to get data from.
          *  @param column_num column number to fetch.
          *  @return a list of float values.
-         *  
-         *  Optional Parameters:
-         *  
          *  @param start_date YYYY-mm-dd string representation of the first day of data you want in the set.
          *  @param send_date YYYY-mm-dd string representation of the last day of data you want in the set.
          *  @param collapse aggregation level of your data. Can be "daily", "weekly", "monthly", "quarterly", "annual".

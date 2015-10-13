@@ -12,33 +12,13 @@ Download and unzip the quotek SDK archive file. Then right-click on the "install
 file which is located at the root of the decompressed directory, then finally click on "Run as Administrator". The SDK will be installed in 
 **C:\\Program Files\\quotek\\sdk**, and ready to go.
 
-Building & Linking
-^^^^^^^^^^^^^^^^^^ 
+Visual Studio Setup
+^^^^^^^^^^^^^^^^^^^
 
-When using Quotek SDK on windows, The first thing you have to do is to let your IDE / Compiling Toolchain know where the Quotek SDK headers and libraries are located.
-
-For Visual studio 2015, the procedure is the following:
-
-* Start a new, empty C++ Project.
-* go to Project => Properties.
-* Select "VC++ Directories".
-* Modify the Include Directories property to add **C:\\Program Files\\quotek\\sdk\\include;** as include search path.
-* Modify the Library Directories property to add **C:\\Program Files\\quotek\\sdk\\lib;** as library search path.
-
-|
-.. image:: _static/img/vs15_screen1.png
-
-|
-* Go to Linker, then Inputs. 
-* Modify the Additional Dependancies property to add **"libcurl.lib;quotek.lib"** as additional dependancies.
-|
-
-.. image:: _static/img/vs15_screen2.png
-|
-
-Then you are good to go, you can start your project and compile it without any trouble.
-
-**Note:** You will have to perform this operation for evey new visual studio project you start with quotek SDK.
+Just go to **C:\\Program Files\\quotek\\sdk\\helpers\\vstudio**, 
+then double click on the "Quotek.vsix" file. The SDK should now be installed with Visual Studio.
+If you start a new Project and go to "Visual C++" , you will see Quotek Project. Then Select it and
+start a new project: It's all good, you are now ready to code with quotek.
 
 Linux Install
 -------------
@@ -47,20 +27,20 @@ Download and unzip the quotek SDK archive file, and launch the "installer_linux.
 located at the root of the decompressed directory. All of the Quotek SDK will then be installed 
 in /opt/quotek/sdk. The libraries are located in **/opt/quotek/sdk/lib** and headers are in **/opt/quotek/sdk/include**.
 
-Dependancies
+Dependencies
 ^^^^^^^^^^^^
 
-În order to work properly on Linux, Quotek SDK needs libcurl as a dependancy. This is
+În order to work properly on Linux, Quotek SDK needs libcurl as a dependency. This is
 a very common package which is probably already installed on your system. In any case,
 the install procedure for libcurl is as follow:
 
 **For Debian/Ubuntu**
 
-``sudo apt-get install libcurl4``
+``sudo apt-get install libcurl4-openssl-dev``
 
 **For CentOS/Fedora**
 
-``sudo yum install libcurl``
+``sudo yum install libcurl-devel``
 
 Building & Linking
 ^^^^^^^^^^^^^^^^^^

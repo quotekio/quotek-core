@@ -88,6 +88,12 @@
 
   <script type="text/javascript">
 
+    $.each( $('.breathe-sectiondef'), function(index,v) {
+
+      if ( $(this).hasClass('container') ) $(this).removeClass('container');
+
+     } );
+
     $("#header-pbtn").click(function() { product_dropdown_toggle(); });
 
     function product_dropdown_toggle() {
