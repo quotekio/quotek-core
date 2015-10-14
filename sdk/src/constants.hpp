@@ -31,7 +31,7 @@ namespace quotek {
     #define TMPDIR "/tmp/"
     #endif
     
-    #define SDK_VERSION "SDK v2.1.4"
+    #define SDK_VERSION "Quotek SDK v2.2.1"
 
 
   }
