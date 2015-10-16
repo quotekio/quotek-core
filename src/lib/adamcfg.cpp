@@ -172,7 +172,7 @@ int adamCfg::read() {
                                                    atoi(ilist[1].c_str()),
                                                    atoi(ilist[2].c_str()),
                                                    ilist[3],
-                                                   ilist[4],
+                                                   atof(ilist[4].c_str()),
                                                    ilist[5],
                                                    ilist[6]);
           }

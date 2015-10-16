@@ -366,16 +366,19 @@ void tsEngine::poll() {
 
       for (int i=0;i<values.size();i++) {
 
-        quotek::data::record r;
         epic = values[i].epic;
-        buy = values[i].bid;
-        sell = values[i].offer;
+
+        indice* idx = iResolve(ilist, epic);
+        float unit_coef = 1.0 / idx->pip_value;
+
+        quotek::data::record r;
+        buy = values[i].offer;
+        sell = values[i].bid;
 
         r.timestamp = time_ms;
         r.value = (buy + sell) / 2;
-        r.spread = (buy - sell) / 2;
+        r.spread =  roundfloat( (buy - sell) * unit_coef, 0.1 ) ;
         
-        indice* idx = iResolve(ilist, epic);
         if (idx != NULL) {
           mepic = idx->name;
           this->pushRecord(mepic,r);

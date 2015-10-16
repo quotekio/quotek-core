@@ -82,6 +82,9 @@ int roundint(double r) {
     return (r > 0.0) ? (r + 0.5) : (r - 0.5); 
 }
 
+float roundfloat(float f, float prec) {
+  return (float) (floor(f*(1.0f/prec) + 0.5)/(1.0f/prec));
+}
 
 std::string sreplace(std::string &s,
                       std::string toReplace,

@@ -1,11 +1,11 @@
 #include "indice.h"
 
-indice::indice(string n, int p, int ms, string b, string u,string sh,string eh) {
+indice::indice(string n, int p, int ms, string b, float pv,string sh,string eh) {
       name = n;
       pnl_pp = p;
       min_stop = ms;
       bmapping = b;
-      unit = u;
+      pip_value = pv;
       start_hour = sh;
       end_hour = eh;
     };

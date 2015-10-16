@@ -15,10 +15,10 @@ class indice {
     int pnl_pp;
     int min_stop;
     string bmapping;
-  	string unit;
+  	float pip_value;
     string start_hour;
     string end_hour;
-    indice(string, int,int, string, string,string,string);
+    indice(string, int,int, string,float,string,string);
 
 };
 

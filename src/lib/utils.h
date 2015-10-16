@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <math.h>
 #include <time.h>
 #include <regex>
 #include <iterator>
@@ -62,6 +63,7 @@ float randfloat(float min, float max);
 int randint(int min,int max);
 
 int roundint(double);
+float roundfloat(float f,float prec);
 
 
 #endif

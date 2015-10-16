@@ -1,7 +1,7 @@
 #ifndef ADAMCFG_H
 #define ADAMCFG_H
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <string>
 #include <iostream>
 #include <fstream>

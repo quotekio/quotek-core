@@ -71,7 +71,7 @@ void moneyManager::computePNLs(string indice_name,float cur_value) {
   indice* idx = iResolve(indices_list,indice_name);
   
   int pnl_coef = idx->pnl_pp;
-  int unit_coef = (idx->unit == "pip") ? 10000 : 1;
+  float unit_coef =  1.0 / idx->pip_value ;
 
   for (int i=0;i<positions.size();i++) {
 
@@ -240,12 +240,12 @@ float moneyManager::computeVAR() {
     quotek::core::position* p = &(positions.at(i));
     indice* idx = iResolve(indices_list,p->asset_name);
     int pnl_coef = idx->pnl_pp; 
-    int unit_coef = (idx->unit == "pip") ? 10000 : 1;
-
+    float unit_coef =  1.0 / idx->pip_value ;
 
     float stop = ( p->stop - p->open );
     stop = pow(stop,2) / stop;
     var += stop * pnl_coef * unit_coef * (pow(p->size,2)/p->size);
+    
 
   }
 
