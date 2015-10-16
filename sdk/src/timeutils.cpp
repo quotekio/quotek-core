@@ -13,7 +13,7 @@ namespace quotek {
     namespace time {
 
 
-        std::string hour(long timestamp) {
+        std::string timestr(long timestamp) {
         
           const std::time_t ttstamp = (const std::time_t) timestamp;
           std::tm* c_time =  std::localtime(&ttstamp);
@@ -25,7 +25,20 @@ namespace quotek {
 
           return ss.str();
 
-        }       
+        }    
+
+        std::vector<int> timeint(long timestamp) {
+
+          std::vector<int> result;
+          const std::time_t ttstamp = (const std::time_t) timestamp;
+          std::tm* c_time =  std::localtime(&ttstamp);
+
+          result.emplace_back(c_time->tm_hour);
+          result.emplace_back(c_time->tm_min);
+          result.emplace_back(c_time->tm_sec);
+          return result;
+
+        }
 
         bool is_time(std::string time_string, long timestamp) {
 

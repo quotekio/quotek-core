@@ -33,13 +33,21 @@ namespace quotek {
     namespace time {
 
 
-        /** hour takes an epoch timestamp and returns an "HH:MM:SS" string corresponding.
+        /** timestr takes an epoch timestamp and returns an "HH:MM:SS" string corresponding.
          *  @param timestamp epoch timestamp to get hour string from.
          *  @return hour string with the form "HH:MM:SS"
          */
          
-        std::string hour(long timestamp);
+        std::string timestr(long timestamp);
 
+
+        /** timeint takes an epoch timestamp and returns a vector of int representing the hours, 
+         *  minutes and seconds of timestamp. vect[0] is hours, vect[1] is minutes, vect[2] is seconds
+         *  @param timestamp epoch timestamp to get time ints from.
+         *  @return an int vector of 3 elements.
+         */
+
+        std::vector<int> timeint(long timestamp);
 
         /**
          * is_time tells if a time string matches with the epoch timestamp provided
