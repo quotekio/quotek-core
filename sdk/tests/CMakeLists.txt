@@ -77,6 +77,12 @@ add_executable(
 )
 
 add_executable(
+    test_oanda
+    src/test_oanda.cpp
+)
+
+
+add_executable(
     test_quandl
     src/test_quandl.cpp
 )
@@ -160,6 +166,13 @@ target_link_libraries(
 
 target_link_libraries(
         test_rss
+        quotek
+        pthread
+        curl
+)
+
+target_link_libraries(
+        test_oanda
         quotek
         pthread
         curl
