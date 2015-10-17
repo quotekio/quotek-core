@@ -24,13 +24,13 @@ void test_macd(quotek::data::records& recs) {
   
 }
 
-void test_fibo() {
+void test_fibo_retr() {
  
   quotek::data::records recs;
   recs.append(0,0);
   recs.append(1,100);
 
-  quotek::quant::fibo_levels fl = quotek::ta::fibo_retrace(recs);
+  quotek::quant::fibo_ret fl = quotek::ta::fibo_retrace(recs);
 
   assert(fl.p0 == 0);
   assert( fabs( fl.p23 - 23.6) < EPSILON );
@@ -41,11 +41,29 @@ void test_fibo() {
   
 }
 
+void test_fibo_ext() {
+ 
+  quotek::data::records recs;
+  recs.append(0,0);
+  recs.append(1,100);
+
+  quotek::quant::fibo_ext fl = quotek::ta::fibo_extension(recs);
+
+  assert(fl.p100 == 100 );
+  assert( fabs( fl.p127 - 127.2) < EPSILON );
+  assert( fabs( fl.p161 - 161.8) < EPSILON );
+  assert( fl.p200 == 200 );
+  assert(fabs( fl.p261 - 261.8) < EPSILON );
+  
+}
+
+
 
 
 int main() {
   quotek::data::records f1 = quotek::rand::generators::normal(100,4500,30);
   test_macd(f1);
-  test_fibo();
+  test_fibo_retr();
+  test_fibo_ext();
 
 }

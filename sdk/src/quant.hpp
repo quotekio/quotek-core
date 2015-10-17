@@ -94,9 +94,9 @@ namespace quotek {
 
     } _greeks;
 
-    /** fibo_levels is a structure that stores the different fibonacci retracements for a time-serie */
-
-    typedef struct fibo_levels {
+    /** fibo_ret is a structure that stores the different fibonacci retracements for a time-serie */
+    
+    typedef struct fibo_ret {
 
       /** Stores level 0% */
       float p0;
@@ -117,7 +117,33 @@ namespace quotek {
       /** Stores level 100 % */
       float p100;
 
-    } fibo_levels;
+    } fibo_ret;
+
+
+    /** fibo_ext is a structure that stores the different fibonacci extensions for a time-series */
+
+    typedef struct fibo_ext {
+
+      /** Stores level 0% */
+      float p100;
+       
+      /** Stores level 127.2 % */
+      float p127;
+
+      /** Stores level 161.8%. */
+      float p161;
+
+      /** Stores level 200 % */
+      float p200;
+
+      /** Stores level 261.8 % */
+      float p261;
+
+    } fibo_ext;
+
+
+
+
 
 
     /**

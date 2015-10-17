@@ -672,6 +672,8 @@ tsEngine::tsEngine(adamCfg* conf,
     strategy* st = c_strat();
 
     st->recs = &this->getAssetRecords(algos[i].eval_name);
+    //To Add later on.
+    //st->positions = this->getMoneyManager()->getPositions();
     st->asset_name = algos[i].eval_name;
     st->identifier = algos[i].strategy + "@" + algos[i].eval_name;
 

@@ -18,7 +18,8 @@ namespace quotek {
   namespace ta {
 
     #define MACD(_a,_b,_c,_d) moving_average_convergeance_divergeance(_a,_b,_c,_d)
-    #define FIBO(_a) fibo_retrace(_a)
+    #define FIBO_RETR(_a) fibo_retrace(_a)
+    #define FIBO_EXT(_a) fibo_extension(_a)
 
     /** MACD is an early trend indicator. It is composed of 2 graph lines. The first line, MACD, is a difference between an EMA small period and an EMA long period.
      *  the second line, the signal line, is usually a 9 periods EMA.
@@ -40,12 +41,22 @@ namespace quotek {
                                                  int periods_signal_line);
 
     /** fibo_retrace takes a time-series and computes the different fibonacci 
-     *  retrace levels and puts it in a quotek::quant::fibo_levels structure.
+     *  retracement levels and puts it in a quotek::quant::fibo_ret structure.
      *  @param recs dataset to compute fibonacci levels for.
-     *  @return a quotek::quant::fibo_levels structure 
+     *  @return a quotek::quant::fibo_ret structure 
+     */
+     
+    quotek::quant::fibo_ret fibo_retrace(quotek::data::records& recs);
+
+    /** fibo_extension takes a time-series, computes the different fibonacci 
+     *  extension levels and puts it in a quotek::quant::fibo_ext structure.
+     *  @param recs dataset to compute fibonacci levels for.
+     *  @return a quotek::quant::fibo_ext structure 
      */
 
-    quotek::quant::fibo_levels fibo_retrace(quotek::data::records& recs);
+    quotek::quant::fibo_ext fibo_extension(quotek::data::records& recs);
+
+
 
   }
 }

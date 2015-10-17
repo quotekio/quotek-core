@@ -38,9 +38,9 @@ namespace quotek {
 
     }
 
-    quotek::quant::fibo_levels fibo_retrace(quotek::data::records& recs) {
+    quotek::quant::fibo_ret fibo_retrace(quotek::data::records& recs) {
 
-      quotek::quant::fibo_levels result;
+      quotek::quant::fibo_ret result;
 
       float max = quotek::quant::max(recs);
       float min = quotek::quant::min(recs);
@@ -56,5 +56,22 @@ namespace quotek {
       return result;
     }
     
+    quotek::quant::fibo_ext fibo_extension(quotek::data::records& recs) {
+
+      quotek::quant::fibo_ext result;
+
+      float max = quotek::quant::max(recs);
+      float min = quotek::quant::min(recs);
+      float delta = max - min;
+
+      result.p100 = max;
+      result.p127 = min + (127.2 * delta / 100);
+      result.p161 = min + (161.8 * delta / 100 );
+      result.p200 = 2 * max;
+      result.p261 = min + (261.8 * delta / 100 );
+
+      return result;
+    }
+
   }
 }
