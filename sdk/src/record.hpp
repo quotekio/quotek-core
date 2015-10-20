@@ -135,13 +135,13 @@ namespace quotek {
         std::vector<quotek::data::record>& get_data();
 
         /** Retrieves a vector that contains all the timestamps of the dataset. */
-        std::vector<long>& get_timestamps();
+        std::vector<long> export_timestamps();
 
         /** Retrieves a vector that contains all the values of the dataset. */
-        std::vector<float>& get_values();
+        std::vector<float> export_values();
 
         /** Retrieves a vector that contains all the spreads of a dataset. */
-        std::vector<float>& get_spreads();
+        std::vector<float> export_spreads();
 
         /** last returns last vector element. */
         quotek::data::record& last();
@@ -176,9 +176,6 @@ namespace quotek {
 
       private:
         std::vector<quotek::data::record> data;
-        std::vector<long> timestamps;
-        std::vector<float> values;
-        std::vector<float> spreads;
     };
   
   }

@@ -139,44 +139,44 @@ namespace quotek {
       return this->data;
     }
 
-    std::vector<long>& records::get_timestamps() {
-      return this->timestamps;
+    std::vector<long> records::export_timestamps() {
+      std::vector<long> tstamps;
+      for (int i=0;i<data.size();i++) {
+        tstamps.emplace_back(data[i].timestamp);
+      }
+      return tstamps;
     }
 
-    std::vector<float>& records::get_values() {
-      return this->values;
+    std::vector<float> records::export_values() {
+      std::vector<float> values;
+      for (int i=0;i<data.size();i++) {
+        values.emplace_back(data[i].value);
+      }
+      return values;
     }
 
-    std::vector<float>& records::get_spreads() {
-      return this->spreads;
+    std::vector<float> records::export_spreads() {
+      std::vector<float> spreads;
+      for (int i=0;i<data.size();i++) {
+        spreads.emplace_back(data[i].spread);
+      }
+      return spreads;
     }
 
     void records::append(long timestamp, float value) {
-      this->timestamps.emplace_back(timestamp);
-      this->values.emplace_back(value);
-      this->spreads.emplace_back(0);
       this->data.emplace_back( record(timestamp , value, 0) );
     }
 
     void records::append(long timestamp, float value, float spread) {
-      this->timestamps.emplace_back(timestamp);
-      this->values.emplace_back(value);
-      this->spreads.emplace_back(spread);
       this->data.emplace_back( record(timestamp , value, spread) ); 
     }
 
     void records::append(float value) {
-      this->timestamps.emplace_back(0);
-      this->values.emplace_back(value);
-      this->spreads.emplace_back(0);
       this->data.emplace_back( record(0, value,0) );
 
     }
 
     void records::append(quotek::data::record& r) {
-      this->timestamps.emplace_back(r.timestamp);
-      this->values.emplace_back(r.value);
-      this->spreads.emplace_back(r.spread);
       this->data.emplace_back(r); 
     }
 
