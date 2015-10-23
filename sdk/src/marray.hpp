@@ -22,7 +22,6 @@ namespace quotek {
 
     using namespace std;
 
-    //////////////// start class array1d /////////////////////
     template <class array_element_type>
     class array1d{
 
@@ -33,9 +32,15 @@ namespace quotek {
 
     public:
 
+    /** Returns size of first dimension. */
     inline  int length1(void){
           return size1;
       }
+
+    /** Returns a reference to array[x1]. This is the main function we use to store and retrieve data.
+        @param x1 index of the element we want to retrieve or set in the array.
+        @return element of array pointed by (x1)
+    */ 
 
     inline  array_element_type & at(int x1){
     #if ARRAY_BOUNDS_CHECK == 1 
@@ -55,7 +60,10 @@ namespace quotek {
       }
 
 
-    //constructor
+      /** Array constructor.
+       *  @param dim1 size of first dimension of array. 
+       */
+
       array1d(int  dim1){
 
           if( dim1 <= 0 ){
@@ -71,7 +79,7 @@ namespace quotek {
 
       }
 
-    //destructor
+      /** Array destructor */
       ~array1d(){
 
         delete []  internal_array;
@@ -90,12 +98,6 @@ namespace quotek {
 
     } ;
 
-    ////////////// end class array1d /////////////////////
-
-
-
-    //////////////// start class array2d /////////////////////
-
     template <class array_element_type>
     class array2d{
 
@@ -109,13 +111,21 @@ namespace quotek {
 
     public:
 
+      /** Returns size of first dimension. */
       inline int length1(void){
           return size1;
       }
 
+      /** Returns size of second dimension. */
       inline int length2(void){
           return size2;
       }
+
+    /** Returns a reference to array[x1][x2]. This is the main function we use to store and retrieve data.
+        @param x1 First dimension index of the element we want to retrieve or set in the array.
+        @param x2 Second dimension index of the element we want to retrieve or set in the array.
+        @return element of array pointed by (x1,x2)
+    */ 
 
     inline  array_element_type & at(int x1, int x2){
 
@@ -156,7 +166,10 @@ namespace quotek {
       }
 
 
-    //constructor
+      /** Array constructor.
+       *  @param dim1 size of the first dimension of array.
+       *  @param dim2 size of the second dimension of array 
+       */
       array2d(int  dim1, int dim2){
 
        if( dim1 <= 0 ){
@@ -179,7 +192,7 @@ namespace quotek {
 
       }
 
-    //destructor
+      /** Array destructor. */
       ~array2d(){
 
         delete [] internal_array;
@@ -214,14 +227,6 @@ namespace quotek {
     //z-axis (think of like floor in a building)
       int size3;
 
-    //size2size1 and size2size3 did not improve performance
-    ////but this approach may improve performance for higher dimensions
-    //size2size1=size2*size1 in constructor
-    //  int size2size1;
-
-    //size2size3=size2*size3 in constructor  
-    //  int size2size3;
-     
       array_element_type *  internal_array;
 
     //factors for Fortran order
@@ -232,18 +237,28 @@ namespace quotek {
 
     public:
 
+      /** Returns size of first dimension. */
       inline int length1(void){
           return size1;
       }
 
+      /** Returns size of second dimension. */
       inline int length2(void){
           return size2;
       }
 
+      /** Returns size of third dimension. */
       inline int length3(void){
           return size3;
       }
 
+    /** Returns a reference to array[x1][x2][x3]. This is the main function we use to store and retrieve data.
+        @param x1 First dimension index of the element we want to retrieve or set in the array.
+        @param x2 Second dimension index of the element we want to retrieve or set in the array.
+        @param x3 Third dimension index of the element we want to retrieve or set in the array.
+        @return element of array pointed by (x1, x2, x3)
+
+    */
     inline  array_element_type & at(int x1, int x2, int x3){
 
     #if ARRAY_BOUNDS_CHECK == 1
@@ -293,7 +308,11 @@ namespace quotek {
       }
 
 
-    //constructor
+      /** Array constructor.
+       *  @param dim1 size of the first dimension of array.
+       *  @param dim2 size of the second dimension of array.
+       *  @param dim3 size of the third dimension of array.
+       */
       array3d(int  dim1, int dim2, int dim3){
 
        if( dim1 <= 0 ){
@@ -332,7 +351,7 @@ namespace quotek {
 
       }
 
-    //destructor
+      /** Array destructor. */
       ~array3d(){
 
         delete []  internal_array;
@@ -350,10 +369,6 @@ namespace quotek {
 
 
     } ;
-
-    ////////////// end class array3d /////////////////////
-
-
 
     //////////////// start class array4d /////////////////////
     template <class array_element_type>
@@ -380,24 +395,34 @@ namespace quotek {
 
     public:
 
+      /** Returns size of first dimension. */
       inline int length1(void){
           return size1;
       }
 
+      /** Returns size of second dimension. */
       inline int length2(void){
           return size2;
       }
 
+      /** Returns size of third dimension. */
       inline int length3(void){
           return size3;
       }
 
+      /** Returns size of fourth dimension. */
       inline int length4(void){
           return size4;
       }
 
        
-
+    /** Returns a referrence to array[x1][x2][x3][x4]. This is the main function we use to store and retrieve data.
+        @param x1 First dimension index of the element we want to retrieve or set in the array.
+        @param x2 Second dimension index of the element we want to retrieve or set in the array.
+        @param x3 Third dimension index of the element we want to retrieve or set in the array.
+        @param x4 Fourth dimension index of the element we want to retrieve or set in the array.
+        @return element of array pointed by (x1, x2, x3,x4)
+    */
     inline  array_element_type & at(int x1, int x2, int x3, int x4){
 
     #if ARRAY_BOUNDS_CHECK == 1
@@ -457,7 +482,12 @@ namespace quotek {
       }
 
 
-    //constructor
+      /** Array constructor.
+       *  @param dim1 size of the first dimension of array.
+       *  @param dim2 size of the second dimension of array.
+       *  @param dim3 size of the third dimension of array.
+       *  @param dim4 size of the fourth dimension of array.
+       */
       array4d(int  dim1, int dim2, int dim3, int dim4){
 
        if( dim1 <= 0 ){
@@ -507,7 +537,7 @@ namespace quotek {
 
       }
 
-    //destructor
+      /** Array Destructor. */
       ~array4d(){
 
         delete []  internal_array;
@@ -555,27 +585,39 @@ namespace quotek {
 
     public:
 
+      /** Returns size of first dimension. */
       inline int length1(void){
           return size1;
       }
 
+      /** Returns size of second dimension. */
       inline int length2(void){
           return size2;
       }
-
+      
+      /** Returns size of third dimension. */
       inline int length3(void){
           return size3;
       }
 
+      /** Returns size of fourth dimension. */
       inline int length4(void){
           return size4;
       }
 
+      /** Returns size of fifth dimension. */
       inline int length5(void){
           return size5;
       }
 
-       
+    /** Returns a referrence to array[x1][x2][x3][x4][x5]. This is the main function we use to store and retrieve data.
+        @param x1 First dimension index of the element we want to retrieve or set in the array.
+        @param x2 Second dimension index of the element we want to retrieve or set in the array.
+        @param x3 Third dimension index of the element we want to retrieve or set in the array.
+        @param x4 Fourth dimension index of the element we want to retrieve or set in the array.
+        @param x5 Fifth dimension index of the element we want to retrieve or set in the array.
+        @return element of array pointed by (x1, x2, x3,x4,x5)
+    */
     inline  array_element_type & at(int x1, int x2, int x3, int x4, int x5){
 
     #if ARRAY_BOUNDS_CHECK == 1
@@ -648,7 +690,13 @@ namespace quotek {
       }
 
 
-    //constructor
+      /** Array constructor.
+       *  @param dim1 size of the first dimension of array.
+       *  @param dim2 size of the second dimension of array.
+       *  @param dim3 size of the third dimension of array.
+       *  @param dim4 size of the fourth dimension of array.
+       *  @param dim5 size of the fifth dimension of array.
+       */
       array5d(int  dim1, int dim2, int dim3, int dim4, int dim5){
 
        if( dim1 <= 0 ){
@@ -706,7 +754,7 @@ namespace quotek {
        }
 
      }
-    //destructor
+      /** Array destructor. */
       ~array5d(){
 
         delete []  internal_array;
@@ -756,31 +804,45 @@ namespace quotek {
       int C1, C2, C3, C4, C5, C6;
 
     public:
-
+      /** Returns size of first dimension. */
       inline int length1(void){
           return size1;
       }
-
+      /** Returns size of second dimension. */
       inline int length2(void){
           return size2;
       }
-
+      
+      /** Returns size of third dimension. */
       inline int length3(void){
           return size3;
       }
 
+      /** Returns size of fourth dimension. */
       inline int length4(void){
           return size4;
       }
 
+      /** Returns size of fifth dimension. */
       inline int length5(void){
           return size5;
       }
 
+      /** Returns size of sixth dimension. */
       inline int length6(void){
           return size6;
       }
 
+
+    /** Returns a referrence to array[x1][x2][x3][x4][x5][x6]. This is the main function we use to store and retrieve data.
+        @param x1 First dimension index of the element we want to retrieve or set in the array.
+        @param x2 Second dimension index of the element we want to retrieve or set in the array.
+        @param x3 Third dimension index of the element we want to retrieve or set in the array.
+        @param x4 Fourth dimension index of the element we want to retrieve or set in the array.
+        @param x5 Fifth dimension index of the element we want to retrieve or set in the array.
+        @param x6 Sixth dimension index of the element we want to retrieve or set in the array.
+        @return element of array pointed by (x1, x2, x3,x4,x5,x6)
+    */
     inline  array_element_type & at(int x1, int x2, int x3, int x4, int x5, int x6){
 
     #if ARRAY_BOUNDS_CHECK == 1
@@ -842,21 +904,11 @@ namespace quotek {
     #endif
 
     #if FORTRAN_ORDER == 1
-    //fortran convention
-    //first index changes fastest
-    //   return  internal_array[x6*size5*size4*size3*size2*size1 + x5*size4*size3*size2*size1 + 
-    //                          x4*size3*size2*size1 + x3*size2*size1 + x2*size1 + x1];
-
+  
         return  internal_array[x6*F6 + x5*F5 + x4*F4 + x3*F3 + x2*F2 + x1*F1 ];
 
     #else
-    //C convention
-    //last index changes fastest 
-    //  return  internal_array[x1*size2*size3*size4*size5*size6 + 
-    //                               x2*size3*size4*size5*size6 +
-    //                                     x3*size4*size5*size6 + 
-    //                                           x4*size5*size6 + 
-    //                                                 x5*size6 + x6];
+    
 
         return  internal_array[ x1*C1 + x2*C2 + x3*C3 + x4*C4 + x5*C5 + x6*C6 ];
 
@@ -865,7 +917,14 @@ namespace quotek {
       }
 
 
-    //constructor
+      /** Array constructor.
+       *  @param dim1 size of the first dimension of array.
+       *  @param dim2 size of the second dimension of array.
+       *  @param dim3 size of the third dimension of array.
+       *  @param dim4 size of the fourth dimension of array.
+       *  @param dim5 size of the fifth dimension of array.
+       *  @param dim6 size of the sixth dimension of array.
+       */
       array6d(int  dim1, int dim2, int dim3, int dim4, int dim5, int dim6){
 
        if( dim1 <= 0 ){
@@ -932,7 +991,7 @@ namespace quotek {
 
       }
 
-    //destructor
+      /** Array destructor. */
       ~array6d(){
 
         delete []  internal_array;
@@ -984,33 +1043,53 @@ namespace quotek {
 
     public:
 
+      /** Returns size of first dimension. */
       inline int length1(void){
           return size1;
       }
 
+      /** Returns size of second dimension. */
       inline int length2(void){
           return size2;
       }
 
+      /** Returns size of third dimension. */
       inline int length3(void){
           return size3;
       }
 
+      /** Returns size of fourth dimension. */
       inline int length4(void){
           return size4;
       }
 
+      /** Returns size of fifth dimension. */
       inline int length5(void){
           return size5;
       }
 
+      /** Returns size of sixth dimension. */
       inline int length6(void){
           return size6;
       }
 
+      /** Returns size of seventh dimension. */
       inline int length7(void){
           return size7;
       }
+
+
+    /** Returns a referrence to array[x1][x2][x3][x4][x5][x6][x7]. 
+        This is the main function we use to store and retrieve data.
+        @param x1 First dimension index of the element we want to retrieve or set in the array.
+        @param x2 Second dimension index of the element we want to retrieve or set in the array.
+        @param x3 Third dimension index of the element we want to retrieve or set in the array.
+        @param x4 Fourth dimension index of the element we want to retrieve or set in the array.
+        @param x5 Fifth dimension index of the element we want to retrieve or set in the array.
+        @param x6 Sixth dimension index of the element we want to retrieve or set in the array.
+        @param x7 Seventh dimension index of the element we want to retrieve or set in the array.
+        @return element of array pointed by (x1, x2, x3,x4,x5,x6,x7)
+    */
 
     inline  array_element_type & at(int x1, int x2, int x3, int x4, int x5, int x6, int x7){
 
@@ -1104,7 +1183,15 @@ namespace quotek {
       }
 
 
-    //constructor
+      /** Array constructor.
+       *  @param dim1 size of the first dimension of array.
+       *  @param dim2 size of the second dimension of array.
+       *  @param dim3 size of the third dimension of array.
+       *  @param dim4 size of the fourth dimension of array.
+       *  @param dim5 size of the fifth dimension of array.
+       *  @param dim6 size of the sixth dimension of array.
+       *  @param dim7 size of the sixth dimension of array.
+       */
       array7d(int  dim1, int dim2, int dim3, int dim4, int dim5, int dim6, int dim7){
 
        if( dim1 <= 0 ){
