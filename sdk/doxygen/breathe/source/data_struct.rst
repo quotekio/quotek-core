@@ -5,6 +5,7 @@ This section explains how to import and store structured financial data with wit
 
 .. toctree::
    :hidden:
+   
    record
    records
    history
@@ -84,8 +85,8 @@ This is the main set of classes for handling multi-dimentional arrays. the {n} p
 of the number of dimensions you want to create for your array.
 
 .. code-block:: c++
-  #include <quotek/marray.hpp>
-  
+
+  #include <quotek/marray.hpp>  
   int main() {
 
     //instanciates a 3 dimensions array

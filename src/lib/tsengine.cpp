@@ -275,7 +275,16 @@ void tsEngine::moneyman() {
 
     if (inc == 10) {
       //logger->log("Current PNL:" + float2string(mm->computeWholePNL()) );
-      mm->computeWholePNL();
+      float cp = mm->computeWholePNL();
+  
+      //The shit just hit the fan !
+      if ( ! mm->heartbeat() ) {
+        
+        cerr << "* CRITICAL LOSS, BLOCKING MONEY MANAGER!*" << std::endl;
+        logger->log("* CRITICAL LOSS, BLOCKING MONEY MANAGER! *");
+
+      }
+
       mm->saveCPNL();
       inc = 0;
     }
@@ -749,6 +758,7 @@ moneyManager* tsEngine::getMoneyManager() {
  genetics* tsEngine::getGE() {
   return tse_ge;
  }
+
 
 std::vector<algo> tsEngine::getAlgos() {
   return algos;

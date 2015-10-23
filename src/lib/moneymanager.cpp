@@ -24,8 +24,9 @@ moneyManager::moneyManager(float cap,
   indices_list = ilist;
   cur_pnl = 0;
   var = 0;
-
   cumulative_pnl = 0;
+
+  healthy = true;
 
 }
 
@@ -38,9 +39,18 @@ void moneyManager::clear() {
 
 }
 
+bool moneyManager::heartbeat() {
+
+  //*** DETECTS CRITICAL LOSS */
+  if (  cumulative_pnl + cur_pnl  <=  -1 * (  (critical_loss_percentage/(float) 100) * capital ) ) {
+    healthy = false; 
+  }
+  healthy = true;
+  return healthy;
+}
+
 //Special compute_pnl fct without stop security,
 // for backtest purposes
-
 float moneyManager::computeWholePNLNoSec() {
 
   cur_pnl = 0;
@@ -56,13 +66,6 @@ float moneyManager::computeWholePNL() {
   for (int i=0;i<positions.size();i++) {
     cur_pnl = cur_pnl + positions.at(i).pnl;
   }
-
-  //*** SAFE ESCAPE IN CASE OF CRITICAL LOSS */
-  if (  cumulative_pnl + cur_pnl  <=  -1 * (  (critical_loss_percentage/(float) 100) * capital ) ) {
-    cerr << "*CRTITICAL SHUTDOWN, LOSS IS TOO HIGH: " <<   (cumulative_pnl + cur_pnl)  << "*" << endl;
-    exit(2);
-  }
-
   return cur_pnl;
 }
 
@@ -102,7 +105,7 @@ bool moneyManager::hasPos(string indice,string way) {
 
   if (way == "sell") {
     for(int i =0;i<positions.size();i++) {
-      if (positions.at(i).asset_name == indice && positions.at(i).size < 0 ) {
+      if (positions[i].asset_name == indice && positions[i].size < 0 ) {
         return true;
       }
     }
@@ -310,27 +313,31 @@ void moneyManager::smartAsk(int* values,string indice_name) {
 int moneyManager::ask(string indice_name,string way,int nbc,int stop) {
 
   indice* idx = iResolve(indices_list,indice_name);
-
   int pnl_coef = idx->pnl_pp;
+
+  std::string reverse_way = (way == "buy") ? "sell" : "buy" ;
 
   float max_loss = stop * pnl_coef * nbc; 
   float max_loss_percentage = max_loss * 100 / capital;  
 
   if ( stop <= 0) return MM_ERR_NOSTOP; 
 
+  //Robot is in critical LOSS state, no new position can be accepted !
+  else if ( ! healthy ) return MM_ERR_CRITICAL;
+
   //Checks maximum loss by percentage of capital.
-  if (  max_loss_percentage  >= max_loss_percentage_per_trade  ) return MM_ERR_TRADERISK_2HIGH;
+  else if (  max_loss_percentage  >= max_loss_percentage_per_trade  ) return MM_ERR_TRADERISK_2HIGH;
 
   //Checks maximum number of positions that can be opened simultanously
-  if (positions.size() >= max_openpos) return MM_ERR_NBPOS;
+  else if (positions.size() >= max_openpos) return MM_ERR_NBPOS;
   
   //Checks maximum number of positions that can be opened simultanously, per epic
-  if ( max_openpos_per_epic != 0 && countPos(indice_name) >= max_openpos_per_epic ) {
+  else if ( max_openpos_per_epic != 0 && countPos(indice_name) >= max_openpos_per_epic ) {
     return MM_ERR_NBPOS_PE;
   }
 
   //checks if already have a pos which is reverse from the one we're trying to take, and apply rule
-  if ( reverse_pos_lock && hasPos(indice_name,way) ) {
+  else if ( reverse_pos_lock == 1 && hasPos(indice_name, reverse_way) ) {
     return MM_ERR_REVERSE_POS_LOCK;
   }
 
@@ -353,6 +360,8 @@ string moneyManager::resolveError(int errnum) {
       return std::string(MM_ERR_NOSTOP_STR);
     case MM_ERR_REVERSE_POS_LOCK:
       return std::string(MM_ERR_REVERSE_POS_LOCK_STR);
+    case MM_ERR_CRITICAL:
+      return std::string(MM_ERR_CRITICAL_STR);
   }
 
   return "NULL";

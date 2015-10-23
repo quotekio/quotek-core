@@ -62,6 +62,7 @@ In the following example we will see how to use the statistical analysis functio
  
 .. toctree::
    :includehidden:
+   
    generators
    blackscholes
 

@@ -32,7 +32,7 @@ You will find below and sample source code about how to use the Quotek's quandl 
   .. code-block:: c++
 
     #include <quotek/quotek.hpp>
-    #include <quotek/datasource/quandl.hpp>
+    #include <quotek/datasources/quandl.hpp>
     using namespace quotek::datasource;
     using namespace quotek::data;
 

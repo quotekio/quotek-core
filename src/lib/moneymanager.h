@@ -20,6 +20,9 @@
 #define MM_ERR_NBPOS_PE 0x04
 #define MM_ERR_REVERSE_POS_LOCK 0x05
 
+#define MM_ERR_CRITICAL 0x10
+
+#define MM_ERR_CRITICAL_STR "Critical state reached, No more positions taken until restart."
 #define MM_ERR_NBPOS_STR "Max number of positions reached"
 #define MM_ERR_NBPOS_PE_STR "Max number of positions reached for epic"
 #define MM_ERR_TRADERISK_2HIGH_STR "VAR is too high for the trade"
@@ -98,9 +101,10 @@ class moneyManager {
     void loadCPNL();
     void saveCPNL();
 
-    //void lockPoslist();
-    //void unlockPoslist();
-    
+    /* heartbeat checks if the algos are not making foolish things
+       and therefore losing shitloads of money. */
+    bool heartbeat();
+
   private:
   	float capital;
     int max_openpos;
@@ -116,6 +120,8 @@ class moneyManager {
     float cumulative_pnl;
     int reverse_pos_lock;
     int reverse_pos_force_close;
+
+    bool healthy;
 
 };
 

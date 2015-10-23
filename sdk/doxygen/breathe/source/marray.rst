@@ -1,5 +1,5 @@
-Multi Dimensional Arrays
-========================
+N-Arrays
+=======
 
 Quotek SDK embedds a series of classes which were created to instanciate and manipulate multi-dimentional
 arrays. This is the original work of Pramod Gupta from University of Washington, and it was designed for
