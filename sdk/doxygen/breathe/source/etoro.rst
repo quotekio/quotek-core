@@ -3,7 +3,7 @@ eToro
 
 .. image:: _static/img/etoro-logo.png
     :align: left
-    :width: 200px
+    :width: 100px
     :class: qimg
     :alt: eToro Logo
 |
@@ -27,6 +27,12 @@ The eToro Client is also able to give you the market sentiment of the traders on
   :private-members:
 
 
+.. doxygenclass:: quotek::datasource::eto_user
+  :members:
+  :protected-members:
+  :private-members:
+
+
 Example
 -------
 
@@ -44,8 +50,9 @@ You will find below and sample source code about how to use the Quotek's eToro O
       //creates a new etoro object
       etoro et1();
 
-      /* Fetches the list of the most succesful traders which use medium risk strategies*/
-      std::vector<eto_user> e_users = et1.ranking("Medium","Gain");
+      /* Fetches the list of the most succesful traders for the last 
+      30 days and which use medium risk strategies. */
+      std::vector<eto_user> e_users = et1.ranking(30, "Medium","Gain");
 
       /* Then prints their respective usernames and gains */
       for (int i=0;i< e_users.size(); i++) {

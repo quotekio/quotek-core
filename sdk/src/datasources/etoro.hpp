@@ -62,7 +62,7 @@ namespace quotek {
 		  	~etoro();
 
             /** Gets a ranking of the eToro users given specific parameters.
-             *  @param period Time in days for which you want to get the ranking.
+             *  @param period Time period in days, for which you want to get the ranking.
              *  @param risk_level Tells for which kind of risk profile you want the ranking. 
              *  risk_level can be "Low", "Medium" or "High".
              *  @param sort_type Tells how you want to sort the users list sorted. Can be "Copiers" or "Gain".
