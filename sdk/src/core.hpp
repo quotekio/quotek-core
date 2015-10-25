@@ -35,7 +35,7 @@ namespace quotek {
     	          int weather,
     	          float moon_distance,
     	          float sun_distance,
-    	          int captains_age,
+    	          int captains_age
     	        ) {
 
     	return 0;

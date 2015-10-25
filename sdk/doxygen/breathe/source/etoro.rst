@@ -12,6 +12,9 @@ eToro
 |
 |
 |
+|
+|
+|
 The following section is the documentation of the Quotek SDK eToro OpenBook API Client. 
 
 eToro is the biggest social trading platform, and this client will allow you to enrich your trading algorithms with copy-trade functionalities. 
@@ -48,7 +51,7 @@ You will find below and sample source code about how to use the Quotek's eToro O
     int main(int argc, char** argv) {
 
       //creates a new etoro object
-      etoro et1();
+      etoro et1;
 
       /* Fetches the list of the most succesful traders for the last 
       30 days and which use medium risk strategies. */
