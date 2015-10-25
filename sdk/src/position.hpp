@@ -8,6 +8,7 @@ http://www.quotek.io
 #define POSITION_HPP
 
 #include <string>
+#include <sstream>
 
 namespace quotek {
 
@@ -80,6 +81,10 @@ namespace quotek {
          *  @return vlimit value;
          */
         float get_vlimit();
+
+        /** returns position as a string */
+        std::string str();
+
 
         /** broker's ticket id */
         std::string ticket_id;

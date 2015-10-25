@@ -27,7 +27,7 @@ add_library(
        src/datasources/rss.cpp
        src/datasources/twitter.cpp
        src/datasources/quandl.cpp
-       src/datasources/oanda.cpp
+       src/datasources/etoro.cpp
 
        src/twitcurl/base64.cpp
        src/twitcurl/HMAC_SHA1.cpp
@@ -76,7 +76,7 @@ install (FILES "src/datasources/yahoofinance.hpp" DESTINATION include/quotek/dat
 install (FILES "src/datasources/rss.hpp" DESTINATION include/quotek/datasources)
 install (FILES "src/datasources/twitter.hpp" DESTINATION include/quotek/datasources)
 install (FILES "src/datasources/quandl.hpp" DESTINATION include/quotek/datasources)
-install (FILES "src/datasources/oanda.hpp" DESTINATION include/quotek/datasources)
+install (FILES "src/datasources/etoro.hpp" DESTINATION include/quotek/datasources)
 
 
 install (FILES "src/quotek.hpp" DESTINATION include/quotek)

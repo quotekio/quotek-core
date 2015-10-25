@@ -55,6 +55,33 @@ namespace quotek {
     return wdata;
   }
 
+  std::string http::get(std::string url, std::map<std::string, std::string>& get_params) {
+
+    std::string wdata = "";
+    std::string sparams = "?";
+
+    std::map<std::string, std::string >::iterator it;
+    int i=0;
+    for(it=get_params.begin();it!=get_params.end();it++) {
+      sparams += it->first + "=" + it->second;
+      if (i != get_params.size() -1) sparams += "&";
+      i++;
+    }
+
+    url += sparams;
+    
+    curl_easy_setopt(ch,CURLOPT_URL,url.c_str());
+    curl_easy_setopt(ch,CURLOPT_WRITEFUNCTION,curl_writehandle);
+    curl_easy_setopt(ch,CURLOPT_WRITEDATA,&wdata);
+    curl_easy_setopt(ch,CURLOPT_HTTPHEADER,headers);
+    curl_easy_perform(ch);
+
+    return wdata;
+  
+
+
+  }
+
   std::string http::post(std::string url,std::string& pdata) {
 
     std::string wdata = "";

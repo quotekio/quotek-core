@@ -35,6 +35,14 @@ namespace quotek {
        */
   	  std::string get(std::string url);
 
+      /** Performs an HTTP GET QUERY on provided URL with provided params, and returns result as a string.
+       *  @param url HTTP URL to perform query on.
+       *  @param get_params key/values map corresponding to paramter/value.
+       *  @return the HTTP server response, as a string.
+       */
+      std::string get(std::string url, std::map<std::string, std::string>& get_params);
+      
+
       /** Performs an HTTP POST query on provided URL and returns result as a string.
        *  @param url HTTP URL to perform query on.
        *  @param post_data POST data string having the form "field1=data2&field2=data2..&fieldn=datan".

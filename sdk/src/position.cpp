@@ -58,7 +58,21 @@ namespace quotek {
       return this->vlimit;
     }
 
-    
+    std::string position::str() {
+
+      std::stringstream ss;
+      
+      ss << "ASSET:" << asset_name << std::endl;
+      ss << "PNL:" << pnl << std::endl;
+      ss << "OPEN:" << open << std::endl;
+      ss << "STOP:" << stop << std::endl;
+      ss << "LIMIT:" << limit << std::endl;
+      ss << "OPEN_DATE:" << open_date << std::endl;
+      ss << "CLOSE_DATE:" << close_date << std::endl;
+      
+      return ss.str();
+
+    }
 
 
     posstats::posstats() {

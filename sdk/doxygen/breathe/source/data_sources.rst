@@ -5,8 +5,9 @@ Data Sources
 
 .. toctree::
    :hidden:
-
+   
    quandl
+   etoro
    twitter
    yahoo
    rss

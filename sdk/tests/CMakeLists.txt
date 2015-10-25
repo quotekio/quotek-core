@@ -78,8 +78,8 @@ add_executable(
 )
 
 add_executable(
-    test_oanda
-    src/test_oanda.cpp
+    test_etoro
+    src/test_etoro.cpp
 )
 
 
@@ -179,7 +179,7 @@ target_link_libraries(
 )
 
 target_link_libraries(
-        test_oanda
+        test_etoro
         quotek
         pthread
         curl
