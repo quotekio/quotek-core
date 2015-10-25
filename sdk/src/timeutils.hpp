@@ -9,6 +9,7 @@ Copyright 2013-2015 Quotek SAS
 #include <algorithm>
 #include <iomanip>
 #include <string>
+#include <cstring>
 #include <sstream>
 #include <vector>
 #include <ctime>

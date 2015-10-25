@@ -1,10 +1,13 @@
 #!/bin/bash
 
 ### BUILD ###
-rm CMakeCache.txt
-make clean
-cmake -DCMAKE_CXX_FLAGS="-O3 -g -std=c++11 -fPIC"
-sudo make install
+./clean.sh
+cp CMakeLists.txt CMakeLists.txt.bak
+sed -i 's/-stdlib=libc++//' CMakeLists.txt
+cp CMakeLists.txt CMakeLists.txt.rel
+cmake .
+sudo make install && rm CMakeLists.txt.rel
+mv CMakeLists.txt.bak CMakeLists.txt
 
 ### DOCUMENTATION BUILD ###
 
