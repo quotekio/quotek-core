@@ -469,3 +469,15 @@ font-family: "Open Sans",Arial,sans-serif!important;
   color: #795DA3;
 }
 
+.doc-nav {
+  background:rgb(45,45,45);
+  padding:10px;
+}
+
+.doc-nav a{
+  color:#cccccc;
+}
+
+.doc-nav li.active a, .doc-nav li.active a:hover {
+  background:rgb(247,152,56);
+}

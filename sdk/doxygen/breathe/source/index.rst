@@ -28,7 +28,6 @@ The scheme below shows the distribution of functionalities among the namespaces 
    :includehidden:
    :titlesonly:
 
-   self
    start
    data_struct
    quant
