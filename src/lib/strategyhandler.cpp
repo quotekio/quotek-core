@@ -51,6 +51,25 @@ int strategyHandler::preprocess() {
 
   wh << "#include <quotek/quotek.hpp>\n";
   wh << "#include <unistd.h>\n";
+
+  //functions/statements blacklisting
+  std::string randfct = "BL" + randstring(32);
+  wh << "#define system(a_) " << randfct << "(a_)" << std::endl;
+  wh << "#define popen(a_,b_) " << randfct << "(a_,b_)" << std::endl;
+  wh << "#define fork() " << randfct << "()" << std::endl;
+  wh << "#define exec(a_) " << randfct << "(a_)" << std::endl;
+  wh << "#define asm(a_) " << randfct << "(a_)" << std::endl;
+  wh << "#define __asm__(a_) " << randfct << "(a_)" << std::endl;
+  wh << "#define volatile(a_) " << randfct << "(a_)" << std::endl;
+  wh << "#define __volatile__(a_) " << randfct << "(a_)" << std::endl;
+
+  wh << "#define execve " << randfct  << std::endl;
+  wh << "#define execl " << randfct  << std::endl;
+  wh << "#define execlp" << randfct  << std::endl;
+  wh << "#define execle " << randfct  << std::endl;
+  wh << "#define execv " << randfct  << std::endl;
+  wh << "#define execvp " << randfct  << std::endl;
+
   while(fh.good()){
     getline(fh,line);
 
