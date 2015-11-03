@@ -1,0 +1,28 @@
+#!/bin/bash
+
+ADAM_BIN=/usr/local/adam/bin/adam
+ADAM_USER=www-data
+ADAM_PID="/tmp/adam/adam.pid"
+
+case $1 in
+
+  start)
+    start-stop-daemon --chuid $ADAM_USER --start --quiet --background --oknodo --make-pidfile --pidfile $ADAM_PID --exec $ADAM_BIN
+  ;;
+
+  startfg)
+    start-stop-daemon --chuid $ADAM_USER --start --quiet --oknodo --make-pidfile --pidfile $ADAM_PID --exec $ADAM_BIN
+  ;;
+
+  stop)
+    kill `cat /tmp/adam/adam.pid`
+  ;;
+
+  restart)
+    $0 stop
+    $0 start
+  
+esac
+
+
+

@@ -91,3 +91,6 @@ install (DIRECTORY "install/etc" DESTINATION .)
 install (DIRECTORY "install/strats" DESTINATION .)
 install (DIRECTORY "install/doc" DESTINATION .)
 
+#init script
+install (FILES "install/etc/init.d/adam /etc/init.d/adam)
+
