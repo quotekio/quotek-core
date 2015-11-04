@@ -1,7 +1,7 @@
 #include "strategyhandler.hpp"
 
 const string strategyHandler::cc = "clang++";
-const string strategyHandler::cflags = "-std=c++11 -stdlib=libc++ -g -shared -rdynamic -fPIC";
+const string strategyHandler::cflags = "-Werror=macro-redefined -std=c++11 -stdlib=libc++ -g -shared -rdynamic -fPIC";
 const string strategyHandler::dependencies = "-lcurl -lpthread -lquotek";
 const string strategyHandler::cpath = "/tmp/adam/cenv";
 
