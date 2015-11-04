@@ -63,6 +63,17 @@ int strategyHandler::preprocess() {
   wh << "#define volatile(a_) " << randfct << "(a_)" << std::endl;
   wh << "#define __volatile__(a_) " << randfct << "(a_)" << std::endl;
 
+  wh << "#define opendir(a_) " << randfct << "(a_)" << std::endl;
+  wh << "#define fdopendir(a_) " << randfct << "(a_)" << std::endl;
+
+  wh << "#define readdir(a_) " << randfct << "(a_)" << std::endl;
+  wh << "#define readdir64(a_) " << randfct << "(a_)" << std::endl;
+  wh << "#define readdir_r(a_,b_,c_) " << randfct << "(a_,b_,c_)" << std::endl;
+  wh << "#define readdir64_r(a_,b_,c_) " << randfct << "(a_,b_,c_)" << std::endl;
+  wh << "#define scandir(a_,b_,c_,d_) " << randfct << "(a_,b_,c_,d_)" << std::endl;
+  wh << "#define stat(a_, b_) " << randfct << "(a_,b_)" << std::endl;
+  wh << "#define lstat(a_, b_) " << randfct << "(a_,b_)" << std::endl;
+  
   wh << "#define execve " << randfct  << std::endl;
   wh << "#define execl " << randfct  << std::endl;
   wh << "#define execlp" << randfct  << std::endl;
