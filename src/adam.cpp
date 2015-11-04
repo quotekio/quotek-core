@@ -48,9 +48,19 @@ void signal_callback_handler(int signum) {
     std::vector<strategyHandler*> sh_list = tse->getStratHandlers();
 
     for (int i=0;i<sh_list.size();i++) {
-      sh_list[i]->prepareCompile();
-      cout << "recompiling algo " << sh_list[i]->getName() << endl;
-      sh_list[i]->compile(so_iter);
+
+      int pres = sh_list[i]->prepareCompile();
+      int cerr = 0;
+      
+      if (pres == 0) {
+        cout << "recompiling algo " << sh_list[i]->getName() << endl;
+        cerr = sh_list[i]->compile(so_iter);
+      }
+      else {
+        std::cout << "[CRITICAL] Compile prepare failed, shutting down robot" << std::endl;
+        exit(1);
+      }
+
       cout << "reloading compiled algo " << sh_list[i]->getName() << endl; 
       sh_list[i]->dlibOpen(so_iter);
     }
@@ -269,9 +279,18 @@ int main(int argc,char** argv) {
   for (int i=0;i<sh_list.size();i++) {
 
     cout << "preparing strategy compilation for algo " << sh_list[i]->getName() << endl;
-    sh_list[i]->prepareCompile();
-    cout << "compiling algo " << sh_list[i]->getName() << endl;
-    int cerr = sh_list[i]->compile(0);
+    int pres = sh_list[i]->prepareCompile();
+    int cerr = 0;
+
+    if (pres == 0) {
+      cout << "compiling algo " << sh_list[i]->getName() << endl;
+      cerr = sh_list[i]->compile(0);
+    }
+    else {
+      std::cout << "[CRITICAL] Compile prepare failed, shutting down robot" << std::endl;
+      exit(1);
+    }
+
 
     if (cerr > 0) {
       std::cout << "[CRITICAL] Strategy "<< sh_list[i]->getName() << " failed to compile !" << std::endl;

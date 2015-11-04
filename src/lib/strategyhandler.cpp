@@ -30,10 +30,8 @@ int strategyHandler::prepareCompile() {
   mkdir("/tmp/adam",S_IRWXU);
   mkdir("/tmp/adam/cenv",S_IRWXU);
 
-  preprocess();
-
-  return 0;
-
+  return preprocess();
+  
 }
     
 int strategyHandler::preprocess() {
@@ -48,6 +46,9 @@ int strategyHandler::preprocess() {
   std::regex asset_match_regex("^\\/\\/\\#asset_match(.*)");
   std::regex strat_include_regex("^\\/\\/\\#strat_include(.*)");
   std::regex ex_eval_regex ("(.*)\\/\\/#ex_eval(.*)");
+
+  std::regex undef_regex("^(\\s*)#undef (.*)", 
+                         std::regex::ECMAScript|std::regex::icase );
 
   wh << "#include <quotek/quotek.hpp>\n";
   wh << "#include <unistd.h>\n";
@@ -103,6 +104,20 @@ int strategyHandler::preprocess() {
       trim(this->asset_match);
       std::cout << "Found asset matching regex in Strategy: " << this->asset_match << std::endl;
     }
+
+    //finding undef occurences and triggering error if found.
+    else if (  std::regex_match(line,undef_regex) ) {
+
+      ofstream f_cerr ("/tmp/adam/compiler.errors.log");
+      f_cerr << "Error: Unauthorized usage of #undef macro" << std::endl;
+      f_cerr.close();
+
+      std::cout << "ERROR: Unauthorized usage of #undef macro" << std::endl;
+
+      return 1;
+
+    }
+
 
     else if ( std::regex_match(line,ex_eval_regex) ) {
       stringstream ss;
