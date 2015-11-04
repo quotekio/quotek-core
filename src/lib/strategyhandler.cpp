@@ -31,7 +31,7 @@ int strategyHandler::prepareCompile() {
   mkdir("/tmp/adam/cenv",S_IRWXU);
 
   return preprocess();
-  
+
 }
     
 int strategyHandler::preprocess() {
@@ -47,7 +47,7 @@ int strategyHandler::preprocess() {
   std::regex strat_include_regex("^\\/\\/\\#strat_include(.*)");
   std::regex ex_eval_regex ("(.*)\\/\\/#ex_eval(.*)");
 
-  std::regex undef_regex("^(\\s*)#undef (.*)", 
+  std::regex macro_regex("^(\\s*)#undef(.*)", 
                          std::regex::ECMAScript|std::regex::icase );
 
   wh << "#include <quotek/quotek.hpp>\n";
@@ -105,14 +105,12 @@ int strategyHandler::preprocess() {
       std::cout << "Found asset matching regex in Strategy: " << this->asset_match << std::endl;
     }
 
-    //finding undef occurences and triggering error if found.
-    else if (  std::regex_match(line,undef_regex) ) {
+    //finding macro occurences and triggering error if found.
+    else if ( std::regex_match(line,macro_regex) ) {
 
       ofstream f_cerr ("/tmp/adam/compiler.errors.log");
-      f_cerr << "Error: Unauthorized usage of #undef macro" << std::endl;
+      f_cerr << "Error: Unauthorized macro #undef was used" << std::endl;
       f_cerr.close();
-
-      std::cout << "ERROR: Unauthorized usage of #undef macro" << std::endl;
 
       return 1;
 
