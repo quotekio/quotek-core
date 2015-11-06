@@ -28,17 +28,65 @@ namespace quotek {
 
     }
 
-    bool crosses(quotek::data::records& recs1,
+    bool cross(quotek::data::records& recs1,
                              quotek::data::records& recs2) {
 
-      if (recs1.size() < 2 || recs2.size() < 2) return false;
-      
-      for (int i=1;i<recs1.size();i++) {
+      quotek::data::records r1;
+      quotek::data::records r2;
 
-        if ( recs1[i-1].value >= recs2[i-1].value && recs1[i].value <= recs2[i].value ) return true;
-        else if ( recs2[i-1].value >= recs1[i-1].value && recs2[i].value <= recs1[i].value ) return true;
+      if (recs1.size() < 2 || recs2.size() < 2) return false;
+
+      //We put the time-series at the same size
+      if ( recs1.size() > recs2.size() ) {
+        r1 = recs1.extract(recs2.size());
+        r2 = recs2;
       }
+      else {
+        r1 = recs1;
+        r2 = recs2.extract(recs1.size());
+      }
+      //
+
+      for (int i= r1.size() - 1 ;i > 0 ; i--) {
+        if ( r1[i-1].value >= r2[i-1].value && r1[i].value <= r2[i].value ) return true;
+        else if ( r2[i-1].value >= r1[i-1].value && r2[i].value <= r1[i].value ) return true;
+      }
+
       return false;
+    }
+
+    int cross_ex(quotek::data::records& recs1,
+              quotek::data::records& recs2) {
+
+      quotek::data::records r1;
+      quotek::data::records r2;
+
+      if (recs1.size() < 2 || recs2.size() < 2) return false;
+
+      //We put the time-series at the same size
+      if ( recs1.size() > recs2.size() ) {
+        r1 = recs1.extract(recs2.size());
+        r2 = recs2;
+      }
+      else {
+        r1 = recs1;
+        r2 = recs2.extract(recs1.size());
+      }
+      //
+
+      for (int i= r1.size() - 1 ;i > 0 ; i--) {
+
+        if ( r1[i-1].value >= r2[i-1].value && r1[i].value <= r2[i].value ) {
+          //r2 is on top
+          return 2;
+        }
+        else if ( r2[i-1].value >= r1[i-1].value && r2[i].value <= r1[i].value ) {
+          //r1 is on top
+          return 1;
+        }
+      }
+      
+      return 0;
     }
 
     float min(quotek::data::records& recs) {

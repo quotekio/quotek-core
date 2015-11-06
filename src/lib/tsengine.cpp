@@ -421,7 +421,7 @@ void tsEngine::evaluate(strategy* s) {
 
   //starts strategy initialization
   s->initialize();
-
+  
   while(s->recs->size() == 0) { 
     std::cout << "Waiting for data population.." << std::endl;
     usleep(ticks.eval);
@@ -443,6 +443,9 @@ void tsEngine::evaluate(strategy* s) {
     while ( s->orders_queue.pop(order,false) ) {
       this->orders_queue.push(order);
     }
+
+    //flushing of logs
+    s->flushlogs();
 
     while( s->log_queue.pop(logstr,false) ) {
       logger->log(logstr);

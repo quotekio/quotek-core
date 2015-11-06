@@ -19,11 +19,22 @@ void test_above(quotek::data::records& recs) {
 
 }
 
-void test_crosses(quotek::data::records& recs1,
+void test_cross(quotek::data::records& recs1,
                   quotek::data::records& recs2) {
 
-  assert(quotek::quant::crosses(recs1,recs2));
-  
+  assert(quotek::quant::cross(recs1,recs2));
+
+  std::vector<float> r3_raw = {1000,200,3000,2458,3482};
+  quotek::data::records r3(r3_raw);
+
+  assert(quotek::quant::cross(recs1,r3) == false);
+
+}
+
+void test_cross_ex(quotek::data::records& recs1,
+                  quotek::data::records& recs2) {
+
+  assert(quotek::quant::cross_ex(recs1,recs2) == 1 );
 
 }
 
@@ -160,7 +171,8 @@ int main() {
   }
 
   test_above(r1);
-  test_crosses(r1,r2);
+  test_cross(r1,r2);
+  test_cross_ex(r1,r2);
   test_min(r1);
   test_max(r1);
   test_average(r1);

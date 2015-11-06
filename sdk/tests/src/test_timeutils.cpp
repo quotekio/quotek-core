@@ -6,6 +6,7 @@ http://www.quotek.io
 
 #include <quotek/broker.hpp>
 #include <quotek/timeutils.hpp>
+#include <iostream>
 
 void test_is_time(std::string tstr, long t) {
   assert( quotek::core::time::is_time(tstr,t) );
@@ -23,6 +24,11 @@ void test_month_day(long t) {
   assert ( quotek::core::time::month_day(t) == 20 );
 }
 
+void test_datestr(long t) {
+  assert( quotek::core::time::datestr(t,"%Y-%m-%d") == "2015-07-20" );
+}
+
+
 int main() {
 
   std::string tstr = "10:49";
@@ -35,5 +41,6 @@ int main() {
   test_trade_hours(tstr1,tstr2,t);
   test_week_day(t);
   test_month_day(t);
+  test_datestr(t);
 
 }

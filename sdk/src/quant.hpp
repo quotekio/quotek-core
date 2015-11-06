@@ -162,14 +162,25 @@ namespace quotek {
 
 
     /**
-     * Detects if 2 value datasets cross each other.
+     * Detects if 2 value time-series cross each other.
      * @param recs1 first values dataset.
      * @param recs2 second values dataset.
      * @return true if 2 datasets cross each other, false otherwise.
      */
-    bool crosses(quotek::data::records& recs1,
+    bool cross(quotek::data::records& recs1,
                  quotek::data::records& recs2);
 
+    /**
+     * Alternate version of bool cross() , but adds information in return value.
+     * If time-series don't cross, the function returns 0. If recs1 is on top, then
+     * it returns 1. If recs2 is on top, it returns 2.
+     * @param recs1 first values time-series.
+     * @param recs2 second values time-series.
+     * @return 0 if no cross, 1 if cross and recs1 is on top, 2 if cross and recs2 is on top.
+     */
+
+    int cross_ex(quotek::data::records& recs1,
+              quotek::data::records& recs2);
 
     /**
      * min() returns the smallest value contained in the provided

@@ -33,7 +33,6 @@ namespace quotek {
       std::string &rtrim(std::string &s);
       std::string &trim(std::string &s);
 
-
     }
   }
 }

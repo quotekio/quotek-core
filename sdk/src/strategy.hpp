@@ -15,6 +15,7 @@ http://www.quotek.io
 #include "cvector.hpp"
 #include "position.hpp"
 #include "record.hpp"
+#include "utils.hpp"
 
 
 /**
@@ -68,6 +69,14 @@ void log(std::string log_string) {
   log_queue.push(log_string);
 }
 
+/** flushlogs takes all the data inside the logs stringstream, processes it and flushes the stream. */
+
+void flushlogs() {
+  std::vector<std::string> slist = quotek::core::utils::split(logs.str(),'\n');
+  for (int i=0;i< slist.size();i++) log_queue.push(slist[i]);
+  logs.str(std::string());
+}
+
 /**
  * initialize() is a method meant to set the initial state of a strategy.
  * This method is executed only once, before the first evaluation. 
@@ -103,7 +112,6 @@ std::string asset_name;
 /** Strategy Thread Identifier. If you use Quotek SaaS, NEVER overwrite this variable */
 std::string identifier;
 
-
 /** t stores the current epoch timestamp */
 long t;
 
@@ -131,6 +139,11 @@ quotek::data::cvector<quotek::core::position>* portfolio;
  * counters allow to maintain a series of variables to count and keep various steps across ticks.
  */
 std::map<std::string, int> counters;
+
+/**
+ * logging stringstream, to avoid using log(str);
+ */
+stringstream logs;
 
 };
 

@@ -74,12 +74,26 @@ namespace quotek {
       
     }
     
+
     quotek::data::records records::extract(int start_offset, int size ) {
 
       std::vector<record>::const_iterator first = data.begin() + start_offset;
       std::vector<record>::const_iterator last = data.begin() + start_offset + size;
 
       if (last > data.end() ) last = data.end();
+
+      std::vector<record> new_extract(first, last);
+      return quotek::data::records(new_extract);
+
+    }
+
+    quotek::data::records records::extract(int n) {
+
+      //Err, extraction size > data size.
+      if ( n > data.size()  ) return quotek::data::records() ;
+
+      std::vector<record>::const_iterator first = data.end() - n ;
+      std::vector<record>::const_iterator last = data.end();
 
       std::vector<record> new_extract(first, last);
       return quotek::data::records(new_extract);
