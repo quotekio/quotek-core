@@ -157,6 +157,16 @@ namespace quotek {
 
         }
 
+
+        
+        std::string datestr(std::time_t timestamp, std::string format) {
+          
+          char buff[100];
+          std::tm* pt = std::localtime(&timestamp) ;
+          std::size_t st = std::strftime(buff, sizeof(buff),format.c_str(),pt);
+          return std::string(buff);
+        }
+
         std::time_t p_strptime(std::string datestr, std::string format) {
 
           std::tm tm;

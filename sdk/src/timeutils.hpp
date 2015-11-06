@@ -83,6 +83,13 @@ namespace quotek {
         /** month_day provids the number of the day of the month according to provided timestamp. */
         int month_day(long timestamp);
 
+        /** datestr() converts an epoch timestamp to the corresponding date string, given a user-defined format.
+         *  @param timestamp epoch timestamp to convert to date string.
+         *  @param format format of the date string, following the usual date formatting ("%Y-%m-%d %H:%M:%S")
+         *  @return the date string of the timestamp provided as argument.
+         */
+        std::string datestr(std::time_t timestamp, std::string format);
+
         /** This function implements a portable strptime() function. p_ is for "portable" */
         std::time_t p_strptime(std::string datestr, std::string format);
 

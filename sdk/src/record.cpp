@@ -208,6 +208,19 @@ namespace quotek {
     }
 
 
+    std::string records::str(const bool add_timestamps = true) {
+
+      std::stringstream ss;
+      ss << "[";
+      for (int i=0;i< data.size();i++ ){
+        ss << data[i].str(add_timestamps);
+        if (i < data.size() -1  ) ss << ",";
+      }
+      ss << "]";
+
+      return ss.str();
+    }
+
     quotek::data::record records::max() {
 
       if ( data.size() == 0 ) return quotek::data::record(0,0,0);
@@ -236,6 +249,20 @@ namespace quotek {
       this->value = value;
       this->spread = spread;
     }
+
+    std::string record::str(const bool add_timestamps = true) {
+
+      std::stringstream ss;
+      if (add_timestamps == true) {
+        ss << "[" << this->timestamp << "," << this->value << "," << this->spread << "]";
+      }
+      else ss << "[" <<  this->value << "," << this->spread << "]";       
+
+      return ss.str();
+
+    }
+
+    
 
     record::~record() {
 

@@ -10,6 +10,7 @@ http://www.quotek.io
 #include <time.h>
 #include <vector>
 #include <string>
+#include <sstream>
 #include <algorithm>
 #include <tuple>
 
@@ -35,6 +36,14 @@ namespace quotek {
     
        /** record destructor */
        ~record();
+
+       /**
+        * str takes the data inside the record object and
+        * transforms it to a json-formated string.
+        * @param add_timestamps if true, record timestamp will be added to the string.
+        * @return the content of the record, formatted as a JSON string.
+        */         
+       std::string str(const bool add_timestamps);
 
        /** stores the epoch timestamp at which the asset was worth value. */
        long timestamp;
@@ -100,8 +109,11 @@ namespace quotek {
          */
          quotek::data::records sample(long time_inf, long time_sup);
         
+
+         
+
         /**
-         * extract is a conviency subvector extract. it takes begin() + start_offset, begin + start_offset + size iterators
+         * 
          * to create a new subvector.
          * @param recs record dataset to extract data from.
          * @param start_offset the element index from which to start extract
@@ -109,6 +121,14 @@ namespace quotek {
          * @return extraced dataset containing data in interval [start_offsret, start_offset + size]
          */
          quotek::data::records extract(int start_offset, int size );
+
+         /**
+          * Alternative extract function, for extraction of the last elements of a quotek::data::records container.
+          * @param n number of last elements to add in the returned container.
+          * @return a quotek::data::records container containing the n last elements of the object.
+          */
+         quotek::data::records extract(int n);
+
 
         /** Downsample reduces the amount of points in the dataset by 
          *  agrregating data in "period" intervals.
@@ -161,6 +181,16 @@ namespace quotek {
         /** Adds new entry to records container (with spread) */
         void append(long timestamp, float value, float spread);
 
+         /**
+         * str takes the data inside the records container and
+         * transforms it to a json-formated string.
+         * @param add_timestamps if true, record timestamp will be added to the string.
+         * @return the content of the records container, formatted as a JSON string.
+         */
+
+         std::string str(const bool add_timestamps);
+
+
         /**
          * finds record which has the smallest value.
          */
@@ -170,10 +200,8 @@ namespace quotek {
          * finds record which has the highest value.
          */
         quotek::data::record max();
-        
 
-
-
+       
       private:
         std::vector<quotek::data::record> data;
     };
