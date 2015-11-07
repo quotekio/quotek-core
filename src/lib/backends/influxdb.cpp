@@ -160,6 +160,37 @@ public:
 
     }
 
+
+    virtual int save(long timestamp, 
+                     std::string tag, 
+                     std::string data) { 
+
+     quotek::http* hhdl = prepare_http_handler();
+     std::string outp;
+     stringstream sdata; 
+
+       long tstamp = ( timestamp == 0 ) ? time(0) : timestamp;
+
+       sdata << "[\n";
+       sdata << "\t{ \"name\": \"__save__\",\n";
+       sdata << "\t  \"columns\" : [ \"time\", \"tag\", \"data\" ],\n";
+       //may have to escape data ?!
+       sdata << "\t  \"points\" : [ [" << timestamp <<  ",\"" << tag << "\",\"" << data << "\"] ]";
+       sdata << "\t}\n";
+       sdata << "]";
+       
+       //debug
+       //std::cout << sdata.str() << std::endl;
+
+       std::string sdata_str = sdata.str();
+       outp = hhdl->post(pre_url, sdata_str);
+       
+       //Debug.
+       //std::cout << outp << std::endl;
+       hhdl->destroy();
+       return 0;
+    }
+
     virtual int store(string indice, quotek::data::records& recs) {
 
       std::ostringstream sdata;

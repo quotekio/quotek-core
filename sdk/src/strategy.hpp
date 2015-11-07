@@ -87,13 +87,17 @@ void flushlogs() {
  */
  
 template <typename T>
-void save(std::string name, T val, std::string save_mode, const bool add_tstamp = true) {
+void save(std::string tag, T val, const bool add_tstamp = true) {
+
+  char sep = 0x1e;
 
   stringstream ss;
-  ss << name << ":" << save_mode << ":";
   if (add_tstamp ) ss << time(0);
-  ss << ":" << val;
+  else ss << 0;
 
+  ss << sep << tag << "@" << asset_name ;
+  ss << sep << val;
+  
   save_queue.push(ss.str());
 
 }

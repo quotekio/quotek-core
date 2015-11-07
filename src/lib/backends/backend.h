@@ -29,6 +29,17 @@ public:
     virtual int store(string,std::vector<quotek::data::record>&) {return 0;}
 
     /**
+     * save() is a function meant to store data coming from quotek algo variables.
+     * @param long timestamp if != 0, the record is timestamped with timestamp instead of current time.
+     * @param tag tagged name of the value, to find it back later.
+     * @param data data to store, as a string.
+     * @return 0 on succes, > 0 either.
+     */
+    virtual int save(long timestamp, 
+                     std::string tag, 
+                     std::string data) { return 0;}
+
+    /**
      * Saves trades history to backend database.
      * @param plist: pointer to vector of positions to save.
      * @returns: 0 on success, >0 either.

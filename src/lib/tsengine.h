@@ -155,6 +155,12 @@ class tsEngine{
      */
     void saveToBackend();
 
+    /**
+     * saveToBackend2 is an alternate thread callback to store variables in backend
+     */
+    void saveToBackend2();
+
+
     void broker_sync_start();
 
 
@@ -177,6 +183,9 @@ class tsEngine{
     quotek::data::cqueue<std::string> orders_queue;
     AssocArray<quotek::data::records> inmem_records;
 
+    //Stores the algo data to be saved in backend.
+    quotek::data::cqueue<std::string> save_queue;
+
     AssocArray<void*> eval_ptrs;
     igmLogger* logger;
     vector<string> modules_list;
@@ -195,7 +204,8 @@ class tsEngine{
     std::thread* mmth;
     std::thread* clkth;
     std::thread* backioth;
-
+    std::thread* backsaveth;
+    
     vector<std::thread> modules_threads_list;
     vector<algo> algos;
 

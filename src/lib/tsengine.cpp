@@ -297,6 +297,42 @@ void tsEngine::moneyman() {
 }
 
 
+
+void tsEngine::saveToBackend2() {
+
+  backend* back0 = this->getBackend();
+
+  while(1) {
+
+    std::string savestr;
+    std::string tag;
+    long timestamp;
+
+    auto tt0 = std::chrono::high_resolution_clock::now();
+
+    //we pop the full tsEngine saving queue
+    while( save_queue.pop(savestr,false)  ) {
+      
+     std::vector<std::string> vstr = split(savestr,0x1e);
+     timestamp = atoi(vstr[0].c_str());
+     back0->save(timestamp,vstr[1],vstr[2]);
+
+    }
+
+    auto tt1 = std::chrono::high_resolution_clock::now();
+    auto elapsed_t = tt1 - tt0;
+    uint64_t elapsed = std::chrono::duration_cast<std::chrono::microseconds>(elapsed_t).count();
+    
+    if (elapsed < 5000000) {  
+      usleep(5000000 - elapsed);
+    }
+
+  }
+
+}
+
+
+
 void tsEngine::saveToBackend() {
 
   backend* back0 = this->getBackend();
@@ -414,6 +450,7 @@ void tsEngine::evaluate(strategy* s) {
   //declares work variables
   std::string order;
   std::string logstr;
+  std::string savestr;
 
   //fetch tsEngine objects to avoid too mluch function calls
   igmLogger* logger = this->getLogger();
@@ -421,7 +458,12 @@ void tsEngine::evaluate(strategy* s) {
 
   //starts strategy initialization
   s->initialize();
-  
+
+  //flushing of data to save to another, more general queue.
+  while(s->save_queue.pop(savestr,false)) {
+      save_queue.push(savestr);
+  }
+
   while(s->recs->size() == 0) { 
     std::cout << "Waiting for data population.." << std::endl;
     usleep(ticks.eval);
@@ -450,7 +492,12 @@ void tsEngine::evaluate(strategy* s) {
     while( s->log_queue.pop(logstr,false) ) {
       logger->log(logstr);
     }
-   
+
+    //flushing of data to save to another, more general queue.
+    while(s->save_queue.pop(savestr,false)) {
+      save_queue.push(savestr);
+    }
+
     auto tt1 = std::chrono::high_resolution_clock::now();
     auto elapsed_t = tt1 - tt0;
     uint64_t elapsed = std::chrono::duration_cast<std::chrono::microseconds>(elapsed_t).count();
@@ -713,6 +760,8 @@ tsEngine::tsEngine(adamCfg* conf,
   printf ("Initializing backend I/O Thread..\n");
   backioth = new std::thread( [this] { saveToBackend(); }  );
 
+  printf ("Initializing backend saving Thread..\n");
+  backsaveth = new std::thread( [this] { saveToBackend2(); }  );
 
 }
 
