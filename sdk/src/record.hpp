@@ -190,7 +190,6 @@ namespace quotek {
 
          std::string str(const bool add_timestamps);
 
-
         /**
          * finds record which has the smallest value.
          */
@@ -206,6 +205,15 @@ namespace quotek {
         std::vector<quotek::data::record> data;
     };
   
+
+    /** Adds possibility to add records directly in stringstream */
+    std::ostream& operator<<(std::ostream& stream, quotek::data::records& r);
+    
+    /** Adds possibility to add record directly in stringstream */
+    std::ostream& operator<<(std::ostream& stream, quotek::data::record& r);
+
+
+
   }
 
 }

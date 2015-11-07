@@ -235,6 +235,14 @@ namespace quotek {
       return ss.str();
     }
 
+    /** Adds possibility to add records directly in stringstream */
+    std::ostream& operator<<(std::ostream& stream, quotek::data::records& r) {
+        stream << r.str(true);
+        return stream;
+    }
+
+
+
     quotek::data::record records::max() {
 
       if ( data.size() == 0 ) return quotek::data::record(0,0,0);
@@ -276,8 +284,12 @@ namespace quotek {
 
     }
 
+    /** Adds possibility to add record directly in stringstream */
+    std::ostream& operator<<(std::ostream& stream, quotek::data::record& r) {
+        stream << r.str(true);
+        return stream;
+    }
     
-
     record::~record() {
 
     }

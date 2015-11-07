@@ -78,6 +78,27 @@ void flushlogs() {
 }
 
 /**
+ * save() takes an object of the strategy to save it in backend.
+ * This is very useful if you want to graph some extra data of your algorithms.
+ * @param name of of the value you want to save
+ * @param save_mode saving mode for the value. can be either "update" or "append". update litteraly
+ * override the data in backend and append just adds another entry.
+ * @add_timestamp tells if we must add timestamp to the data or not.
+ */
+ 
+template <typename T>
+void save(std::string name, T val, std::string save_mode, const bool add_tstamp = true) {
+
+  stringstream ss;
+  ss << name << ":" << save_mode << ":";
+  if (add_tstamp ) ss << time(0);
+  ss << ":" << val;
+
+  save_queue.push(ss.str());
+
+}
+
+/**
  * initialize() is a method meant to set the initial state of a strategy.
  * This method is executed only once, before the first evaluation. 
  */
@@ -120,6 +141,7 @@ long t;
  */
 quotek::data::cqueue<std::string> log_queue;
 quotek::data::cqueue<std::string> orders_queue;
+quotek::data::cqueue<std::string> save_queue;
 
 /**
  * recs variable points to the inmem values history of the processed asset.

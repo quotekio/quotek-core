@@ -8,6 +8,7 @@ http://www.quotek.io
 #include <quotek/record.hpp>
 #include <quotek/constants.hpp>
 #include <iostream>
+#include <sstream>
 #include <cmath>
 
 #define EPSILON 0.001
@@ -49,6 +50,13 @@ void test_down_sample(quotek::data::records& recs) {
 
 }
 
+void test_stream(quotek::data::records& recs) {
+
+  stringstream ss;
+  ss << recs;
+  
+}
+
 
 int main() {
 
@@ -62,8 +70,6 @@ int main() {
 
   test_construct(r1);
   test_down_sample(r1);
-
-
-
+  test_stream(r1);
 
 }
