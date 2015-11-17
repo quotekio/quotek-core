@@ -243,6 +243,25 @@ void tsEngine::moneyman() {
         continue;
       }
 
+      //checking of virtual Stops
+
+      float vstop = p.get_vstop();
+
+      if ( vstop != p.stop ) {
+
+        if (p.size < 0 && cval >= vstop) {
+         closePosition(p.ticket_id);
+         logger->log("Position " +  p.ticket_id + " closed ! (VSTOP)");
+         continue;
+        }
+
+        else if (p.size > 0 && cval <= vstop) {
+         closePosition(p.ticket_id);
+         logger->log("Position " +  p.ticket_id + " closed ! (VSTOP)");
+         continue;
+        }
+      }
+
       if (p.limit > 0) {
 
         if ( p.size < 0  &&  cval < p.limit ) {
