@@ -1,15 +1,15 @@
-#include "btengine.h"
+#include "hsbt.h"
 
 /* REMAINS TO IMPLEMENT:
  1) Tradelife analysis in moneyman()
  2) All genetics handling !
 */
 
-btEngine::btEngine(adamCfg* conf,
+hsbt::hsbt(adamCfg* conf,
                    broker* b,
                    backend* back,
                    AssocArray<indice*> ilist,
-                   strategyHandler* sh,
+                   std::vector<strategyHandler*> sh_list,
                    moneyManager* mm,
                    genetics* ge,
                    vector<string> mlist) {
@@ -17,7 +17,7 @@ btEngine::btEngine(adamCfg* conf,
 
   tse_broker = b;
   tse_back = back;
-  tse_strathandler = sh;
+  tse_strathandlers = sh_list;
   tse_mm = mm;
   tse_ge = ge;
   indices_list = ilist;
@@ -35,117 +35,107 @@ btEngine::btEngine(adamCfg* conf,
     exit(1);
   }
 
+  vector<string> si = iGetNames(indices_list);
 
   //initializes inmem_records, backtest_inmem_records
-  vector<string> si = iGetNames(indices_list);
-  
+  for (int i=0;i<si.size();i++) {
+    inmem_records[si[i]] = quotek::data::records();
+    backtest_inmem_records[si[i]] = quotek::data::records();
+  }
+
   //loads backtest history
   loadBacktestData_();
 
   //initializes logger
   logger = new igmLogger();
 
-  //initializes store
-  //store_init(&tse_store);
-  
   printf ("loading evaluators..\n");
-  vector<string> evnames = iGetNames(getIndicesList());
 
-  void* strat_ptr = tse_strathandler->getExportFct();
+  for (int j=0;j<tse_strathandlers.size();j++) {
 
-  for (int i=0;i<evnames.size();i++) {
-    if (strat_ptr) {
-      cout << "loading eval for indice "  << evnames.at(i)  << endl;
-      eval_pointers[evnames.at(i)] = strat_ptr;
+    void* strat_ptr = tse_strathandlers[j]->getExportFct();
+    std::regex asset_match(tse_strathandlers[j]->getAssetMatch());
+
+    for (int i=0;i<si.size();i++) {
+
+      if (strat_ptr &&  std::regex_match(si.at(i), asset_match) ) {
+
+        algo al;
+        cout << "loading eval for indice " << si.at(i)  << endl;
+        al.eval_ptr = strat_ptr;
+        al.eval_name = si.at(i);
+        al.strategy = tse_strathandlers[j]->getName();
+        al.pnl = 0;
+        algos.emplace_back(al);
+
+      }
     }
   }
+
+  for (int i=0;i<algos.size();i++) {
+
+    //function pointer to extern C create_st symbol.
+    create_st* c_strat = (create_st*) algos[i].eval_ptr ;
+    strategy* st = c_strat();
+
+    st->recs = &this->getAssetRecords(algos[i].eval_name);
+    st->portfolio = this->getMoneyManager()->getPositionsPtr();
+    st->asset_name = algos[i].eval_name;
+    st->identifier = algos[i].strategy + "@" + algos[i].eval_name;
+    st->store = &tse_store;
+
+    //initializes algo.
+    st->initialize();
+
+    //append strat to list.
+    strategies.emplace_back(st);
+
+
+  }
+
 }
 
 // Loads indices history from backend to memory
-int btEngine::loadBacktestData_() {
+int hsbt::loadBacktestData_() {
+
+    
+
+    std::cout << "loading backtest data from " << backtest_from << " to " << backtest_to << std::endl;
 
     string q;
     vector<string> inames = iGetNames(indices_list);
     for (int i=0;i<inames.size();i++) {
       quotek::data::records recs = tse_back->query(inames[i], backtest_from, backtest_to);
       backtest_inmem_records[inames[i]] = recs;
+
+      std::cout << "Loaded " << backtest_inmem_records[inames[i]].size() << " Backtest records for asset " << inames[i] << std::endl; 
+
     }
 
   return 0;
 }
 
 
-int btEngine::evaluate_(string eval_name,void* eval_ptr, int cstate) {
+int hsbt::evaluate_(strategy* s) {
 
-/*
-  typedef void* (*eval_fct)(uint32_t,float,float,evaluate_io*);
+  quotek::data::record& last_rec = s->recs->last();
+  s->value = last_rec.value;
+  s->spread = last_rec.spread;
+  s->t = last_rec.timestamp;
 
-  uint32_t t;
-  float v;
-  float spread;
-  evaluate_io ev_io;
+  //user algo tick evaluation.
+  s->evaluate();
 
-  eval_fct f = (eval_fct) eval_ptr;
-
-  Queue_c orders_q = CreateQueue(50);
-  Queue_c logs_q = CreateQueue(50);
-
-  ev_io.orders = &orders_q;
-  ev_io.logs = &logs_q;
-  ev_io.s = &tse_store;
-  ev_io.genes = tse_genes;
-  ev_io.state = cstate;
-  
-  indice* idx = iResolve(indices_list,eval_name);
-
-  ev_io.asset_name_name = eval_name.c_str();
-  ev_io.recs = getAssetRecords(eval_name);
-  quotek::data::record r = 
-
-  t = r->timestamp;
-  v = r->value;
-  spread = r->spread;
-  //debug
-  //cout << "SIMUTIME:" << epochToDateTime(t) << endl;
-
-  if ( eval_running(idx,t) == 1) {
-    //execution of found eval function
-    (*f)(t,v,spread, &ev_io);
-
-    while( ! IsEmpty( orders_q ) ) {
-      char* order = (char*) FrontAndDequeue( orders_q );
-      std::string order_str = std::string(order);
-      if ( order_str != "") {
-        orders_queue.push(order_str);
-      }
-      free(order);
-    }
-    
-    while( ! IsEmpty( logs_q ) ) {
-      char* logstr = (char*) FrontAndDequeue( logs_q );
-      std::string log_str = std::string(logstr);
-      if ( log_str != "") {
-        logger->log(log_str);
-      }
-      free(logstr);
-    }      
-  
-  }
-  
-  return ev_io.state;
-  */
   return 0;
 
 }
 
-void btEngine::moneyman_() {
+void hsbt::moneyman_() {
 
   vector<string> si = iGetNames(indices_list);
   float v;
   
   quotek::data::cvector<quotek::core::position>& poslist = tse_mm->getPositions();
-
-  //tradelife evaluate
 
   for(int j=0;j<si.size();j++) {
     
@@ -225,7 +215,7 @@ void btEngine::moneyman_() {
   }
 }
 
-void btEngine::execute_() {
+void hsbt::execute_() {
 
   std::string order;
   vector<std::string> order_params;
@@ -313,8 +303,6 @@ void btEngine::execute_() {
        }
 
        p.pnl = 0;
-       //p.status = POS_OPEN;
-       //adds position to the backtest history.
        p.open_date = inmem_records[0].get_data()[backtest_pos].timestamp;
        tse_mm->addPosition(p);
       
@@ -357,38 +345,45 @@ void btEngine::execute_() {
 }
 
 
-adamresult* btEngine::run() {
+adamresult* hsbt::run() {
 
   adamresult* result = new adamresult();
   result->start = time(0);
   result->from = backtest_from; 
   result->to = backtest_to;
 
+  /* WTF is state array ????
 
   AssocArray<int> state_array;
 
   for (int k=0;k<eval_pointers.Size();k++) {
     state_array[eval_pointers.GetItemName(k)] = 0;
-  }
+  }*/
+
 
   int bpp = 0;
+  float bt_realsize = backtest_inmem_records[0].size() - 1;
+  int nb_assets = backtest_inmem_records.Size();
+  int nb_algos = strategies.size();
 
-  for(int i=0;i<backtest_inmem_records[0].size() -1 ;i++) {
+  //*** START OF CRITICAL SECTION LOOP **** //
+  for(int i=0;i<bt_realsize;i++) {
 
     //displace data from backtest_inmem to inmem
-    for ( int j=0; j< backtest_inmem_records.Size(); j++  )  {
+    for ( int j=0; j< nb_assets; j++  )  {
       inmem_records[j].append(backtest_inmem_records[j][i]);
-
     }
 
-    progress_tstamp = backtest_inmem_records[0].get_data()[backtest_pos].timestamp ;
+    progress_tstamp = backtest_inmem_records[0][backtest_pos].timestamp ;
 
-    for (int k=0;k<eval_pointers.Size();k++) {
+    for (int k=0;k< nb_algos;k++) {
 
-      std::string evname_ = eval_pointers.GetItemName(k);
-      int state = state_array[evname_];
+      //std::string evname_ = eval_pointers.GetItemName(k);
+      //int state = state_array[evname_];
       //int nstate = evaluate_(evname_, eval_pointers[k], state );
       //state_array[evname_] = nstate;
+
+      evaluate_(strategies[k]);
     }
 
     moneyman_();
@@ -397,7 +392,8 @@ adamresult* btEngine::run() {
     backtest_pos++;
 
     //Computes backtest Progress.
-    backtest_progress =  ( (float) backtest_pos / (float) ( backtest_inmem_records[0].size() -1) ) * 100;
+    backtest_progress =  backtest_pos / bt_realsize * 100;
+
     //cout << backtest_progress << endl;
     if (backtest_progress % 10 == 0 && backtest_progress > bpp) {
       bpp = backtest_progress;
@@ -405,6 +401,7 @@ adamresult* btEngine::run() {
     }
 
   }
+  //*** END CRITICAL SECTION LOOP ***//
 
   //completes end timestamp
   result->stop = time(0);
@@ -433,97 +430,32 @@ adamresult* btEngine::run() {
   return result;
 }
 
-adamGeneticsResult* btEngine::runGenetics() {
+adamGeneticsResult* hsbt::runGenetics() {
   
   adamGeneticsResult* result = new adamGeneticsResult();
-
-  cout << "Initializing Population.." << endl;
-  tse_ge->initPopulation();
-
-  int gen = 0;
-  char bt_status[128];
-  int bt_adv;
-  int bt_adv_dlock;
-
-
-  while(1) {
-
-    for (int i=0;i < tse_ge->getPopulationSize();i++) {
-
-      individual* iv = tse_ge->getIndividualFromPopulation(i);
-      adamresult* grentry;
-
-      if ( tse_ge->mustCompute(iv) ) {
-
-        cout << "Processing Generation #" << gen << ", individual #" << i << ".." <<endl; 
-        store* gstore = &(iv->attributes);
-        setGeneticsStore(gstore);
-
-        bt_adv = 0;
-        bt_adv_dlock = 0;
-
-        //reinit backtest variables
-        backtest_pos = 0;
-        backtest_progress = 0;
-
-        //clear logs
-        logger->clear();
-        
-        //runs backtest with current genes store and fetch back result
-        grentry = run();
-        grentry->generation_id = gen;
-        grentry->individual_id = i;
-        grentry->genes_repr = tse_ge->serializeIV(iv);
-
-        result->entries.push_back(grentry);
-        iv->result = tse_mm->getEndResult();
-
-        //Clean components for next iteration
-        //store_clear(getStore());
-        tse_mm->clear();
-        positions_history.clear();
-
-      }
-    }
-
-
-    gen++;
-    if (  tse_ge->getMaxGenerations() != 0 &&  gen >= tse_ge->getMaxGenerations()  ) {
-      cout << "Genetics Maximum number of generations reached" << endl;
-      return result;
-    }
-
-    else if (tse_ge->converges() ) {
-      cout << "Genetics Convergence achieved !" << endl;
-      return result;
-    }
-
-    tse_ge->newgen();
-
-  }
 
   return result;
 
 }
 
-int btEngine::getBacktestPos() {
+int hsbt::getBacktestPos() {
   return backtest_pos;
 }
 
-int btEngine::getBacktestProgress() {
+int hsbt::getBacktestProgress() {
   return backtest_progress;
 }
 
-void btEngine::setBacktestPos(int bpos) {
+void hsbt::setBacktestPos(int bpos) {
   backtest_pos = bpos;
 }
 
-void btEngine::setBacktestProgress(int bprogress) {
+void hsbt::setBacktestProgress(int bprogress) {
   backtest_progress = bprogress;
 }
 
 
-void btEngine::addAStats(adamresult* result) {
+void hsbt::addAStats(adamresult* result) {
 
   for(int i=0;i< inmem_records.Size();i++ ) {
 
@@ -540,7 +472,7 @@ void btEngine::addAStats(adamresult* result) {
   }
 }
 
-void btEngine::addLogStats(adamresult* result) {
+void hsbt::addLogStats(adamresult* result) {
   vector<log_entry>* lentries = logger->getAllEntries();
   for (int i=0;i<lentries->size();i++) {
     result->loglines.push_back(lentries->at(i).entry);

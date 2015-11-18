@@ -1,7 +1,7 @@
 #include "adam.h"
 
 tsEngine* tse;
-btEngine* bte;
+hsbt* bte;
 int so_iter = 0;
 
 
@@ -313,7 +313,7 @@ int main(int argc,char** argv) {
       break;
     case ADAM_MODE_BACKTEST:
       cout << "starting Engine in backtest mode.." << endl;
-      bte = new btEngine(c,b,back,ilist,sh_list[0],mm,ge,mlist);
+      bte = new hsbt(c,b,back,ilist,sh_list,mm,ge,mlist);
       res = bte->run();
 
       if ( c->getBTResultFile() != "" ) {
@@ -324,7 +324,7 @@ int main(int argc,char** argv) {
 
     case ADAM_MODE_GENETICS:
       cout << "starting Engine in genetics mode.." << endl;
-      bte = new btEngine(c,b,back,ilist,sh_list[0],mm,ge,mlist);
+      bte = new hsbt(c,b,back,ilist,sh_list,mm,ge,mlist);
       gres = bte->runGenetics();
 
       if ( c->getBTResultFile() != "" ) {

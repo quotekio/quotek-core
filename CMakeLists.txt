@@ -24,7 +24,7 @@ add_executable(
   src/lib/adamcfg.cpp
 	src/lib/tsengine.h
 	src/lib/tsengine.cpp
-  src/lib/btengine.cpp
+  src/lib/hsbt.cpp
   src/lib/utils.cpp
   src/lib/broker.hpp
   src/lib/strategyhandler.cpp

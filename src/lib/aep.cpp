@@ -197,7 +197,7 @@ std::string aep_lastlogs(tsEngine* t0,int nb_entries) {
 
 std::string aep_btprogress(tsEngine* t0) {
   std::string ret;
-  btEngine* bt0 = (btEngine*) t0;
+  hsbt* bt0 = (hsbt*) t0;
   ret = "{ \"btprogress\":\"" + int2string( bt0->getBacktestProgress() ) + "\" }";
   return ret;
 }

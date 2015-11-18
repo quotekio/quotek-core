@@ -10,26 +10,25 @@
 #define REMPOS_VLIMIT 0x04
 
 /*
-btEngine class defines the behaviour of adam while in backtest mode.
-The threading model is given away for serial processing in a single loop.
-btengine inherits from tsEngine.
+hsbt, for High Speed BackTester, is the Adam's Backtesting engine.
+It inherits from tsEngine but simplifies it for more speed and efficiency.
 */
 
-class btEngine: public tsEngine {
+class hsbt: public tsEngine {
 
   public:
-  	btEngine(adamCfg*,
+  	hsbt(adamCfg*,
              broker*,
              backend*,
              AssocArray<indice*>,
-             strategyHandler*,
+             std::vector<strategyHandler*> sh_list,
              moneyManager*,
              genetics*,
              vector<string>);
 
-    int evaluate_(string,void*, int cstate);
-    void moneyman_();
-    void execute_();
+    inline int evaluate_(strategy* s);
+    inline void moneyman_();
+    inline void execute_();
     int loadBacktestData_();
     adamresult* run();
     adamGeneticsResult* runGenetics();
@@ -52,11 +51,9 @@ class btEngine: public tsEngine {
     int backtest_to; 
     vector<quotek::core::position> positions_history;
 
-    AssocArray<quotek::data::records> backtest_inmem_records;
-    AssocArray<void*> eval_pointers; 
+    AssocArray<quotek::data::records> backtest_inmem_records; 
+    std::vector<strategy*> strategies;
 
-    strategyHandler* tse_strathandler;
-    
 };
 
 #endif
