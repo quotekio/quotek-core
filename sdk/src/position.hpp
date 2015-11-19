@@ -38,6 +38,9 @@ namespace quotek {
         /** tells how many times position's vlimit was decreased */
         int vlimit_decrements;
 
+        /** Returns the pos stats object under the form of a json-formated string */
+        std::string str();
+
     };
 
     /**
@@ -81,8 +84,8 @@ namespace quotek {
          *  @return vlimit value;
          */
         float get_vlimit();
-
-        /** returns position as a string */
+        
+        /** returns position as a json-formated string */
         std::string str();
 
 

@@ -233,6 +233,8 @@ void hsbt::execute_() {
     int stop = 0;
     int limit =0;
 
+    std::string id = order_params.at(6);
+
     if (order_params.at(0) == "openpos") {
       nbc= atoi(order_params.at(3).c_str());
       stop = atoi(order_params.at(4).c_str());
@@ -276,10 +278,11 @@ void hsbt::execute_() {
      }
 
        quotek::core::position p;
+       p.identifier = id;
        p.asset_id = epic;
        p.asset_name = indice;
        p.ticket_id = randstring(8);
-       //p.nb_inc = 1;
+       
        
        if (way == "sell") {
          p.open = getAssetRecords(indice).get_data()[backtest_pos].value;
@@ -399,12 +402,12 @@ adamresult* hsbt::run() {
 
     //cout << backtest_progress << endl;
 
-    /* We want disable this section of code that is in the critical path. (at least optimize )
+    /* We want disable this section of code that is in the critical path. (at least optimize ) */
     if (backtest_progress % 10 == 0 && backtest_progress > bpp) {
       bpp = backtest_progress;
       logger->log("Backtest Progress: " + int2string(backtest_progress) + "%", progress_tstamp);
+      std::cout << "Backtest Progress: " << int2string(backtest_progress) << "%" << std::endl;
     }
-    */
 
   }
   //*** END CRITICAL SECTION LOOP ***//

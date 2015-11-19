@@ -10,32 +10,6 @@
 
 using namespace std;
 
-inline string pos2json(quotek::core::position* p) {
-
-  stringstream ss;
-
-  ss << "{";
-  ss << "\"asset\":\"" << p->asset_name << "\",\n";
-  ss << "\"broker_id\":\"" << p->asset_id << "\",\n";
-  ss << "\"ticket_id\":\"" << p->ticket_id << "\",\n";
-  
-  if (  p->size > 0 ) {
-    ss << "\"way\":\"buy\",\n"; 
-  }
-  else ss << "\"way\":\"sell\",\n"; 
-
-  ss << "\"nbc\":" << p->size * p->size / p->size << ",\n";
-
-  ss << "\"stop\":" << p->stop << ",\n";
-  ss << "\"limit\":" << p->limit << ",\n";
-  ss << "\"pnl\":" << p->pnl << ",\n";
-  ss << "\"open_date\":" << p->open_date << ",\n";
-  ss << "\"close_date\":" << p->close_date << "\n";
-  ss << "}";
-
-  return ss.str();
-}
-
 
 class snappos {
 
@@ -103,6 +77,9 @@ class adamresult {
     float pnl;
     int remainingpos;
 
+    float max_drawdown;
+    float profit_factor;
+
     /* for genetic results */
     int generation_id;
     int individual_id;
@@ -124,24 +101,13 @@ class adamresult {
       ss <<  "\"from\": " << from << ",\n";
       ss <<  "\"to\": " << to << ",\n";
       ss <<  "\"pnl\": " << pnl << ",\n";
+      ss <<  "\"max_drawdown\": " << max_drawdown << ",\n";
+      ss <<  "\"profit_factor\": " << profit_factor << ",\n";
       ss <<  "\"remainingpos\": " << remainingpos << ",\n";
-
-    
-      if ( genes_repr.size() > 0 ) {
-        
-        ss << "\"genes\": [";
-        for(int i=0;i < genes_repr.size();i++) {
-          ss <<  "\"" << genes_repr[i] << "\"" ;
-          if (i < genes_repr.size()-1) ss << ",\n";
-          else ss << "\n";
-        }
-        ss << "],\n";
-
-      }
 
       ss << "\"positions\": [";
       for(int i=0;i<positions_history.size();i++) {
-        ss <<  pos2json(&positions_history[i]);
+        ss << positions_history[i].str();
         if (i < positions_history.size()-1) ss << ",\n";
         else ss << "\n";
       }
