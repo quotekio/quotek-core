@@ -50,4 +50,4 @@ add a few arguments to your compilation line. Also, because libquotek needs them
 
 So the typical compilation line of a program using quotek SDK on Linux is the following:
 
-``g++ -I/opt/quotek/sdk/include -L/opt/quotek/sdk/lib -o <YOUR_PROGRAM> <YOUR_C++_FILE> -lpthread -lcurl -lquotek``
+``g++ -std=c++11 -I/opt/quotek/include -L/opt/quotek/lib -o <YOUR_PROGRAM> <YOUR_C++_FILE> -lpthread -lcurl -lquotek``
