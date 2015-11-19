@@ -6,6 +6,7 @@
 #include <deque>
 #include <cmath>
 #include <string>
+#include <algorithm>
 
 #include "assoc.h"
 #include "utils.h"

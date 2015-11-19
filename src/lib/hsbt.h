@@ -53,6 +53,8 @@ class hsbt: public tsEngine {
 
     AssocArray<quotek::data::records> backtest_inmem_records; 
     std::vector<strategy*> strategies;
+    std::vector<std::string> si;
+    int si_size;
 
 };
 

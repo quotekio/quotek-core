@@ -35,7 +35,8 @@ hsbt::hsbt(adamCfg* conf,
     exit(1);
   }
 
-  vector<string> si = iGetNames(indices_list);
+  si = iGetNames(indices_list);
+  si_size = si.size();
 
   //initializes inmem_records, backtest_inmem_records
   for (int i=0;i<si.size();i++) {
@@ -118,6 +119,9 @@ int hsbt::loadBacktestData_() {
 
 int hsbt::evaluate_(strategy* s) {
 
+  std::string logstr;
+  std::string order;
+
   quotek::data::record& last_rec = s->recs->last();
   s->value = last_rec.value;
   s->spread = last_rec.spread;
@@ -126,92 +130,85 @@ int hsbt::evaluate_(strategy* s) {
   //user algo tick evaluation.
   s->evaluate();
 
+  while ( s->orders_queue.pop(order,false) ) {
+    this->orders_queue.push(order);
+  }
+
+  //flushing of logs
+  s->flushlogs();
+
+  while( s->log_queue.pop(logstr,false) ) {
+    logger->log(logstr, progress_tstamp);
+  }
+
   return 0;
 
 }
 
 void hsbt::moneyman_() {
 
-  vector<string> si = iGetNames(indices_list);
   float v;
   
   quotek::data::cvector<quotek::core::position>& poslist = tse_mm->getPositions();
 
-  for(int j=0;j<si.size();j++) {
-    
-    quotek::data::records& recs = getAssetRecords(si.at(j));
-    v = recs.get_data()[backtest_pos].value;
+  for(int i=0;i<si_size;i++) { 
+    v = inmem_records[si.at(i)][backtest_pos].value;
+    tse_mm->computePNLs(si.at(i),v);
+  }
 
-    tse_mm->computePNLs(si.at(j),v);
-
-    //close positions where limit/stop is reached
-    for(vector<quotek::core::position>::iterator iter = poslist.begin(); 
+  //close positions where limit/stop is reached
+  for(vector<quotek::core::position>::iterator iter = poslist.begin(); 
         iter != poslist.end();
         ++iter) {
 
-      if ( poslist.size() == 0 ) break;
+    if ( poslist.size() == 0 ) break;
 
-      quotek::core::position p0 = *iter;
-      quotek::core::position* p = &p0;
+    quotek::core::position p0 = *iter;
+    quotek::core::position* p = &p0;
 
-      if  (p->asset_name == si.at(j)) {
+    v = inmem_records[p->asset_name][backtest_pos].value;
 
-        int rmpos = 0;
+    float vstop = p->get_vstop();
+    float vlimit = p->get_vlimit();
+    int rmpos = 0;
 
-        if (p->size > 0 &&  v <= p->stop) {
-          rmpos = REMPOS_STOP;
-        }
-  
-        else if (p->size > 0 && v <= p->get_vstop()) {
-          rmpos = REMPOS_VSTOP;
-        }
+    //** LONG POS RM RULES **//
+    if (p->size > 0) {
 
-        else if (p->size > 0 && v >= p->limit && p->limit != p->open ) {
-          rmpos = REMPOS_LIMIT;
-        }
+      if (v <= p->stop) rmpos = REMPOS_STOP;
+      else if (v <= vstop) rmpos = REMPOS_VSTOP;
+      else if (v >= p->limit && p->limit != p->open ) rmpos = REMPOS_LIMIT;
+      else if (v >= vlimit && vlimit != p->open ) rmpos = REMPOS_VLIMIT;
 
-        else if (p->size > 0 && v >= p->get_vlimit() && p->get_vlimit() != p->open ) {
-          rmpos = REMPOS_VLIMIT;
-        }
-
-        
-        else if (p->size < 0 && v >= p->stop ) {
-          rmpos = REMPOS_STOP;
-        }
-
-        else if (p->size < 0 && v >= p->get_vstop() ) {
-          rmpos = REMPOS_VSTOP;
-        }
-
-        else if (p->size < 0 && v <= p->limit && p->limit != p->open ) {
-          rmpos = REMPOS_LIMIT;
-        }
-
-        else if (p->size < 0 && v <= p->get_vlimit() && p->get_vstop() != p->open ) {
-          rmpos = REMPOS_VLIMIT;
-        }
-
-        if (rmpos > 0) {
- 
-          p->close_date = inmem_records[0].get_data()[backtest_pos].timestamp;
-          positions_history.push_back(p0);
-          iter = tse_mm->remPosition(iter);
-
-          string logstr = "POS " + p->asset_name + " Removed";
-
-          if (rmpos == REMPOS_STOP) logstr = logstr + " (STOP)";
-          else if (rmpos == REMPOS_VSTOP) logstr = logstr + " (VSTOP)";
-          else if (rmpos == REMPOS_LIMIT) logstr = logstr + " (LIMIT)";
-          else if (rmpos == REMPOS_VLIMIT) logstr = logstr + " (VLIMIT)";
-
-          logger->log(logstr, progress_tstamp);
-          if (iter == poslist.end() ) break;
-
-        }
-
-      }
     }
 
+    //** SHORT POS RM RULES **//
+    else {
+        
+      if (v >= p->stop ) rmpos = REMPOS_STOP;
+      else if (v >= vstop ) rmpos = REMPOS_VSTOP;
+      else if (v <= p->limit && p->limit != p->open ) rmpos = REMPOS_LIMIT;
+      else if (v <= vlimit && vlimit != p->open ) rmpos = REMPOS_VLIMIT;
+
+    }
+
+    if (rmpos > 0) {
+
+      p->close_date = inmem_records[0].get_data()[backtest_pos].timestamp;
+      positions_history.push_back(p0);
+      iter = tse_mm->remPosition(iter);
+
+      string logstr = "POS " + p->asset_name + " Removed";
+
+      if (rmpos == REMPOS_STOP) logstr = logstr + " (STOP)";
+      else if (rmpos == REMPOS_VSTOP) logstr = logstr + " (VSTOP)";
+      else if (rmpos == REMPOS_LIMIT) logstr = logstr + " (LIMIT)";
+      else if (rmpos == REMPOS_VLIMIT) logstr = logstr + " (VLIMIT)";
+
+      logger->log(logstr, progress_tstamp);
+      if (iter == poslist.end() ) break;
+
+    }
   }
 }
 
@@ -366,12 +363,18 @@ adamresult* hsbt::run() {
   int nb_assets = backtest_inmem_records.Size();
   int nb_algos = strategies.size();
 
+  //benchmarking purposes
+  auto tt0 = std::chrono::high_resolution_clock::now();
+
   //*** START OF CRITICAL SECTION LOOP **** //
   for(int i=0;i<bt_realsize;i++) {
 
     //displace data from backtest_inmem to inmem
+    //CAN PROBABLY BE HACKED/OPTIMIZED !!!
     for ( int j=0; j< nb_assets; j++  )  {
+
       inmem_records[j].append(backtest_inmem_records[j][i]);
+
     }
 
     progress_tstamp = backtest_inmem_records[0][backtest_pos].timestamp ;
@@ -395,13 +398,22 @@ adamresult* hsbt::run() {
     backtest_progress =  backtest_pos / bt_realsize * 100;
 
     //cout << backtest_progress << endl;
+
+    /* We want disable this section of code that is in the critical path. (at least optimize )
     if (backtest_progress % 10 == 0 && backtest_progress > bpp) {
       bpp = backtest_progress;
       logger->log("Backtest Progress: " + int2string(backtest_progress) + "%", progress_tstamp);
     }
+    */
 
   }
   //*** END CRITICAL SECTION LOOP ***//
+
+  //computes high res backtest end time, for benchmarking purposes.
+  auto tt1 = std::chrono::high_resolution_clock::now();
+  auto elapsed_t = tt1 - tt0;
+  uint64_t elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed_t).count();
+  float elapsed_secs = elapsed / (float) 1000;
 
   //completes end timestamp
   result->stop = time(0);
@@ -421,11 +433,8 @@ adamresult* hsbt::run() {
   addLogStats(result);
   result->positions_history = positions_history;  
 
-  cout << endl;
-  cout << "=================" << endl;
-  cout << "BACKTEST FINISHED" << endl;
-  cout << "=================" << endl << endl;
-
+  cout << endl<< "* Backtest Finished in " << elapsed_secs << "s *" << endl;
+ 
   tse_mm->addStats(result);
   return result;
 }

@@ -71,7 +71,7 @@ float moneyManager::computeWholePNL() {
 
 void moneyManager::computePNLs(string indice_name,float cur_value) {
 
-  indice* idx = iResolve(indices_list,indice_name);
+  indice* idx = iResolveByName(indices_list,indice_name);
   
   int pnl_coef = idx->pnl_pp;
   float unit_coef =  1.0 / idx->pip_value ;
@@ -190,6 +190,25 @@ vector<quotek::core::position>::iterator moneyManager::remPosition(vector<quotek
 
 void moneyManager::remPosition(string dealid) {
   
+
+  /** EXPERIMENTAL CODE, MAY BE FAULTY !! */
+
+  positions.erase(std::remove_if(positions.begin(),
+                                 positions.end(), 
+                                 [dealid, this](quotek::core::position p )
+                                 { if (p.ticket_id == dealid)  {
+                                   p.close_date = time(0);
+                                   positions_history.emplace_back(p);
+                                   cumulative_pnl += p.pnl;
+                                   return true;
+
+                                 }
+                                 return false; 
+                                 }), 
+                                 positions.end() );
+
+
+  /** LEGACY CODE
   for (vector<quotek::core::position>::iterator iter =  positions.begin() ;iter != positions.end();++iter) {
     
     quotek::core::position *p = &*iter;
@@ -207,6 +226,8 @@ void moneyManager::remPosition(string dealid) {
       if (iter == positions.end()) break;
     }
   }
+  */
+
 }
 
 
