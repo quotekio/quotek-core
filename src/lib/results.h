@@ -10,35 +10,6 @@
 
 using namespace std;
 
-
-class snappos {
-
-  public:
-    string name;
-    float open;
-    float close;
-    float pnl;
-    int opentime;
-    int closetime;
-    snappos() {}
-    string json_encode() {
-
-      stringstream ss;
-      ss << "{";
-      ss << "\"name\": \"" << name << "\",\n";
-      ss << "\"open\": " << open << ",\n";
-      ss << "\"close\": " << close << ",\n";
-      ss << "\"pnl\": " << pnl << ",\n";
-      ss << "\"opentime\": " << opentime << ",\n";
-      ss << "\"closetime\": " << closetime << "\n";
-      ss << "}";
-
-      return ss.str();
-
-    }
-
-};
-
 class assetstats {
 
   public:
@@ -80,6 +51,15 @@ class adamresult {
     float max_drawdown;
     float profit_factor;
 
+    int winning_trades;
+    int losing_trades;
+    int nb_long;
+    int nb_short;
+
+    float returns_percent;
+
+    float duration;
+
     /* for genetic results */
     int generation_id;
     int individual_id;
@@ -97,21 +77,41 @@ class adamresult {
       ss <<  "\"generation\": " << generation_id << ",\n";
       ss <<  "\"individual\": " << individual_id << ",\n";
       ss <<  "\"start\": " << start << ",\n";
-      ss <<  "\"stop\": " << stop << ",\n";
+      ss <<  "\"duration\": " << duration << ",\n";
       ss <<  "\"from\": " << from << ",\n";
       ss <<  "\"to\": " << to << ",\n";
-      ss <<  "\"pnl\": " << pnl << ",\n";
+      ss << "\"pnl\": " << pnl << ",\n";
+      ss << "\"returns_percent\": " << returns_percent << ",\n";
       ss <<  "\"max_drawdown\": " << max_drawdown << ",\n";
       ss <<  "\"profit_factor\": " << profit_factor << ",\n";
       ss <<  "\"remainingpos\": " << remainingpos << ",\n";
 
-      ss << "\"positions\": [";
+      if ( genes_repr.size() > 0 ) {
+        
+        ss << "\"genes\": [";
+        for(int i=0;i < genes_repr.size();i++) {
+          ss <<  "\"" << genes_repr[i] << "\"" ;
+          if (i < genes_repr.size()-1) ss << ",\n";
+          else ss << "\n";
+        }
+        ss << "],\n";
+
+      }
+
+      ss << "\"trades\": {";
+
+      ss << "\"winning\":" << winning_trades << ",\n";
+      ss << "\"losing\":" << losing_trades << ",\n";
+      ss << "\"nb_long\":" << nb_long << ",\n";
+      ss << "\"nb_short\":" << nb_short << ",\n";
+      ss << "\"list\":[\n";
+
       for(int i=0;i<positions_history.size();i++) {
         ss << positions_history[i].str();
         if (i < positions_history.size()-1) ss << ",\n";
         else ss << "\n";
       }
-      ss << "],\n";
+      ss << "]},\n";
 
       ss << "\"astats\": [";
       for(int i=0;i<astats.size();i++) {

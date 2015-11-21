@@ -352,15 +352,6 @@ adamresult* hsbt::run() {
   result->from = backtest_from; 
   result->to = backtest_to;
 
-  /* WTF is state array ????
-
-  AssocArray<int> state_array;
-
-  for (int k=0;k<eval_pointers.Size();k++) {
-    state_array[eval_pointers.GetItemName(k)] = 0;
-  }*/
-
-
   int bpp = 0;
   float bt_realsize = backtest_inmem_records[0].size() - 1;
   int nb_assets = backtest_inmem_records.Size();
@@ -418,8 +409,9 @@ adamresult* hsbt::run() {
   uint64_t elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed_t).count();
   float elapsed_secs = elapsed / (float) 1000;
 
-  //completes end timestamp
-  result->stop = time(0);
+  //puts duration in result.
+  result->duration = elapsed_secs;
+
 
   //Adds remaining pos to history
   quotek::data::cvector<quotek::core::position>& rpos = tse_mm->getPositions();
@@ -434,7 +426,52 @@ adamresult* hsbt::run() {
   //highest, lowest,variance, etc..
   addAStats(result); 
   addLogStats(result);
-  result->positions_history = positions_history;  
+  result->positions_history = positions_history; 
+
+  result->max_drawdown = 0;
+  result->profit_factor = 0;
+  result->returns_percent = 0;
+
+  result->winning_trades = 0;
+  result->losing_trades = 0;
+  result->nb_long = 0;
+  result->nb_short = 0;
+
+  float total_gains =0;
+  float total_losses = 0;
+
+  float cmax= -1000000000;
+  float cmin = 1000000000;
+  float ctpnl = 0;
+  //compute max_drawdown
+
+  for (int i=0;i<positions_history.size();i++) {
+
+    if ( positions_history[i].size > 0  ) result->nb_long++;
+    else result->nb_short++;
+
+    ctpnl += positions_history[i].pnl;
+ 
+    if ( ctpnl > cmax ) {
+      cmax = ctpnl;
+      cmin = 10000000000;
+    }
+    if ( ctpnl < cmin ) cmin = ctpnl;
+
+    if ( positions_history[i].pnl > 0 ) {
+      total_gains += positions_history[i].pnl;
+      result->winning_trades++;
+    }
+
+    else if (positions_history[i].pnl <= 0 ) {
+      total_losses += positions_history[i].pnl;
+      result->losing_trades++;
+    }
+  }
+
+  result->max_drawdown = cmax - cmin ;
+
+  result->profit_factor = total_gains / fabs(total_losses);
 
   cout << endl<< "* Backtest Finished in " << elapsed_secs << "s *" << endl;
  
