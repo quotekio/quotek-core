@@ -75,24 +75,33 @@ void parse_cmdline(adamCfg* conf,int argc,char** argv) {
    static struct option long_options[] =
              {
                
+               {"config", required_argument,0,'c'},
                {"backtest", no_argument,0,'b'},
+               {"compile", no_argument,0,'d'},
                {"backtest-from",required_argument ,0 ,'f'},
                {"backtest-to", required_argument, 0, 't'},
                {"backtest-result",required_argument,0,'r'},
                {"strategy", required_argument,0, 's'},
                {"genetics", no_argument,0,'g'},
                {"eap-port",required_argument,0,'p'},
+
              };
 
 
   while(1) {
     int option_index = 0;
-    c = getopt_long (argc, argv, "bgs:x:t:p:r:",
+    c = getopt_long (argc, argv, "c:bdgs:x:t:p:r:",
                       long_options, &option_index);
 
     if (c == -1) break;
 
     switch(c) {
+
+      case 'c':
+        conf->chconf(optarg);
+        cout << "Using config file " << optarg << ".." << endl;
+        conf->read();
+        break;
 
       case 'p':
         conf->setAEPPort(atoi(optarg));
@@ -101,6 +110,11 @@ void parse_cmdline(adamCfg* conf,int argc,char** argv) {
       case 'b':
         conf->setMode(ADAM_MODE_BACKTEST);
         cout << "Starting Adam in Backtest mode.." << endl;
+        break;
+
+      case 'd':
+        conf->setMode(ADAM_MODE_DRY);
+        cout << "Starting Adam in dry run mode, as compilation test.." << endl;
         break;
 
       case 'g':
@@ -194,21 +208,20 @@ int main(int argc,char** argv) {
   strategyHandler* sh;
   adamCfg* c = new adamCfg();
 
-  if (argc > 1 ) {
-     ifstream f (argv[argc-1]);
-     if (f.is_open()) {
-       c->chconf(argv[argc-1]);
-       cout << "Using config file " << argv[argc-1] << ".." << endl;
-       f.close();
-     }
+  //checks if command line has config a config file option.
+  bool has_cf_option = false;
+  for (int i=1; i< argc;i++) {
+    if ( std::string(argv[i]) == "-c" || std::string(argv[i]) == "--config" ) {
+      has_cf_option = true;
+      break;
+    }
   }
 
-  c->read();
-
+  if (! has_cf_option ) c->read();
+  
   parse_cmdline(c,argc,argv);
 
   
-
   AssocArray<indice*> ilist = c->getIndicesList();
 
 
@@ -306,6 +319,11 @@ int main(int argc,char** argv) {
   adamresult* res;
 
   switch (c->getMode()) {
+
+    case ADAM_MODE_DRY:
+      cout << "Compilation was succesfull, closing adam..";
+      exit(0);
+      break;
 
     case ADAM_MODE_REAL:
       cout << "starting Engine in real mode.." << endl;
