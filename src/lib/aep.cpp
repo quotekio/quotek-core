@@ -202,6 +202,15 @@ std::string aep_btprogress(tsEngine* t0) {
   return ret;
 }
 
+std::string aep_btsnap(tsEngine* t0) {
+
+  std::string ret;
+  hsbt* bt0 = (hsbt*) t0;
+  return ret;
+  
+}
+
+
 void* aep_handler(void* ptr) {
 
   aep_handle_io* aio = (aep_handle_io*) ptr;

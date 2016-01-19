@@ -82,6 +82,7 @@ void parse_cmdline(adamCfg* conf,int argc,char** argv) {
                {"backtest-to", required_argument, 0, 't'},
                {"backtest-result",required_argument,0,'r'},
                {"strategy", required_argument,0, 's'},
+               {"spath", required_argument,0,'x'},
                {"genetics", no_argument,0,'g'},
                {"eap-port",required_argument,0,'p'},
 
@@ -121,6 +122,11 @@ void parse_cmdline(adamCfg* conf,int argc,char** argv) {
         conf->setMode(ADAM_MODE_GENETICS);
         cout << "Starting Adam in Genetics mode.." << endl;
         break;
+
+      case 'x': {
+        conf->setStratsPath(std::string(optarg));
+      }
+
       case 's': {
         std::vector<std::string> st = split(std::string(optarg),',');
         conf->setActiveStrats(st);

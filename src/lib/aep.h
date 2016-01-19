@@ -23,6 +23,7 @@ std::string aep_order(tsEngine*,std::vector<string>);
 std::string aep_poslist(tsEngine*);
 std::string aep_lastlogs(tsEngine*,int);
 std::string aep_btprogress(tsEngine*);
+std::string aep_btsnap(tsEngine*);
 std::string aep_version(tsEngine*);
 std::string aep_algos(tsEngine*);
 

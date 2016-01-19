@@ -114,6 +114,10 @@ void adamCfg::setBTResultFile(string f ) {
   backtest_result_path =  f;
 }
 
+void adamCfg::setStratsPath(std::string p) {
+  strats_path = p;
+}
+
 
 void adamCfg::chconf(char* np) {
   npath = std::string(np);

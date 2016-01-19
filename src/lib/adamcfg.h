@@ -127,6 +127,8 @@ class adamCfg {
     void setBFrom(int);
     void setBTo(int);
 
+    void setStratsPath(std::string);
+
 
   private:
 
