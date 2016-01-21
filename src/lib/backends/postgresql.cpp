@@ -33,6 +33,8 @@ public:
         std::cerr << e.what() << std::endl;
       }
 
+      init_tables();
+
       return 0;
     }
 
@@ -58,6 +60,8 @@ public:
       catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;
       }
+
+      init_tables();
 
       return 0;
     }
@@ -219,6 +223,32 @@ private:
   string database;
   pqxx::connection* dbh;
 
+
+
+  int init_tables() {
+    std::ostringstream qcreate;
+
+    qcreate << "CREATE TABLE IF NOT EXISTS __history__ (";
+    qcreate << "indice VARCHAR(64),";
+    qcreate << "epic VARCHAR(64),";
+    qcreate << "dealid VARCHAR(64),";
+    qcreate << "size INTEGER,";
+    qcreate << "stop FLOAT,";
+    qcreate << "limit FLOAT,";
+    qcreate << "open FLOAT,";
+    qcreate << "pnl FLOAT,";
+    qcreate << "pnl_peak FLOAT,";
+    qcreate << "open_date INTEGER,";
+    qcreate << "close_date INTEGER,";
+    qcreate << "identifier VARCHAR(64),";
+
+    pqxx::work w(*dbh);
+    pqxx::result res = w.exec(qcreate.str().c_str());
+    w.commit();
+
+    return 0;
+
+  }
 
   std::string record2sql(quotek::data::record& rec)  {
 
