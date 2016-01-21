@@ -24,7 +24,7 @@ public:
       password = d["password"].GetString();
       database = d["database"].GetString();
 
-      cstr << "host=" << host << " dbname=" << database << " user=" << username << " password=" << password;
+      cstr << "host=" << host <<  " port="  << port << " dbname=" << database << " user=" << username << " password=" << password;
       
       try {
         dbh = new pqxx::connection(cstr.str().c_str());
@@ -51,7 +51,7 @@ public:
       password = ipassword;
       database = idatabase;
 
-      cstr << "host=" << host << " dbname=" << database << " user=" << username << " password=" << password;
+      cstr << "host=" << host << " port="  << port << " dbname=" << database << " user=" << username << " password=" << password;
       try {
         dbh = new pqxx::connection(cstr.str().c_str());
       }
