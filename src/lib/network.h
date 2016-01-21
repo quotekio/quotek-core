@@ -10,6 +10,7 @@
 #include <netinet/tcp.h>
 #include <signal.h>
 #include <unistd.h>
+#include <string.h>
 
 #include <string>
 #include <iostream>

@@ -105,20 +105,27 @@ public:
       if (tinf >= 0) {
         qstream << "SELECT timestamp, value, spread FROM " << indice <<
                    " WHERE timestamp > " << tinf << 
-                   "s AND timestamp <" << tsup << " ORDER ASC";
+                   "s AND timestamp <" << tsup << " ORDER BY timestamp ASC";
       }
 
       else  {
 
         qstream << "SELECT timestamp, value, spread FROM " << indice <<
-                   " WHERE timestamp > now() + " << tinf << 
-                   " AND timestamp < now() + " << tsup << " ORDER ASC";
+                   " WHERE to_timestamp(timestamp) > CURRENT_TIMESTAMP - INTERVAL '" << abs(tinf) << " seconds'" <<
+                   " AND to_timestamp(timestamp) < CURRENT_TIMESTAMP - INTERVAL '" << abs(tsup) << " seconds' ORDER BY timestamp ASC";
       }
 
       pqxx::work w(*dbh);
-      pqxx::result res = w.exec(qstream.str().c_str());
-      w.commit();
-      
+      pqxx::result res;
+      try {
+        res = w.exec(qstream.str().c_str());
+        w.commit();
+      }
+
+      catch (const pqxx::undefined_table &e) {
+        return result;
+      }
+
       for (int i=0;i<res.size(); i++) {
         const pqxx::tuple row = res[i];
         r.timestamp = row[0].as<int>();
@@ -150,15 +157,16 @@ public:
       std::ostringstream squery;
       string outp;
 
-      qcreate << "CREATE TABLE IF NOT EXISTS " << indice << " (timestamp INTEGER, value FLOAT, spread FLOAT);";
+      qcreate << "CREATE TABLE IF NOT EXISTS " << indice << " (timestamp INT, value REAL, spread REAL);";
 
       pqxx::work w(*dbh);
       pqxx::result res = w.exec(qcreate.str().c_str());
       w.commit();
       
       squery << "INSERT INTO " << indice << " VALUES " << records2sql(recs) << ";";
-      res = w.exec(squery.str().c_str());
-      w.commit();
+      pqxx::work w2(*dbh);
+      res = w2.exec(squery.str().c_str());
+      w2.commit();
 
       return 0;
     }
@@ -170,15 +178,24 @@ public:
       std::ostringstream squery;
       string outp;
 
-      qcreate << "CREATE TABLE IF NOT EXISTS " << indice << " (timestamp INTEGER, value FLOAT, spread FLOAT);";
+      qcreate << "CREATE TABLE IF NOT EXISTS " << indice << " (timestamp INT, value REAL, spread REAL);";
 
       pqxx::work w(*dbh);
       pqxx::result res = w.exec(qcreate.str().c_str());
       w.commit();
       
       squery << "INSERT INTO " << indice << " VALUES " << record2sql(rec) << ";";
-      res = w.exec(squery.str().c_str());
-      w.commit();
+      pqxx::work w2(*dbh);
+      try {
+        res = w2.exec(squery.str().c_str());
+        w2.commit();
+      }
+
+      catch(const pqxx::undefined_column &e) {
+        std::cerr << "Warning: record has issue for storage" << std::endl;
+        return 0;
+      }
+
 
       return 0;
     }
@@ -232,15 +249,15 @@ private:
     qcreate << "indice VARCHAR(64),";
     qcreate << "epic VARCHAR(64),";
     qcreate << "dealid VARCHAR(64),";
-    qcreate << "size INTEGER,";
-    qcreate << "stop FLOAT,";
-    qcreate << "limit FLOAT,";
-    qcreate << "open FLOAT,";
-    qcreate << "pnl FLOAT,";
-    qcreate << "pnl_peak FLOAT,";
-    qcreate << "open_date INTEGER,";
-    qcreate << "close_date INTEGER,";
-    qcreate << "identifier VARCHAR(64),";
+    qcreate << "size INT,";
+    qcreate << "stop real,";
+    qcreate << "\"limit\" real,";
+    qcreate << "open real,";
+    qcreate << "pnl real,";
+    qcreate << "pnl_peak real,";
+    qcreate << "open_date INT,";
+    qcreate << "close_date INT,";
+    qcreate << "identifier VARCHAR(64));";
 
     pqxx::work w(*dbh);
     pqxx::result res = w.exec(qcreate.str().c_str());
@@ -253,7 +270,10 @@ private:
   std::string record2sql(quotek::data::record& rec)  {
 
     std::ostringstream sqstream;
+    //HACK: there's an issue in spread values !
+    rec.spread = 0;
     sqstream << "(" << rec.timestamp << ", " << rec.value << ", " << rec.spread << ")";
+
     return sqstream.str();
   };
 

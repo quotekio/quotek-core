@@ -65,6 +65,8 @@ find_library (CURL curl)
 find_library (FAAN fann)
 find_library (INFLUXDB influxdb)
 find_library (QUOTEK quotek)
+find_library (PQXX pqxx)
+
 
 
 target_link_libraries(
@@ -79,6 +81,12 @@ target_link_libraries(
   quotek
   influxdb
   curl
+)
+
+target_link_libraries(
+  postgresqlbe
+  quotek
+  pqxx
 )
 
 

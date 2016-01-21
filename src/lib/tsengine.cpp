@@ -678,6 +678,7 @@ tsEngine::tsEngine(adamCfg* conf,
 
   if (conn_status != 0) {
     logger->log("[broker] Can't connect to broker, please check your credentials/ API availability");
+    std::cerr << "[broker] Can't connect to broker, please check your credentials/ API availability" << std::endl;
     exit(1);
   }
 
