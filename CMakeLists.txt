@@ -4,7 +4,7 @@ project(adam)
 
 SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++")
 SET (CMAKE_C_COMPILER		    "/usr/bib/clang")
-SET (CMAKE_CXX_FLAGS                "-O3 -g -std=c++1y -stdlib=libc++ -fPIC")
+SET (CMAKE_CXX_FLAGS                "-O3 -g -std=c++1y -fPIC")
 
 SET (CMAKE_LINKER_FLAGS    "-rdynamic")
 
@@ -54,6 +54,12 @@ add_library(
 
 )
 
+add_library(
+      postgresqlbe SHARED
+      src/lib/backends/backend.h
+      src/lib/backends/postgresql.cpp
+)
+
 find_library (PTHREAD pthread) 
 find_library (CURL curl)
 find_library (FAAN fann)
@@ -74,6 +80,8 @@ target_link_libraries(
   influxdb
   curl
 )
+
+
 
 
 install (TARGETS adam DESTINATION bin)

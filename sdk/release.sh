@@ -2,12 +2,8 @@
 
 ### BUILD ###
 ./clean.sh
-cp CMakeLists.txt CMakeLists.txt.bak
-sed -i 's/-stdlib=libc++//' CMakeLists.txt
-cp CMakeLists.txt CMakeLists.txt.rel
 cmake .
-sudo make install && rm CMakeLists.txt.rel
-mv CMakeLists.txt.bak CMakeLists.txt
+sudo make install
 
 ### DOCUMENTATION BUILD ###
 
