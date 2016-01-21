@@ -9,6 +9,8 @@
 class postgresql : public backend {
 public:
 
+
+    //OK
     virtual int init(string params) {
       
       rapidjson::Document d;
@@ -32,9 +34,9 @@ public:
       }
 
       return 0;
-
     }
 
+    //OK
     virtual int init(std::string ihost, 
                      int iport, 
                      std::string iusername, 
@@ -58,32 +60,37 @@ public:
       }
 
       return 0;
-
     }
 
+    //OK
     virtual int connect() {
       return 0;
     }
 
+
+    //OK
     virtual quotek::data::records query(string q) {
       
       quotek::data::records result;
       std::string outp;
       quotek::data::record r;
 
-        /*if (!dbh.ExecTuplesOk(q.c_str())) return result;
-
-        for (int i = 0; i < dbh.Tuples(); i++) {
-          r.timestamp = dbh.GetValue(i,0);
-          r.value = dbh.GetValue(i,1);
-          r.sprad = dbh.GetValue(i,2);
-          result.append(r);
-        }
-        */
+      pqxx::work w(*dbh);
+      pqxx::result res = w.exec(q.c_str());
+      w.commit();
+      
+      for (int i=0;i<res.size(); i++) {
+        const pqxx::tuple row = res[i];
+        r.timestamp = row[0].as<int>();
+        r.value = row[1].as<float>();
+        r.spread = row[2].as<float>();
+        result.append(r);
+      }
 
       return result;
     }
 
+    //OK
     virtual quotek::data::records query(string indice, int tinf, int tsup) {
 
       quotek::data::records result ;
@@ -92,51 +99,35 @@ public:
       quotek::data::record r;
 
       if (tinf >= 0) {
-        qstream << "SELECT value, spread FROM " << indice <<
-                   " WHERE time > " << tinf << 
-                   "s AND time <" << tsup << "s ORDER ASC";
+        qstream << "SELECT timestamp, value, spread FROM " << indice <<
+                   " WHERE timestamp > " << tinf << 
+                   "s AND timestamp <" << tsup << " ORDER ASC";
       }
 
       else  {
 
-        qstream << "SELECT value, spread FROM " << indice <<
-                   " WHERE time > now() + " << tinf << 
-                   "s AND time < now() + " << tsup << "s ORDER ASC";
+        qstream << "SELECT timestamp, value, spread FROM " << indice <<
+                   " WHERE timestamp > now() + " << tinf << 
+                   " AND timestamp < now() + " << tsup << " ORDER ASC";
       }
 
+      pqxx::work w(*dbh);
+      pqxx::result res = w.exec(qstream.str().c_str());
+      w.commit();
       
-
-      // Perform http request to postgresql backend and get result.
-      // Destroy http handler to free memory.
-      
-      //shortcut avoiding parsing if no result
-      if ( outp == "[]"  ) return result;
-      
-      // Effectively parse result
-      rapidjson::Document d;
-      d.Parse<0>(outp.c_str());
-
-      if (d.HasParseError()) {
-        cout << "[ERROR] Backend query error: JSON Parsing. returning empty result!" << endl;
-        return result;
+      for (int i=0;i<res.size(); i++) {
+        const pqxx::tuple row = res[i];
+        r.timestamp = row[0].as<int>();
+        r.value = row[1].as<float>();
+        r.spread = row[2].as<float>();
+        result.append(r);
       }
-
-      if (d.IsArray())  {
-
-        for ( int i=0; i< d[0u]["points"].Size(); i++  ) {
-           rapidjson::Value& points = d[0u]["points"][i];           
-           r.timestamp = points[0u].GetInt();
-           r.value = points[3].GetDouble();
-           r.spread = points[2].GetDouble();
-           result.append(r);
-        }
-      }
-
       return result;
 
     }
 
 
+    //NOK
     virtual int save(long timestamp, 
                      std::string tag, 
                      std::string data) { 
@@ -145,90 +136,77 @@ public:
      stringstream sdata; 
 
        long tstamp = ( timestamp == 0 ) ? time(0) : timestamp;
-
-       sdata << "[\n";
-       sdata << "\t{ \"name\": \"__save__\",\n";
-       sdata << "\t  \"columns\" : [ \"time\", \"tag\", \"data\" ],\n";
-       //may have to escape data ?!
-       sdata << "\t  \"points\" : [ [" << timestamp <<  ",\"" << tag << "\",\"" << data << "\"] ]";
-       sdata << "\t}\n";
-       sdata << "]";
-       
-       //debug
-       //std::cout << sdata.str() << std::endl;
-       
-       //Debug.
-       //std::cout << outp << std::endl;
        return 0;
     }
 
+    //OK
     virtual int store(string indice, quotek::data::records& recs) {
 
-      std::ostringstream sdata;
+      std::ostringstream qcreate;
+      std::ostringstream squery;
       string outp;
 
-      sdata << "[\n";
-      sdata << "\t{ \"name\": \"" << indice << "\",\n";
-      sdata << "\t  \"columns\" : [ \"time\", \"value\", \"spread\" ],\n";
-      sdata << "\t  \"points\" : [" << records2sql(recs) << "]\n"; 
-      sdata << "\t}\n";
-      sdata << "]";
+      qcreate << "CREATE TABLE IF NOT EXISTS " << indice << " (timestamp INTEGER, value FLOAT, spread FLOAT);";
 
-      std::string sdata_str = sdata.str();
+      pqxx::work w(*dbh);
+      pqxx::result res = w.exec(qcreate.str().c_str());
+      w.commit();
+      
+      squery << "INSERT INTO " << indice << " VALUES " << records2sql(recs) << ";";
+      res = w.exec(squery.str().c_str());
+      w.commit();
+
       return 0;
     }
 
+    //OK
     virtual int store(string indice, quotek::data::record& rec) {
 
-      std::ostringstream sdata;
+      std::ostringstream qcreate;
+      std::ostringstream squery;
       string outp;
 
-      sdata << "[\n";
-      sdata << "\t{ \"name\": \"" << indice << "\",\n";
-      sdata << "\t  \"columns\" : [ \"time\", \"value\", \"spread\" ],\n";
-      sdata << "\t  \"points\" : [" << record2sql(rec) << "]\n"; 
-      sdata << "\t}\n";
-      sdata << "]";
+      qcreate << "CREATE TABLE IF NOT EXISTS " << indice << " (timestamp INTEGER, value FLOAT, spread FLOAT);";
 
-      std::string sdata_str = sdata.str();
+      pqxx::work w(*dbh);
+      pqxx::result res = w.exec(qcreate.str().c_str());
+      w.commit();
+      
+      squery << "INSERT INTO " << indice << " VALUES " << record2sql(rec) << ";";
+      res = w.exec(squery.str().c_str());
+      w.commit();
 
       return 0;
     }
 
+    //OK
     virtual int saveHistory(quotek::core::position& pos)  {
 
-      std::ostringstream sdata;
+      std::ostringstream squery;
       string outp;
+      
+      squery << "INSERT INTO __history__ VALUES " << pos2sql(pos) << ";"; 
 
-      sdata << "[\n";
-      sdata << "\t{ \"name\": \"__history__\",\n";
-      sdata << "\t  \"columns\" : [ \"indice\", \"epic\", \"dealid\", \"size\", \"stop\", \"limit\", \"open\", \"pnl\", \"pnl_peak\", \"open_date\", \"close_date\", \"identifier\" ],\n";
-      sdata << "\t  \"points\" : [" << pos2sql(pos) << "]\n"; 
-      sdata << "\t}\n";
-      sdata << "]";
-
-      std::string sdata_str = sdata.str();
+      pqxx::work w(*dbh);
+      pqxx::result res = w.exec(squery.str().c_str());
+      w.commit();
 
       return 0;
 
     }
-
+    
+    //OK
     virtual int saveHistory(quotek::data::cvector<quotek::core::position>& plist) {
 
-      std::ostringstream sdata;
+      std::ostringstream squery;
       string outp;
+      
+      squery << "INSERT INTO __history__ VALUES " << poslist2sql(plist) << ";"; 
 
-      sdata << "[\n";
-      sdata << "\t{ \"name\": \"__history__\",\n";
-      sdata << "\t  \"columns\" : [ \"indice\", \"epic\", \"dealid\", \"size\", \"stop\", \"limit\", \"open\", \"pnl\", \"pnl_peak\", \"open_date\", \"close_date\", \"identifier\"],\n";
-      sdata << "\t  \"points\" : [" << poslist2sql(plist) << "]\n"; 
-      sdata << "\t}\n";
-      sdata << "]";
+      pqxx::work w(*dbh);
+      pqxx::result res = w.exec(squery.str().c_str());
+      w.commit();
 
-      std::string sdata_str = sdata.str();
-
-      //outp = hhdl->post(pre_url,sdata_str);
-      //hhdl->destroy();
       return 0;
 
     }
