@@ -270,8 +270,6 @@ private:
   std::string record2sql(quotek::data::record& rec)  {
 
     std::ostringstream sqstream;
-    //HACK: there's an issue in spread values !
-    rec.spread = 0;
     sqstream << "(" << rec.timestamp << ", " << rec.value << ", " << rec.spread << ")";
 
     return sqstream.str();
