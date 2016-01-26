@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 2.6)
 
 project(quotek)
 
-SET (CMAKE_CXX_COMPILER "/usr/bin/clang++")
-SET (CMAKE_C_COMPILER "/usr/bib/clang")
+SET (CMAKE_CXX_COMPILER "/usr/bin/g++")
+SET (CMAKE_C_COMPILER "/usr/bib/gcc")
 SET (CMAKE_CXX_FLAGS "-O3 -g -std=c++11 -fPIC")
 
 add_library(
