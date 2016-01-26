@@ -30,7 +30,7 @@ function bctl_cleanup() {
 #}
 
 function bctl_cmake() {
-  cmake .
+  cmake -DCMAKE_INSTALL_PREFIX=$PREFIX .
 }
 
 function bctl_compile() {
