@@ -89,9 +89,6 @@ install (TARGETS adam DESTINATION bin)
 #install (TARGETS nntrain DESTINATION tools)
 
 install (TARGETS influxdbbe DESTINATION lib)
-
-install (FILES "install/clanglibs/libc++.so" DESTINATION lib)
-install (FILES "install/clanglibs/librt.so" DESTINATION lib)
 install (FILES "install/tools/cbackup.sh" DESTINATION tools)
 install (FILES "install/tools/cleanall.sh" DESTINATION tools)
 

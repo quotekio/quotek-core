@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.6)
 project(tests)
 
 SET (CMAKE_CXX_COMPILER             "/usr/bin/g++")
-SET (CMAKE_CXX_FLAGS                "-std=c++11 -stdlib=libc++ -fPIC")
+SET (CMAKE_CXX_FLAGS                "-std=c++11 -fPIC")
 SET (CMAKE_LINKER_FLAGS    "-rdynamic")
 
 add_definitions(-DADAM_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
