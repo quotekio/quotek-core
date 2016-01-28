@@ -208,9 +208,7 @@ public:
       
       squery << "INSERT INTO __history__ " 
       << "(timestamp,indice,epic,dealid,size,stop,\"limit\",open,pnl,pnl_peak,open_date,close_date,identifier)"
-      << "VALUES " << pos2sql(pos) << ";"; 
-
-      std::cout << squery.str() << std::endl;
+      << " VALUES " << pos2sql(pos) << ";"; 
 
       pqxx::work w(*dbh);
       pqxx::result res = w.exec(squery.str().c_str());
@@ -227,8 +225,8 @@ public:
       string outp;
       
       squery << "INSERT INTO __history__ "
-      << "(timestamp,indice,epic,dealid,size,stop,limit,open,pnl,pnl_peak,open_date,close_date,identifier)"
-      << "VALUES " << poslist2sql(plist) << ";"; 
+      << "(timestamp,indice,epic,dealid,size,stop,\"limit\",open,pnl,pnl_peak,open_date,close_date,identifier)"
+      << " VALUES " << poslist2sql(plist) << ";"; 
 
       pqxx::work w(*dbh);
       pqxx::result res = w.exec(squery.str().c_str());
@@ -295,16 +293,18 @@ private:
 
   std::string pos2sql(quotek::core::position& pos)  {
   
+    int tstamp = time(NULL);
+
     std::ostringstream sqstream;
-    sqstream << "(" << "extract(epoch from CURRENT_TIMESTAMP),"
-            << pos.asset_name << ", "
-            << "\"" << pos.asset_id << "\", "
-            << "\"" << pos.ticket_id << "\", "
+    sqstream << "(" << tstamp <<  ","
+            << "'" << pos.asset_name << "', "
+            << "'" << pos.asset_id << "', "
+            << "'" << pos.ticket_id << "', "
             << pos.size << ", " << pos.stop << ", "
             << pos.limit << ", " << pos.open << ", "
             << pos.pnl << ", " << pos.stats->pnl_peak << ", "
             << pos.open_date << ", " << pos.close_date <<  ", " 
-            << "\"" << pos.identifier << "\"" << ")";
+            << "'" << pos.identifier << "'" << ")";
 
     return sqstream.str();
 
