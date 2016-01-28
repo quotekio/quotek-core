@@ -246,6 +246,7 @@ private:
     std::ostringstream qcreate;
 
     qcreate << "CREATE TABLE IF NOT EXISTS __history__ (";
+    qcreate << "timestamp INT,";  
     qcreate << "indice VARCHAR(64),";
     qcreate << "epic VARCHAR(64),";
     qcreate << "dealid VARCHAR(64),";
@@ -289,7 +290,8 @@ private:
   std::string pos2sql(quotek::core::position& pos)  {
   
     std::ostringstream sqstream;
-    sqstream << "(" << "\"" << pos.asset_name << "\", "
+    sqstream << "(" << "extract(epoch from CURRENT_TIMESTAMP),"
+            << "\"" << pos.asset_name << "\", "
             << "\"" << pos.asset_id << "\", "
             << "\"" << pos.ticket_id << "\", "
             << pos.size << ", " << pos.stop << ", "
