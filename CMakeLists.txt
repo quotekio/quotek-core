@@ -107,5 +107,5 @@ install (DIRECTORY "install/strats" DESTINATION .)
 install (DIRECTORY "install/doc" DESTINATION .)
 
 #init script
-install (FILES "install/etc/init.d/adam" DESTINATION /etc/init.d/adam)
+install (FILES "install/etc/init.d/adam" DESTINATION /etc/init.d/)
 
