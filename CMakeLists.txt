@@ -64,6 +64,9 @@ if (INFLUXDB)
     curl
   )
 
+  install (TARGETS influxdbbe DESTINATION lib)
+
+
 endif()
 
 
@@ -79,6 +82,8 @@ if (PQXX)
     pqxx
   )  
 
+  install (TARGETS postgresqlbe DESTINATION lib)
+
 endif()
 
 
@@ -93,7 +98,6 @@ target_link_libraries(
 install (TARGETS adam DESTINATION bin)
 #install (TARGETS nntrain DESTINATION tools)
 
-install (TARGETS influxdbbe DESTINATION lib)
 install (FILES "install/tools/cbackup.sh" DESTINATION tools)
 install (FILES "install/tools/cleanall.sh" DESTINATION tools)
 
