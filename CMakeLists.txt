@@ -40,26 +40,46 @@ add_executable(
 #  src/nntrain.cpp
 #)
 
-add_library(
-       influxdbbe SHARED
-       src/lib/backends/backend.h
-       src/lib/backends/influxdb.cpp
 
-)
-
-add_library(
-      postgresqlbe SHARED
-      src/lib/backends/backend.h
-      src/lib/backends/postgresql.cpp
-)
-
-find_library (PTHREAD pthread) 
+find_library (PTHREAD pthread)
 find_library (CURL curl)
 find_library (FAAN fann)
 find_library (INFLUXDB influxdb)
 find_library (QUOTEK quotek)
 find_library (PQXX pqxx)
 
+
+if (INFLUXDB)
+
+  add_library(
+       influxdbbe SHARED
+       src/lib/backends/backend.h
+       src/lib/backends/influxdb.cpp
+  )
+
+  target_link_libraries(
+    influxdbbe
+    quotek
+    influxdb
+    curl
+  )
+
+endif()
+
+
+if (PQXX)
+  add_library(
+      postgresqlbe SHARED
+      src/lib/backends/backend.h
+      src/lib/backends/postgresql.cpp
+  )
+  target_link_libraries(
+    postgresqlbe
+    quotek
+    pqxx
+  )  
+
+endif()
 
 
 target_link_libraries(
@@ -68,21 +88,6 @@ target_link_libraries(
         pthread
         dl
 )
-
-target_link_libraries(
-  influxdbbe
-  quotek
-  influxdb
-  curl
-)
-
-target_link_libraries(
-  postgresqlbe
-  quotek
-  pqxx
-)
-
-
 
 
 install (TARGETS adam DESTINATION bin)
