@@ -34,15 +34,15 @@ function bctl_cmake() {
 }
 
 function bctl_compile() {
-  make
+  make -j3
 }
 
 function bctl_compile_all() {
   cd sdk
-  cmake . && make; make
+  cmake . && make -j3
   make install
   cd ..
-  make
+  make -j3
 }
 
 #function bctl_release() {
