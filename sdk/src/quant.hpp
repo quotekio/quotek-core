@@ -141,9 +141,28 @@ namespace quotek {
 
     } fibo_ext;
 
+    typedef struct pivot {
+      /* Pivot Point */
+      float pivot;
 
+      /* First Resistence */
+      float r1;
+      /* Second Resistence */
+      float r2;
 
+      /* Third Resistence */
+      float r3;
 
+      /* First Support */
+      float s1;
+
+      /* Second Support */
+      float s2;
+
+      /* Third Support */
+      float s3;
+
+    } pivot;
 
 
     /**

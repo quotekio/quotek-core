@@ -56,6 +56,21 @@ namespace quotek {
 
     quotek::quant::fibo_ext fibo_extension(quotek::data::records& recs);
 
+    /** pivots computes the pivot point as well as the four supports/resistances 
+        for a given history.
+        @param recs dataset to compute pivot points for.
+        @return a quotek::quant::pivot structure
+    */
+
+    quotek::quant::pivot pivots(quotek::data::records& recs);
+
+    /** same as previous, but takes (high,low,close) values instead of full 
+     *  data history for computing.
+     *  @return a quotek::quant::pivot structure
+     */
+
+    quotek::quant::pivot pivots(float high, float low, float close);
+    
 
 
   }

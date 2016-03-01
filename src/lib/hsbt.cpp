@@ -45,7 +45,10 @@ hsbt::hsbt(adamCfg* conf,
   }
 
   //loads backtest history
-  loadBacktestData_();
+  if ( loadBacktestData_() == 0 ) {
+    std::cerr << "[ERROR] No records found for backtest, quitting.." << std::endl;
+    exit(1);
+  }
 
   //initializes logger
   logger = new igmLogger();
@@ -112,8 +115,18 @@ int hsbt::loadBacktestData_() {
       std::cout << "Loaded " << backtest_inmem_records[inames[i]].size() << " Backtest records for asset " << inames[i] << std::endl; 
 
     }
+    
+    //Tests if there is data loaded
+    int has_recs = 0 ;
+    for (int i = 0;i<  backtest_inmem_records.Size(); i++  ) {
 
-  return 0;
+      if ( backtest_inmem_records[i].size() > 0 ) {
+        has_recs = 1;
+        break;
+      }
+    }
+
+    return has_recs;
 }
 
 
