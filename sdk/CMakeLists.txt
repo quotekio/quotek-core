@@ -6,44 +6,97 @@ SET (CMAKE_CXX_COMPILER "/usr/bin/g++")
 SET (CMAKE_C_COMPILER "/usr/bib/gcc")
 SET (CMAKE_CXX_FLAGS "-O3 -g -std=c++11 -fPIC")
 
-add_library(
-       quotek STATIC
-       src/alchemy.cpp
-       src/blackscholes.cpp
-       src/broker.cpp
-       src/history.cpp
-       src/http.cpp
-       src/generators.cpp
-       src/option.cpp
-       src/position.cpp
-       src/quant.cpp
-       src/record.cpp
-       src/techanalysis.cpp
-       src/timeutils.cpp
-       src/utils.cpp
-       
-       src/datasources/csv.cpp
-       src/datasources/yahoofinance.cpp
-       src/datasources/rss.cpp
-       src/datasources/twitter.cpp
-       src/datasources/quandl.cpp
-       src/datasources/etoro.cpp
-
-       src/twitcurl/base64.cpp
-       src/twitcurl/HMAC_SHA1.cpp
-       src/twitcurl/oauthlib.cpp
-       src/twitcurl/SHA1.cpp
-       src/twitcurl/twitcurl.cpp
-       src/twitcurl/urlencode.cpp
-)
+OPTION(WITH_PYTHON "Add python cross compat to library" OFF)
 
 find_library (PTHREAD pthread) 
 find_library (CURL curl) 
+
+if (WITH_PYTHON)
+
+  message("Enabling Python Extension")
+  include_directories(/usr/local/include/python2.7/)
+  include_directories(/usr/include/python2.7/)
+
+  add_library(
+         pyquotek SHARED
+         src/alchemy.cpp
+         src/blackscholes.cpp
+         src/broker.cpp
+         src/history.cpp
+         src/http.cpp
+         src/generators.cpp
+         src/option.cpp
+         src/position.cpp
+         src/quant.cpp
+         src/record.cpp
+         src/techanalysis.cpp
+         src/timeutils.cpp
+         src/utils.cpp
+         src/pyext.cpp
+         
+         src/datasources/csv.cpp
+         src/datasources/yahoofinance.cpp
+         src/datasources/rss.cpp
+         src/datasources/twitter.cpp
+         src/datasources/quandl.cpp
+         src/datasources/etoro.cpp
+
+         src/twitcurl/base64.cpp
+         src/twitcurl/HMAC_SHA1.cpp
+         src/twitcurl/oauthlib.cpp
+         src/twitcurl/SHA1.cpp
+         src/twitcurl/twitcurl.cpp
+         src/twitcurl/urlencode.cpp
+  )
+
+  set_target_properties(pyquotek PROPERTIES PREFIX "")
+ 
+  target_link_libraries(
+          pyquotek
+          pthread
+          curl
+          )
+
+
+
+endif()
+
+add_library(
+         quotek STATIC
+         src/alchemy.cpp
+         src/blackscholes.cpp
+         src/broker.cpp
+         src/history.cpp
+         src/http.cpp
+         src/generators.cpp
+         src/option.cpp
+         src/position.cpp
+         src/quant.cpp
+         src/record.cpp
+         src/techanalysis.cpp
+         src/timeutils.cpp
+         src/utils.cpp
+         
+         src/datasources/csv.cpp
+         src/datasources/yahoofinance.cpp
+         src/datasources/rss.cpp
+         src/datasources/twitter.cpp
+         src/datasources/quandl.cpp
+         src/datasources/etoro.cpp
+
+         src/twitcurl/base64.cpp
+         src/twitcurl/HMAC_SHA1.cpp
+         src/twitcurl/oauthlib.cpp
+         src/twitcurl/SHA1.cpp
+         src/twitcurl/twitcurl.cpp
+         src/twitcurl/urlencode.cpp
+)
 
 target_link_libraries(
         quotek
         pthread
         curl)
+
 
 install (TARGETS quotek DESTINATION lib)
 

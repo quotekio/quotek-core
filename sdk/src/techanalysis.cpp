@@ -73,36 +73,33 @@ namespace quotek {
       return result;
     }
 
-  }
+    quotek::quant::pivot pivots(float high, float low, float close) {
 
+      quotek::quant::pivot result;
 
-  quotek::quant::pivot pivots(float high, float low, float close) {
+      result.pivot = (high + low + close ) / 3;
+      result.s1 = 2 * result.pivot - high;
+      result.s2 = result.pivot - ( high - low );
+      result.s3 = result.pivot - 2 * (high - low);
+      
+      result.r1 = 2 * result.pivot - low;
+      result.r2 = result.pivot + (high - low);
+      result.r3 = result.pivot + 2 * (high - low);
 
-    quotek::quant::pivot result;
+      return result;
 
-    result.pivot = (high + low + close ) / 3;
-    result.s1 = 2 * result.pivot - high;
-    result.s2 = result.pivot - ( high - low );
-    result.s3 = result.pivot - 2 * (high - low);
-    
-    result.r1 = 2 * result.pivot - low;
-    result.r2 = result.pivot + (high - low);
-    result.r3 = result.pivot + 2 * (high - low);
+    }
 
-    return result;
+    quotek::quant::pivot pivots(quotek::data::records& recs) {
 
+      float high = quotek::quant::max(recs);
+      float low = quotek::quant::min(recs);
+      float close = recs[recs.size()-1].value;
 
-  }
+      return pivots(high,low,close);
+      
+    }
 
-  quotek::quant::pivot pivots(quotek::data::records& recs) {
-
-
-    float high = quotek::quant::max(recs);
-    float low = quotek::quant::min(recs);
-    float close = recs[recs.size()-1].value;
-
-    return pivots(high,low,close);
-    
   }
 
 }
