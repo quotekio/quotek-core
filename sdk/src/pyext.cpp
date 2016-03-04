@@ -6,6 +6,8 @@
 #include "techanalysis.hpp"
 #include "option.hpp"
 #include "blackscholes.hpp"
+#include "datasource.hpp"
+#include "datasources/quandl.hpp"
 
 
 typedef quotek::quant::affine lreg_s1(quotek::data::records&);
@@ -22,6 +24,7 @@ PYBIND11_PLUGIN(pyquotek) {
     pybind11::module quant_m = m.def_submodule("quant", "Quotek quantitative module");
     pybind11::module data_m = m.def_submodule("data", "Quotek data module");
     pybind11::module ta_m = m.def_submodule("ta", "Quotek Technical Analysis module");
+    pybind11::module datasources_m = m.def_submodule("datasources", "Quotek datasources module");
 
 
     //RECORD
@@ -160,5 +163,41 @@ PYBIND11_PLUGIN(pyquotek) {
       .def("price_option",&quotek::quant::blackscholes::price_option,"Computes the correct price of the option given the provided parameters.");
 
 
+    //DATASOURCE
+    py::class_<quotek::datasource::datasource> dsource(datasources_m, "Datasource");
+    dsource.def(py::init());
+    dsource.def_readwrite("source",&quotek::datasource::datasource::source);
+
+    //QUANDL
+      
+    py::class_<quotek::datasource::quandl>(datasources_m,"Quandl", dsource)
+      .def(py::init<std::string>())
+      .def("get_databases",&quotek::datasource::quandl::get_databases,"")
+      .def("get_metadata", &quotek::datasource::quandl::get_metadata,"")
+      .def("query", &quotek::datasource::quandl::query,"")
+      .def("query_prices", &quotek::datasource::quandl::query_prices,"")
+      .def("query_fullprices", &quotek::datasource::quandl::query_fullprices,"")
+      .def("get_column", &quotek::datasource::quandl::get_column,"");
+      
+
+    py::class_<quotek::datasource::quandl_meta>(datasources_m, "QuandlMeta")
+        .def(py::init())
+        .def_readwrite("id",&quotek::datasource::quandl_meta::id)
+        .def_readwrite("name",&quotek::datasource::quandl_meta::name)
+        .def_readwrite("code",&quotek::datasource::quandl_meta::code)
+        .def_readwrite("type",&quotek::datasource::quandl_meta::type)
+        .def_readwrite("description",&quotek::datasource::quandl_meta::description)
+        .def_readwrite("columns",&quotek::datasource::quandl_meta::columns)
+        .def_readwrite("frequency",&quotek::datasource::quandl_meta::frequency);
+
+
+    py::class_<quotek::datasource::quandl_db>(datasources_m, "QuandlDB")
+        .def(py::init())
+        .def_readwrite("id",&quotek::datasource::quandl_db::id)
+        .def_readwrite("name",&quotek::datasource::quandl_db::name)
+        .def_readwrite("code",&quotek::datasource::quandl_db::code)
+        .def_readwrite("description",&quotek::datasource::quandl_db::description)
+        .def_readwrite("datasets",&quotek::datasource::quandl_db::datasets);
+    
     return m.ptr();
 }
