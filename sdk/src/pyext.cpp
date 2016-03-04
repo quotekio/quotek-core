@@ -8,6 +8,7 @@
 #include "blackscholes.hpp"
 #include "datasource.hpp"
 #include "datasources/quandl.hpp"
+#include "position.hpp"
 
 
 typedef quotek::quant::affine lreg_s1(quotek::data::records&);
@@ -58,7 +59,44 @@ PYBIND11_PLUGIN(pyquotek) {
         .def_readwrite("low",&quotek::data::history::low)
         .def_readwrite("close",&quotek::data::history::close);
         
+
+    //POSITION
+
+    py::class_<quotek::core::posstats>(m, "PosStats")
+        .def(py::init())
+        .def("str",&quotek::core::posstats::str,"")
+        .def("__repr__",&quotek::core::posstats::str,"")
+        .def_readwrite("pnl_peak",&quotek::core::posstats::pnl_peak)
+        .def_readwrite("vstop_increments",&quotek::core::posstats::vstop_increments)
+        .def_readwrite("vstop_decrements",&quotek::core::posstats::vstop_decrements)
+        .def_readwrite("vlimit_increments",&quotek::core::posstats::vlimit_increments)
+        .def_readwrite("vlimit_decrements",&quotek::core::posstats::vlimit_decrements);
+
+    py::class_<quotek::core::position>(m, "Position")
+        .def(py::init())
+        .def("set_vlimit",&quotek::core::position::set_vlimit,"")
+        .def("set_vlimit",&quotek::core::position::set_vstop,"")
+        .def("get_vlimit",&quotek::core::position::get_vlimit,"")
+        .def("get_vstop",&quotek::core::position::get_vstop,"")
+        .def("vshift",&quotek::core::position::vshift,"")
+        .def("str",&quotek::core::position::str,"")
+        .def("__repr__", &quotek::core::position::str,"")
+        .def_readwrite("ticket_id",&quotek::core::position::ticket_id)
+        .def_readwrite("asset_name",&quotek::core::position::asset_name)
+        .def_readwrite("asset_id",&quotek::core::position::asset_id)
+        .def_readwrite("size",&quotek::core::position::size)
+        .def_readwrite("pnl",&quotek::core::position::pnl)
+        .def_readwrite("stop",&quotek::core::position::stop)
+        .def_readwrite("limit",&quotek::core::position::limit)
+        .def_readwrite("open_date",&quotek::core::position::open_date)
+        .def_readwrite("open_date",&quotek::core::position::close_date)
+        .def_readwrite("stats",&quotek::core::position::stats)
+        .def_readwrite("identifier",&quotek::core::position::identifier);
+
+
     //QUANT
+
+
 
     py::class_<quotek::quant::affine>(quant_m,"Affine")
         .def_readwrite("a",&quotek::quant::affine::a)
