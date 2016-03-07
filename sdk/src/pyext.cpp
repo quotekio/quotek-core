@@ -96,8 +96,6 @@ PYBIND11_PLUGIN(pyquotek) {
 
     //QUANT
 
-
-
     py::class_<quotek::quant::affine>(quant_m,"Affine")
         .def_readwrite("a",&quotek::quant::affine::a)
         .def_readwrite("b",&quotek::quant::affine::b);
@@ -237,5 +235,18 @@ PYBIND11_PLUGIN(pyquotek) {
         .def_readwrite("description",&quotek::datasource::quandl_db::description)
         .def_readwrite("datasets",&quotek::datasource::quandl_db::datasets);
     
+    // ETORO
+
+    py::class_<quotek::datasource::etoro>(datasources_m,"Etoro", dsource)
+      .def(py::init<std::string>())
+      .def("get_databases",&quotek::datasource::quandl::get_databases,"")
+      .def("get_metadata", &quotek::datasource::quandl::get_metadata,"")
+      .def("query", &quotek::datasource::quandl::query,"")
+      .def("query_prices", &quotek::datasource::quandl::query_prices,"")
+      .def("query_fullprices", &quotek::datasource::quandl::query_fullprices,"")
+      .def("get_column", &quotek::datasource::quandl::get_column,"");
+
+
+
     return m.ptr();
 }
