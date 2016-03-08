@@ -30,7 +30,11 @@ class strategyHandler {
     void setGE(genetics* ge);
     int prepareCompile();
     int preprocess();
+    int preprocess_cpp();
+    int preprocess_python();
     int compile(int);
+    int compile_python(int);
+    int compile_cpp(int);
     int dlibOpen(int);
     void* getExportFct();
     void* getHandle();
@@ -51,6 +55,7 @@ class strategyHandler {
     std::string asset_match;
     string strats_path;
     genetics* genetics_engine;
+    string language;
 
 };
 

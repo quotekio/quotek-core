@@ -27,6 +27,9 @@ std::string &ltrim(std::string &s);
 std::string &rtrim(std::string &s);
 std::string &trim(std::string &s);
 
+bool endswith(const std::string &value, const std::string &ending);
+
+
 uint64_t getMsTimeStamp();
 std::string randstring(int len);
 std::string sreplace(std::string &s,

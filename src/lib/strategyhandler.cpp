@@ -11,6 +11,15 @@ strategyHandler::strategyHandler(string stpath, string n) {
   classname = n;
   asset_match = "(.*)";
   genetics_engine = NULL;
+
+  if ( endswith(name,".py") ) {
+    this->language = "python";
+  }  
+
+  else {
+    this->language = "c++";
+  }
+
 }
 
 strategyHandler::strategyHandler(string stpath, string n, genetics* ge) {
@@ -19,6 +28,15 @@ strategyHandler::strategyHandler(string stpath, string n, genetics* ge) {
   classname = n;
   asset_match = "(.*)";
   genetics_engine = ge;
+
+  if ( endswith(name,".py") ) {
+    this->language = "python";
+  }  
+
+  else {
+    this->language = "c++";
+  }
+
 }
 
 void strategyHandler::setGE(genetics* ge) {
@@ -33,8 +51,65 @@ int strategyHandler::prepareCompile() {
   return preprocess();
 
 }
-    
+
 int strategyHandler::preprocess() {
+
+  if ( this->language == "python" ) {
+    return this->preprocess_python();
+  }
+
+  else if (this->language == "c++") {
+    return this->preprocess_cpp();
+  }
+
+}
+
+
+int strategyHandler::preprocess_python() {
+
+  std::cout << "PREPROCESSING PYTHON FILE" << std::endl; 
+
+  std::vector<std::string> lines;
+  std::string line;
+
+  ifstream fh (std::string(strats_path + "/" + name).c_str());
+  ofstream wh (std::string(strategyHandler::cpath + "/" + name + ".py").c_str());
+
+  std::regex asset_match_regex("^\\#asset_match(.*)");
+  std::regex classname_regex("^class(.*)");
+
+  while(fh.good()){
+    getline(fh,line);
+
+    lines.emplace_back(line);
+
+    if (std::regex_match(line,classname_regex) ) {
+
+      this->classname = line.replace(line.find("class"),strlen("class"),"");
+      this->classname = line.replace(line.find("(pyquotek.Strategy):"),
+                                      strlen("(pyquotek.Strategy):"),
+                                      "");
+      trim(this->classname);
+      std::cout << "Found usable class in Strategy: " << this->classname << std::endl;
+    }
+    
+
+    if (std::regex_match(line,asset_match_regex) ) {
+      
+      this->asset_match = line.replace(line.find("#asset_match"),strlen("#asset_match"),"");
+      trim(this->asset_match);
+      std::cout << "Found asset matching regex in Strategy: " << this->asset_match << std::endl;
+
+    }
+  
+  }
+
+  wh.close();
+  return 0;
+
+}
+
+int strategyHandler::preprocess_cpp() {
 
   std::vector<std::string> lines;
   std::string line;
@@ -49,6 +124,8 @@ int strategyHandler::preprocess() {
 
   std::regex macro_regex("^(\\s*)#undef(.*)", 
                          std::regex::ECMAScript|std::regex::icase );
+
+
 
   wh << "#include <quotek/quotek.hpp>\n";
   wh << "#include <unistd.h>\n";
@@ -116,7 +193,6 @@ int strategyHandler::preprocess() {
 
     }
 
-
     else if ( std::regex_match(line,ex_eval_regex) ) {
       stringstream ss;
       int period;
@@ -157,7 +233,22 @@ int strategyHandler::preprocess() {
 
 }
 
+
 int strategyHandler::compile(int iter) {
+  if (this->language == "c++") {
+    this->compile_cpp(iter);
+  }
+  else if ( this->language == "python" ) {
+    this->compile_python(iter);
+  }
+}
+
+
+int strategyHandler::compile_python(int iter) {
+  return 0;
+}
+
+int strategyHandler::compile_cpp(int iter) {
 
   ostringstream oss;
   oss << iter;

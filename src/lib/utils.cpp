@@ -29,6 +29,13 @@ std::string &trim(std::string &s) {
         return ltrim(rtrim(s));
 }
 
+bool endswith(const std::string &value, const std::string &ending) {
+    if (ending.size() > value.size()) return false;
+    return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
+}
+
+
+
 std::string &upper(std::string &s) {
         std::transform(s.begin(), s.end(),s.begin(), ::toupper);
         return s;
