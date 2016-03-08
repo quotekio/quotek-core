@@ -3,11 +3,14 @@
 
 #include "history.hpp"
 #include "quant.hpp"
+#include "strategy.hpp"
+#include "broker.hpp"
 #include "techanalysis.hpp"
 #include "option.hpp"
 #include "blackscholes.hpp"
 #include "datasource.hpp"
 #include "datasources/quandl.hpp"
+#include "datasources/etoro.hpp"
 #include "position.hpp"
 
 
@@ -94,8 +97,39 @@ PYBIND11_PLUGIN(pyquotek) {
         .def_readwrite("identifier",&quotek::core::position::identifier);
 
 
-    //QUANT
+    //STRATEGY
 
+    py::class_<strategy>(m,"Strategy")
+          .def(py::init())
+          .def("evaluate", &strategy::evaluate,"")
+          .def("tradelife", &strategy::tradelife,"")
+          .def("set_env", &strategy::set_env,"")
+          .def("order", &strategy::tradelife,"")
+          .def("log", &strategy::log,"")
+          .def("flushlogs", &strategy::flushlogs,"")
+          .def("initialize", &strategy::initialize,"")
+          .def_readwrite("state",&strategy::state)
+          .def_readwrite("value",&strategy::value)
+          .def_readwrite("spread",&strategy::spread)
+          .def_readwrite("asset_name",&strategy::asset_name)
+          .def_readwrite("identifier",&strategy::identifier)
+          .def_readwrite("t",&strategy::t)
+          .def_readwrite("recs",&strategy::recs);
+
+
+    //BROKER
+    py::class_<quotek::broker>(m,"Broker")
+          .def(py::init<strategy*>())
+          .def("buy", &quotek::broker::buy,"")
+          .def("sell", &quotek::broker::sell,"")
+          .def("buy_hedged", &quotek::broker::buy_hedged,"")
+          .def("buy_hedged_asym", &quotek::broker::buy_hedged_asym,"")
+          .def("smartbuy", &quotek::broker::smartbuy,"")
+          .def("smartsell", &quotek::broker::smartsell,"")
+          .def("close_position", &quotek::broker::close_position,"");
+        
+
+    //QUANT
     py::class_<quotek::quant::affine>(quant_m,"Affine")
         .def_readwrite("a",&quotek::quant::affine::a)
         .def_readwrite("b",&quotek::quant::affine::b);
@@ -237,16 +271,23 @@ PYBIND11_PLUGIN(pyquotek) {
     
     // ETORO
 
+    py::class_<quotek::datasource::eto_user>(datasources_m,"EtoUser")
+      .def(py::init())
+      .def_readwrite("username",&quotek::datasource::eto_user::username)
+      .def_readwrite("max_drawdown",&quotek::datasource::eto_user::max_drawdown)
+      .def_readwrite("copiers",&quotek::datasource::eto_user::copiers)
+      .def_readwrite("gain",&quotek::datasource::eto_user::gain)
+      .def_readwrite("profitable_weeks",&quotek::datasource::eto_user::profitable_weeks)
+      .def_readwrite("rank",&quotek::datasource::eto_user::rank);
+
+
     py::class_<quotek::datasource::etoro>(datasources_m,"Etoro", dsource)
-      .def(py::init<std::string>())
-      .def("get_databases",&quotek::datasource::quandl::get_databases,"")
-      .def("get_metadata", &quotek::datasource::quandl::get_metadata,"")
-      .def("query", &quotek::datasource::quandl::query,"")
-      .def("query_prices", &quotek::datasource::quandl::query_prices,"")
-      .def("query_fullprices", &quotek::datasource::quandl::query_fullprices,"")
-      .def("get_column", &quotek::datasource::quandl::get_column,"");
-
-
-
+      .def(py::init())
+      .def("ranking",&quotek::datasource::etoro::ranking,"")
+      .def("top",&quotek::datasource::etoro::top,"")
+      .def("positions",&quotek::datasource::etoro::positions,"")
+      .def("symbols",&quotek::datasource::etoro::symbols,"")
+      .def("insight",&quotek::datasource::etoro::insight,"");
+      
     return m.ptr();
 }
