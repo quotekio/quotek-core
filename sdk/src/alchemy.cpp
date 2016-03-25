@@ -1,6 +1,6 @@
 /*
-Quotek Strategies SDK 2.0
-Copyright 2013-2015 Quotek SAS
+Quotek Strategies SDK 2.3
+Copyright 2013-2016 Quotek SAS
 http://www.quotek.io
 */
 
@@ -11,7 +11,7 @@ http://www.quotek.io
 
 namespace quotek {
 
-  namespace ml {
+  namespace nlp {
 
         
         alchemy::alchemy(std::string key, std::string endpoint) {
@@ -23,13 +23,13 @@ namespace quotek {
 
         }
 
-        quotek::ml::sentiment alchemy::sentiment(std::string payload, 
+        quotek::nlp::sentiment alchemy::sentiment(std::string payload, 
                                        std::string target, 
                                        std::string format) {
 
           std::string data = this->query("GetTextSentiment", payload , format);
 
-          quotek::ml::sentiment s1;
+          quotek::nlp::sentiment s1;
           s1.score = 0;
           s1.error = false;
           s1.error_message = "";
@@ -89,10 +89,10 @@ namespace quotek {
           
         }
 
-        std::vector<quotek::ml::relation> alchemy::relations(std::string payload, 
+        std::vector<quotek::nlp::relation> alchemy::relations(std::string payload, 
                                                              std::string format) {
 
-          std::vector<quotek::ml::relation> result;
+          std::vector<quotek::nlp::relation> result;
           std::string data = this->query("GetRelations",payload,format);
 
           rapidjson::Document d;
@@ -101,7 +101,7 @@ namespace quotek {
           if (d["relations"].IsArray()) {
             for (int i=0;i<d["relations"].Size();i++) {
 
-              quotek::ml::relation r0;
+              quotek::nlp::relation r0;
 
               r0.sentence = d["relations"][i]["sentence"].GetString();
               r0.subject = d["relations"][i]["subject"]["text"].GetString();
@@ -126,10 +126,10 @@ namespace quotek {
         }
 
 
-        std::vector<quotek::ml::category> alchemy::taxonomy(std::string payload,
+        std::vector<quotek::nlp::category> alchemy::taxonomy(std::string payload,
                                                    std::string format) {
 
-          std::vector<quotek::ml::category> result;
+          std::vector<quotek::nlp::category> result;
           std::string data = this->query("GetRankedTaxonomy",payload,format);
 
           rapidjson::Document d;
@@ -139,7 +139,7 @@ namespace quotek {
 
             for (int i=0;i<d["taxonomy"].Size();i++) {
 
-              quotek::ml::category cat0;
+              quotek::nlp::category cat0;
               cat0.name = d["taxonomy"][i]["label"].GetString()  ;
               std::string score_str = d["taxonomy"][i]["score"].GetString();
               cat0.score = atof(score_str.c_str()) ;

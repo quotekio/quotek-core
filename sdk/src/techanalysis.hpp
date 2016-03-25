@@ -1,6 +1,6 @@
 /*
-Quotek Strategies SDK 2.0
-Copyright 2013-2015 Quotek SAS 
+Quotek Strategies SDK 2.3
+Copyright 2013-2016 Quotek SAS 
 http://www.quotek.io
 */
 

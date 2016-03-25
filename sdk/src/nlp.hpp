@@ -1,19 +1,19 @@
 /*
-Quotek Strategies SDK 2.0
-Copyright 2013-2015 Quotek SAS
+Quotek Strategies SDK 2.3
+Copyright 2013-2016 Quotek SAS
 http://www.quotek.io
 */
 
-#ifndef relation_HPP
-#define relation_HPP
+#ifndef NLP_HPP
+#define NLP_HPP
 
 #include <string>
 
 namespace quotek {
 
-  namespace ml {
+  namespace nlp {
   
-
+    
     /** action struct is meant to store detected action for a sentence. Action is composed of 3 components,
      text (verb) , tense, and negated (if verb is used in its negative form). */
     typedef struct action {
@@ -39,7 +39,7 @@ namespace quotek {
       /** Tells who/what is the subject of the sentence. */
       std::string subject;
       /** Tells what and kind of action is performed in sentence. */
-      quotek::ml::action action;
+      quotek::nlp::action action;
       /** Tells on what/who the action is performed. */
       std::string object;
 

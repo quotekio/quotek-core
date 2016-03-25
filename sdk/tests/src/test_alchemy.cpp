@@ -17,12 +17,12 @@ std::string es_corpus = "El coordinador general de Convergencia mantiene que la 
 std::string taxo_corpus = "Islamic State victories against the Taliban have not weakened the overall insurgency, but have mostly inflicted more chaos and misery upon Afghan civilians.";
 
 
-void test_sentiment(quotek::ml::alchemy& ac) {
+void test_sentiment(quotek::nlp::alchemy& ac) {
   
   extern std::string sent_pos;
   extern std::string sent_neg;
   
-  quotek::ml::sentiment s1 = ac.sentiment(sent_pos,"","text");
+  quotek::nlp::sentiment s1 = ac.sentiment(sent_pos,"","text");
 
   assert(s1.score > 0);
   assert(s1.sentimentstr == "positive");
@@ -36,9 +36,9 @@ void test_sentiment(quotek::ml::alchemy& ac) {
 
 }
 
-void test_relations(quotek::ml::alchemy& ac) {
+void test_relations(quotek::nlp::alchemy& ac) {
 
-  std::vector<quotek::ml::relation> rels = ac.relations(sent_pos,"text");
+  std::vector<quotek::nlp::relation> rels = ac.relations(sent_pos,"text");
 
   assert(rels.size() == 3) ;
 
@@ -56,17 +56,17 @@ void test_relations(quotek::ml::alchemy& ac) {
 }
 
 
-void test_taxonomy(quotek::ml::alchemy& ac) {
+void test_taxonomy(quotek::nlp::alchemy& ac) {
 
   extern std::string taxo_corpus;
-  std::vector<quotek::ml::category> cats = ac.taxonomy(taxo_corpus,"text");
+  std::vector<quotek::nlp::category> cats = ac.taxonomy(taxo_corpus,"text");
   assert(cats.size() > 0);
   assert(cats[0].name == "/law, govt and politics/government");
 
 }
 
 
-void test_language(quotek::ml::alchemy& ac) {
+void test_language(quotek::nlp::alchemy& ac) {
 
   extern std::string sent_pos;
   std::string lang = ac.language(sent_pos, "text");
@@ -80,7 +80,7 @@ void test_language(quotek::ml::alchemy& ac) {
 }
 
 
-void test_raw(quotek::ml::alchemy& ac) {
+void test_raw(quotek::nlp::alchemy& ac) {
 
   extern std::string sent_pos;
 
@@ -98,7 +98,7 @@ void test_raw(quotek::ml::alchemy& ac) {
 
 int main(int argc, char** argv) {
 
-  quotek::ml::alchemy ac(argv[1],"http://access.alchemyapi.com");
+  quotek::nlp::alchemy ac(argv[1],"http://access.alchemyapi.com");
 
   test_sentiment(ac); 
   test_language(ac);
