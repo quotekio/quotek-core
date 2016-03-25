@@ -24,6 +24,7 @@ if (WITH_PYTHON)
          src/broker.cpp
          src/history.cpp
          src/http.cpp
+         src/ml.cpp
          src/generators.cpp
          src/option.cpp
          src/position.cpp
@@ -68,6 +69,7 @@ add_library(
          src/broker.cpp
          src/history.cpp
          src/http.cpp
+         src/ml.cpp
          src/generators.cpp
          src/option.cpp
          src/position.cpp
@@ -76,7 +78,7 @@ add_library(
          src/techanalysis.cpp
          src/timeutils.cpp
          src/utils.cpp
-         
+
          src/datasources/csv.cpp
          src/datasources/yahoofinance.cpp
          src/datasources/rss.cpp
@@ -112,7 +114,7 @@ install (FILES "src/datasource.hpp" DESTINATION include/quotek)
 install (FILES "src/generators.hpp" DESTINATION include/quotek)
 install (FILES "src/history.hpp" DESTINATION include/quotek)
 install (FILES "src/http.hpp" DESTINATION include/quotek)
-install (FILES "src/marray.hpp" DESTINATION include/quotek)
+
 install (FILES "src/nlp.hpp" DESTINATION include/quotek)
 install (FILES "src/news.hpp" DESTINATION include/quotek)
 install (FILES "src/option.hpp" DESTINATION include/quotek)
