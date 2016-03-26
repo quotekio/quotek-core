@@ -26,7 +26,7 @@ namespace quotek {
 
     typedef MatrixXd dataset;
 
-    dataset& normalize(dataset& data);
+    dataset& normalize(dataset& X);
 
 
   }

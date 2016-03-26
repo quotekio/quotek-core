@@ -9,12 +9,31 @@ namespace quotek {
 
   namespace ml {
     
-        dataset& normalize(dataset& data) {
+        dataset& normalize(dataset& X) {
 
-          data = data - data.colwise().mean(); 
+          RowVectorXd mean = X.colwise().mean();
+          RowVectorXd std = ((X.rowwise() - mean).array().square().colwise().sum() / (X.rows() - 1)).sqrt();
+          
+          X = (X.rowwise() - mean).array().rowwise() / std.array();
 
-          return data;
+          return X;
 
+        }
+
+
+
+        dataset pca(dataset& X, int feats) {
+
+          dataset result;
+
+          MatrixXd centered = X.rowwise() - X.colwise().mean();
+          MatrixXd cov = centered.adjoint() * centered;
+
+          SelfAdjointEigenSolver<MatrixXd> eig(cov);
+
+          
+
+          return result;
         }
 
   }
