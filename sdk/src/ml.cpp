@@ -9,6 +9,14 @@ namespace quotek {
 
   namespace ml {
     
+        dataset& normalize(dataset& data) {
+
+          data = data - data.colwise().mean(); 
+
+          return data;
+
+        }
+
   }
 }
 
