@@ -31,10 +31,18 @@ namespace quotek {
 
           SelfAdjointEigenSolver<MatrixXd> eig(cov);
 
-          
+          std::cout << eig.eigenvectors().rightCols(feats) << std::endl;
 
           return result;
         }
+
+
+        dataset kmeans(dataset& X, int nb_clusters) {
+
+          
+
+        }
+
 
   }
 }

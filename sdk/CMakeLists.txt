@@ -24,6 +24,7 @@ if (WITH_PYTHON)
          src/broker.cpp
          src/history.cpp
          src/http.cpp
+         src/linearregression.cpp
          src/ml.cpp
          src/generators.cpp
          src/option.cpp
@@ -69,6 +70,7 @@ add_library(
          src/broker.cpp
          src/history.cpp
          src/http.cpp
+         src/linearregression.cpp
          src/ml.cpp
          src/generators.cpp
          src/option.cpp
