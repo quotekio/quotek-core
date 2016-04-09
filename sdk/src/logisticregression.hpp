@@ -3,8 +3,8 @@ Quotek Strategies SDK 2.3
 Copyright 2013-2016 Quotek SAS
 */
 
-#ifndef LREG_HPP
-#define LREG_HPP
+#ifndef LOREG_HPP
+#define LOREG_HPP
 
 #include <iostream>
 #include "ml.hpp"
@@ -15,31 +15,31 @@ namespace quotek {
   namespace ml {
     
     /**
-     * The linearRegressions class allows to perform linear regression learning 
+     * The logisticRegression class allows to perform logistic regression learning 
      * algorithms on some datasets. */
 
-    class linearRegression {
+    class logisticRegression {
 
       public:
 
         /** Class simplest constructor */
-        linearRegression();
+        logisticRegression();
 
         /** Class constructor 2
          *  @param degree: Number of degrees of the expected model curve.
          */
 
-        linearRegression(int degree);
+        logisticRegression(int degree);
 
          /** Class constructor 3
          *  @param degree Number of degrees of the expected model curve.
          *  @param regularize Tells if polynomial model must be regularized to avoid overfitting.
          */
          
-        linearRegression(int degree, bool regularize);
+        logisticRegression(int degree, bool regularize);
 
         /** Object Destructor */
-        ~linearRegression();
+        ~logisticRegression();
 
         /** train takes a dataset and creates a fitting model according to the provided data.
          *  Note: it assusmes that the last column of the dataset stores the expected results (y).
@@ -82,21 +82,24 @@ namespace quotek {
     };
 
      template<typename T>
-     class lr_prob : public cppoptlib::Problem<T> {
+     class lor_prob : public cppoptlib::Problem<T> {
         const cppoptlib::Matrix<T> X;
         const cppoptlib::Vector<T> y;
         const cppoptlib::Matrix<T> XX;
 
       public:
-        lr_prob(const cppoptlib::Matrix<T> &X_, const cppoptlib::Vector<T> y_) : X(X_), y(y_), XX(X_.transpose()*X_) {}
+        
+        lor_prob(const cppoptlib::Matrix<T> &X_, const cppoptlib::Vector<T> y_) : X(X_), y(y_), XX(X_.transpose()*X_) {}
 
         T value(const cppoptlib::Vector<T> &beta) {
-            return 0.5*(X*beta-y).squaredNorm();
-        }
+                return (1.0/(1.0 + exp(-(X*beta).array())) - y.array()).matrix().squaredNorm();
+            }
 
         void gradient(const cppoptlib::Vector<T> &beta, cppoptlib::Vector<T> &grad) {
-            grad = XX*beta - X.transpose()*y;
+                const cppoptlib::Vector<T> p = 1.0/(1.0 + exp(-(X*beta).array()));
+                grad = X.transpose()*(p-y);
         }
+
      };
 
   }

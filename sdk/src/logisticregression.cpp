@@ -3,7 +3,7 @@ Quotek Strategies SDK 2.3
 Copyright 2013-2016 Quotek SAS
 */
 
-#include "linearregression.hpp"
+#include "logisticregression.hpp"
 using namespace Eigen;
 
 namespace quotek {
@@ -12,28 +12,28 @@ namespace quotek {
     
 
   
-    linearRegression::linearRegression() {
+    logisticRegression::logisticRegression() {
       this->degree = 1;
       this->regularize = false;
 
     }
 
-    linearRegression::linearRegression(int degree) {
+    logisticRegression::logisticRegression(int degree) {
       this->degree = degree;
       this->regularize = false;
     }
 
        
-    linearRegression::linearRegression(int degree, bool regularize) {
+    logisticRegression::logisticRegression(int degree, bool regularize) {
       this->degree = degree;
       this->regularize = regularize;
     }
 
-    linearRegression::~linearRegression() {
+    logisticRegression::~logisticRegression() {
 
     }
   
-    int linearRegression::train(dataset& X){
+    int logisticRegression::train(dataset& X){
 
       //extracts the last columns: results
       dvector y;
@@ -46,10 +46,10 @@ namespace quotek {
     }
 
 
-    int linearRegression::train(dataset& X, dvector& y) {
+    int logisticRegression::train(dataset& X, dvector& y) {
 
       cppoptlib::BfgsSolver<double> solver;
-      lr_prob<double> f(X, y);
+      lor_prob<double> f(X, y);
       cppoptlib::Vector<double> beta = cppoptlib::Vector<double>::Random( X.cols() );
 
       solver.minimize(f, beta);
@@ -57,11 +57,11 @@ namespace quotek {
 
     }
 
-    int linearRegression::predict(dataset& X, std::vector<double>& y){
+    int logisticRegression::predict(dataset& X, std::vector<double>& y){
         return 0;
     }
 
-    double linearRegression::predict(dataset& data){
+    double logisticRegression::predict(dataset& data){
         return 0.0;
     }
 

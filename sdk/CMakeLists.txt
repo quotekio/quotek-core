@@ -25,7 +25,9 @@ if (WITH_PYTHON)
          src/history.cpp
          src/http.cpp
          src/linearregression.cpp
+         src/logisticregression.cpp
          src/ml.cpp
+         src/matrixutils.cpp
          src/generators.cpp
          src/option.cpp
          src/position.cpp
@@ -71,7 +73,9 @@ add_library(
          src/history.cpp
          src/http.cpp
          src/linearregression.cpp
+         src/logisticregression.cpp
          src/ml.cpp
+         src/matrixutils.cpp
          src/generators.cpp
          src/option.cpp
          src/position.cpp
@@ -116,6 +120,12 @@ install (FILES "src/datasource.hpp" DESTINATION include/quotek)
 install (FILES "src/generators.hpp" DESTINATION include/quotek)
 install (FILES "src/history.hpp" DESTINATION include/quotek)
 install (FILES "src/http.hpp" DESTINATION include/quotek)
+
+install (FILES "src/linearregression.hpp" DESTINATION include/quotek)
+install (FILES "src/logisticregression.hpp" DESTINATION include/quotek)
+
+install (FILES "src/matrixutils.hpp" DESTINATION include/quotek)
+install (FILES "src/ml.hpp" DESTINATION include/quotek)
 
 install (FILES "src/nlp.hpp" DESTINATION include/quotek)
 install (FILES "src/news.hpp" DESTINATION include/quotek)
