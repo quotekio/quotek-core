@@ -19,14 +19,16 @@
 class networkSession {
 
   public:
-  	networkSession(int);
+  	networkSession(std::string client_ip, int snum);
     int send_data(std::string);
     std::string recv_data();
     void close_connection();
     bool isAlive();
+    std::string get_client_ip();
   private:
     int socknum;
     bool alive;
+    std::string client_ip;
 
 };
 

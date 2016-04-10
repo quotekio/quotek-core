@@ -1,7 +1,9 @@
 #include "aep.h"
 #include <quotek/core.hpp>
 
-std::string aep_answer(std::string data,tsEngine* t0) {
+std::map<std::string, ws_token> ws_tokens_list;
+
+std::string aep_answer(networkSession* nsession, std::string data,tsEngine* t0) {
 
   //std::cout << "DATA:" << data << std::endl;
   
@@ -25,6 +27,10 @@ std::string aep_answer(std::string data,tsEngine* t0) {
 
   else if (data == "version\r\n") {
     res = aep_version(t0);
+  }
+
+  else if (data == "wstoken\r\n" ) {
+    res = aep_wstoken(nsession, t0);
   }
 
   else {
@@ -138,6 +144,15 @@ std::string aep_order(tsEngine* t0, std::vector<string> args) {
 
 }
 
+std::string aep_wstoken(networkSession* nsession, tsEngine* t0) {
+
+  
+
+  return "";
+
+}
+
+
 std::string aep_poslist(tsEngine* t0) {
 
   moneyManager* mm = t0->getMoneyManager();
@@ -227,7 +242,7 @@ void* aep_handler(void* ptr) {
 
     std::string data = nsession->recv_data();
     //std::cout << "RECEIVED_DATA:" << data << endl;
-    std::string answer = aep_answer(data,t0);
+    std::string answer = aep_answer(nsession, data, t0);
 
     if (answer != "") {
       nsession->send_data(answer + "\r\n\r\n");

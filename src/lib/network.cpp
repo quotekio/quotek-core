@@ -1,6 +1,7 @@
 #include "network.h"
 
-networkSession::networkSession(int snum) {
+networkSession::networkSession(std::string client_ip, int snum) {
+  this->client_ip = client_ip;
   socknum = snum;
   alive = true;
 }
@@ -9,6 +10,9 @@ bool networkSession::isAlive() {
   return alive;
 }
 
+std::string networkSession::get_client_ip() {
+  return client_ip;
+}
 
 int networkSession::send_data(std::string msg) {
 
@@ -99,7 +103,13 @@ networkSession* network::server_accept() {
 
   else {
       //std::cout << "NEW CONN ACCEPTED !" << std::endl;
-      networkSession* nsession = new networkSession(sock_id);
+
+      struct in_addr ipAddr = peer_addr.sin_addr;
+      char str[INET_ADDRSTRLEN];
+      inet_ntop( AF_INET, &ipAddr, str, INET_ADDRSTRLEN );
+      
+
+      networkSession* nsession = new networkSession(str, sock_id);
       return nsession;
   }
 
