@@ -19,7 +19,16 @@ function bctl_cleanup() {
   
   rm install/compile/headers/*.h
 
+  sdk_cleanup
+
 }
+
+function sdk_cleanup() {
+  cd sdk
+  ./clean.sh
+  cd ..
+}
+
 
 #function bctl_package_SDK() {
 #

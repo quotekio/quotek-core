@@ -32,6 +32,8 @@ add_executable(
   src/lib/network.cpp
   src/lib/aep.cpp
   src/lib/narrays.cpp
+  src/lib/aep_ws.cpp
+
 )
 
 
