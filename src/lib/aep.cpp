@@ -74,10 +74,9 @@ std::string aep_corestats(tsEngine* t0) {
 
   ret = "{";
   ret += "\"unrealized_pnl\":\"" + float2string(mm->getUnrealizedPNL())  + "\",";
-  ret += "\"nbpos\":\"" + int2string( mm->getPositions().size() ) + "\",";
-  ret += "\"uptime\":\"" + int2string( t0->getUptime() ) + "\"";
+  ret += "\"nbpos\":\"" + int2string( mm->getPositions().size() ) + "\"";
   ret += "}"; 
-
+  
   return ret;
 }
 

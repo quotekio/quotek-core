@@ -192,6 +192,35 @@ create_be* load_backend(string bename) {
 }
 
 
+void aep_loop(std::string laddr, int port) {
+  
+  network* net = new network();
+  net->server(laddr,port);    
+ 
+  networkSession* nsession;
+
+  while (1) {
+
+    nsession = net->server_accept();
+    if ( nsession != NULL ) {
+      pthread_t cth;
+      int presult;
+      aep_handle_io aio;
+      if (tse != NULL) aio.t0 = tse;
+      else aio.t0 = bte;
+        
+      aio.nsession = nsession;
+      if ((presult = pthread_create(&cth,NULL,aep_handler,(void*)&aio)) == 0) {
+        pthread_detach(cth);
+      }
+      else {
+        cerr << "* ERROR: Cannot create Additional Thread: error code " << presult << endl;
+        nsession->close_connection();
+      }
+    }
+  }
+}
+
 
 int main(int argc,char** argv) {
 
@@ -366,45 +395,78 @@ int main(int argc,char** argv) {
 
   aep_params* aepp = c->getAEPP();
 
-  //if AEP, wait for incoming connections
+  //if AEP, we start service + attached Websocket !
   if (aepp->enable) {
 
-    network* net = new network();
-    net->server(aepp->listen_addr,aepp->listen_port);    
- 
-    networkSession* nsession;
+    std::thread th_aep_s1(aep_loop, aepp->listen_addr, aepp->listen_port );
+    aep_ws_server ws1(aepp->listen_port + 1);
 
-    while (1) {
+    std::thread th_aep_ws1 ( [&ws1] { ws1.run(); } );
+    
+    //Websocket broadcasting routine
+    std::thread th_ws_bcast ( [&ws1, &tse] {
 
-      nsession = net->server_accept();
-      if ( nsession != NULL ) {
-        pthread_t cth;
-        int presult;
-        aep_handle_io aio;
-        if (tse != NULL) aio.t0 = tse;
-        else aio.t0 = bte;
-        
-        aio.nsession = nsession;
-        if ((presult = pthread_create(&cth,NULL,aep_handler,(void*)&aio)) == 0) {
-          pthread_detach(cth);
+      std::string ws_plist = "";
+      std::string ws_prev_plist = "";
+
+      std::string ws_logs = "";
+      std::string ws_prev_logs = "";
+
+      std::string ws_cstats = "";
+      std::string ws_prev_cstats = "";
+
+      std::string ws_algos = "";
+      std::string ws_prev_algos = "";
+
+      while(1) {
+
+        ws_plist = aep_poslist(tse);
+
+        /*Opti à faire içi 
+        (resend complet des 100 dernieres lignes en cas de change.) */
+
+        ws_logs = aep_lastlogs(tse,100);
+
+        ws_cstats = aep_corestats(tse);
+
+        ws_algos = aep_algos(tse);
+
+        if ( ws_prev_plist != ws_plist) {
+          ws1.broadcast("poslist", ws_plist);
+          ws_prev_plist = ws_plist;  
         }
-        else {
-          cerr << "* ERROR: Cannot create Additional Thread: error code " << presult << endl;
-          nsession->close_connection();
-        }
         
+        if ( ws_prev_logs != ws_logs  ) {
+          ws1.broadcast("lastlogs", ws_logs);
+          ws_prev_logs = ws_logs;
+        }
+
+        if ( ws_cstats != ws_prev_cstats ) {
+          ws1.broadcast("corestats", ws_cstats);
+          ws_prev_cstats = ws_cstats;
+        }
+
+        if (ws_algos != ws_prev_algos) {
+          ws1.broadcast("algos", ws_algos);
+          ws_prev_algos = ws_algos;
+        }
+
+        usleep(500000);
 
       }
-    }
-  }
-
-
-  //else, keep things as usual
-  else {
-
+    });
+    
     while(1) {
-       sleep(2);
+      sleep(2);
     }
 
   }
+
+  else {
+    while(1) {
+      sleep(2);
+    }
+  }
+
 }
+

@@ -18,6 +18,7 @@
 #include "lib/genetics.h"
 #include "lib/network.h"
 #include "lib/aep.h"
+#include "lib/aep_ws.hpp"
 
 #include "lib/constants.h"
 
