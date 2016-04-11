@@ -26,6 +26,7 @@ class aep_ws_server {
     void on_close(connection_hdl hdl);
     void broadcast(std::string buffname, std::string inp);
     void run();
+    void stop();
 
   private:
     typedef std::set<connection_hdl,std::owner_less<connection_hdl>> con_list;

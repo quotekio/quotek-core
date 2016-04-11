@@ -4,7 +4,6 @@ tsEngine* tse;
 hsbt* bte;
 int so_iter = 0;
 
-
 void init_signals(struct sigaction* sigact){
 
   cout << "Initializing signals.." << endl;
@@ -32,9 +31,14 @@ void init_signals(struct sigaction* sigact){
 
 void signal_callback_handler(int signum) {
   
+
   if (signum == SIGINT) {
+       std::cout << "Gracefully Closing.." << std::endl;
+       
        exit(signum);
   }
+
+  
 
   else if (signum == SIGHUP && tse != NULL) {
 

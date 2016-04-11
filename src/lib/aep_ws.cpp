@@ -3,9 +3,12 @@
 aep_ws_server::aep_ws_server(uint16_t port) {
 
         this->port = port;
-        m_server.init_asio();       
+        m_server.init_asio();
+        m_server.set_reuse_addr(true);
+        
         m_server.set_open_handler(bind(&aep_ws_server::on_open,this, std::placeholders::_1));
         m_server.set_close_handler(bind(&aep_ws_server::on_close,this, std::placeholders::_1));
+
 
 }
 
@@ -58,4 +61,8 @@ void aep_ws_server::run() {
 	m_server.start_accept();
 	m_server.run();
 
+}
+
+void aep_ws_server::stop() {
+  m_server.stop();
 }
