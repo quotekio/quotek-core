@@ -36,4 +36,4 @@ create_be* load_backend(string);
 void panic(const char *fmt, ...);
 void init_signals(struct sigaction*);
 void signal_callback_handler(int);
-void init_finalize(adamCfg* c);
+void init_finalize(adamCfg* c, aep_ws_server* ws1);

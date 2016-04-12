@@ -536,8 +536,11 @@ tradestats hsbt::compute_tradestats() {
     }
   }
 
-  result.max_drawdown = cmax - cmin ;
-  result.profit_factor = total_gains / fabs(total_losses);
+  //computed values are significant only if trades occured !
+  if (positions_history.size() > 0) {
+    result.max_drawdown = cmax - cmin ;
+    result.profit_factor = total_gains / fabs(total_losses);
+  }
 
   return result;
 
@@ -554,7 +557,7 @@ std::string hsbt::snapshot() {
 
   ss << "{\"progress\":" << "\"" << backtest_progress << "\",";
   ss << "{\"tradestats\":" << tradestats2json(ts1);
-  
+
   ss << "}";  
 
 

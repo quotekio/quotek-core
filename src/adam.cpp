@@ -486,11 +486,11 @@ int main(int argc,char** argv) {
     }
   }
 
-  init_finalize(c);
+  init_finalize(c, ws1);
 
 }
 
-void init_finalize(adamCfg* c) {
+void init_finalize(adamCfg* c, aep_ws_server* ws1) {
 
   adamGeneticsResult* gres;
   adamresult* res;
@@ -510,6 +510,10 @@ void init_finalize(adamCfg* c) {
     if ( c->getBTResultFile() != "" ) {
         res->saveToFile(c->getBTResultFile());
     }
+
+    //we send last snap to AEP/WS
+    if ( ws1 != nullptr ) ws1->broadcast("btsnap", aep_btsnap(bte) );
+
     if (c->getBTExit()) exit(0);
   }
 
@@ -519,6 +523,10 @@ void init_finalize(adamCfg* c) {
     if ( c->getBTResultFile() != "" ) {
         gres->saveToFile(c->getBTResultFile());
     } 
+
+    //we send last snap to AEP/WS
+    if ( ws1 != nullptr ) ws1->broadcast("btsnap", aep_btsnap(bte) );
+
     if (c->getBTExit()) exit(0);
   }
 
