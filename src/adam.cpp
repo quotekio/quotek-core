@@ -34,7 +34,7 @@ void signal_callback_handler(int signum) {
 
   if (signum == SIGINT) {
        std::cout << "Gracefully Closing.." << std::endl;
-       
+
        exit(signum);
   }
 
@@ -226,6 +226,75 @@ void aep_loop(std::string laddr, int port) {
 }
 
 
+void ws_broadcast_real(tsEngine* tse, aep_ws_server* ws1 ) {
+
+  std::string ws_plist = "";
+  std::string ws_prev_plist = "";
+
+  std::string ws_logs = "";
+  std::string ws_prev_logs = "";
+
+  std::string ws_cstats = "";
+  std::string ws_prev_cstats = "";
+
+  std::string ws_algos = "";
+  std::string ws_prev_algos = "";
+
+  while(1) {
+
+    ws_plist = aep_poslist(tse);
+
+    /*Opti à faire içi 
+    (resend complet des 100 dernieres lignes en cas de change.) */
+
+    ws_logs = aep_lastlogs(tse,100);
+
+    ws_cstats = aep_corestats(tse);
+
+    ws_algos = aep_algos(tse);
+
+    if ( ws_prev_plist != ws_plist) {
+      ws1->broadcast("poslist", ws_plist);
+      ws_prev_plist = ws_plist;  
+    }
+    
+    if ( ws_prev_logs != ws_logs  ) {
+      ws1->broadcast("lastlogs", ws_logs);
+      ws_prev_logs = ws_logs;
+    }
+
+    if ( ws_cstats != ws_prev_cstats ) {
+      ws1->broadcast("corestats", ws_cstats);
+      ws_prev_cstats = ws_cstats;
+    }
+
+    if (ws_algos != ws_prev_algos) {
+      ws1->broadcast("algos", ws_algos);
+      ws_prev_algos = ws_algos;
+    }
+
+    usleep(500000);
+
+  }
+}
+
+void ws_broadcast_bt(hsbt* bte,aep_ws_server* ws1) {
+
+  while(1) {
+
+    std::string btsnap = aep_btsnap(bte);
+
+    ws1->broadcast("btsnap", btsnap);
+    usleep(500000);
+
+  }
+
+
+
+}
+
+
+
 int main(int argc,char** argv) {
 
   extern tsEngine* t;
@@ -404,61 +473,16 @@ int main(int argc,char** argv) {
 
     std::thread th_aep_s1(aep_loop, aepp->listen_addr, aepp->listen_port );
     aep_ws_server ws1(aepp->listen_port + 1);
-
     std::thread th_aep_ws1 ( [&ws1] { ws1.run(); } );
+
+    if ( c->getMode() == ADAM_MODE_REAL) {
+      ws_broadcast_real(tse,&ws1);
+    }
+
+    else if (c->getMode() == ADAM_MODE_BACKTEST || c->getMode() == ADAM_MODE_GENETICS) {
+      ws_broadcast_bt(bte,&ws1);
+    }
     
-    //Websocket broadcasting routine
-    std::thread th_ws_bcast ( [&ws1, &tse] {
-
-      std::string ws_plist = "";
-      std::string ws_prev_plist = "";
-
-      std::string ws_logs = "";
-      std::string ws_prev_logs = "";
-
-      std::string ws_cstats = "";
-      std::string ws_prev_cstats = "";
-
-      std::string ws_algos = "";
-      std::string ws_prev_algos = "";
-
-      while(1) {
-
-        ws_plist = aep_poslist(tse);
-
-        /*Opti à faire içi 
-        (resend complet des 100 dernieres lignes en cas de change.) */
-
-        ws_logs = aep_lastlogs(tse,100);
-
-        ws_cstats = aep_corestats(tse);
-
-        ws_algos = aep_algos(tse);
-
-        if ( ws_prev_plist != ws_plist) {
-          ws1.broadcast("poslist", ws_plist);
-          ws_prev_plist = ws_plist;  
-        }
-        
-        if ( ws_prev_logs != ws_logs  ) {
-          ws1.broadcast("lastlogs", ws_logs);
-          ws_prev_logs = ws_logs;
-        }
-
-        if ( ws_cstats != ws_prev_cstats ) {
-          ws1.broadcast("corestats", ws_cstats);
-          ws_prev_cstats = ws_cstats;
-        }
-
-        if (ws_algos != ws_prev_algos) {
-          ws1.broadcast("algos", ws_algos);
-          ws_prev_algos = ws_algos;
-        }
-
-        usleep(500000);
-
-      }
-    });
     
     while(1) {
       sleep(2);
