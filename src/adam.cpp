@@ -440,6 +440,8 @@ int main(int argc,char** argv) {
     case ADAM_MODE_BACKTEST:
       cout << "starting Engine in backtest mode.." << endl;
       bte = new hsbt(c,b,back,ilist,sh_list,mm,ge,mlist);
+
+      // Must Be moved !!
       res = bte->run();
 
       if ( c->getBTResultFile() != "" ) {
@@ -451,8 +453,9 @@ int main(int argc,char** argv) {
     case ADAM_MODE_GENETICS:
       cout << "starting Engine in genetics mode.." << endl;
       bte = new hsbt(c,b,back,ilist,sh_list,mm,ge,mlist);
-      gres = bte->runGenetics();
 
+      // Must be Moved !
+      gres = bte->runGenetics();
       if ( c->getBTResultFile() != "" ) {
         gres->saveToFile(c->getBTResultFile());
       }

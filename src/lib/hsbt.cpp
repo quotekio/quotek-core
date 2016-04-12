@@ -44,6 +44,10 @@ hsbt::hsbt(adamCfg* conf,
     backtest_inmem_records[si[i]] = quotek::data::records();
   }
 
+}
+
+void hsbt::init_finalize() {
+
   //loads backtest history
   if ( loadBacktestData_() == 0 ) {
     std::cerr << "[ERROR] No records found for backtest, quitting.." << std::endl;
@@ -51,9 +55,9 @@ hsbt::hsbt(adamCfg* conf,
   }
 
   //initializes logger
-  logger = new igmLogger();
-
-  printf ("loading evaluators..\n");
+  this->logger = new igmLogger();
+  
+  std::cout << "loading evaluators.." << std::endl;
 
   for (int j=0;j<tse_strathandlers.size();j++) {
 
@@ -96,8 +100,8 @@ hsbt::hsbt(adamCfg* conf,
 
 
   }
-
 }
+
 
 // Loads indices history from backend to memory
 int hsbt::loadBacktestData_() {

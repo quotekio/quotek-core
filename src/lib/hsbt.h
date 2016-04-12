@@ -26,6 +26,8 @@ class hsbt: public tsEngine {
              genetics*,
              vector<string>);
 
+    void init_finalize();
+
     inline int evaluate_(strategy* s);
     inline void moneyman_();
     inline void execute_();
