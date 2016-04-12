@@ -19,6 +19,8 @@ typedef struct tradestats {
 
 } tradestats;
 
+std::string tradestats2json(tradestats& s);
+
 
 /*
 hsbt, for High Speed BackTester, is the Adam's Backtesting engine.

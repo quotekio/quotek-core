@@ -5,6 +5,26 @@
  2) All genetics handling !
 */
 
+
+/* Serializes a tradestats object to JSON string */
+std::string tradestats2json(tradestats& s) {
+
+  stringstream ss;
+
+  ss << "{";
+  ss << "\"nb_long\":" << "\"" << s.nb_long << "\",";
+  ss << "\"nb_short\":" << "\"" << s.nb_short << "\",";
+  ss << "\"losing\":" << "\"" << s.losing << "\",";
+  ss << "\"winning\":" << "\"" << s.winning << "\",";
+  ss << "\"max_drawdown\":" << "\"" << s.max_drawdown << "\",";
+  ss << "\"profit_factor\":" << "\"" << s.profit_factor << "\"";
+  ss << "}";
+
+  return ss.str();
+}
+
+
+
 hsbt::hsbt(adamCfg* conf,
                    broker* b,
                    backend* back,
@@ -533,8 +553,8 @@ std::string hsbt::snapshot() {
   std::stringstream ss;
 
   ss << "{\"progress\":" << "\"" << backtest_progress << "\",";
-  ss << "{\"max_drawdown\":" << "\"" << ts1.max_drawdown << "\",";
- 
+  ss << "{\"tradestats\":" << tradestats2json(ts1);
+  
   ss << "}";  
 
 
