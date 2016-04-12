@@ -81,6 +81,8 @@ class adamCfg {
     
     string backtest_result_path;
 
+    bool bt_exit;
+
 
   public:
 
@@ -114,6 +116,8 @@ class adamCfg {
     void chconf(char*);
     int getInMemHistory();
 
+    bool getBTExit();
+
     /* Setters */
 
     void setMode(int);
@@ -128,6 +132,8 @@ class adamCfg {
     void setBTo(int);
 
     void setStratsPath(std::string);
+
+    void setBTExit(bool tv); 
 
 
   private:

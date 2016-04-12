@@ -11,6 +11,9 @@ adamCfg::adamCfg() {
   ticks.eval = 1000000;
   broker_mode = "poll";
   strats_path = "strats";
+  
+  bt_exit = false;
+
 }
 
 string adamCfg::getBroker() {
@@ -90,6 +93,10 @@ ticks_t adamCfg::getTicks() {
   return ticks;
 }
 
+bool adamCfg::getBTExit() {
+  return bt_exit;
+}
+
 void adamCfg::setMode(int md) {
   mode = md;
 }
@@ -116,6 +123,10 @@ void adamCfg::setBTResultFile(string f ) {
 
 void adamCfg::setStratsPath(std::string p) {
   strats_path = p;
+}
+
+void adamCfg::setBTExit(bool tv) {
+  bt_exit = tv;
 }
 
 

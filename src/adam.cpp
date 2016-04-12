@@ -85,6 +85,7 @@ void parse_cmdline(adamCfg* conf,int argc,char** argv) {
                {"backtest-from",required_argument ,0 ,'f'},
                {"backtest-to", required_argument, 0, 't'},
                {"backtest-result",required_argument,0,'r'},
+               {"exit", no_argument,0,'e'},
                {"strategy", required_argument,0, 's'},
                {"spath", required_argument,0,'x'},
                {"genetics", no_argument,0,'g'},
@@ -95,7 +96,7 @@ void parse_cmdline(adamCfg* conf,int argc,char** argv) {
 
   while(1) {
     int option_index = 0;
-    c = getopt_long (argc, argv, "c:bdgs:x:t:p:r:",
+    c = getopt_long (argc, argv, "c:bedgs:x:t:p:r:",
                       long_options, &option_index);
 
     if (c == -1) break;
@@ -115,6 +116,10 @@ void parse_cmdline(adamCfg* conf,int argc,char** argv) {
       case 'b':
         conf->setMode(ADAM_MODE_BACKTEST);
         cout << "Starting Adam in Backtest mode.." << endl;
+        break;
+
+      case 'e':
+        conf->setBTExit(true);
         break;
 
       case 'd':
@@ -505,6 +510,7 @@ void init_finalize(adamCfg* c) {
     if ( c->getBTResultFile() != "" ) {
         res->saveToFile(c->getBTResultFile());
     }
+    if (c->getBTExit()) exit(0);
   }
 
   else if ( c->getMode() == ADAM_MODE_GENETICS  ) {
@@ -513,6 +519,7 @@ void init_finalize(adamCfg* c) {
     if ( c->getBTResultFile() != "" ) {
         gres->saveToFile(c->getBTResultFile());
     } 
+    if (c->getBTExit()) exit(0);
   }
 
   while(1) {
