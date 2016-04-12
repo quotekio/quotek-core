@@ -556,7 +556,7 @@ std::string hsbt::snapshot() {
   std::stringstream ss;
 
   ss << "{\"progress\":" << "\"" << backtest_progress << "\",";
-  ss << "{\"tradestats\":" << tradestats2json(ts1);
+  ss << "\"tradestats\":" << tradestats2json(ts1);
 
   ss << "}";  
 
