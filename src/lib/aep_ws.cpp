@@ -5,7 +5,7 @@ aep_ws_server::aep_ws_server(uint16_t port) {
         this->port = port;
         m_server.init_asio();
         m_server.set_reuse_addr(true);
-        
+
         m_server.set_open_handler(bind(&aep_ws_server::on_open,this, std::placeholders::_1));
         m_server.set_close_handler(bind(&aep_ws_server::on_close,this, std::placeholders::_1));
 
@@ -56,6 +56,8 @@ void aep_ws_server::broadcast(std::string buffname, std::string inp) {
 
 
 void aep_ws_server::run() {
+
+    std::cout << "Starting AEP Websocket" << std::endl;
 
 	m_server.listen(this->port);
 	m_server.start_accept();

@@ -68,6 +68,8 @@ class tsEngine{
              genetics*,
              vector<string>);
 
+    void init_finalize(adamCfg* conf);
+
     broker* getBroker();
     backend* getBackend();
     ticks_t getTicks();

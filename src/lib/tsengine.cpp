@@ -668,6 +668,26 @@ tsEngine::tsEngine(adamCfg* conf,
 
   logger = new igmLogger();
 
+  vector<string> si = iGetNames(indices_list);
+
+  //uptime init
+  uptime = 0;
+
+  //loads potential previous cumulative PNL
+  mm->loadCPNL();
+
+  //initializes inmem_records and backend save pointer (else we get some pretty bad shit)
+  for (int i=0;i<si.size();i++) {
+    inmem_records[si[i]] = quotek::data::records();
+    save_positions[si[i]].saved = 0;
+  }
+
+}
+
+void tsEngine::init_finalize(adamCfg* conf) {
+
+  std::cout << "Finalizing Initialization.." << std::endl;
+
   //initializes and connect to broker;
   tse_broker->initialize(conf->getBrokerParams(),true,true, conf->getBrokerMode() );
 
@@ -686,21 +706,6 @@ tsEngine::tsEngine(adamCfg* conf,
     logger->log("[broker] Connection to Broker successful");
   }
 
-
-  vector<string> si = iGetNames(indices_list);
-
-  //uptime init
-  uptime = 0;
-
-  //loads potential previous cumulative PNL
-  mm->loadCPNL();
-
-  //initializes inmem_records and backend save pointer (else we get some pretty bad shit)
-  for (int i=0;i<si.size();i++) {
-    inmem_records[si[i]] = quotek::data::records();
-    save_positions[si[i]].saved = 0;
-  }
-
   //loads history
   if (tse_back != NULL) {
     cout << "Loading history from backend.." << endl;
@@ -711,10 +716,9 @@ tsEngine::tsEngine(adamCfg* conf,
   for(int i=0;i<modules_list.size();i++) {
 
     cout << "Initializing Extra Module: " << modules_list[i] << endl;
-
     //std::thread t;
     //modules_threads_list.push_back(t);
-    
+
   }
 
   printf ("initializing poller..\n");
@@ -784,7 +788,6 @@ tsEngine::tsEngine(adamCfg* conf,
   backsaveth = new std::thread( [this] { saveToBackend2(); }  );
 
 }
-
 
 adamCfg** tsEngine::getAdamConfig() {
   return &cfg;

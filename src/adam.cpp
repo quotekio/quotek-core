@@ -228,6 +228,8 @@ void aep_loop(std::string laddr, int port) {
 
 void ws_broadcast_real(tsEngine* tse, aep_ws_server* ws1 ) {
 
+  std::cout << "Starting AEP Websocket broadcasting routine." << std::endl;
+
   std::string ws_plist = "";
   std::string ws_prev_plist = "";
 
@@ -279,6 +281,8 @@ void ws_broadcast_real(tsEngine* tse, aep_ws_server* ws1 ) {
 }
 
 void ws_broadcast_bt(hsbt* bte,aep_ws_server* ws1) {
+
+  std::cout << "Starting AEP Websocket broadcasting routine." << std::endl;
 
   while(1) {
 
@@ -423,9 +427,6 @@ int main(int argc,char** argv) {
 
   }
 
-  adamGeneticsResult* gres;
-  adamresult* res;
-
   switch (c->getMode()) {
 
     case ADAM_MODE_DRY:
@@ -440,26 +441,11 @@ int main(int argc,char** argv) {
     case ADAM_MODE_BACKTEST:
       cout << "starting Engine in backtest mode.." << endl;
       bte = new hsbt(c,b,back,ilist,sh_list,mm,ge,mlist);
-
-      // Must Be moved !!
-      res = bte->run();
-
-      if ( c->getBTResultFile() != "" ) {
-        res->saveToFile(c->getBTResultFile());
-      }
-
       break;
 
     case ADAM_MODE_GENETICS:
       cout << "starting Engine in genetics mode.." << endl;
       bte = new hsbt(c,b,back,ilist,sh_list,mm,ge,mlist);
-
-      // Must be Moved !
-      gres = bte->runGenetics();
-      if ( c->getBTResultFile() != "" ) {
-        gres->saveToFile(c->getBTResultFile());
-      }
-
       break;
 
     default:
@@ -469,35 +455,72 @@ int main(int argc,char** argv) {
       
   }
 
+  std::thread* th_aep_s1;
+  std::thread* th_aep_ws1;
+  std::thread* bc1;
+
+  aep_ws_server* ws1;
+
   aep_params* aepp = c->getAEPP();
 
   //if AEP, we start service + attached Websocket !
   if (aepp->enable) {
 
-    std::thread th_aep_s1(aep_loop, aepp->listen_addr, aepp->listen_port );
-    aep_ws_server ws1(aepp->listen_port + 1);
-    std::thread th_aep_ws1 ( [&ws1] { ws1.run(); } );
+    th_aep_s1 = new std::thread (aep_loop, aepp->listen_addr, aepp->listen_port );
+    //th_aep_s1->detach();
 
+    ws1 = new aep_ws_server(aepp->listen_port + 1);
+
+    th_aep_ws1 = new std::thread( [ws1] { ws1->run(); } );
+    //th_aep_ws1->detach();
+    
     if ( c->getMode() == ADAM_MODE_REAL) {
-      ws_broadcast_real(tse,&ws1);
+      bc1 = new std::thread(ws_broadcast_real, tse, ws1);
+      //bc1->detach();
     }
 
     else if (c->getMode() == ADAM_MODE_BACKTEST || c->getMode() == ADAM_MODE_GENETICS) {
-      ws_broadcast_bt(bte,&ws1);
-    }
-    
-    
-    while(1) {
-      sleep(2);
-    }
-
-  }
-
-  else {
-    while(1) {
-      sleep(2);
+      bc1 = new std::thread(ws_broadcast_bt, bte, ws1);
+      //bc1.detach();
     }
   }
+
+  init_finalize(c);
 
 }
 
+void init_finalize(adamCfg* c) {
+
+  adamGeneticsResult* gres;
+  adamresult* res;
+
+  std::cout << "Continuating with Init" << std::endl;
+  
+  //We finish TSE initialization and start the algos.
+  if ( c->getMode() == ADAM_MODE_REAL ) {
+    tse->init_finalize(c);
+  }
+
+  //We finish BT initialization and start the run
+  else if ( c->getMode() == ADAM_MODE_BACKTEST ) {
+    bte->init_finalize();
+    res = bte->run();
+
+    if ( c->getBTResultFile() != "" ) {
+        res->saveToFile(c->getBTResultFile());
+    }
+  }
+
+  else if ( c->getMode() == ADAM_MODE_GENETICS  ) {
+    bte->init_finalize();
+    gres = bte->runGenetics();
+    if ( c->getBTResultFile() != "" ) {
+        gres->saveToFile(c->getBTResultFile());
+    } 
+  }
+
+  while(1) {
+    sleep(2);
+  }
+
+}
