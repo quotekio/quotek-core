@@ -9,6 +9,17 @@
 #define REMPOS_LIMIT 0x03
 #define REMPOS_VLIMIT 0x04
 
+typedef struct tradestats {
+  int nb_long;
+  int nb_short;
+  int losing;
+  int winning;
+  float max_drawdown;
+  float profit_factor;
+
+} tradestats;
+
+
 /*
 hsbt, for High Speed BackTester, is the Adam's Backtesting engine.
 It inherits from tsEngine but simplifies it for more speed and efficiency.
@@ -42,6 +53,12 @@ class hsbt: public tsEngine {
     void setBacktestProgress(int);
     void addAStats(adamresult*);
     void addLogStats(adamresult*);
+
+    /* Creates a snapshot of the trade statistics so far */
+    tradestats compute_tradestats();
+
+    std::string snapshot();
+
     
   protected:
 

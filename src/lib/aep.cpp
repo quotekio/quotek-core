@@ -216,10 +216,11 @@ std::string aep_btprogress(tsEngine* t0) {
   return ret;
 }
 
-std::string aep_btsnap(tsEngine* t0) {
+std::string aep_btsnap(hsbt* t0) {
 
   std::string ret;
-  hsbt* bt0 = (hsbt*) t0;
+  ret = t0->snapshot();
+  
   return ret;
   
 }

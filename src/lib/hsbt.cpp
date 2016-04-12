@@ -415,6 +415,7 @@ adamresult* hsbt::run() {
       bpp = backtest_progress;
       logger->log("Backtest Progress: " + int2string(backtest_progress) + "%", progress_tstamp);
       std::cout << "Backtest Progress: " << int2string(backtest_progress) << "%" << std::endl;
+    
     }
 
   }
@@ -443,7 +444,8 @@ adamresult* hsbt::run() {
   //highest, lowest,variance, etc..
   addAStats(result); 
   addLogStats(result);
-  result->positions_history = positions_history; 
+
+  /*result->positions_history = positions_history; 
 
   result->max_drawdown = 0;
   result->profit_factor = 0;
@@ -453,42 +455,7 @@ adamresult* hsbt::run() {
   result->losing_trades = 0;
   result->nb_long = 0;
   result->nb_short = 0;
-
-  float total_gains =0;
-  float total_losses = 0;
-
-  float cmax= -1000000000;
-  float cmin = 1000000000;
-  float ctpnl = 0;
-  //compute max_drawdown
-
-  for (int i=0;i<positions_history.size();i++) {
-
-    if ( positions_history[i].size > 0  ) result->nb_long++;
-    else result->nb_short++;
-
-    ctpnl += positions_history[i].pnl;
- 
-    if ( ctpnl > cmax ) {
-      cmax = ctpnl;
-      cmin = 10000000000;
-    }
-    if ( ctpnl < cmin ) cmin = ctpnl;
-
-    if ( positions_history[i].pnl > 0 ) {
-      total_gains += positions_history[i].pnl;
-      result->winning_trades++;
-    }
-
-    else if (positions_history[i].pnl <= 0 ) {
-      total_losses += positions_history[i].pnl;
-      result->losing_trades++;
-    }
-  }
-
-  result->max_drawdown = cmax - cmin ;
-
-  result->profit_factor = total_gains / fabs(total_losses);
+  */
 
   cout << endl<< "* Backtest Finished in " << elapsed_secs << "s *" << endl;
  
@@ -510,6 +477,68 @@ int hsbt::getBacktestPos() {
 
 int hsbt::getBacktestProgress() {
   return backtest_progress;
+}
+
+
+tradestats hsbt::compute_tradestats() {
+
+  tradestats result;
+  memset(&result,0x00,sizeof(result));
+
+  float total_gains =0;
+  float total_losses = 0;
+  float cmax= -1000000000;
+  float cmin = 1000000000;
+  float ctpnl = 0;
+
+
+  for (int i=0;i<positions_history.size();i++) {
+
+    if ( positions_history[i].size > 0  ) result.nb_long++;
+    else result.nb_short++;
+
+    ctpnl += positions_history[i].pnl;
+  
+    if ( ctpnl > cmax ) {
+      cmax = ctpnl;
+      cmin = 10000000000;
+    }
+    if ( ctpnl < cmin ) cmin = ctpnl;
+
+    if ( positions_history[i].pnl > 0 ) {
+      total_gains += positions_history[i].pnl;
+      result.winning++;
+    }
+
+    else if (positions_history[i].pnl <= 0 ) {
+      total_losses += positions_history[i].pnl;
+      result.losing++;
+    }
+  }
+
+  result.max_drawdown = cmax - cmin ;
+  result.profit_factor = total_gains / fabs(total_losses);
+
+  return result;
+
+}
+
+
+
+std::string hsbt::snapshot() {
+
+  //makes a snapshot of the trade statistics
+  tradestats ts1 = compute_tradestats();
+
+  std::stringstream ss;
+
+  ss << "{\"progress\":" << "\"" << backtest_progress << "\",";
+  ss << "{\"max_drawdown\":" << "\"" << ts1.max_drawdown << "\",";
+ 
+  ss << "}";  
+
+
+  return ss.str();
 }
 
 void hsbt::setBacktestPos(int bpos) {

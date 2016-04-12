@@ -282,14 +282,14 @@ void ws_broadcast_real(tsEngine* tse, aep_ws_server* ws1 ) {
 
 void ws_broadcast_bt(hsbt* bte,aep_ws_server* ws1) {
 
-  std::cout << "Starting AEP Websocket broadcasting routine." << std::endl;
+  std::cout << "Starting AEP Websocket broadcasting routine. (backtests)" << std::endl;
 
   while(1) {
 
     std::string btsnap = aep_btsnap(bte);
 
     ws1->broadcast("btsnap", btsnap);
-    usleep(500000);
+    usleep(1000000);
 
   }
 
@@ -467,21 +467,17 @@ int main(int argc,char** argv) {
   if (aepp->enable) {
 
     th_aep_s1 = new std::thread (aep_loop, aepp->listen_addr, aepp->listen_port );
-    //th_aep_s1->detach();
 
     ws1 = new aep_ws_server(aepp->listen_port + 1);
 
     th_aep_ws1 = new std::thread( [ws1] { ws1->run(); } );
-    //th_aep_ws1->detach();
     
     if ( c->getMode() == ADAM_MODE_REAL) {
       bc1 = new std::thread(ws_broadcast_real, tse, ws1);
-      //bc1->detach();
     }
 
     else if (c->getMode() == ADAM_MODE_BACKTEST || c->getMode() == ADAM_MODE_GENETICS) {
       bc1 = new std::thread(ws_broadcast_bt, bte, ws1);
-      //bc1.detach();
     }
   }
 
