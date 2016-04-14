@@ -1,10 +1,10 @@
 #include "backend.h"
-#include "../rapidjson/document.h"
 #include "../utils.h"
 
 #include <pqxx/pqxx>
 #include <sstream>
 #include <stdlib.h>
+#include <quotek/json.hpp>
 
 class postgresql : public backend {
 public:
@@ -13,16 +13,16 @@ public:
     //OK
     virtual int init(string params) {
       
-      rapidjson::Document d;
       stringstream cstr;
 
-      d.Parse<0>(params.c_str());
+      quotek::json::node* rnode = quotek::json::parser::parse(params.c_str());
+      quotek::json::jobject root = rnode->AsObject();
 
-      host = d["host"].GetString();
-      port = d["port"].GetString();
-      username = d["username"].GetString();
-      password = d["password"].GetString();
-      database = d["database"].GetString();
+      host = root["host"]->AsString();
+      port = root["port"]->AsString();
+      username = root["username"]->AsString();
+      password = root["password"]->AsString();
+      database = root["database"]->AsString();
 
       cstr << "host=" << host <<  " port="  << port << " dbname=" << database << " user=" << username << " password=" << password;
       

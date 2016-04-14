@@ -18,8 +18,6 @@
 #include "genetics.h"
 #include "indice.h"
 
-#include "rapidjson/rapidjson.h"
-#include "rapidjson/document.h"
 #include "results.h"
 #include "store.h"
 #include "strategyhandler.hpp"
@@ -35,10 +33,6 @@
 #include <quotek/quant.hpp>
 #include <quotek/record.hpp>
 #include <quotek/strategy.hpp>
-
-
-
-using namespace rapidjson;
 
 typedef struct algo {
       std::thread* th;

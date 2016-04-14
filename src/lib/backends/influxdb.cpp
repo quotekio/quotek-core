@@ -1,25 +1,27 @@
 #include "backend.h"
-#include "../rapidjson/document.h"
 #include "../utils.h"
-
-#include <influxdb/influxdb.h>
+#include <quotek/json.hpp>
 #include <quotek/http.hpp>
 #include <sstream>
-#include <stdlib.h>
 
 class influxdb : public backend {
 public:
 
     virtual int init(string params) {
       
-      rapidjson::Document d;
-      d.Parse<0>(params.c_str());
+      quotek::json::node* rnode = quotek::json::parser::parse(params.c_str());
+      quotek::json::jobject root = rnode->AsObject();
 
-      host = d["host"].GetString();
-      port = d["port"].GetString();
-      username = d["username"].GetString();
-      password = d["password"].GetString();
-      database = d["database"].GetString();
+      host = root["host"]->AsString();
+      port = root["port"]->AsString();
+      username = root["username"]->AsString();
+      password = root["password"]->AsString();
+      database = root["database"]->AsString();
+
+
+
+      
+     
 
       pre_url = "http://" + 
                  host + ":" + 
@@ -86,17 +88,24 @@ public:
       hhdl->destroy();
 
       // Effectively parse result
-      rapidjson::Document d;
-      d.Parse<0>(outp.c_str());
 
-      if (d.IsArray())  {
+      quotek::json::node* rnode = quotek::json::parser::parse(outp.c_str());
 
-        for ( int i=0; i< d[0u]["points"].Size(); i++  ) {
-           rapidjson::Value& points = d[0u]["points"][i];           
-           r.timestamp = points[0u].GetInt();
-           r.value = points[3].GetDouble();
-           r.spread = points[2].GetDouble();
-           result.append(r);
+      if ( rnode != nullptr ) {
+        if ( rnode->IsArray() ) {
+
+          quotek::json::jarray root = rnode->AsArray();
+          quotek::json::jobject relem = root[0]->AsObject();
+          quotek::json::jarray points = relem["points"]->AsArray();
+
+          for (int i=0;i< points.size();i++ ) {
+
+             quotek::json::jarray p = points[i]->AsArray();
+             r.timestamp = p[0]->AsNumber();
+             r.value = p[3]->AsNumber();
+             r.spread = p[2]->AsNumber();
+             result.append(r);
+          }
         }
       }
 
@@ -137,29 +146,39 @@ public:
       if ( outp == "[]"  ) return result;
       
       // Effectively parse result
-      rapidjson::Document d;
-      d.Parse<0>(outp.c_str());
+      //cout << outp << endl;
 
-      if (d.HasParseError()) {
+      quotek::json::node* rnode = quotek::json::parser::parse(outp.c_str());
+
+      if ( rnode != nullptr ) {
+        if ( rnode->IsArray() ) {
+
+          quotek::json::jarray root = rnode->AsArray();
+          quotek::json::jobject relem = root[0]->AsObject();
+          quotek::json::jarray points = relem["points"]->AsArray();
+
+          for (int i=0;i< points.size();i++ ) {
+
+             quotek::json::jarray p = points[i]->AsArray();
+             r.timestamp = p[0]->AsNumber();
+             r.value = p[3]->AsNumber();
+             r.spread = p[2]->AsNumber();
+             result.append(r);
+          }
+        }
+        else {
+          cout << "[ERROR] Backend query error: JSON Parsing. returning empty result!" << endl;
+          return result;
+        }
+      }
+      else {
         cout << "[ERROR] Backend query error: JSON Parsing. returning empty result!" << endl;
         return result;
       }
-
-      if (d.IsArray())  {
-
-        for ( int i=0; i< d[0u]["points"].Size(); i++  ) {
-           rapidjson::Value& points = d[0u]["points"][i];           
-           r.timestamp = points[0u].GetInt();
-           r.value = points[3].GetDouble();
-           r.spread = points[2].GetDouble();
-           result.append(r);
-        }
-      }
-
+    
       return result;
 
     }
-
 
     virtual int save(long timestamp, 
                      std::string tag, 

@@ -139,7 +139,13 @@ int hsbt::loadBacktestData_() {
       std::cout << "Loaded " << backtest_inmem_records[inames[i]].size() << " Backtest records for asset " << inames[i] << std::endl; 
 
     }
-    
+
+    //DEBUG (display loaded data)
+    /*for (int i=0;i< backtest_inmem_records[0].size();i++) {
+      std::cout << "BIR:" << backtest_inmem_records[0][i] << std::endl;
+    }
+    */
+
     //Tests if there is data loaded
     int has_recs = 0 ;
     for (int i = 0;i<  backtest_inmem_records.Size(); i++  ) {
@@ -149,6 +155,7 @@ int hsbt::loadBacktestData_() {
         break;
       }
     }
+
 
     return has_recs;
 }
@@ -188,10 +195,15 @@ void hsbt::moneyman_() {
   
   quotek::data::cvector<quotek::core::position>& poslist = tse_mm->getPositions();
 
+  std::map<std::string, float> cvalues;
+
   for(int i=0;i<si_size;i++) { 
-    v = inmem_records[si.at(i)][backtest_pos].value;
-    tse_mm->computePNLs(si.at(i),v);
+    v = inmem_records[si.at(i)][inmem_records[si.at(i)].size() - 1].value;
+    cvalues[si.at(i)] = v;
+    //tse_mm->computePNLs(si.at(i),v);
   }
+
+  tse_mm->computePNLs2(cvalues);
 
   //close positions where limit/stop is reached
   for(vector<quotek::core::position>::iterator iter = poslist.begin(); 
@@ -517,8 +529,11 @@ tradestats hsbt::compute_tradestats() {
     if ( positions_history[i].size > 0  ) result.nb_long++;
     else result.nb_short++;
 
+    
     ctpnl += positions_history[i].pnl;
   
+    cout << "PDEALID:" << positions_history[i].ticket_id << std::endl;
+
     if ( ctpnl > cmax ) {
       cmax = ctpnl;
       cmin = 10000000000;
@@ -542,6 +557,7 @@ tradestats hsbt::compute_tradestats() {
     result.profit_factor = total_gains / fabs(total_losses);
   }
 
+  result.pnl = ctpnl;
   return result;
 
 }
@@ -557,6 +573,7 @@ std::string hsbt::snapshot() {
 
   ss << "{\"progress\":" << "\"" << backtest_progress << "\",";
   ss << "\"tradestats\":" << tradestats2json(ts1);
+  ss << ",\"pnl\": \"" << ts1.pnl << "\"";
 
   ss << "}";  
 

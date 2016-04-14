@@ -24,6 +24,7 @@ if (WITH_PYTHON)
          src/broker.cpp
          src/history.cpp
          src/http.cpp
+         src/json.cpp
          src/linearregression.cpp
          src/logisticregression.cpp
          src/ml.cpp
@@ -72,6 +73,7 @@ add_library(
          src/broker.cpp
          src/history.cpp
          src/http.cpp
+         src/json.cpp
          src/linearregression.cpp
          src/logisticregression.cpp
          src/ml.cpp
@@ -120,6 +122,8 @@ install (FILES "src/datasource.hpp" DESTINATION include/quotek)
 install (FILES "src/generators.hpp" DESTINATION include/quotek)
 install (FILES "src/history.hpp" DESTINATION include/quotek)
 install (FILES "src/http.hpp" DESTINATION include/quotek)
+install (FILES "src/json.hpp" DESTINATION include/quotek)
+
 
 install (FILES "src/linearregression.hpp" DESTINATION include/quotek)
 install (FILES "src/logisticregression.hpp" DESTINATION include/quotek)

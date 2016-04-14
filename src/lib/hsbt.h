@@ -16,6 +16,7 @@ typedef struct tradestats {
   int winning;
   float max_drawdown;
   float profit_factor;
+  float pnl;
 
 } tradestats;
 

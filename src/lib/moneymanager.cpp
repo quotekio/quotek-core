@@ -69,18 +69,39 @@ float moneyManager::computeWholePNL() {
   return cur_pnl;
 }
 
+
+void moneyManager::computePNLs2(std::map<std::string, float>  current_values) {
+
+  for (int i=0;i<positions.size();i++) {
+
+    indice* idx = iResolveByName(indices_list,positions[i].asset_name);
+    int pnl_coef = idx->pnl_pp;
+    float unit_coef =  1.0 / idx->pip_value;
+    positions[i].pnl = (  current_values[positions[i].asset_name]   - positions[i].open) * pnl_coef * unit_coef * positions[i].size;
+
+    if ( positions[i].pnl > positions[i].stats->pnl_peak ) positions[i].stats->pnl_peak = positions[i].pnl;
+
+    std::cout << "COMPUTED PNL:" << positions[i].pnl << std::endl;
+
+  }
+
+}
+
 void moneyManager::computePNLs(string indice_name,float cur_value) {
 
   indice* idx = iResolveByName(indices_list,indice_name);
   
   int pnl_coef = idx->pnl_pp;
-  float unit_coef =  1.0 / idx->pip_value ;
+  float unit_coef =  1.0 / idx->pip_value;
 
   for (int i=0;i<positions.size();i++) {
 
     if (positions.at(i).asset_name == indice_name) {
       quotek::core::position* p = &(positions.at(i));
       p->pnl = (cur_value - p->open) * pnl_coef * unit_coef * p->size;
+
+      std::cout << "COMPUTED PNL:" << p->pnl << std::endl;
+      std::cout << cur_value << "," << p->open << "," << pnl_coef << "," << unit_coef << "," << p->size << std::endl; 
 
       //saves pnl peak
       if ( p->pnl > p->stats->pnl_peak ) p->stats->pnl_peak = p->pnl;

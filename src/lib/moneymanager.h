@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
 #include <deque>
 #include <cmath>
 #include <string>
@@ -65,6 +66,8 @@ class moneyManager {
 
   	float computeVAR();
   	void computePNLs(string,float);
+    void computePNLs2(std::map<std::string, float>  current_values);
+
   	float computeWholePNL();
     float computeWholePNLNoSec();
     float getEndResult();

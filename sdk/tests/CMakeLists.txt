@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.6)
 
 project(quotek)
 
-SET (CMAKE_CXX_COMPILER "/usr/bin/gg++")
+SET (CMAKE_CXX_COMPILER "/usr/bin/g++")
 SET (CMAKE_C_COMPILER "/usr/bin/gcc")
 SET (CMAKE_CXX_FLAGS "-O3 -std=c++1y -fPIC")
 
@@ -93,6 +93,11 @@ add_executable(
 add_executable(
        test_marray
        src/test_marray.cpp
+)
+
+add_executable(
+       test_json
+       src/test_json.cpp
 )
 
 
@@ -201,6 +206,13 @@ target_link_libraries(
 
 target_link_libraries(
         test_techanalysis
+        quotek
+        pthread
+        curl
+)
+
+target_link_libraries(
+        test_json
         quotek
         pthread
         curl
