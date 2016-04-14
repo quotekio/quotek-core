@@ -195,15 +195,10 @@ void hsbt::moneyman_() {
   
   quotek::data::cvector<quotek::core::position>& poslist = tse_mm->getPositions();
 
-  std::map<std::string, float> cvalues;
-
   for(int i=0;i<si_size;i++) { 
-    v = inmem_records[si.at(i)][inmem_records[si.at(i)].size() - 1].value;
-    cvalues[si.at(i)] = v;
-    //tse_mm->computePNLs(si.at(i),v);
+    v = inmem_records[si.at(i)][backtest_pos].value;
+    tse_mm->computePNLs(si.at(i),v);
   }
-
-  tse_mm->computePNLs2(cvalues);
 
   //close positions where limit/stop is reached
   for(vector<quotek::core::position>::iterator iter = poslist.begin(); 
@@ -532,8 +527,6 @@ tradestats hsbt::compute_tradestats() {
     
     ctpnl += positions_history[i].pnl;
   
-    cout << "PDEALID:" << positions_history[i].ticket_id << std::endl;
-
     if ( ctpnl > cmax ) {
       cmax = ctpnl;
       cmin = 10000000000;
