@@ -41,6 +41,10 @@ namespace quotek {
         /** Returns the pos stats object under the form of a json-formated string */
         std::string str();
 
+        //Maybe better than str()
+        /*operator std::string () const {
+          return "SomeClassStringRepresentation";
+        }*/
     };
 
     /**

@@ -566,7 +566,19 @@ std::string hsbt::snapshot() {
 
   ss << "{\"progress\":" << "\"" << backtest_progress << "\",";
   ss << "\"tradestats\":" << tradestats2json(ts1);
-  ss << ",\"pnl\": \"" << ts1.pnl << "\"";
+  ss << ",\"pnl\": \"" << ts1.pnl << "\",";
+  ss << "\"histgraph\":[";
+
+  float ppnl = 0;
+  for (int i=0;i< positions_history.size();i++) {
+
+    ppnl += positions_history[i].pnl;
+    ss << "[" << positions_history[i].close_date * 1000 << "," << ppnl << "]";
+    if (i < positions_history.size() -1 ) ss << ",";
+  
+  }
+
+  ss << "]";
 
   ss << "}";  
 
