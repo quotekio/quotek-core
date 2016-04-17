@@ -68,11 +68,14 @@ hsbt::hsbt(adamCfg* conf,
 
 void hsbt::init_finalize() {
 
+
   //loads backtest history
   if ( loadBacktestData_() == 0 ) {
     std::cerr << "[ERROR] No records found for backtest, quitting.." << std::endl;
     exit(1);
   }
+
+  //std::thread tload( [this] {} );
 
   //initializes logger
   this->logger = new igmLogger();
@@ -126,19 +129,45 @@ void hsbt::init_finalize() {
 // Loads indices history from backend to memory
 int hsbt::loadBacktestData_() {
 
-    
-
     std::cout << "loading backtest data from " << backtest_from << " to " << backtest_to << std::endl;
 
-    string q;
+    int bt_time_size = backtest_to - backtest_from;
+    int step = (bt_time_size < 100000 ) ? bt_time_size : 100000;
     vector<string> inames = iGetNames(indices_list);
-    for (int i=0;i<inames.size();i++) {
-      quotek::data::records recs = tse_back->query(inames[i], backtest_from, backtest_to);
-      backtest_inmem_records[inames[i]] = recs;
 
-      std::cout << "Loaded " << backtest_inmem_records[inames[i]].size() << " Backtest records for asset " << inames[i] << std::endl; 
+    int nb_iter = (bt_time_size / step);
+    int nbrecs = 0;
+
+    auto tt0 = std::chrono::high_resolution_clock::now();
+
+    for ( int i=0; i < nb_iter; i++) {
+
+      int from = backtest_from + ( step * i );
+      int to =   from + step ; 
+
+      if ( to > backtest_to  ) to = backtest_to;
+
+      for (int j=0;j<inames.size();j++) {
+        quotek::data::records recs = tse_back->query(inames[j],from,to);
+        nbrecs += recs.size();
+        backtest_inmem_records[inames[j]].append(recs);
+      }
 
     }
+
+    auto tt1 = std::chrono::high_resolution_clock::now();
+    auto elapsed_t = tt1 - tt0;
+    uint64_t elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed_t).count();
+    float elapsed_secs = elapsed / (float) 1000;
+
+    std::cout << "Loaded " << nbrecs << " Backtest records in  " << elapsed_secs  << "s" << std::endl; 
+
+    //WE FLAG BT STATE AS FULLY LOADED
+    
+
+    
+
+
 
     //DEBUG (display loaded data)
     /*for (int i=0;i< backtest_inmem_records[0].size();i++) {
@@ -463,7 +492,9 @@ adamresult* hsbt::run() {
   result->remainingpos = rpos.size();
 
   for (int i=0;i<result->remainingpos;i++) {
-    rpos.at(i).close_date = inmem_records[0].get_data()[backtest_pos].timestamp;
+    //rpos.at(i).close_date = inmem_records[0].get_data()[backtest_pos].timestamp;
+    rpos.at(i).close_date = inmem_records[0][inmem_records[0].size() - 1].timestamp;
+    
     positions_history.push_back(rpos.at(i));
   }
 
