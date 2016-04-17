@@ -181,6 +181,9 @@ namespace quotek {
         /** Adds new entry to records container (with spread) */
         void append(long timestamp, float value, float spread);
 
+        /** concatenates 2 records datasets to 1 */
+        void append(quotek::data::records& recs);
+
          /**
          * str takes the data inside the records container and
          * transforms it to a json-formated string.

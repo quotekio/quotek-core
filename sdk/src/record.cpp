@@ -194,6 +194,15 @@ namespace quotek {
       this->data.emplace_back(r); 
     }
 
+    void records::append(quotek::data::records& recs) {
+
+      this->data.insert(this->data.end(), 
+                        std::make_move_iterator(recs.get_data().begin()),
+                        std::make_move_iterator(recs.get_data().end())
+                        );
+
+    }
+
 
     quotek::data::record& records::last() {
       return this->data.back();
