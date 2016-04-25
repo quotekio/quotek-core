@@ -149,5 +149,8 @@ install (FILES "src/datasources/twitter.hpp" DESTINATION include/quotek/datasour
 install (FILES "src/datasources/quandl.hpp" DESTINATION include/quotek/datasources)
 install (FILES "src/datasources/etoro.hpp" DESTINATION include/quotek/datasources)
 
+install (DIRECTORY "src/eigen3" DESTINATION include/quotek)
+install (DIRECTORY "src/cppoptlib" DESTINATION include/quotek)
+
 
 install (FILES "src/quotek.hpp" DESTINATION include/quotek)
