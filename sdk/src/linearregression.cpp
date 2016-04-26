@@ -58,11 +58,24 @@ namespace quotek {
     }
 
     int linearRegression::predict(dataset& X, std::vector<double>& y){
-        return 0;
+        
+        for (int i=0;i< X.rows();i++) {
+
+          dataset m1 = X.row(i);
+          y.emplace_back( this->predict(m1));
+        }
+
     }
 
     double linearRegression::predict(dataset& data){
-        return 0.0;
+
+        double result = 0;
+
+        for (int i=0; i< data.cols(); i++ ) {
+          result += data.row(0).col(i) * this->coefficients.row(i);
+        }
+
+        return result;
     }
 
   }
