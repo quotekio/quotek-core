@@ -11,21 +11,12 @@ namespace quotek {
   namespace ml {
     
 
-  
     linearRegression::linearRegression() {
-      this->degree = 1;
-      this->regularize = false;
-
-    }
-
-    linearRegression::linearRegression(int degree) {
-      this->degree = degree;
       this->regularize = false;
     }
 
-       
-    linearRegression::linearRegression(int degree, bool regularize) {
-      this->degree = degree;
+   
+    linearRegression::linearRegression(bool regularize) {
       this->regularize = regularize;
     }
 
@@ -67,12 +58,12 @@ namespace quotek {
 
     }
 
-    double linearRegression::predict(dataset& data){
-
+    double linearRegression::predict(dataset& X){
+       
         double result = 0;
 
-        for (int i=0; i< data.cols(); i++ ) {
-          result += data.row(0).col(i) * this->coefficients.row(i);
+        for (int i=0; i< X.cols(); i++ ) {
+          result += X.row(0).col(i) * this->coefficients.row(i);
         }
 
         return result;

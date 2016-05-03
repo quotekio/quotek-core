@@ -25,19 +25,6 @@ namespace quotek {
         /** Class simplest constructor */
         logisticRegression();
 
-        /** Class constructor 2
-         *  @param degree: Number of degrees of the expected model curve.
-         */
-
-        logisticRegression(int degree);
-
-         /** Class constructor 3
-         *  @param degree Number of degrees of the expected model curve.
-         *  @param regularize Tells if polynomial model must be regularized to avoid overfitting.
-         */
-         
-        logisticRegression(int degree, bool regularize);
-
         /** Object Destructor */
         ~logisticRegression();
 
@@ -60,7 +47,7 @@ namespace quotek {
          *  @param y Predicted outputs, stored as a vector of floats.
          */
 
-        int predict(dataset& data, std::vector<double>& y);
+        int predict(dataset& X, std::vector<int>& y);
 
          /** predict takes a small dataset and try to guess the output according to the 
          *  previously learned model.
@@ -68,13 +55,16 @@ namespace quotek {
          *  @return predicted output, as a float.
          */
 
-        double predict(dataset& X);
-
-        /** stores the polynomial degree of the model to fit. */
-        int degree;
+        int predict(dataset& X);
 
         /** stores wether we will use regularization or not. */
         bool regularize;
+
+        /** thereshold is the number in [0,1] that will make that an element will be 
+         *  labeled as being part of a class, or not.
+         *  Default value is 0.5.
+         */
+        double thereshold;
 
         /** stores the coefficients for each dimension of the dataset. */
         VectorXd coefficients;
@@ -92,14 +82,18 @@ namespace quotek {
         lor_prob(const cppoptlib::Matrix<T> &X_, const cppoptlib::Vector<T> y_) : X(X_), y(y_), XX(X_.transpose()*X_) {}
 
         T value(const cppoptlib::Vector<T> &beta) {
-                return (1.0/(1.0 + exp(-(X*beta).array())) - y.array()).matrix().squaredNorm();
+
+                return ( 1.0/(1.0 + exp(-(X*beta).array())) - y.array()).matrix().squaredNorm();
             }
 
         void gradient(const cppoptlib::Vector<T> &beta, cppoptlib::Vector<T> &grad) {
-                const cppoptlib::Vector<T> p = 1.0/(1.0 + exp(-(X*beta).array()));
-                grad = X.transpose()*(p-y);
+                
+                const cppoptlib::Vector<T> h_sigmo = 1.0/(1.0 + exp(-(X*beta).array()));
+
+                grad = X.transpose()*(h_sigmo - y);
         }
 
+        
      };
 
   }

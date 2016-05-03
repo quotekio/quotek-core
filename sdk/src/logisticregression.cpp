@@ -11,22 +11,8 @@ namespace quotek {
   namespace ml {
     
 
-  
     logisticRegression::logisticRegression() {
-      this->degree = 1;
-      this->regularize = false;
-
-    }
-
-    logisticRegression::logisticRegression(int degree) {
-      this->degree = degree;
-      this->regularize = false;
-    }
-
-       
-    logisticRegression::logisticRegression(int degree, bool regularize) {
-      this->degree = degree;
-      this->regularize = regularize;
+      this->thereshold = 0.5;
     }
 
     logisticRegression::~logisticRegression() {
@@ -57,12 +43,32 @@ namespace quotek {
 
     }
 
-    int logisticRegression::predict(dataset& X, std::vector<double>& y){
-        return 0;
+    int logisticRegression::predict(dataset& X, std::vector<int>& y){
+
+      for (int i=0;i< X.rows();i++) {
+          dataset m1 = X.row(i);
+          y.emplace_back( this->predict(m1));
+      }
+    
     }
 
-    double logisticRegression::predict(dataset& data){
-        return 0.0;
+    int logisticRegression::predict(dataset& X){
+
+      dataset m1 = X.row(0);      
+
+      double lpred = 0;
+
+      const cppoptlib::Vector<double> h_sigmo = 1.0/(1.0 + exp(-(m1 * this->coefficients ).array()));
+      lpred = h_sigmo.sum();
+
+      if (lpred >= this->thereshold) {
+        return 1;
+      }
+
+      else {
+        return 0;
+      }
+
     }
 
   }

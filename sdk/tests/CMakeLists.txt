@@ -105,6 +105,13 @@ add_executable(
        src/test_linear_regression.cpp
 )
 
+add_executable(
+       test_logistic_regression
+       src/test_logistic_regression.cpp
+)
+
+
+
 
 
 find_library (quotek QUOTEK) 
@@ -226,6 +233,13 @@ target_link_libraries(
 
 target_link_libraries(
         test_linear_regression
+        quotek
+        pthread
+        curl
+)
+
+target_link_libraries(
+        test_logistic_regression
         quotek
         pthread
         curl

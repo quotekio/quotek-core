@@ -40,15 +40,15 @@ namespace quotek {
         }
 
 
-        dataset& map_features(dataset& X, int degree) {
-
+        dataset& polynomial_features(dataset& X, int degree) {
+          
+          int prev_cols = X.cols();
           int nnc = X.cols() + (degree -1 ) * X.cols();
-
           X.conservativeResize(X.rows(), nnc);
 
           
-          return X;
 
+          return X;
         }
 
         double nl_sigmoid(double input) {

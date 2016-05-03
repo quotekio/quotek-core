@@ -60,14 +60,14 @@ namespace quotek {
 
 
     /**
-     * map_features is a function that takes a dataset to 
+     * polynomial_features is a function that takes a dataset to 
      * increase its number of dimensions with polynomial
-     * elements: X1^2, X2^2,..,XN^2,..,XN^degree.
-     * @param X dataset to improve data for.
+     * elements: for instance [a,b] features become at degree 2: [1, a, b, ab, a^2, b^2 ].
+     * @param X dataset create poly features for.
      * @param degree Number of dimensions to add.
      * @return dimentionality improved dataset
      */
-     dataset& map_features(dataset& X, int degree);
+     dataset& polynomial_features(dataset& X, int degree);
 
     /**
      * computes the sigmoid function of a single double value.

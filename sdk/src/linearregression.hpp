@@ -25,18 +25,11 @@ namespace quotek {
         /** Class simplest constructor */
         linearRegression();
 
-        /** Class constructor 2
-         *  @param degree: Number of degrees of the expected model curve.
+         /** Class constructor 2
+         *  @param regularize Tells if features must be regularized to avoid overfitting.
          */
 
-        linearRegression(int degree);
-
-         /** Class constructor 3
-         *  @param degree Number of degrees of the expected model curve.
-         *  @param regularize Tells if polynomial model must be regularized to avoid overfitting.
-         */
-         
-        linearRegression(int degree, bool regularize);
+        linearRegression(bool regularize);
 
         /** Object Destructor */
         ~linearRegression();
@@ -69,9 +62,6 @@ namespace quotek {
          */
 
         double predict(dataset& X);
-
-        /** stores the polynomial degree of the model to fit. */
-        int degree;
 
         /** stores wether we will use regularization or not. */
         bool regularize;
