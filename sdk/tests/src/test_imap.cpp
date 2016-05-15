@@ -11,12 +11,22 @@ http://www.quotek.io
 
 void test_fetch(quotek::imap& i1) {
   
-  i1.fetch("INBOX","1");
+  quotek::data::email e1 = i1.fetch("INBOX","1");
+  assert(e1.from != "");
+  assert(e1.to != "");
+  assert(e1.subject != "");
+  assert(e1.body != "");
+
 
 }
 
 void test_fetch_latest(quotek::imap& i1) {
-  i1.fetch_latest("INBOX");
+  quotek::data::email e1 = i1.fetch_latest("INBOX");
+  assert(e1.from != "");
+  assert(e1.to != "");
+  assert(e1.subject != "");
+  assert(e1.body != "");
+  
 }
 
 

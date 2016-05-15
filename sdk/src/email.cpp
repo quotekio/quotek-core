@@ -53,6 +53,8 @@ namespace quotek {
 
       for (int i=0;i<sdata.size();i++) {
 
+        quotek::core::utils::trim(sdata[i]);
+
         std::smatch sm;
         if (std::regex_match (sdata[i],sm,from_regex)) {
           this->from = sm[1];

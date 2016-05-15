@@ -75,7 +75,8 @@ namespace quotek {
 
     curl_easy_perform(ch);
 
-    std::cout << wdata << std::endl;
+    result.data = wdata;
+    result.parse();
 
     return result;
 
