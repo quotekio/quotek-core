@@ -110,6 +110,15 @@ add_executable(
        src/test_logistic_regression.cpp
 )
 
+add_executable(
+       test_imap
+       src/test_imap.cpp
+)
+
+add_executable(
+       test_email
+       src/test_email.cpp
+)
 
 
 
@@ -244,3 +253,18 @@ target_link_libraries(
         pthread
         curl
 )
+
+target_link_libraries(
+        test_imap
+        quotek
+        pthread
+        curl
+)
+
+target_link_libraries(
+        test_email
+        quotek
+        pthread
+        curl
+)
+

@@ -22,8 +22,10 @@ if (WITH_PYTHON)
          src/alchemy.cpp
          src/blackscholes.cpp
          src/broker.cpp
+         src/email.cpp
          src/history.cpp
          src/http.cpp
+         src/imap.cpp
          src/json.cpp
          src/linearregression.cpp
          src/logisticregression.cpp
@@ -71,8 +73,10 @@ add_library(
          src/alchemy.cpp
          src/blackscholes.cpp
          src/broker.cpp
+         src/email.cpp
          src/history.cpp
          src/http.cpp
+         src/imap.cpp
          src/json.cpp
          src/linearregression.cpp
          src/logisticregression.cpp
@@ -119,9 +123,12 @@ install (FILES "src/constants.hpp" DESTINATION include/quotek)
 install (FILES "src/cqueue.hpp" DESTINATION include/quotek)
 install (FILES "src/cvector.hpp" DESTINATION include/quotek)
 install (FILES "src/datasource.hpp" DESTINATION include/quotek)
+install (FILES "src/email.hpp" DESTINATION include/quotek)
+
 install (FILES "src/generators.hpp" DESTINATION include/quotek)
 install (FILES "src/history.hpp" DESTINATION include/quotek)
 install (FILES "src/http.hpp" DESTINATION include/quotek)
+install (FILES "src/imap.hpp" DESTINATION include/quotek)
 install (FILES "src/json.hpp" DESTINATION include/quotek)
 
 

@@ -1,0 +1,32 @@
+/*
+Quotek Strategies SDK 2.3
+Copyright 2013-2015 Quotek SAS
+http://www.quotek.io
+*/
+
+#include <quotek/broker.hpp>
+#include <quotek/imap.hpp>
+#include <quotek/email.hpp>
+#include <iostream>
+
+void test_fetch(quotek::imap& i1) {
+  
+  i1.fetch("INBOX","1");
+
+}
+
+void test_fetch_latest(quotek::imap& i1) {
+  i1.fetch_latest("INBOX");
+}
+
+
+
+int main(int argc, char** argv) {
+
+  quotek::imap i1(argv[1], argv[2], argv[3],true, true);
+
+  test_fetch(i1);
+  test_fetch_latest(i1);
+  
+
+}
