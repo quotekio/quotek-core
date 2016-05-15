@@ -20,10 +20,6 @@ void test_parse_email(std::string email) {
   assert( e1.date == "Thu, 23 Nov 2006 14:55:13 -0800");
   assert( e1.body.size() > 50  );
 
-  std::cout << "BODY:" << e1.body << std::endl;
-
-
-  
 }
 
 
