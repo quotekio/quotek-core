@@ -50,7 +50,9 @@ namespace quotek {
 
     /**
      * kmeans performs a K-means clustering algorithm
-     * on a given dataset to in order to labelize its samples.
+     * on a given dataset to in order to labelize its samples. 
+     * This algorithm works very nicelly when you don't have pre-labelled data and don't
+     * want to labelize them manually.
      * @param X dataset to labelize
      * @param nb_clusters integer which defines the number of categories wanted for clustering.
      * @return Labelized dataset: a new column which contains values in [1,nb_clusters] for each sample, is created.

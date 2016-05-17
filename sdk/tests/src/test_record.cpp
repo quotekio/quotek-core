@@ -63,7 +63,7 @@ int main() {
   std::vector<std::tuple<long,float,float>> rdata;
   //populates rdata
   for ( int i= 0 ; i< 1600;i++) {
-    std::tuple<long,float,float> t = { i, i/1.0,0 };
+    std::tuple<long,float,float> t = std::make_tuple(i, i/1.0 ,0);
     rdata.emplace_back(t);
   }
   quotek::data::records r1(rdata);
