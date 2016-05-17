@@ -60,4 +60,6 @@ int main() {
   test_set_vstop();
   test_set_vlimit();
 
+  exit(0);
+
 }

@@ -106,5 +106,7 @@ int main() {
   test_buy_hedged(s);
   test_closepos(s);
 
+  exit(0);
+
 
 }

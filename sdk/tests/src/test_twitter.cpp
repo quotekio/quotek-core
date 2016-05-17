@@ -43,4 +43,6 @@ int main(int argc, char** argv) {
 
   test_fetch(tw);
   test_search(tw);
+
+  exit(0);
 }

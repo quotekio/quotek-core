@@ -33,8 +33,6 @@ void test_logistic_regression() {
 
   assert( lr1.predict(Xpred) == 0 );
  
-  std::cout << "Testing multi-predict.." << std::endl;
-
   std::vector<int> mpred;
 
   lr1.predict(Xpred, mpred);
@@ -52,4 +50,6 @@ void test_logistic_regression() {
 int main() {
 
   test_logistic_regression();
+
+  exit(0);
 }

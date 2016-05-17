@@ -32,4 +32,6 @@ int main() {
   test_order(s);
   test_log(s);
 
+  exit(0);
+
 }

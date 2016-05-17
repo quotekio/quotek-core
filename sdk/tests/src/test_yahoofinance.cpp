@@ -36,4 +36,6 @@ int main() {
   test_history();
   test_close_history();
 
+  exit(0);
+
 }

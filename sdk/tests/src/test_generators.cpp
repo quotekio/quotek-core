@@ -38,4 +38,6 @@ int main() {
   test_uniform();
   test_normal();
   test_lognormal();
+
+  exit(0);
 }

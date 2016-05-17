@@ -39,4 +39,6 @@ int main(int argc, char** argv) {
 
   test_parse_email(email_data);
 
+  exit(0);
+
 }

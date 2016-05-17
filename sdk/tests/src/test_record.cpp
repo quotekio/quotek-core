@@ -72,4 +72,6 @@ int main() {
   test_down_sample(r1);
   test_stream(r1);
 
+  exit(0);
+
 }

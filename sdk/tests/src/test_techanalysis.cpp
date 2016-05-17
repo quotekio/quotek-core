@@ -93,4 +93,6 @@ int main() {
   test_fibo_retr();
   test_fibo_ext();
 
+  exit(0);
+
 }

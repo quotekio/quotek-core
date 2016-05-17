@@ -38,5 +38,6 @@ int main(int argc, char** argv) {
   test_fetch(i1);
   test_fetch_latest(i1);
   
+  exit(0);
 
 }

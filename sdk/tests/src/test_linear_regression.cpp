@@ -31,8 +31,6 @@ void test_linear_regression() {
   
   assert( fabs( pred - 300) < EPSILON );
 
-  std::cout << "Testing multi-predict.." << std::endl;
-
   std::vector<double> mpred;
 
   l1.predict(Xpred, mpred);
@@ -48,4 +46,6 @@ void test_linear_regression() {
 int main() {
 
   test_linear_regression();
+  
+  exit(0);
 }

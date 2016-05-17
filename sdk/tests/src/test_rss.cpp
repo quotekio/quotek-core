@@ -25,4 +25,6 @@ int main() {
 
   test_fetch();
 
+  exit(0);
+
 }

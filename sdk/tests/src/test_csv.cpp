@@ -62,4 +62,6 @@ int main() {
   test_import_records_with_timestamp();
   test_import_records_with_filters();
   test_import_history();
+
+  exit(0);
 }

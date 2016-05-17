@@ -51,4 +51,6 @@ void test_json_complex() {
 int main() {
   test_json_simple();
   test_json_complex();
+
+  exit(0);
 }

@@ -63,8 +63,6 @@ int main() {
   test_blackscholes_putprice(bla);
   test_blackscholes_putgreeks(bla);
 
+  exit(0);
   
-  
-
-
 }

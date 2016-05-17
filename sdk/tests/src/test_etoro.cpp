@@ -67,8 +67,6 @@ void test_positions() {
   quotek::datasource::etoro et1;
   std::vector<quotek::datasource::eto_user> elist = et1.ranking(30,"Medium","Gain");
 
-  std::cout << elist[1].username << std::endl;
-
   std::vector<quotek::core::position> plist = et1.positions(elist[1].username,"real","current");
 
   assert(plist.size() > 0);
@@ -97,5 +95,7 @@ int main() {
   test_insight();
   test_symbols();
   test_positions();
+
+  exit(0);
 
 }

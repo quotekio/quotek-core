@@ -197,4 +197,6 @@ int main() {
   test_linear_regression(r1);
   test_trend_percentage(r1);
 
+  exit(0);
+
 }

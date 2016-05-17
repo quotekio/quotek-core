@@ -90,10 +90,6 @@ add_executable(
     src/test_techanalysis.cpp
 )
 
-add_executable(
-       test_marray
-       src/test_marray.cpp
-)
 
 add_executable(
        test_json

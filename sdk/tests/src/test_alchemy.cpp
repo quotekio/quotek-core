@@ -105,5 +105,7 @@ int main(int argc, char** argv) {
   test_relations(ac);
   test_raw(ac);
   test_taxonomy(ac);
+
+  exit(0);
   
 }

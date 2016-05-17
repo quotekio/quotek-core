@@ -43,4 +43,6 @@ int main() {
   test_month_day(t);
   test_datestr(t);
 
+  exit(0);
+
 }

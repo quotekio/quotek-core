@@ -90,4 +90,6 @@ int main(int argc, char** argv) {
   test_query_fullprices(q);
   test_get_column(q);
 
+  exit(0);
+
 }
