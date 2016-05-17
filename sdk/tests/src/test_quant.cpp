@@ -108,6 +108,17 @@ void test_exponential_moving_average(quotek::data::records& recs) {
   
 }
 
+/* not very fund of this test, needs rewrite */
+void test_tema(quotek::data::records& recs) {
+  
+  std::vector<float> t1 = quotek::quant::TEMA(recs,5);
+  assert( t1.size() > 0 );
+  for(int i=0; i< t1.size(); i++ ) {
+    assert(t1[i] > 0);
+  }
+
+}
+
 void test_weighted_moving_average(quotek::data::records& recs) {
 
   std::vector<float> v1 = quotek::quant::WMA(recs,2);
@@ -181,6 +192,7 @@ int main() {
   test_variance(r1);
   test_moving_average(r1);
   test_exponential_moving_average(r1);
+  test_tema(r1);
   test_weighted_moving_average(r1);
   test_linear_regression(r1);
   test_trend_percentage(r1);

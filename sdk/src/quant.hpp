@@ -28,6 +28,7 @@ namespace quotek {
     #define SMA moving_average
     #define EMA exponential_moving_average
     #define WMA weighted_moving_average
+    #define TEMA triple_exponential_moving_average
     #define SD standard_deviation
     #define SIGMA standard_deviation
     #define SLR linear_regression
@@ -317,6 +318,16 @@ namespace quotek {
     std::vector<float> exponential_moving_average(quotek::data::records& recs, 
                                                   int periods);
 
+    /**
+     * Computes the Triple exponential moving average (TEMA/TRIX) of the provided dataset for n periods.
+     * TEMA is a tech indicator that tries to deal with the lag.
+     * @param recs dataset to work on.
+     * @param periods the number of dataset values that must be aggregated together to compute a single point of the TEMA.
+     * @return a vector of floats containing the graph values of the TEMA for the dataset.
+     */
+
+    std::vector<float> triple_exponential_moving_average(quotek::data::records& recs,
+                                                         int periods);
 
     /** Computes the weighted moving average (WMA) of the provided dataset for n periods.
      *  WMA gives even more weight to recent values than EMA.

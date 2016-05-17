@@ -38,6 +38,30 @@ namespace quotek {
 
     }
 
+    quotek::data::records trix(quotek::data::records& recs,
+                            int periods) {
+
+      quotek::data::records result;
+
+      //ema
+      std::vector<float> ema1 = quotek::quant::EMA(recs, periods);
+      quotek::data::records recs1 = quotek::data::records(ema1);
+
+      //ema of ema
+      std::vector<float> ema2 = quotek::quant::EMA(recs1, periods);
+      quotek::data::records recs2 = quotek::data::records(ema2);
+
+      //ema of ema of ema
+      std::vector<float> ema3 = quotek::quant::EMA(recs2, periods);
+      quotek::data::records recs3 = quotek::data::records(ema3);
+
+      for ( int i=1;i< ema3.size();i++ ) {
+         result.append( ( ema3[i] - ema3[i-1]) / ema3[i-1] );
+       }
+
+      return result;     
+    }
+
     quotek::quant::fibo_ret fibo_retrace(quotek::data::records& recs) {
 
       quotek::quant::fibo_ret result;

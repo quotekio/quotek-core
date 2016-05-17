@@ -275,6 +275,38 @@ namespace quotek {
 
     }
 
+    std::vector<float> triple_exponential_moving_average(quotek::data::records& recs,
+                                                         int periods) {
+
+      std::vector<float> result;
+
+      //ema
+      std::vector<float> ema1 = exponential_moving_average(recs, periods);
+      quotek::data::records recs1 = quotek::data::records(ema1);
+
+      //ema of ema
+      std::vector<float> ema2 = exponential_moving_average(recs1, periods);
+      quotek::data::records recs2 = quotek::data::records(ema2);
+
+      //ema of ema of ema
+      std::vector<float> ema3 = exponential_moving_average(recs2, periods);
+      quotek::data::records recs3 = quotek::data::records(ema3);
+
+      //Not totally sure of this ! Let's see if it goes smooth
+      int ema1_diff = ema1.size() - ema3.size();
+      int ema2_diff = ema2.size() - ema3.size();
+
+
+      for (int i=0; i< ema3.size(); i++ ) {
+        //computes (3xEMA)-(3xEMAofEMA)+(EMAof EMAofEMA)
+        result.emplace_back( 3 * ema1[i + ema1_diff ] - 3 * ema2[i + ema2_diff ] + ema3[i] );
+      }
+      
+      
+      return result;     
+ 
+    }
+
 
     std::vector<float> weighted_moving_average(quotek::data::records& recs, 
                                                   int periods) {
