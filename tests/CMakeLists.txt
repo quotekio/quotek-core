@@ -6,7 +6,7 @@ SET (CMAKE_CXX_COMPILER             "/usr/bin/g++")
 SET (CMAKE_CXX_FLAGS                "-std=c++11 -fPIC")
 SET (CMAKE_LINKER_FLAGS    "-rdynamic")
 
-add_definitions(-DADAM_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
+add_definitions(-QATE_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
 
 add_executable(
 	test_utils

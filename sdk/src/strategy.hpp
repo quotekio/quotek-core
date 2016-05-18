@@ -19,7 +19,7 @@ http://www.quotek.io
 
 
 /**
-* strategy class is one of the most important of quotek adam bot.
+* strategy class is one of the most important of quotek qate bot.
 * When a strategy is created by an user, it inherits from it.
 * strategy class also handles the execution of the strat through the run() method.
 */
@@ -54,7 +54,7 @@ void set_env(quotek::data::records* recs,
 }
 
 /**
- * order() is a method meant to make direct orders to adam bot.
+ * order() is a method meant to make direct orders to qate bot.
  * @param order_data string representing the bot order to pass.
  */
  void order(std::string order_data) {
@@ -62,7 +62,7 @@ void set_env(quotek::data::records* recs,
  }
 
 /**
-* log() is a method that allows the user algorithm to forward log data to adam.
+* log() is a method that allows the user algorithm to forward log data to qate.
 * @param log_string string to log.
 */
 void log(std::string log_string) {

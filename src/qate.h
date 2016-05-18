@@ -1,10 +1,10 @@
-#ifndef ADAM_H
-#define ADAM_H
+#ifndef QATE_H
+#define QATE_H
 #include <stdio.h>
 #include <stdlib.h>
 #include "lib/tsengine.h"
 #include "lib/hsbt.h"
-#include "lib/adamcfg.h"
+#include "lib/qatecfg.h"
 #include <string>
 #include <dlfcn.h>
 #include <signal.h>
@@ -22,8 +22,8 @@
 
 #include "lib/constants.h"
 
-#ifndef ADAM_PREFIX
-#define ADAM_PREFIX "/usr/local/adam"
+#ifndef QATE_PREFIX
+#define QATE_PREFIX "/usr/local/qate"
 #endif
 
 
@@ -36,4 +36,4 @@ create_be* load_backend(string);
 void panic(const char *fmt, ...);
 void init_signals(struct sigaction*);
 void signal_callback_handler(int);
-void init_finalize(adamCfg* c, aep_ws_server* ws1);
+void init_finalize(qateCfg* c, aep_ws_server* ws1);

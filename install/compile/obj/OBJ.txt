@@ -1,1 +1,0 @@
-Here is the place where all Adam Compiled object are put.

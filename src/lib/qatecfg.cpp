@@ -1,11 +1,11 @@
-#include "adamcfg.h"
+#include "qatecfg.h"
 
-const string adamCfg::path = std::string(ADAM_PREFIX) + "/etc/adam.conf";
+const string qateCfg::path = std::string(QATE_PREFIX) + "/etc/qate.conf";
 
-adamCfg::adamCfg() {
+qateCfg::qateCfg() {
 
   npath = "";
-  mode = ADAM_MODE_REAL;
+  mode = QATE_MODE_REAL;
   inmem_history = 0;
   ticks.getval = 1000000;
   ticks.eval = 1000000;
@@ -16,125 +16,125 @@ adamCfg::adamCfg() {
 
 }
 
-string adamCfg::getBroker() {
+string qateCfg::getBroker() {
   return broker;
 }
 
-string adamCfg::getBrokerParams() {
+string qateCfg::getBrokerParams() {
   return broker_params;
 }
 
-string adamCfg::getBackend() {
+string qateCfg::getBackend() {
   return backend;
 }
 
-string adamCfg::getBackendParams() {
+string qateCfg::getBackendParams() {
   return backend_params;
 }
 
-int adamCfg::getInMemHistory() {
+int qateCfg::getInMemHistory() {
   return inmem_history;
 }
 
-AssocArray<indice*> adamCfg::getIndicesList() {
+AssocArray<indice*> qateCfg::getIndicesList() {
   return indices_list;
 }
 
 
-vector<string> adamCfg::getModulesList() {
+vector<string> qateCfg::getModulesList() {
   return modules_list;
 }
 
 
-std::vector<std::string> adamCfg::getActiveStrats() {
+std::vector<std::string> qateCfg::getActiveStrats() {
   return active_strats;
 }
 
-string adamCfg::getStratsPath() {
+string qateCfg::getStratsPath() {
   return strats_path;
 }
 
-mm_params* adamCfg::getMMP() {
+mm_params* qateCfg::getMMP() {
   return &mmp;
 }
 
-genetics_params* adamCfg::getGP() {
+genetics_params* qateCfg::getGP() {
   return &gp;
 }
 
-aep_params* adamCfg::getAEPP() {
+aep_params* qateCfg::getAEPP() {
   return &aepp;
 }
 
 
-std::string adamCfg::getBrokerMode() {
+std::string qateCfg::getBrokerMode() {
   return broker_mode;
 }
 
-int adamCfg::getMode() {
+int qateCfg::getMode() {
   return mode;
 }
 
 
-string adamCfg::getBTResultFile() {
+string qateCfg::getBTResultFile() {
   return backtest_result_path;
 }
 
 
-int adamCfg::getBFrom() {
+int qateCfg::getBFrom() {
   return backtest_from;
 }
 
-int adamCfg::getBTo() {
+int qateCfg::getBTo() {
   return backtest_to;
 }
 
-ticks_t adamCfg::getTicks() {
+ticks_t qateCfg::getTicks() {
   return ticks;
 }
 
-bool adamCfg::getBTExit() {
+bool qateCfg::getBTExit() {
   return bt_exit;
 }
 
-void adamCfg::setMode(int md) {
+void qateCfg::setMode(int md) {
   mode = md;
 }
 
-void adamCfg::setActiveStrats(std::vector<std::string> st) {
+void qateCfg::setActiveStrats(std::vector<std::string> st) {
   active_strats = st;
 }
 
-void adamCfg::setBFrom(int from) {
+void qateCfg::setBFrom(int from) {
   backtest_from = from;
 }
 
-void adamCfg::setBTo(int to) {
+void qateCfg::setBTo(int to) {
   backtest_to = to;  
 }
 
-void adamCfg::setAEPPort(int p) {
+void qateCfg::setAEPPort(int p) {
   aepp.listen_port = p;
 }
 
-void adamCfg::setBTResultFile(string f ) {
+void qateCfg::setBTResultFile(string f ) {
   backtest_result_path =  f;
 }
 
-void adamCfg::setStratsPath(std::string p) {
+void qateCfg::setStratsPath(std::string p) {
   strats_path = p;
 }
 
-void adamCfg::setBTExit(bool tv) {
+void qateCfg::setBTExit(bool tv) {
   bt_exit = tv;
 }
 
 
-void adamCfg::chconf(char* np) {
+void qateCfg::chconf(char* np) {
   npath = std::string(np);
 }
 
-int adamCfg::read() {
+int qateCfg::read() {
 
   string line;
 
@@ -237,7 +237,7 @@ int adamCfg::read() {
   }
 
   else {
-    cout << "ERROR: Unable to open adam config file" << endl;
+    cout << "ERROR: Unable to open qate config file" << endl;
     exit(0);
   }
   return 0;

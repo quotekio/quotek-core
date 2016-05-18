@@ -24,14 +24,14 @@ std::string tradestats2json(tradestats& s);
 
 
 /*
-hsbt, for High Speed BackTester, is the Adam's Backtesting engine.
+hsbt, for High Speed BackTester, is the Qate's Backtesting engine.
 It inherits from tsEngine but simplifies it for more speed and efficiency.
 */
 
 class hsbt: public tsEngine {
 
   public:
-  	hsbt(adamCfg*,
+  	hsbt(qateCfg*,
              broker*,
              backend*,
              AssocArray<indice*>,
@@ -46,16 +46,16 @@ class hsbt: public tsEngine {
     inline void moneyman_();
     inline void execute_();
     int loadBacktestData_();
-    adamresult* run();
-    adamGeneticsResult* runGenetics();
+    qateresult* run();
+    qateGeneticsResult* runGenetics();
 
     float getSpeed();
     int getBacktestPos();
     int getBacktestProgress();
     void setBacktestPos(int);
     void setBacktestProgress(int);
-    void addAStats(adamresult*);
-    void addLogStats(adamresult*);
+    void addAStats(qateresult*);
+    void addLogStats(qateresult*);
 
     /* Creates a snapshot of the trade statistics so far */
     tradestats compute_tradestats();

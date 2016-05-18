@@ -1,5 +1,5 @@
-#ifndef ADAMCFG_H
-#define ADAMCFG_H
+#ifndef QATECFG_H
+#define QATECFG_H
 
 #include <cstdlib>
 #include <string>
@@ -55,7 +55,7 @@ typedef struct ticks_t {
 
 
 
-class adamCfg {
+class qateCfg {
 
   private:
 
@@ -87,7 +87,7 @@ class adamCfg {
   public:
 
     static const string path;
-    adamCfg();
+    qateCfg();
     int read();
 
     /* getters */

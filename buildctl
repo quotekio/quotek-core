@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PREFIX="/usr/local/adam"
+PREFIX="/usr/local/qate"
 
 function bctl_cleanup() {
   make clean

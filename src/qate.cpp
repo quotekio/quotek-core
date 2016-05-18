@@ -1,4 +1,4 @@
-#include "adam.h"
+#include "qate.h"
 
 tsEngine* tse;
 hsbt* bte;
@@ -47,7 +47,7 @@ void signal_callback_handler(int signum) {
 
     so_iter++;
 
-    chdir(ADAM_PREFIX);
+    chdir(QATE_PREFIX);
 
     std::vector<strategyHandler*> sh_list = tse->getStratHandlers();
 
@@ -72,7 +72,7 @@ void signal_callback_handler(int signum) {
 
 }
 
-void parse_cmdline(adamCfg* conf,int argc,char** argv) {
+void parse_cmdline(qateCfg* conf,int argc,char** argv) {
 
    int c;
 
@@ -114,8 +114,8 @@ void parse_cmdline(adamCfg* conf,int argc,char** argv) {
         break;
 
       case 'b':
-        conf->setMode(ADAM_MODE_BACKTEST);
-        cout << "Starting Adam in Backtest mode.." << endl;
+        conf->setMode(QATE_MODE_BACKTEST);
+        cout << "Starting Qate in Backtest mode.." << endl;
         break;
 
       case 'e':
@@ -123,13 +123,13 @@ void parse_cmdline(adamCfg* conf,int argc,char** argv) {
         break;
 
       case 'd':
-        conf->setMode(ADAM_MODE_DRY);
-        cout << "Starting Adam in dry run mode, as compilation test.." << endl;
+        conf->setMode(QATE_MODE_DRY);
+        cout << "Starting Qate in dry run mode, as compilation test.." << endl;
         break;
 
       case 'g':
-        conf->setMode(ADAM_MODE_GENETICS);
-        cout << "Starting Adam in Genetics mode.." << endl;
+        conf->setMode(QATE_MODE_GENETICS);
+        cout << "Starting Qate in Genetics mode.." << endl;
         break;
 
       case 'x': {
@@ -308,7 +308,7 @@ int main(int argc,char** argv) {
 
   extern tsEngine* t;
 
-  cout << "ADAM TRADING BOT " << ADAM_VERSION << endl << "(c) 2013-2016 Clément Gamé" << endl;
+  cout << "QATE TRADING BOT " << QATE_VERSION << endl << "(c) 2013-2016 Clément Gamé" << endl;
 
   //init signals
   struct sigaction sigact;
@@ -317,13 +317,13 @@ int main(int argc,char** argv) {
   //seeds prandom generator
   srand(time(NULL));
   
-  chdir(ADAM_PREFIX);
+  chdir(QATE_PREFIX);
 
   cout << "Loading configuration..." << endl;
 
   genetics* ge = NULL;
   strategyHandler* sh;
-  adamCfg* c = new adamCfg();
+  qateCfg* c = new qateCfg();
 
   //checks if command line has config a config file option.
   bool has_cf_option = false;
@@ -362,7 +362,7 @@ int main(int argc,char** argv) {
 
   std::vector<strategyHandler*> sh_list;
 
-  if ( c->getMode() == ADAM_MODE_GENETICS  ) {
+  if ( c->getMode() == QATE_MODE_GENETICS  ) {
 
     genetics_params* gp = c->getGP();
 
@@ -434,27 +434,27 @@ int main(int argc,char** argv) {
 
   switch (c->getMode()) {
 
-    case ADAM_MODE_DRY:
-      cout << "Compilation was succesfull, closing adam..";
+    case QATE_MODE_DRY:
+      cout << "Compilation was succesfull, closing qate..";
       exit(0);
       break;
 
-    case ADAM_MODE_REAL:
+    case QATE_MODE_REAL:
       cout << "starting Engine in real mode.." << endl;
       tse = new tsEngine(c,b,back,ilist,sh_list,mm,ge,mlist);
       break;
-    case ADAM_MODE_BACKTEST:
+    case QATE_MODE_BACKTEST:
       cout << "starting Engine in backtest mode.." << endl;
       bte = new hsbt(c,b,back,ilist,sh_list,mm,ge,mlist);
       break;
 
-    case ADAM_MODE_GENETICS:
+    case QATE_MODE_GENETICS:
       cout << "starting Engine in genetics mode.." << endl;
       bte = new hsbt(c,b,back,ilist,sh_list,mm,ge,mlist);
       break;
 
     default:
-      cerr << "*CRITICAL: Unknown/unsupported mode for ADAM, closing program" << endl;
+      cerr << "*CRITICAL: Unknown/unsupported mode for QATE, closing program" << endl;
       exit(1);
       break;
       
@@ -477,11 +477,11 @@ int main(int argc,char** argv) {
 
     th_aep_ws1 = new std::thread( [ws1] { ws1->run(); } );
     
-    if ( c->getMode() == ADAM_MODE_REAL) {
+    if ( c->getMode() == QATE_MODE_REAL) {
       bc1 = new std::thread(ws_broadcast_real, tse, ws1);
     }
 
-    else if (c->getMode() == ADAM_MODE_BACKTEST || c->getMode() == ADAM_MODE_GENETICS) {
+    else if (c->getMode() == QATE_MODE_BACKTEST || c->getMode() == QATE_MODE_GENETICS) {
       bc1 = new std::thread(ws_broadcast_bt, bte, ws1);
     }
   }
@@ -490,20 +490,20 @@ int main(int argc,char** argv) {
 
 }
 
-void init_finalize(adamCfg* c, aep_ws_server* ws1) {
+void init_finalize(qateCfg* c, aep_ws_server* ws1) {
 
-  adamGeneticsResult* gres;
-  adamresult* res;
+  qateGeneticsResult* gres;
+  qateresult* res;
 
   std::cout << "Continuating with Init" << std::endl;
   
   //We finish TSE initialization and start the algos.
-  if ( c->getMode() == ADAM_MODE_REAL ) {
+  if ( c->getMode() == QATE_MODE_REAL ) {
     tse->init_finalize(c);
   }
 
   //We finish BT initialization and start the run
-  else if ( c->getMode() == ADAM_MODE_BACKTEST ) {
+  else if ( c->getMode() == QATE_MODE_BACKTEST ) {
     bte->init_finalize();
     res = bte->run();
 
@@ -517,7 +517,7 @@ void init_finalize(adamCfg* c, aep_ws_server* ws1) {
     if (c->getBTExit()) exit(0);
   }
 
-  else if ( c->getMode() == ADAM_MODE_GENETICS  ) {
+  else if ( c->getMode() == QATE_MODE_GENETICS  ) {
     bte->init_finalize();
     gres = bte->runGenetics();
     if ( c->getBTResultFile() != "" ) {

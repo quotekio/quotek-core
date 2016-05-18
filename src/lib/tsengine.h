@@ -8,7 +8,7 @@
 #include "backends/backend.h"
 #include "queue_c.h"
 
-#include "adamcfg.h"
+#include "qatecfg.h"
 #include "assoc.h"
 #include "broker.hpp"
 #include "constants.h"
@@ -53,7 +53,7 @@ class tsEngine{
   public:
 
     tsEngine();
-    tsEngine(adamCfg*,
+    tsEngine(qateCfg*,
              broker*,
              backend*, 
              AssocArray<indice*>,
@@ -62,7 +62,7 @@ class tsEngine{
              genetics*,
              vector<string>);
 
-    void init_finalize(adamCfg* conf);
+    void init_finalize(qateCfg* conf);
 
     broker* getBroker();
     backend* getBackend();
@@ -79,7 +79,7 @@ class tsEngine{
     int pushValues(string mepic,float v);
     int pushRecord(string,quotek::data::record& r);
 
-    adamCfg** getAdamConfig();
+    qateCfg** getQateConfig();
 
     AssocArray<void*>* getEvalPointers();
     std::vector<algo> getAlgos();
@@ -108,14 +108,14 @@ class tsEngine{
     //#### THREAD FUNCTIONS
     
     /**
-     * Polling thread of adam.
+     * Polling thread of qate.
      * This function periodically fetches the data from the configured broker
      */
     void poll();
 
     /**
      * Asset Evaluation threads.
-     * This function is vital to adam: it is the function which is
+     * This function is vital to qate: it is the function which is
      * called periodically (at each tick) to evaluate an asset and ultimately
      * takes a decision to take a position or not.
      */
@@ -131,7 +131,7 @@ class tsEngine{
 
     /**
      * Money Management Thread.
-     * This callback is the second most important in adam.
+     * This callback is the second most important in qate.
      * It runs the moneymanager: it ultimately decides to open a position
      * or not depending of the defined policy. It also computes the PNL 
      * of each position in real time.
@@ -141,7 +141,7 @@ class tsEngine{
     void modulethread_wrapper();
     /**
      * aclock is the thread callback handling time
-     * count in adam.
+     * count in qate.
      */
     void aclock();
     
@@ -162,7 +162,7 @@ class tsEngine{
 
   protected:
 
-    adamCfg* cfg;
+    qateCfg* cfg;
 
     broker* tse_broker;
     ticks_t tse_ticks;

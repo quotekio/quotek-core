@@ -3,7 +3,7 @@
 const string strategyHandler::cc = "g++";
 const string strategyHandler::cflags = "-std=c++11 -g -shared -rdynamic -fPIC";
 const string strategyHandler::dependencies = "-lcurl -lpthread -lquotek";
-const string strategyHandler::cpath = "/tmp/adam/cenv";
+const string strategyHandler::cpath = "/tmp/qate/cenv";
 
 strategyHandler::strategyHandler(string stpath, string n) {
   strats_path = stpath;
@@ -45,8 +45,8 @@ void strategyHandler::setGE(genetics* ge) {
 
 int strategyHandler::prepareCompile() {
 
-  mkdir("/tmp/adam",S_IRWXU);
-  mkdir("/tmp/adam/cenv",S_IRWXU);
+  mkdir("/tmp/qate",S_IRWXU);
+  mkdir("/tmp/qate/cenv",S_IRWXU);
 
   return preprocess();
 
@@ -185,7 +185,7 @@ int strategyHandler::preprocess_cpp() {
     //finding macro occurences and triggering error if found.
     else if ( std::regex_match(line,macro_regex) ) {
 
-      ofstream f_cerr ("/tmp/adam/compiler.errors.log");
+      ofstream f_cerr ("/tmp/qate/compiler.errors.log");
       f_cerr << "Error: Unauthorized macro #undef was used" << std::endl;
       f_cerr.close();
 
@@ -257,14 +257,14 @@ int strategyHandler::compile_cpp(int iter) {
                 " " + strategyHandler::cflags + " " + 
                 name + ".cpp -o " + name +  oss.str()  + ".so" + 
                 " " + strategyHandler::dependencies + 
-                " 2>/tmp/adam/compiler.errors.log";
+                " 2>/tmp/qate/compiler.errors.log";
   
   chdir(strategyHandler::cpath.c_str()); 
-  system("> /tmp/adam/compiler.errors.log");
+  system("> /tmp/qate/compiler.errors.log");
   system(ccmd.c_str());
 
   struct stat errstatus;
-  stat("/tmp/adam/compiler.errors.log", &errstatus );
+  stat("/tmp/qate/compiler.errors.log", &errstatus );
   
   return errstatus.st_size;
 }

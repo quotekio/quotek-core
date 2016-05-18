@@ -1,20 +1,20 @@
 cmake_minimum_required(VERSION 2.6)
 
-project(adam)
+project(qate)
 
 SET (CMAKE_CXX_COMPILER     "/usr/bin/g++")
 SET (CMAKE_C_COMPILER		    "/usr/bib/gcc")
 SET (CMAKE_CXX_FLAGS        "-g -std=c++1y -fPIC")
 SET (CMAKE_LINKER_FLAGS    "-rdynamic")
 
-add_definitions(-DADAM_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
+add_definitions(-DQATE_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
 
 add_executable(
-	adam
-	src/adam.cpp
-	src/adam.h
-  src/lib/adamcfg.h
-  src/lib/adamcfg.cpp
+	qate
+	src/qate.cpp
+	src/qate.h
+  src/lib/qatecfg.h
+  src/lib/qatecfg.cpp
 	src/lib/tsengine.h
 	src/lib/tsengine.cpp
   src/lib/hsbt.cpp
@@ -90,14 +90,14 @@ endif()
 
 
 target_link_libraries(
-        adam
+        qate
         quotek
         pthread
         dl
 )
 
 
-install (TARGETS adam DESTINATION bin)
+install (TARGETS qate DESTINATION bin)
 #install (TARGETS nntrain DESTINATION tools)
 
 install (FILES "install/tools/cbackup.sh" DESTINATION tools)
@@ -109,5 +109,5 @@ install (DIRECTORY "install/strats" DESTINATION .)
 install (DIRECTORY "install/doc" DESTINATION .)
 
 #init script
-install (FILES "install/etc/init.d/adam" DESTINATION /etc/init.d/)
+install (FILES "install/etc/init.d/qate" DESTINATION /etc/init.d/)
 

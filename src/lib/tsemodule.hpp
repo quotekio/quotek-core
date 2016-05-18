@@ -4,7 +4,7 @@
 #include "tsexport.hpp"
 
 /** tsemodule is a virtual class meant to provide a working template
- *  for Adam Modules.
+ *  for Qate Modules.
  */
 
 class tsemodule {
@@ -12,7 +12,7 @@ class tsemodule {
 public:
 
   /** tsemodule main constructor.
-   *  @param tse: Adam Exported TSEngine.
+   *  @param tse: Qate Exported TSEngine.
    */
   tsemodule(tsexport* tse)  {
     this->tse = tse;

@@ -469,7 +469,7 @@ float moneyManager::getEndResult() {
 
 
 
-void moneyManager::addStats(adamresult* result) {
+void moneyManager::addStats(qateresult* result) {
 
   computeWholePNLNoSec();
   result->pnl = cumulative_pnl + cur_pnl;

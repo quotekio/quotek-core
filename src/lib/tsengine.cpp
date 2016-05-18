@@ -29,7 +29,7 @@ void tsEngine::modulethread_wrapper() {
   mio.input = &(mi->input);
   mio.output = &(mi->output);
   
-  chdir(ADAM_PREFIX);
+  chdir(QATE_PREFIX);
   void* handle = dlopen(module_so.c_str(),RTLD_LAZY);
   
   if (!handle) {
@@ -642,7 +642,7 @@ tsEngine::tsEngine() {
 
 }
 
-tsEngine::tsEngine(adamCfg* conf,
+tsEngine::tsEngine(qateCfg* conf,
                    broker* b,
                    backend* back,
                    AssocArray<indice*> ilist,
@@ -684,7 +684,7 @@ tsEngine::tsEngine(adamCfg* conf,
 
 }
 
-void tsEngine::init_finalize(adamCfg* conf) {
+void tsEngine::init_finalize(qateCfg* conf) {
 
   std::cout << "Finalizing Initialization.." << std::endl;
 
@@ -777,7 +777,7 @@ void tsEngine::init_finalize(adamCfg* conf) {
   printf ("Initializing money manager..\n");
   mmth = new std::thread([this] { moneyman(); });
   
-  printf ("Synchronizing broker Positions with adam..\n");
+  printf ("Synchronizing broker Positions with qate..\n");
   broker_sync_start();
 
 
@@ -789,7 +789,7 @@ void tsEngine::init_finalize(adamCfg* conf) {
 
 }
 
-adamCfg** tsEngine::getAdamConfig() {
+qateCfg** tsEngine::getQateConfig() {
   return &cfg;
 }
 

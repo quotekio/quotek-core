@@ -12,7 +12,7 @@
 #include <sys/stat.h>
 
 
-#define GDUMP_DIR "/tmp/adam/genetics"
+#define GDUMP_DIR "/tmp/qate/genetics"
 
 using namespace std;
 

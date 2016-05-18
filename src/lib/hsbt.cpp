@@ -25,7 +25,7 @@ std::string tradestats2json(tradestats& s) {
 
 
 
-hsbt::hsbt(adamCfg* conf,
+hsbt::hsbt(qateCfg* conf,
                    broker* b,
                    backend* back,
                    AssocArray<indice*> ilist,
@@ -51,7 +51,7 @@ hsbt::hsbt(adamCfg* conf,
   backtest_progress = 0;
 
   if (tse_back == NULL) {
-    cout << "*ERROR: Cannot run adam in Backtest or genetics mode without a working backend, leaving ! *" << endl;
+    cout << "*ERROR: Cannot run qate in Backtest or genetics mode without a working backend, leaving ! *" << endl;
     exit(1);
   }
 
@@ -418,9 +418,9 @@ void hsbt::execute_() {
 }
 
 
-adamresult* hsbt::run() {
+qateresult* hsbt::run() {
 
-  adamresult* result = new adamresult();
+  qateresult* result = new qateresult();
   result->start = time(0);
   result->from = backtest_from; 
   result->to = backtest_to;
@@ -521,9 +521,9 @@ adamresult* hsbt::run() {
   return result;
 }
 
-adamGeneticsResult* hsbt::runGenetics() {
+qateGeneticsResult* hsbt::runGenetics() {
   
-  adamGeneticsResult* result = new adamGeneticsResult();
+  qateGeneticsResult* result = new qateGeneticsResult();
 
   return result;
 
@@ -626,7 +626,7 @@ void hsbt::setBacktestProgress(int bprogress) {
 }
 
 
-void hsbt::addAStats(adamresult* result) {
+void hsbt::addAStats(qateresult* result) {
 
   for(int i=0;i< inmem_records.Size();i++ ) {
 
@@ -643,7 +643,7 @@ void hsbt::addAStats(adamresult* result) {
   }
 }
 
-void hsbt::addLogStats(adamresult* result) {
+void hsbt::addLogStats(qateresult* result) {
   vector<log_entry>* lentries = logger->getAllEntries();
   for (int i=0;i<lentries->size();i++) {
     result->loglines.push_back(lentries->at(i).entry);

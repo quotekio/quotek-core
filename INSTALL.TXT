@@ -1,14 +1,6 @@
 DEPENDANCIES
 ============
 
-Adam Dependancies
------------------
-* libc++
-
-backend Modules Dependancies
---------------------------
- * influxdb-c (https://github.com/influxdb/influxdb-c.git)
-
 * System Mods
 =============
 

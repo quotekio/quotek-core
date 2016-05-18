@@ -85,7 +85,7 @@ std::string aep_version(tsEngine* t0) {
   std::string ret;
 
   ret = "{";
-  ret += "\"version\":\"" +  std::string(ADAM_VERSION)  +  ", " + quotek::core::version() + "\"";
+  ret += "\"version\":\"" +  std::string(QATE_VERSION)  +  ", " + quotek::core::version() + "\"";
   ret += "}"; 
 
   return ret;

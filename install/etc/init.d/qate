@@ -1,0 +1,28 @@
+#!/bin/bash
+
+QATE_BIN=/usr/local/qate/bin/qate
+QATE_USER=www-data
+QATE_PID="/tmp/qate/qate.pid"
+
+case $1 in
+
+  start)
+    start-stop-daemon --chuid $QATE_USER --start --quiet --background --oknodo --make-pidfile --pidfile $QATE_PID --exec $QATE_BIN
+  ;;
+
+  startfg)
+    start-stop-daemon --chuid $QATE_USER --start --quiet --oknodo --make-pidfile --pidfile $QATE_PID --exec $QATE_BIN
+  ;;
+
+  stop)
+    kill `cat /tmp/qate/qate.pid`
+  ;;
+
+  restart)
+    $0 stop
+    $0 start
+  
+esac
+
+
+

@@ -36,10 +36,10 @@ class assetstats {
 };
 
 
-class adamresult {
+class qateresult {
 
   public:
-  	adamresult() {
+  	qateresult() {
   	}
   	int start;
   	int stop;
@@ -151,9 +151,9 @@ class adamresult {
 
 
 //class made to store all the iterations.
-class adamGeneticsResult {
+class qateGeneticsResult {
   public:
-    vector<adamresult*> entries;
+    vector<qateresult*> entries;
 
     string json_encode() {
       stringstream res;

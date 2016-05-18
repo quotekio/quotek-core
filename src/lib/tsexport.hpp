@@ -16,12 +16,12 @@ class tsexport {
 public:
 
   /** tsexport main constructor.
-   *  @param mode: Adam running mode.
-   *  @param logger: Pointer to Adam logger object.
-   *  @param cur_pnl: Pointer to Adam Current PNL float variable.
-   *  @param cumulative_pnl: Pointer to Adam Cumulative PNL float variable.
-   *  @param positions: Pointer to Adam Positions list.
-   *  @param s: Current Adam values store pointer. 
+   *  @param mode: Qate running mode.
+   *  @param logger: Pointer to Qate logger object.
+   *  @param cur_pnl: Pointer to Qate Current PNL float variable.
+   *  @param cumulative_pnl: Pointer to Qate Cumulative PNL float variable.
+   *  @param positions: Pointer to Qate Positions list.
+   *  @param s: Current Qate values store pointer. 
    */
 
   tsexport(int mode,

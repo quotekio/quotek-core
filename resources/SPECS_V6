@@ -1,5 +1,5 @@
 ================================================
-SPECIFICATIONS ADAM V6, codename Flying Dutchman
+SPECIFICATIONS QATE V6, codename Flying Dutchman
 ================================================
 
 [ ] Passage de toutes les I/O inter-threads par une message queue ZMQ

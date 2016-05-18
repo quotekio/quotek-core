@@ -1,5 +1,5 @@
 ====================================================
-SPECIFICATIONS ADAM V5, Codename Queen Ann's Revenge
+SPECIFICATIONS QATE V5, Codename Queen Ann's Revenge
 ====================================================
 
 [ ] Gestion de toutes les files d'attente inter-threads avec ZMQ, notamment mise en queue de l'historique de simulation pour obtenir des resultats de backtest qui son time/power independants ==> Not Needed
@@ -27,7 +27,7 @@ CHANGELOG V5
 * Creation d'une nouvelle option de config, inmem_history, qui permet de charger en memoire une 
   certaine quantité d'historique, au demarrage du robot.
 
-* Refonte totale du format de stockage des données inmem dans adam: nouvelles structures record et records (liste de records)
+* Refonte totale du format de stockage des données inmem dans qate: nouvelles structures record et records (liste de records)
 
 * Prise en compte du spread !
 

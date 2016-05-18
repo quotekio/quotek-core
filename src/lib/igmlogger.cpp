@@ -4,10 +4,10 @@ igmLogger::igmLogger() {
 
   use_stdout = false;
 
-  out.open("/var/log/adam.log",std::ofstream::out | std::ofstream::app);
+  out.open("/var/log/qate.log",std::ofstream::out | std::ofstream::app);
 
   if ( ! out.is_open() ) {
-    cout << "cannot open /var/log/adam.log for writing" << endl;
+    cout << "cannot open /var/log/qate.log for writing" << endl;
     exit(1);
   } 
  }
@@ -15,10 +15,10 @@ igmLogger::igmLogger() {
 igmLogger::igmLogger(bool uout) {
 
   use_stdout = uout;
-  out.open("/var/log/adam.log",std::ofstream::out | std::ofstream::app);
+  out.open("/var/log/qate.log",std::ofstream::out | std::ofstream::app);
 
   if ( ! out.is_open() ) {
-    cout << "cannot open /var/log/adam.log for writing" << endl;
+    cout << "cannot open /var/log/qate.log for writing" << endl;
     exit(1);
   }
 
