@@ -100,13 +100,7 @@ target_link_libraries(
 install (TARGETS qate DESTINATION bin)
 #install (TARGETS nntrain DESTINATION tools)
 
-install (FILES "install/tools/cbackup.sh" DESTINATION tools)
-install (FILES "install/tools/cleanall.sh" DESTINATION tools)
-
-install (DIRECTORY "install/compile" DESTINATION .)
 install (DIRECTORY "install/etc" DESTINATION .)
-install (DIRECTORY "install/strats" DESTINATION .)
-install (DIRECTORY "install/doc" DESTINATION .)
 
 #init script
 install (FILES "install/etc/init.d/qate" DESTINATION /etc/init.d/)
