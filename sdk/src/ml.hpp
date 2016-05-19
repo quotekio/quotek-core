@@ -52,9 +52,8 @@ namespace quotek {
      * Note: feats must be between 1 and columns(X) - 1
      * @return PCA-reduced dataset.
      */
-     
-    dataset pca(dataset& X, int feats);
 
+    dataset pca(dataset& X, int feats);
 
     /**
      * kmeans performs a K-means clustering algorithm

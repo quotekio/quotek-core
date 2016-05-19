@@ -5,6 +5,7 @@ Copyright 2013-2016 Quotek SAS
 
 #include "ml.hpp"
 
+
 namespace quotek {
 
   namespace ml {
@@ -53,7 +54,73 @@ namespace quotek {
         }
 
 
+        //compute new centroids according to update tags for each sample
+        MatrixXd computeCentroids(dataset& X, VectorXd& idx, int nb_clusters ) {
+
+          MatrixXd centroids = MatrixXd(nb_clusters, X.cols() );
+
+          for (int i=0; i< nb_clusters; i++ ) {
+ 
+            int nattached = 0;
+            VectorXd kvect;
+
+            for (int j= 0; j< X.rows(); j++) {
+
+                if (idx(j) == i) {
+                  nattached++;
+                }
+                  
+            }
+
+            centroids.row(i) << (kvect.sum() / nattached);
+
+          }        
+          return centroids;
+        }
+        
+
+        //tags each sample with its closest centroid index.
+        VectorXd findClosestCentroids(dataset& X, MatrixXd& centroids) {
+          
+          VectorXd idx = VectorXd(X.rows());
+
+          for (int i=0;i < X.rows(); i++ ) {
+
+            double closest = 10000000000000 ;
+
+            for (int j=0;j < centroids.rows(); j++ ) {
+
+              /*
+              R .^2: R.array().square()
+              sum(R):  R.colwise().sum()
+              */
+
+              MatrixXd x1 = X.row(j) - centroids.row(j);
+              MatrixXd x2 = x1.array().square();
+
+              double dist = x2.sum();
+
+              if (dist <= closest) {
+                closest = dist;
+                idx.row(i) << j;
+              }
+
+            }
+          }
+
+          return idx;
+        }
+
+
+
+      
         dataset kmeans(dataset& X, int nb_clusters) {
+        
+          //We declare a new matrix to store centroids.
+          MatrixXd centroids = MatrixXd( nb_clusters, X.cols() );
+
+          //We declare a new vector to store centroid attachements.
+          VectorXd idx = VectorXd( X.rows() );
 
         }
 

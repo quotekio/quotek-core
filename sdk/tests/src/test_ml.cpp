@@ -48,9 +48,20 @@ void test_ml_pca() {
 }
 
 
+void test_ml_kmeans() {
+
+}
+
+void test_ml_polyfeat() {
+
+}
+
+
 int main() {
 
   test_ml_add_ones();
   test_ml_pca();
+  test_ml_kmeans();
+  test_ml_polyfeats();
   exit(0);
 }
