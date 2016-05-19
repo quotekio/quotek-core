@@ -19,6 +19,11 @@ add_executable(
 )
 
 add_executable(
+       test_ml
+       src/test_ml.cpp
+)
+
+add_executable(
 		test_timeutils
 		src/test_timeutils.cpp
 )
@@ -264,3 +269,10 @@ target_link_libraries(
         curl
 )
 
+
+target_link_libraries(
+        test_ml
+        quotek
+        pthread
+        curl
+)

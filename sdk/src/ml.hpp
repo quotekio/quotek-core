@@ -37,6 +37,13 @@ namespace quotek {
      */
     dataset& normalize(dataset& X);
 
+    /** Adds a column of ones to the dataset. *
+     *  @param X: dataset to add ones for.
+     *  @return reference to the modified dataset.
+     */
+
+    dataset& add_ones(dataset& X);
+
     /**
      * pca performs Principal Component Analysis on 
      * a given n-dimensions dataset.
@@ -45,6 +52,7 @@ namespace quotek {
      * Note: feats must be between 1 and columns(X) - 1
      * @return PCA-reduced dataset.
      */
+     
     dataset pca(dataset& X, int feats);
 
 

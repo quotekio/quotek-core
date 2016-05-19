@@ -20,17 +20,35 @@ namespace quotek {
 
         }
 
+        dataset& add_ones(dataset& X) {
+
+          X.conservativeResize(X.rows(),X.cols() + 1);
+
+          //shifts data to the last column
+          for (int i= X.cols() -2; i >= 0; i-- ) {
+            X.col(i+1) = X.col(i);
+          }
+
+          VectorXd v1 =  VectorXd( X.rows() );
+          for (int i=0;i< X.rows(); i++ ) {
+            v1.row(i) << 1;
+          }
+
+          X.col(0) = v1;
+        
+          return X;
+        }
+
         dataset pca(dataset& X, int feats) {
 
           dataset result;
 
-          MatrixXd centered = X.rowwise() - X.colwise().mean();
-          MatrixXd cov = centered.adjoint() * centered;
+          MatrixXd aligned = X.rowwise() - X.colwise().mean();
+          JacobiSVD<MatrixXd> svd(aligned, ComputeThinV);
 
-          SelfAdjointEigenSolver<MatrixXd> eig(cov);
+          MatrixXd W = svd.matrixV().leftCols(feats);
 
-          std::cout << eig.eigenvectors().rightCols(feats) << std::endl;
-
+          result = X * W;
           return result;
         }
 
@@ -47,9 +65,6 @@ namespace quotek {
           X.conservativeResize(X.rows(), nnc);
 
           
-
-          
-
           return X;
         }
 
