@@ -37,6 +37,13 @@ void test_ml_pca() {
   assert(Xpca.col(0)[1] > 8.5 && Xpca.col(0)[1] < 9.5  );
   assert(Xpca.col(0)[2] > 7.5 && Xpca.col(0)[2] < 8.5  );
 
+  quotek::ml::dataset Xpca2 = quotek::ml::pca(X,2);
+
+  assert( Xpca2.cols() == 2  );
+  assert(Xpca2.col(1)[0] > 1.5 && Xpca2.col(1)[0] < 2.5  );
+  assert(Xpca2.col(1)[1] > 3.2 && Xpca2.col(1)[1] < 4.8  );
+  assert(Xpca2.col(1)[2] > 5.2 && Xpca2.col(1)[2] < 6.8  );
+
 
 }
 
