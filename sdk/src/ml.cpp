@@ -53,26 +53,56 @@ namespace quotek {
           return result;
         }
 
+        //initializes centroids coordinates randomly.
+        void initCentroids(dataset& X, int nb_clusters, MatrixXd& centroids) {
 
-        //compute new centroids according to update tags for each sample
+          centroids = MatrixXd(nb_clusters, X.cols() );
+
+          srand(time(NULL));
+          for (int i=0; i< nb_clusters;i++) {
+            unsigned int rsample = quotek::core::utils::randr(0, X.rows()-1);
+            VectorXd sample = X.row(rsample);
+            centroids.row(i) = sample;
+
+          }
+
+        }
+
+        //compute new centroids according to updated tags for each sample
         MatrixXd computeCentroids(dataset& X, VectorXd& idx, int nb_clusters ) {
 
           MatrixXd centroids = MatrixXd(nb_clusters, X.cols() );
 
           for (int i=0; i< nb_clusters; i++ ) {
  
+            //nattached stores the number of points attached to old centroid.
             int nattached = 0;
-            VectorXd kvect;
+            MatrixXd kvect;
 
             for (int j= 0; j< X.rows(); j++) {
 
+                RowVectorXd X_j = X.row(j);
+
                 if (idx(j) == i) {
                   nattached++;
+
+                  
+                  MatrixXd concat_(kvect.rows() + 1 , X.cols());
+
+                  if (kvect.size() != 0) { 
+                    concat_ << kvect, X_j;
+                    kvect = concat_;
+                  }
+
+                  else kvect = X_j;
+                  
                 }
                   
             }
 
-            centroids.row(i) << (kvect.sum() / nattached);
+            //computes the updated centroid using the "barrycenter" of attached points.
+            if (kvect.size() > 0) centroids.row(i) <<  kvect.colwise().sum() / nattached;
+
 
           }        
           return centroids;
@@ -95,7 +125,7 @@ namespace quotek {
               sum(R):  R.colwise().sum()
               */
 
-              MatrixXd x1 = X.row(j) - centroids.row(j);
+              MatrixXd x1 = X.row(i) - centroids.row(j);
               MatrixXd x2 = x1.array().square();
 
               double dist = x2.sum();
@@ -114,13 +144,32 @@ namespace quotek {
 
 
       
-        dataset kmeans(dataset& X, int nb_clusters) {
+        dvector kmeans(dataset& X, int nb_clusters) {
         
+
           //We declare a new matrix to store centroids.
-          MatrixXd centroids = MatrixXd( nb_clusters, X.cols() );
+          MatrixXd centroids;
+
+          initCentroids(X,nb_clusters,centroids);
 
           //We declare a new vector to store centroid attachements.
-          VectorXd idx = VectorXd( X.rows() );
+          VectorXd idx;
+          //VectorXd prev_idx = VectorXd(X.rows());
+
+          for (int i=0;i< KMEANS_MAX_ITER ; i++) {
+          
+            idx = findClosestCentroids(X,centroids);
+
+            //debug
+            //std::cout << "IDX:" << idx << std::endl;
+            centroids = computeCentroids(X,idx,nb_clusters);
+
+            //if ( idx == prev_idx ) break;
+            //else prev_idx = idx;
+
+          }
+
+          return idx;
 
         }
 

@@ -12,6 +12,9 @@ Copyright 2013-2016 Quotek SAS
 #include "cppoptlib/meta.h"
 #include "cppoptlib/problem.h"
 #include "cppoptlib/solver/bfgssolver.h"
+#include "utils.hpp"
+
+#define KMEANS_MAX_ITER 1000
 
 using namespace Eigen;
 
@@ -62,10 +65,10 @@ namespace quotek {
      * want to labelize them manually.
      * @param X dataset to labelize
      * @param nb_clusters integer which defines the number of categories wanted for clustering.
-     * @return Labelized dataset: a new column which contains values in [1,nb_clusters] for each sample, is created.
+     * @return lebels vector for each row of the dataset.
      */
      
-    dataset kmeans(dataset& X, int nb_clusters);
+    dvector kmeans(dataset& X, int nb_clusters);
 
 
     /**

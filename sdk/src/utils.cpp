@@ -40,6 +40,11 @@ namespace quotek {
               return ltrim(rtrim(s));
       }
 
+      unsigned int randr(unsigned int min, unsigned int max) {
+             double scaled = (double)rand()/RAND_MAX;
+             return (max - min +1)*scaled + min;
+      }
+
     }
   }
 }

@@ -50,9 +50,25 @@ void test_ml_pca() {
 
 void test_ml_kmeans() {
 
+  quotek::ml::dataset X =  MatrixXd(10,2);
+  X << 1,1,2,2,3,3,4,4,5,5,116,119,110,115,132,137,129,118,116,119;
+
+  quotek::ml::dvector v1 = quotek::ml::kmeans(X,2);
+  
+  assert(  v1.row(0)  == v1.row(1));
+  assert(  v1.row(0)  == v1.row(2)); 
+  assert(  v1.row(0)  == v1.row(3));
+  assert(  v1.row(0)  == v1.row(4));  
+
+  assert(  v1.row(5)  == v1.row(6));
+  assert(  v1.row(5)  == v1.row(7)); 
+  assert(  v1.row(5)  == v1.row(8));
+  assert(  v1.row(5)  == v1.row(9));  
+
+
 }
 
-void test_ml_polyfeat() {
+void test_ml_polyfeats() {
 
 }
 
