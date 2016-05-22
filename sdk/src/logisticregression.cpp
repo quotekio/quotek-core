@@ -16,7 +16,7 @@ namespace quotek {
     }
 
     logisticRegression::~logisticRegression() {
-
+      
     }
   
     int logisticRegression::train(dataset& X){

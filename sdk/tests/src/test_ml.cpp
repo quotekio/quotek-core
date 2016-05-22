@@ -3,14 +3,14 @@
 #define EPSILON 0.01
 
 
-void test_ml_add_ones() {
+void test_ml_add_bias() {
 
   quotek::ml::dataset X;
 
   X =  MatrixXd(5,2);
   X << 4,4,4,4,4,4,4,4,4,4;
 
-  quotek::ml::add_ones(X);
+  quotek::ml::add_bias(X);
   
   assert( X.cols() == 3  );
 
@@ -21,7 +21,6 @@ void test_ml_add_ones() {
   }
   
 }
-
 
 void test_ml_pca() {
 
@@ -54,7 +53,7 @@ void test_ml_kmeans() {
   X << 1,1,2,2,3,3,4,4,5,5,116,119,110,115,132,137,129,118,116,119;
 
   quotek::ml::dvector v1 = quotek::ml::kmeans(X,2);
-  
+
   assert(  v1.row(0)  == v1.row(1));
   assert(  v1.row(0)  == v1.row(2)); 
   assert(  v1.row(0)  == v1.row(3));
@@ -69,13 +68,23 @@ void test_ml_kmeans() {
 }
 
 void test_ml_polyfeats() {
+  
+  quotek::ml::dataset X = MatrixXd(3,2);
+  X << 0,1,2,3,4,5;
+
+  quotek::ml::dataset Xres = MatrixXd(3,5);
+  Xres << 0,1,0,0,1,2,3,4,6,9,4,5,16,20,25;
+
+  quotek::ml::dataset X2 = quotek::ml::polynomial_features(X,2);
+
+  assert( X2 == Xres ); 
 
 }
 
 
 int main() {
 
-  test_ml_add_ones();
+  test_ml_add_bias();
   test_ml_pca();
   test_ml_kmeans();
   test_ml_polyfeats();

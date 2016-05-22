@@ -40,12 +40,12 @@ namespace quotek {
      */
     dataset& normalize(dataset& X);
 
-    /** Adds a column of ones to the dataset. *
+    /** Adds a bias column composed of ones to the dataset. *
      *  @param X: dataset to add ones for.
      *  @return reference to the modified dataset.
      */
 
-    dataset& add_ones(dataset& X);
+    dataset& add_bias(dataset& X);
 
     /**
      * pca performs Principal Component Analysis on 
@@ -79,7 +79,7 @@ namespace quotek {
      * @param degree Number of dimensions to add.
      * @return dimentionality improved dataset
      */
-     dataset& polynomial_features(dataset& X, int degree);
+     dataset polynomial_features(dataset& X, int degree);
 
     /**
      * computes the sigmoid function of a single double value.

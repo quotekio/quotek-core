@@ -21,7 +21,7 @@ namespace quotek {
 
         }
 
-        dataset& add_ones(dataset& X) {
+        dataset& add_bias(dataset& X) {
 
           X.conservativeResize(X.rows(),X.cols() + 1);
 
@@ -152,7 +152,7 @@ namespace quotek {
 
           initCentroids(X,nb_clusters,centroids);
 
-          //We declare a new vector to store centroid attachements.
+          //<fWe declare a new vector to store centroid attachements.
           VectorXd idx;
           //VectorXd prev_idx = VectorXd(X.rows());
 
@@ -174,14 +174,124 @@ namespace quotek {
         }
 
 
-        dataset& polynomial_features(dataset& X, int degree) {
-          
-          int prev_cols = X.cols();
-          int nnc = X.cols() + (degree -1 ) * X.cols();
-          X.conservativeResize(X.rows(), nnc);
+        //python range(m,n) C++ impl.
+        std::vector<int> range(int min, int max) {
+
+          std::vector<int> result;
+
+          for (int i=min;i < max;i++) {
+            result.emplace_back(i);
+          }
+          return result;
+        }
+
+        //python range(n) C++ impl.
+        std::vector<int> range(int r) {
+          return range(0,r);
+        }
+
+
+        bool is_sorted(std::vector<int>& pool, std::vector<int>& comb) {
+
+          int prev_idx = 0;
+
+          for (int i=0; i< comb.size();i++) {
+
+            int n = comb[i];
+
+            //next we want indice of n;
+            int idx = 0;
+
+            for (int j=0;j< pool.size();j++) {
+              if ( pool[j]  == n) {
+                idx = j;
+                break;
+              }
+            }
+
+            if (idx < prev_idx ) return false;
+            prev_idx = idx;
+
+          }
+          return true;
+        }
+
+
+        void backtrack_rec(std::vector<std::vector<int>>& result,  
+                                       std::vector<int>& pool,
+                                       std::vector<int> combination, 
+                                       int depth, 
+                                       int expected_length) {
 
           
-          return X;
+
+          if(depth < expected_length) {
+
+              for(int i=0 ;i<pool.size();i++) {
+
+                  combination.push_back(pool[i]);
+                  backtrack_rec(result, pool,combination, depth + 1,expected_length);
+                  combination.pop_back();
+
+              }
+          }
+          else if ( is_sorted(pool, combination)  ) result.emplace_back(combination);
+
+
+        }
+
+        //Combination with replacement C++ impl.
+        std::vector<std::vector<int>> CWR(std::vector<int> pool, int r) {
+
+          std::vector<std::vector<int>> result;
+
+          std::vector<int> combination;
+
+          backtrack_rec (result, pool, combination,0,r);
+          return result;
+        }
+
+
+        void printvect(std::vector<int> v) {
+          std::cout << "(" ;
+          for (int i=0;i < v.size(); i++ ) {
+            std::cout << v[i] ;
+            if (i < v.size() -1) std::cout << ", ";
+          }
+          std::cout << ")";
+        }
+
+        dataset polynomial_features(dataset& X, int degree) {
+          
+          dataset result;
+
+          //creates combinations
+          std::vector<std::vector<int>> combinations;
+
+          //if not include bias, start = 1
+          for (int i= 1;i< degree + 1; i++ ) {
+            
+            std::vector<std::vector<int>> cbx = CWR(range( X.cols() ), i);
+            combinations.insert(combinations.end(),cbx.begin(),cbx.end());
+
+          }
+
+          result = MatrixXd(X.rows(), combinations.size() );
+
+          for (int i=0;i<combinations.size();i++) {
+            
+            MatrixXd tmp = MatrixXd( X.rows(), combinations[i].size() );
+
+            for (int j=0;j<combinations[i].size();j++) {
+
+              tmp.col(j) = X.col( combinations[i][j] );
+            }
+
+            result.col(i) = tmp.rowwise().prod();
+
+          }
+
+          return result;
         }
 
         double nl_sigmoid(double input) {
