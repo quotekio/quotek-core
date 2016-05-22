@@ -1,5 +1,5 @@
 /*
-Quotek Strategies SDK 2.3
+Quotek Strategies SDK 3.0
 Copyright 2013-2016 Quotek SAS
 http://www.quotek.io
 */
@@ -31,7 +31,7 @@ namespace quotek {
     #define TMPDIR "/tmp/"
     #endif
     
-    #define SDK_VERSION "Quotek SDK v2.3"
+    #define SDK_VERSION "Quotek SDK v3.0"
 
 
   }
