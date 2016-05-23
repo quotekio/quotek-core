@@ -101,14 +101,14 @@ namespace quotek {
 
       quotek::quant::pivot result;
 
-      result.pivot = (high + low + close ) / 3;
-      result.s1 = 2 * result.pivot - high;
-      result.s2 = result.pivot - ( high - low );
-      result.s3 = result.pivot - 2 * (high - low);
+      result.p0 = (high + low + close ) / 3;
+      result.s1 = 2 * result.p0 - high;
+      result.s2 = result.p0 - ( high - low );
+      result.s3 = result.p0 - 2 * (high - low);
       
-      result.r1 = 2 * result.pivot - low;
-      result.r2 = result.pivot + (high - low);
-      result.r3 = result.pivot + 2 * (high - low);
+      result.r1 = 2 * result.p0 - low;
+      result.r2 = result.p0 + (high - low);
+      result.r3 = result.p0 + 2 * (high - low);
 
       return result;
 

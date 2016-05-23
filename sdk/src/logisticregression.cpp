@@ -40,7 +40,7 @@ namespace quotek {
 
       solver.minimize(f, beta);
       this->coefficients = beta;
-
+      return 0;
     }
 
     int logisticRegression::predict(dataset& X, std::vector<int>& y){
@@ -49,7 +49,7 @@ namespace quotek {
           dataset m1 = X.row(i);
           y.emplace_back( this->predict(m1));
       }
-    
+      return 0;
     }
 
     int logisticRegression::predict(dataset& X){

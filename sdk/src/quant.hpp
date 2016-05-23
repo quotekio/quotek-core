@@ -144,7 +144,7 @@ namespace quotek {
 
     typedef struct pivot {
       /* Pivot Point */
-      float pivot;
+      float p0;
 
       /* First Resistence */
       float r1;

@@ -11,6 +11,9 @@ Copyright 2013-2016 Quotek SAS
 #include <string>
 #include <sstream>
 #include <vector>
+#include <functionnal>
+#include <cctype>
+#include <locale>
 
 namespace quotek {
 

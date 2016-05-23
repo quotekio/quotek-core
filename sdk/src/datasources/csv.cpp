@@ -89,6 +89,7 @@ namespace quotek {
 
       else if ( this->scheme == "null://" || this->scheme == "string://" ) {
         //do nothing.
+        return result;
       }
 
       else {
@@ -184,6 +185,7 @@ namespace quotek {
 
       else if ( this->scheme == "null://" || this->scheme == "string://" ) {
         //do nothing.
+        return result;
       }
 
       else {

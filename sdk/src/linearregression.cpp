@@ -46,6 +46,7 @@ namespace quotek {
       solver.minimize(f, beta);
       this->coefficients = beta;
 
+      return 0;
     }
 
     int linearRegression::predict(dataset& X, std::vector<double>& y){
@@ -56,6 +57,7 @@ namespace quotek {
           y.emplace_back( this->predict(m1));
         }
 
+        return 0;
     }
 
     double linearRegression::predict(dataset& X){
