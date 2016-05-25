@@ -131,6 +131,7 @@ install (FILES "src/http.hpp" DESTINATION include/quotek)
 install (FILES "src/imap.hpp" DESTINATION include/quotek)
 install (FILES "src/json.hpp" DESTINATION include/quotek)
 
+install (FILES "src/kalman.hpp" DESTINATION include/quotek)
 
 install (FILES "src/linearregression.hpp" DESTINATION include/quotek)
 install (FILES "src/logisticregression.hpp" DESTINATION include/quotek)

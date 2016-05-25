@@ -121,6 +121,11 @@ add_executable(
        src/test_email.cpp
 )
 
+add_executable(
+       test_kalman
+       src/test_kalman.cpp
+)
+
 
 
 
@@ -272,6 +277,13 @@ target_link_libraries(
 
 target_link_libraries(
         test_ml
+        quotek
+        pthread
+        curl
+)
+
+target_link_libraries(
+        test_kalman
         quotek
         pthread
         curl
