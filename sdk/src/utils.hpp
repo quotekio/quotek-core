@@ -11,9 +11,12 @@ Copyright 2013-2016 Quotek SAS
 #include <string>
 #include <sstream>
 #include <vector>
-#include <functionnal>
-#include <cctype>
-#include <locale>
+
+#ifdef _WIN64
+  #include <functionnal>
+  #include <cctype>
+  #include <locale>
+#endif
 
 namespace quotek {
 
