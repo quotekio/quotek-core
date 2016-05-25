@@ -10,20 +10,21 @@ http://www.quotek.io
 namespace quotek {
 
   namespace core {
-  	#define S10 10
-  	#define S30 30
-  	#define S50 50
-    #define m1 60
-    #define m5 300
-    #define m10 600
-    #define m15 900
-    #define H1 3600
-    #define H2 7200
-    #define H4 14400
-    #define H10 36000
-    #define D1 86400
-    #define M1 2592000
-    #define Y1 31104000
+
+  	#define T_S10 10
+  	#define T_S30 30
+  	#define T_S50 50
+    #define T_m1 60
+    #define T_m5 300
+    #define T_m10 600
+    #define T_m15 900
+    #define T_H1 3600
+    #define T_H2 7200
+    #define T_H4 14400
+    #define T_H10 36000
+    #define T_D1 86400
+    #define T_M1 2592000
+    #define T_Y1 31104000
     
     #ifdef _WIN64
     #define TMPDIR "%%Temp%%"

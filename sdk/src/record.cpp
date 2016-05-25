@@ -271,6 +271,37 @@ namespace quotek {
 
     }
 
+
+    Eigen::VectorXd records::to_vector() {
+
+      Eigen::VectorXd result = Eigen::VectorXd( this->data.size());
+      for (int i = 0; i < this->data.size(); i++ ) {
+        result.row(i) << this->data[i].value;
+      }
+
+      return result;
+    }
+
+       
+    Eigen::MatrixXd records::to_matrix(const bool add_timestamps = true) {
+
+      Eigen::MatrixXd result;
+
+      if ( add_timestamps ) {
+        result = Eigen::MatrixXd(this->data.size(), 3 );
+      }
+
+      else {
+        result = Eigen::MatrixXd(this->data.size(), 2);
+      }
+
+      for (int i=0;i< this->data.size();i++) {
+        result.row(i) << this->data[i].to_vector(add_timestamps);
+      }
+
+    }
+
+
     record::record() {
 
     }
@@ -292,6 +323,25 @@ namespace quotek {
       return ss.str();
 
     }
+
+    /** Translates record to Eigen VectorXd */
+    Eigen::VectorXd record::to_vector(const bool add_timestamps = true) {
+      
+      Eigen::VectorXd result;
+
+      if ( add_timestamps ) {
+        result = Eigen::VectorXd(3);
+        result << this->timestamp, this->value, this->spread;
+      }
+
+      else {
+        result = Eigen::VectorXd(2);
+        result << this->value, this->spread;
+      }
+
+      return result;
+    }
+    
 
     /** Adds possibility to add record directly in stringstream */
     std::ostream& operator<<(std::ostream& stream, quotek::data::record& r) {

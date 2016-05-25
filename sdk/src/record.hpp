@@ -14,6 +14,9 @@ http://www.quotek.io
 #include <algorithm>
 #include <tuple>
 
+#include "eigen3/Eigen/Dense"
+
+
 namespace quotek {
 
   namespace data {
@@ -52,6 +55,12 @@ namespace quotek {
        float value;
        /** the spread offered by the broker for the asset at time timestamp. */ 
        float spread;
+
+       /** Translates record to Eigen::VectorXd (dvector) type.
+        *  @param add_timestamps tells if timestamps must be added to vector or not.
+        *  @return the record translated as Eigen::VectorXd (dvector)
+        */
+       Eigen::VectorXd to_vector(const bool add_timestamps);
 
     };
 
@@ -109,9 +118,6 @@ namespace quotek {
          */
          quotek::data::records sample(long time_inf, long time_sup);
         
-
-         
-
         /**
          * 
          * to create a new subvector.
@@ -203,7 +209,18 @@ namespace quotek {
          */
         quotek::data::record max();
 
-       
+        /** Similar to export_values, but instead of returning an std::vector<float>, it
+         *  returns an Eigen::VectorXd (dvector) data structure.
+         *  @return all the values alligned inside an Eigen::VectorXd (dvector)
+         */
+        Eigen::VectorXd to_vector();
+
+        /** Converts the quotek::data::records structure to an Eigen::MatrixXd (dataset) structure.
+         *  @param add_timestamps tells if timestamps must be added to vector or not.
+         *  @return an Eigen::MatrixXd (dataset) representation of the data.
+         */
+        Eigen::MatrixXd to_matrix(const bool add_timestamps);
+
       private:
         std::vector<quotek::data::record> data;
     };
