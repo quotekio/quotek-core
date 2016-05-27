@@ -52,6 +52,33 @@ int strategyHandler::prepareCompile() {
 
 }
 
+std::string strategyHandler::import_module(std::string module_name) {
+
+  std::string res = "";
+  std::string line;
+
+  std::string rpath;
+
+  //hackish way to load data from qbacktest
+  if (  strats_path == "/tmp/qate/cenv/" ) {
+    rpath = "/quotek/";
+  }
+  else rpath = strats_path;
+
+  //std::cout << "RPATH:" << rpath << std::endl;
+
+  ifstream fh (std::string(rpath + "/" + module_name).c_str());
+  
+  while(fh.good()){
+    getline(fh,line);
+    res += line + "\n";
+  }
+  //std::cout << "RES:" << res << std::endl;
+
+  return res;
+}
+
+
 int strategyHandler::preprocess() {
 
   if ( this->language == "python" ) {
@@ -119,7 +146,7 @@ int strategyHandler::preprocess_cpp() {
 
   std::regex classname_regex("^class(.*)");
   std::regex asset_match_regex("^\\/\\/\\#asset_match(.*)");
-  std::regex strat_include_regex("^\\/\\/\\#strat_include(.*)");
+  std::regex import_regex("^\\/\\/\\#import(.*)");
   std::regex ex_eval_regex ("(.*)\\/\\/#ex_eval(.*)");
 
   std::regex macro_regex("^(\\s*)#undef(.*)", 
@@ -180,6 +207,12 @@ int strategyHandler::preprocess_cpp() {
       this->asset_match = line.replace(line.find("//#asset_match"),strlen("//#asset_match"),"");
       trim(this->asset_match);
       std::cout << "Found asset matching regex in Strategy: " << this->asset_match << std::endl;
+    }
+
+    else if (std::regex_match(line, import_regex)) {
+      std::string modname = line.replace(line.find("//#import"), strlen("//#import"),"");
+      trim(modname);
+      wh << this->import_module(modname);
     }
 
     //finding macro occurences and triggering error if found.

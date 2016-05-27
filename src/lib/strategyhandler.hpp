@@ -29,6 +29,8 @@ class strategyHandler {
     strategyHandler(string stpath, string name, genetics* ge);
     void setGE(genetics* ge);
     int prepareCompile();
+
+    std::string import_module(std::string module_name);
     int preprocess();
     int preprocess_cpp();
     int preprocess_python();
