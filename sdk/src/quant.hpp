@@ -401,6 +401,18 @@ namespace quotek {
      */
      float standard_normal_distribution(float value);
 
+
+     /**
+      * autocorrelation is a very useful function that can help to discover seasonalities
+      * in time series data. Underlying mecanism for computing autocorrelation uses 
+      * Fast Fourier Transform.
+      *
+      * @param recs dataset to compute autocorrelation for.
+      * @return computed autocorrelation graph.
+      * 
+      */
+     std::vector<float> autocorrelation(quotek::data::records recs);
+
   }
 }
 

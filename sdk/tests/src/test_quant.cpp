@@ -156,6 +156,18 @@ void test_linear_regression(quotek::data::records& recs) {
 
 }
 
+void test_aurocorrelation(quotek::data::records& recs) {
+
+  std::vector<float> res = quotek::quant::autocorrelation(recs);
+
+  assert(res.size() == 9);
+  for (auto num : res) {
+    assert( num <= 1 && num >= -1 );
+  }
+
+}
+
+
 int main() {
 
   //creates false record
@@ -196,6 +208,7 @@ int main() {
   test_weighted_moving_average(r1);
   test_linear_regression(r1);
   test_trend_percentage(r1);
+  test_aurocorrelation(r1);
 
   exit(0);
 

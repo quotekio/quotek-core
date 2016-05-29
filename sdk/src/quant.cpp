@@ -6,6 +6,7 @@ http://www.quotek.io
 
 #include "quant.hpp"
 #include <iostream>
+#include "eigen3/unsupported/Eigen/FFT"
 
 namespace quotek {
 
@@ -404,6 +405,75 @@ namespace quotek {
 
     float standard_normal_distribution(float value) {
       return (1.0/sqrt(2.0* 3.141592653589793238462643 )) * exp(-0.5* pow(value,2) );
+    }
+
+    size_t fft_next_good_size(size_t N) { 
+      while (true) {
+        size_t m = N;
+        while((m % 2) == 0) m /= 2;
+        while((m % 3) == 0) m /= 3;
+        while((m % 5) == 0) m /= 5;
+        if (m <= 1)
+          return N; 
+          N++;
+      }
+    }
+       
+    void autocorrelation_(const std::vector<float>& y,
+                          float y_mean,
+                          std::vector<float>& ac,
+                          Eigen::FFT<float>& fft) {
+
+        using std::vector;
+        using std::complex;
+
+        size_t N = y.size();
+        size_t M = fft_next_good_size(N); 
+        size_t Mt2 = 2 * M;
+
+
+        vector<complex<float> > freqvec;
+        
+        // centered_signal = y-mean(y) followed by N zeroes
+        vector<float> centered_signal(y);
+        centered_signal.insert(centered_signal.end(),Mt2-N,0.0);
+        
+        for (size_t i = 0; i < N; i++)
+          centered_signal[i] -= y_mean;
+        
+        fft.fwd(freqvec,centered_signal);
+        for (size_t i = 0; i < Mt2; ++i)
+          freqvec[i] = complex<float>(norm(freqvec[i]), 0.0);
+        
+        fft.inv(ac,freqvec);
+        ac.resize(N);
+
+
+        for (size_t i = 0; i < N; ++i) {
+          ac[i] /= (N - i); 
+        } 
+        float var = ac[0];      
+        for (size_t i = 0; i < N; ++i)
+          ac[i] /= var;
+    }
+
+    void autocorrelation_(const std::vector<float>& y,
+                           float y_mean,
+                           std::vector<float>& ac) {
+        Eigen::FFT<float> fft;
+        return autocorrelation_(y,y_mean,ac,fft);
+    }
+
+
+    std::vector<float> autocorrelation(quotek::data::records recs) {
+
+      std::vector<float> result;
+
+      float y_mean = average(recs);
+
+      autocorrelation_(recs.export_values(), y_mean, result);
+      return result;
+
     }
 
   }
