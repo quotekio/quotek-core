@@ -236,11 +236,36 @@ public:
       quotek::http* hhdl = prepare_http_handler();
       string outp;
 
-      //sdata << "\t  \"columns\" : [ \"indice\", \"epic\", \"dealid\", \"size\", \"stop\", \"limit\", \"open\", \"pnl\", \"pnl_peak\", \"open_date\", \"close_date\", \"identifier\" ],\n";
+      std::string url = pre_url + "/write" + main_args;
 
+      sdata << "__history__,indice=" 
+            << pos.asset_name 
+            << ",epic="
+            << pos.asset_id
+            << ",dealid=" 
+            << pos.ticket_id
+            << ",size="
+            << pos.size
+            << ",stop="
+            << pos.stop
+            << ",limit="
+            << pos.limit
+            << ",open="
+            << pos.open
+            << ",pnl_peak="
+            << pos.stats->pnl_peak
+            << ",open_date="
+            << pos.open_date
+            << ",close_date="
+            << pos.close_date
+            << ",identifier="
+            << pos.identifier
+            << " value=" << pos.pnl << " " << time(NULL) * 1000 * 1000 * 1000;
+     
       std::string sdata_str = sdata.str();
 
-      outp = hhdl->post(pre_url,sdata_str);      
+      outp = hhdl->post(url,sdata_str);
+
       hhdl->destroy();
       return 0;
 
@@ -251,10 +276,40 @@ public:
       std::ostringstream sdata;
       quotek::http* hhdl = prepare_http_handler();
       string outp;
+      std::string url = pre_url + "/write" + main_args;
+
+      for (auto pos : plist) {
+
+        sdata << "__history__,indice=" 
+              << pos.asset_name 
+              << ",epic="
+              << pos.asset_id
+              << ",dealid=" 
+              << pos.ticket_id
+              << ",size="
+              << pos.size
+              << ",stop="
+              << pos.stop
+              << ",limit="
+              << pos.limit
+              << ",open="
+              << pos.open
+              << ",pnl_peak="
+              << pos.stats->pnl_peak
+              << ",open_date="
+              << pos.open_date
+              << ",close_date="
+              << pos.close_date
+              << ",identifier="
+              << pos.identifier
+              << " value=" << pos.pnl << " " << time(NULL) * 1000 * 1000 * 1000
+              << std::endl;
+      }
+
 
       std::string sdata_str = sdata.str();
 
-      outp = hhdl->post(pre_url,sdata_str);
+      outp = hhdl->post(url,sdata_str);
       hhdl->destroy();
       return 0;
 
