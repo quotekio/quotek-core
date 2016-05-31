@@ -62,7 +62,6 @@ protected:
     for (int i=0;i< cio->size; i++) {
       recs.append(cio->timestamps[i], cio->values[i], cio->spreads[i] );
     }
-
   }
 
 };
