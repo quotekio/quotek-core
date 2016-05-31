@@ -99,6 +99,19 @@ target_link_libraries(
     curl
 )
 
+add_library(
+       influxdbbe13 SHARED
+       src/lib/backends/backend.h
+       src/lib/backends/influxdb13.cpp
+)
+
+target_link_libraries(
+    influxdbbe13
+    quotek
+    curl
+)
+
+
 install (TARGETS influxdbbe DESTINATION lib)
 
 target_link_libraries(
