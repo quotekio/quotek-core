@@ -6,6 +6,7 @@
 #include <dlfcn.h>
 #include <string>
 #include "backends/backend.h"
+#include "caches/cache.h"
 #include "queue_c.h"
 
 #include "qatecfg.h"
@@ -55,7 +56,8 @@ class tsEngine{
     tsEngine();
     tsEngine(qateCfg*,
              broker*,
-             backend*, 
+             backend*,
+             cache*, 
              AssocArray<indice*>,
              std::vector<strategyHandler*>,
              moneyManager*,
@@ -167,7 +169,10 @@ class tsEngine{
     broker* tse_broker;
     ticks_t tse_ticks;
     int tse_inmem_history;
+    
     backend* tse_back;
+    cache* tse_cache;
+
     std::vector<strategyHandler*> tse_strathandlers;
     moneyManager* tse_mm;
     genetics* tse_ge;

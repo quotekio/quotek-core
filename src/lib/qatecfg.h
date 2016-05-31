@@ -83,6 +83,10 @@ class qateCfg {
 
     bool bt_exit;
 
+    string redis_host;
+    int redis_port;
+
+
 
   public:
 
@@ -117,6 +121,9 @@ class qateCfg {
     int getInMemHistory();
 
     bool getBTExit();
+
+    string getRedisHost();
+    int getRedisPort();
 
     /* Setters */
 

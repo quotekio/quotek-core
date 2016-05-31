@@ -178,6 +178,30 @@ create_t* load_broker(string bname)  {
 }
 
 
+create_cc* load_cache(string cachename) {
+
+  cout << "loading cache module..." << endl;
+  string lib_cache = "lib" + cachename + ".so";
+  void* handle = dlopen(lib_cache.c_str(),RTLD_LAZY);
+
+  if(handle == NULL){
+    cerr << dlerror() << endl;
+    exit(1);
+  }
+
+  create_cc* cc_ = (create_cc*) dlsym(handle, "create");
+
+  const char* dlsym_error = dlerror();
+    if (dlsym_error) {
+        cerr << "Cannot load symbol create: " << dlsym_error << endl;
+        exit(1);
+  }
+
+  return cc_;
+
+}
+
+
 create_be* load_backend(string bename) {
 
   cout << "loading backend module..." << endl;
@@ -391,6 +415,15 @@ int main(int argc,char** argv) {
 
   backend* back;
 
+  cache* cc_ = NULL;
+
+  if (c->getRedisHost() != "") {
+    cc_ = load_cache("rediscache")();
+    cc_->init(c->getRedisHost(), c->getRedisPort());
+    cc_->connect();
+  }
+
+
   if (c->getBackend() != "none" && c->getBackend() != "" ) {
     back = load_backend(c->getBackend())();
   }
@@ -441,16 +474,16 @@ int main(int argc,char** argv) {
 
     case QATE_MODE_REAL:
       cout << "starting Engine in real mode.." << endl;
-      tse = new tsEngine(c,b,back,ilist,sh_list,mm,ge,mlist);
+      tse = new tsEngine(c,b,back,NULL,ilist,sh_list,mm,ge,mlist);
       break;
     case QATE_MODE_BACKTEST:
       cout << "starting Engine in backtest mode.." << endl;
-      bte = new hsbt(c,b,back,ilist,sh_list,mm,ge,mlist);
+      bte = new hsbt(c,b,back,cc_,ilist,sh_list,mm,ge,mlist);
       break;
 
     case QATE_MODE_GENETICS:
       cout << "starting Engine in genetics mode.." << endl;
-      bte = new hsbt(c,b,back,ilist,sh_list,mm,ge,mlist);
+      bte = new hsbt(c,b,back,cc_,ilist,sh_list,mm,ge,mlist);
       break;
 
     default:

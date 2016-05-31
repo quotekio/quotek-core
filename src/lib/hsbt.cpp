@@ -28,6 +28,7 @@ std::string tradestats2json(tradestats& s) {
 hsbt::hsbt(qateCfg* conf,
                    broker* b,
                    backend* back,
+                   cache* ca_,
                    AssocArray<indice*> ilist,
                    std::vector<strategyHandler*> sh_list,
                    moneyManager* mm,
@@ -37,6 +38,8 @@ hsbt::hsbt(qateCfg* conf,
 
   tse_broker = b;
   tse_back = back;
+  tse_cache = ca_;
+
   tse_strathandlers = sh_list;
   tse_mm = mm;
   tse_ge = ge;
@@ -127,6 +130,7 @@ void hsbt::init_finalize() {
 
 
 // Loads indices history from backend to memory
+
 int hsbt::loadBacktestData_() {
 
     std::cout << "loading backtest data from " << backtest_from << " to " << backtest_to << std::endl;
@@ -148,7 +152,14 @@ int hsbt::loadBacktestData_() {
       if ( to > backtest_to  ) to = backtest_to;
 
       for (int j=0;j<inames.size();j++) {
-        quotek::data::records recs = tse_back->query(inames[j],from,to);
+        quotek::data::records recs;
+        if (tse_cache != NULL) recs = tse_cache->query(inames[j],from,to);
+
+        if (recs.size() == 0) {
+          recs = tse_back->query(inames[j],from,to);
+          if (tse_cache != NULL) tse_cache->store(inames[j],from,to,recs); 
+        }
+
         nbrecs += recs.size();
         backtest_inmem_records[inames[j]].append(recs);
       }

@@ -34,6 +34,7 @@ class hsbt: public tsEngine {
   	hsbt(qateCfg*,
              broker*,
              backend*,
+             cache*,
              AssocArray<indice*>,
              std::vector<strategyHandler*> sh_list,
              moneyManager*,

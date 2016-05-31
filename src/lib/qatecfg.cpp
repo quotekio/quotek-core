@@ -11,6 +11,9 @@ qateCfg::qateCfg() {
   ticks.eval = 1000000;
   broker_mode = "poll";
   strats_path = "strats";
+
+  redis_host = "";
+  redis_port = 0;
   
   bt_exit = false;
 
@@ -96,6 +99,15 @@ ticks_t qateCfg::getTicks() {
 bool qateCfg::getBTExit() {
   return bt_exit;
 }
+
+string qateCfg::getRedisHost() {
+  return redis_host;
+}
+
+int qateCfg::getRedisPort() {
+  return redis_port;
+}
+
 
 void qateCfg::setMode(int md) {
   mode = md;
@@ -229,6 +241,14 @@ int qateCfg::read() {
         else if (param == "aep_enable") aepp.enable = atoi(arg.c_str());
         else if (param == "aep_listen_addr") aepp.listen_addr = arg;
         else if (param == "aep_listen_port") aepp.listen_port = atoi(arg.c_str());
+
+        else if (param == "redis_server") {
+
+          std::vector<string> c_args = split(arg, ':') ;
+          redis_host = c_args[0];
+          redis_port = atoi(c_args[1].c_str());
+
+        }
 
         
       }

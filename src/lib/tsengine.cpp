@@ -645,6 +645,7 @@ tsEngine::tsEngine() {
 tsEngine::tsEngine(qateCfg* conf,
                    broker* b,
                    backend* back,
+                   cache* ca_,
                    AssocArray<indice*> ilist,
                    std::vector<strategyHandler*> sh_list,
                    moneyManager* mm,
@@ -660,6 +661,7 @@ tsEngine::tsEngine(qateCfg* conf,
   tse_ticks = conf->getTicks();
   tse_inmem_history = conf->getInMemHistory();
   tse_back = back;
+  tse_cache = ca_;
   tse_strathandlers = sh_list;
   tse_mm = mm;
   tse_ge = ge;

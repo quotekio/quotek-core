@@ -46,28 +46,26 @@ add_executable(
 find_library (PTHREAD pthread)
 find_library (CURL curl)
 find_library (FAAN fann)
-find_library (INFLUXDB influxdb)
 find_library (QUOTEK quotek)
 find_library (PQXX pqxx)
+find_library (HIREDIS hiredis)
 
-
-if (INFLUXDB)
+if (HIREDIS) 
 
   add_library(
-       influxdbbe SHARED
-       src/lib/backends/backend.h
-       src/lib/backends/influxdb.cpp
+       rediscache SHARED
+       src/lib/caches/cache.h
+       src/lib/caches/redis.cpp
   )
 
   target_link_libraries(
-    influxdbbe
+    rediscache
+    hiredis
     quotek
-    influxdb
     curl
   )
 
-  install (TARGETS influxdbbe DESTINATION lib)
-
+  install (TARGETS rediscache DESTINATION lib)
 
 endif()
 
@@ -88,6 +86,20 @@ if (PQXX)
 
 endif()
 
+
+add_library(
+       influxdbbe SHARED
+       src/lib/backends/backend.h
+       src/lib/backends/influxdb.cpp
+)
+
+target_link_libraries(
+    influxdbbe
+    quotek
+    curl
+)
+
+install (TARGETS influxdbbe DESTINATION lib)
 
 target_link_libraries(
         qate
