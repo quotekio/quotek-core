@@ -1,4 +1,6 @@
 #include "aep.h"
+#include "version.h"
+
 #include <quotek/core.hpp>
 
 std::map<std::string, ws_token> ws_tokens_list;

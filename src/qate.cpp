@@ -1,4 +1,5 @@
 #include "qate.h"
+#include "lib/version.h"
 
 tsEngine* tse;
 hsbt* bte;
@@ -88,6 +89,7 @@ void parse_cmdline(qateCfg* conf,int argc,char** argv) {
                {"exit", no_argument,0,'e'},
                {"strategy", required_argument,0, 's'},
                {"spath", required_argument,0,'x'},
+               {"batch", no_argument,0,'z'},
                {"genetics", no_argument,0,'g'},
                {"eap-port",required_argument,0,'p'},
 
@@ -115,7 +117,17 @@ void parse_cmdline(qateCfg* conf,int argc,char** argv) {
 
       case 'b':
         conf->setMode(QATE_MODE_BACKTEST);
-        cout << "Starting Qate in Backtest mode.." << endl;
+        cout << "Starting qate in Backtest mode.." << endl;
+        break;
+
+      case 'g':
+        conf->setMode(QATE_MODE_GENETICS);
+        cout << "Starting qate in Genetics mode.." << endl;
+        break;
+
+      case 'z':
+        conf->setMode(QATE_MODE_BATCH);
+        cout << "Starting qate in Batch mode.." << endl;
         break;
 
       case 'e':
@@ -127,10 +139,7 @@ void parse_cmdline(qateCfg* conf,int argc,char** argv) {
         cout << "Starting Qate in dry run mode, as compilation test.." << endl;
         break;
 
-      case 'g':
-        conf->setMode(QATE_MODE_GENETICS);
-        cout << "Starting Qate in Genetics mode.." << endl;
-        break;
+      
 
       case 'x': {
         conf->setStratsPath(std::string(optarg));

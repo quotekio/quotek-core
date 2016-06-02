@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <getopt.h>
 
+#include "lib/constants.h"
 #include "lib/broker.hpp"
 #include "lib/strategyhandler.hpp"
 #include "lib/moneymanager.h"
@@ -20,7 +21,6 @@
 #include "lib/aep.h"
 #include "lib/aep_ws.hpp"
 
-#include "lib/constants.h"
 
 #ifndef QATE_PREFIX
 #define QATE_PREFIX "/usr/local/qate"

@@ -63,7 +63,7 @@ function bctl_append_buildnum() {
   bnum=`expr $bnum + 1`
 
   echo "Running build number $bnum"
-  sed "s/##BNUM##/$bnum/" src/lib/constants.h.tpl > src/lib/constants.h
+  sed "s/##BNUM##/$bnum/" src/lib/version.h.tpl > src/lib/version.h
 
   sed "s/^build_number.*$/build_number $bnum/" -i .buildctl
   
