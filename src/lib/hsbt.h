@@ -55,7 +55,8 @@ class hsbt: public tsEngine {
     int getBacktestProgress();
     void setBacktestPos(int);
     void setBacktestProgress(int);
-    void addAStats(qateresult*);
+
+    void addTradeStats(qateresult*);
     void addLogStats(qateresult*);
 
     /* Creates a snapshot of the trade statistics so far */

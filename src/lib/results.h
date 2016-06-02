@@ -10,37 +10,32 @@
 
 using namespace std;
 
-class assetstats {
-
-  public:
-    string name;
-    float deviation;
-    float variation;
-    float highest;
-    float lowest;
-    assetstats() {}
-
-    string json_encode() {
-      stringstream ss;
-      ss << "{";
-      ss << "\t\"name\": \"" << name << "\",\n";
-      ss << "\t\"deviation\": " << deviation << ",\n";
-      ss << "\t\"variation\": " << variation << ",\n";
-      ss << "\t\"highest\": " << highest << ",\n";
-      ss << "\t\"lowest\": " << lowest << "\n";
-      ss << "}";
-      return ss.str();
-    }
-
-
-};
-
 
 class qateresult {
 
   public:
   	qateresult() {
+
+      //initializing of member values;
+
+      this->start = 0;
+      this->stop = 0;
+      this->from = 0;
+      this->to = 0;
+      this->pnl = 0;
+      this->remainingpos = 0;
+      this->max_drawdown = 0;
+      this->profit_factor = 0;
+      this->winning_trades = 0;
+      this->losing_trades = 0;
+      this->returns_percent = 0;
+      this->duration = 0;
+      this->generation_id = 0;
+      this->individual_id = 0;
+      
   	}
+
+
   	int start;
   	int stop;
   	int from;  	
@@ -53,11 +48,8 @@ class qateresult {
 
     int winning_trades;
     int losing_trades;
-    int nb_long;
-    int nb_short;
-
+    
     float returns_percent;
-
     float duration;
 
     /* for genetic results */
@@ -65,7 +57,6 @@ class qateresult {
     int individual_id;
     vector<string> genes_repr;
     
-    vector<assetstats*> astats;
     vector<string> loglines;
     vector<quotek::core::position> positions_history;
 
@@ -99,11 +90,8 @@ class qateresult {
       }
 
       ss << "\"trades\": {";
-
       ss << "\"winning\":" << winning_trades << ",\n";
       ss << "\"losing\":" << losing_trades << ",\n";
-      ss << "\"nb_long\":" << nb_long << ",\n";
-      ss << "\"nb_short\":" << nb_short << ",\n";
       ss << "\"list\":[\n";
 
       for(int i=0;i<positions_history.size();i++) {
@@ -112,14 +100,6 @@ class qateresult {
         else ss << "\n";
       }
       ss << "]},\n";
-
-      ss << "\"astats\": [";
-      for(int i=0;i<astats.size();i++) {
-        ss <<  astats[i]->json_encode();
-        if (i< astats.size()-1) ss << ",\n";
-        else ss << "\n";
-      }
-      ss << "],";
 
       ss << "\"logs\" : [";
 

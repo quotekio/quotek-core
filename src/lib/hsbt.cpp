@@ -176,10 +176,6 @@ int hsbt::loadBacktestData_() {
     //WE FLAG BT STATE AS FULLY LOADED
     
 
-    
-
-
-
     //DEBUG (display loaded data)
     /*for (int i=0;i< backtest_inmem_records[0].size();i++) {
       std::cout << "BIR:" << backtest_inmem_records[0][i] << std::endl;
@@ -447,23 +443,15 @@ qateresult* hsbt::run() {
   //*** START OF CRITICAL SECTION LOOP **** //
   for(int i=0;i<bt_realsize;i++) {
 
-    //displace data from backtest_inmem to inmem
-    //CAN PROBABLY BE HACKED/OPTIMIZED !!!
+    //move data from backtest_inmem to inmem
+    //CAN BE HACKED/OPTIMIZED !!!
     for ( int j=0; j< nb_assets; j++  )  {
-
       inmem_records[j].append(backtest_inmem_records[j][i]);
-
     }
 
     progress_tstamp = backtest_inmem_records[0][backtest_pos].timestamp ;
 
     for (int k=0;k< nb_algos;k++) {
-
-      //std::string evname_ = eval_pointers.GetItemName(k);
-      //int state = state_array[evname_];
-      //int nstate = evaluate_(evname_, eval_pointers[k], state );
-      //state_array[evname_] = nstate;
-
       evaluate_(strategies[k]);
     }
 
@@ -474,8 +462,6 @@ qateresult* hsbt::run() {
 
     //Computes backtest Progress.
     backtest_progress =  backtest_pos / bt_realsize * 100;
-
-    //cout << backtest_progress << endl;
 
     /* We want disable this section of code that is in the critical path. (at least optimize ) */
     if (backtest_progress % 10 == 0 && backtest_progress > bpp) {
@@ -503,28 +489,15 @@ qateresult* hsbt::run() {
   result->remainingpos = rpos.size();
 
   for (int i=0;i<result->remainingpos;i++) {
-    //rpos.at(i).close_date = inmem_records[0].get_data()[backtest_pos].timestamp;
     rpos.at(i).close_date = inmem_records[0][inmem_records[0].size() - 1].timestamp;
-    
     positions_history.push_back(rpos.at(i));
   }
 
-  //adds CFD/whatever assets statistics like
-  //highest, lowest,variance, etc..
-  addAStats(result); 
+  //Adds trade stats to result
+  addTradeStats(result);
+  //Adds logs to result
   addLogStats(result);
-
-  /*result->positions_history = positions_history; 
-
-  result->max_drawdown = 0;
-  result->profit_factor = 0;
-  result->returns_percent = 0;
-
-  result->winning_trades = 0;
-  result->losing_trades = 0;
-  result->nb_long = 0;
-  result->nb_short = 0;
-  */
+  result->positions_history = positions_history; 
 
   cout << endl<< "* Backtest Finished in " << elapsed_secs << "s *" << endl;
  
@@ -637,27 +610,19 @@ void hsbt::setBacktestProgress(int bprogress) {
 }
 
 
-void hsbt::addAStats(qateresult* result) {
-
-  for(int i=0;i< inmem_records.Size();i++ ) {
-
-    assetstats* a1 = new assetstats();
-    a1->name = inmem_records.GetItemName(i);
-    a1->variation = quotek::quant::percent_delta(inmem_records[a1->name]);
-    a1->deviation = quotek::quant::standard_deviation(inmem_records[a1->name],false);
-    a1->highest = quotek::quant::max(inmem_records[i]);
-    a1->lowest = quotek::quant::min(inmem_records[i]);
-    
-    result->astats.push_back(a1);
-
-
-  }
-}
-
 void hsbt::addLogStats(qateresult* result) {
   vector<log_entry>* lentries = logger->getAllEntries();
   for (int i=0;i<lentries->size();i++) {
     result->loglines.push_back(lentries->at(i).entry);
   }
+}
 
+void hsbt::addTradeStats(qateresult* result) {
+  tradestats ts1 = compute_tradestats() ;
+  result->pnl = ts1.pnl;
+  result->winning_trades = ts1.winning ;
+  result->losing_trades = ts1.losing;
+  result->profit_factor = ts1.profit_factor;
+  result->max_drawdown = ts1.max_drawdown;
+  
 }
