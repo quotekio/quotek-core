@@ -97,7 +97,8 @@ public:
 
       if ( reply->type != REDIS_REPLY_STRING ) return result;
 
-      std::cout << "TSTAMPS REPL OK" << std::endl;
+      //debug
+      //std::cout << "TSTAMPS REPL OK" << std::endl;
 
       memcpy(cio.timestamps,reply->str, reply->len);
       freeReplyObject(reply);
