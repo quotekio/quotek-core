@@ -54,7 +54,7 @@ hsbt::hsbt(qateCfg* conf,
   backtest_progress = 0;
 
   if (tse_back == NULL) {
-    cout << "*ERROR: Cannot run qate in Backtest or genetics mode without a working backend, leaving ! *" << endl;
+    cout << "*ERROR: Cannot run qate in Backtest/Backtest Batch/Genetics mode without a working backend, leaving ! *" << endl;
     exit(1);
   }
 
@@ -71,6 +71,9 @@ hsbt::hsbt(qateCfg* conf,
 
 void hsbt::init_finalize() {
 
+
+  //sets the results handler
+  this->qrh = new qateResultsHandler(cfg->getBTResultFile(), tse_mode);
 
   //loads backtest history
   if ( loadBacktestData_() == 0 ) {
@@ -155,7 +158,7 @@ int hsbt::loadBacktestData_() {
       }
       //We found data in cache, so we use it!
       if (recs.size() != 0) {
-        nbrecs + recs.size();
+        nbrecs += recs.size();
         backtest_inmem_records[inames[i]].append(recs);
       }
       
@@ -439,9 +442,10 @@ void hsbt::execute_() {
 }
 
 
-qateresult* hsbt::run() {
+void hsbt::run() {
 
   qateresult* result = new qateresult();
+
   result->start = time(0);
   result->from = backtest_from; 
   result->to = backtest_to;
@@ -516,16 +520,28 @@ qateresult* hsbt::run() {
   cout << endl<< "* Backtest Finished in " << elapsed_secs << "s *" << endl;
  
   tse_mm->addStats(result);
-  return result;
+
+  this->qrh->entries.emplace_back(result);
+  this->qrh->save();
+
+  return;
+
+
 }
 
-qateGeneticsResult* hsbt::runGenetics() {
+void hsbt::runGenetics() {
   
-  qateGeneticsResult* result = new qateGeneticsResult();
+  return;
+}
 
-  return result;
+void hsbt::runBatch() {
+  
+
+  return;
 
 }
+
+
 
 int hsbt::getBacktestPos() {
   return backtest_pos;

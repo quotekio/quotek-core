@@ -534,9 +534,7 @@ int main(int argc,char** argv) {
 
 void init_finalize(qateCfg* c, aep_ws_server* ws1) {
 
-  qateGeneticsResult* gres;
-  qateresult* res;
-
+  
   std::cout << "Continuating with Init" << std::endl;
   
   //We finish TSE initialization and start the algos.
@@ -547,30 +545,33 @@ void init_finalize(qateCfg* c, aep_ws_server* ws1) {
   //We finish BT initialization and start the run
   else if ( c->getMode() == QATE_MODE_BACKTEST ) {
     bte->init_finalize();
-    res = bte->run();
-
-    if ( c->getBTResultFile() != "" ) {
-        res->saveToFile(c->getBTResultFile());
-    }
+    bte->run();
 
     //we send last snap to AEP/WS
     if ( ws1 != nullptr ) ws1->broadcast("btsnap", aep_btsnap(bte) );
-
     if (c->getBTExit()) exit(0);
   }
 
   else if ( c->getMode() == QATE_MODE_GENETICS  ) {
     bte->init_finalize();
-    gres = bte->runGenetics();
-    if ( c->getBTResultFile() != "" ) {
-        gres->saveToFile(c->getBTResultFile());
-    } 
+    bte->runGenetics();
 
     //we send last snap to AEP/WS
     if ( ws1 != nullptr ) ws1->broadcast("btsnap", aep_btsnap(bte) );
-
     if (c->getBTExit()) exit(0);
   }
+
+  else if ( c->getMode() == QATE_MODE_BATCH  ) {
+    bte->init_finalize();
+    bte->runBatch();
+    
+    //we send last snap to AEP/WS
+    if ( ws1 != nullptr ) ws1->broadcast("btsnap", aep_btsnap(bte) );
+    if (c->getBTExit()) exit(0);
+  }
+
+  
+
 
   while(1) {
     sleep(2);

@@ -47,8 +47,9 @@ class hsbt: public tsEngine {
     inline void moneyman_();
     inline void execute_();
     int loadBacktestData_();
-    qateresult* run();
-    qateGeneticsResult* runGenetics();
+    void run();
+    void runGenetics();
+    void runBatch();
 
     float getSpeed();
     int getBacktestPos();
@@ -79,6 +80,8 @@ class hsbt: public tsEngine {
     std::vector<strategy*> strategies;
     std::vector<std::string> si;
     int si_size;
+
+    qateResultsHandler* qrh;
 
 };
 

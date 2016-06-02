@@ -32,7 +32,7 @@ class qateresult {
       this->duration = 0;
       this->generation_id = 0;
       this->individual_id = 0;
-      
+
   	}
 
 
@@ -115,29 +115,27 @@ class qateresult {
 
   	}
    
-    int saveToFile(string fname) {
-
-      ofstream ofh (fname.c_str());
-      
-      if (! ofh.good()) return -1;
-      
-      ofh << json_encode();
-      ofh.close();
-
-      return 0;
-    }
-
 };
 
 
 //class made to store all the iterations.
-class qateGeneticsResult {
+class qateResultsHandler {
   public:
-    vector<qateresult*> entries;
+    std::vector<qateresult*> entries;
+    std::string output_file;
+    int bt_type;
+
+    qateResultsHandler(std::string output_file, int bt_type) {
+      this->output_file = output_file;
+      this->bt_type = bt_type;
+    }
+
 
     string json_encode() {
       stringstream res;
-      res << "[";
+
+      res << "{ \"type\":" << this->bt_type ;
+      res << "\", results\": [";
 
       for (int i=0;i<entries.size();i++) {
         res << entries[i]->json_encode();
@@ -146,13 +144,15 @@ class qateGeneticsResult {
 
       res << "]";
 
+      res << "}";
+
       return res.str();
 
     }
 
-    int saveToFile(string fname) {
+    int save() {
 
-      ofstream ofh (fname.c_str());
+      ofstream ofh (this->output_file.c_str());
 
       if (! ofh.good()) return -1;
       

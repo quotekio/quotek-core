@@ -17,6 +17,8 @@ qateCfg::qateCfg() {
   
   bt_exit = false;
 
+  backtest_result_path = "";
+
 }
 
 string qateCfg::getBroker() {
