@@ -144,28 +144,42 @@ int hsbt::loadBacktestData_() {
 
     auto tt0 = std::chrono::high_resolution_clock::now();
 
-    for ( int i=0; i < nb_iter; i++) {
+    
+    for (int i=0; i< inames.size(); i++) {
 
-      int from = backtest_from + ( step * i );
-      int to =   from + step ; 
+      quotek::data::records recs;
+        
+      //Cache lookup
+      if (tse_cache != NULL) {
+        recs = tse_cache->query(inames[i],backtest_from,backtest_to);
+      }
+      //We found data in cache, so we use it!
+      if (recs.size() != 0) {
+        nbrecs + recs.size();
+        backtest_inmem_records[inames[i]].append(recs);
+      }
+      
+      //Failback to storage backend queries
+      else {
+        for ( int j=0; j < nb_iter; j++) {
+          int from = backtest_from + ( step * j );
+          int to =  from + step ; 
+          if ( to > backtest_to  ) to = backtest_to;
 
-      if ( to > backtest_to  ) to = backtest_to;
-
-      for (int j=0;j<inames.size();j++) {
-        quotek::data::records recs;
-        if (tse_cache != NULL) recs = tse_cache->query(inames[j],from,to);
-
-        if (recs.size() == 0) {
-          recs = tse_back->query(inames[j],from,to);
-          if (tse_cache != NULL) tse_cache->store(inames[j],from,to,recs); 
+          recs = tse_back->query(inames[i],from,to);
+          nbrecs += recs.size();
+          backtest_inmem_records[inames[i]].append(recs);
         }
 
-        nbrecs += recs.size();
-        backtest_inmem_records[inames[j]].append(recs);
+        //storage to cache if needed.
+        if (tse_cache != NULL) {
+          tse_cache->store(inames[i], backtest_from, backtest_to, backtest_inmem_records[inames[i]]);
+        }
+
       }
 
     }
-
+    
     auto tt1 = std::chrono::high_resolution_clock::now();
     auto elapsed_t = tt1 - tt0;
     uint64_t elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed_t).count();
@@ -624,5 +638,5 @@ void hsbt::addTradeStats(qateresult* result) {
   result->losing_trades = ts1.losing;
   result->profit_factor = ts1.profit_factor;
   result->max_drawdown = ts1.max_drawdown;
-  
+
 }

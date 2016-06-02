@@ -59,6 +59,8 @@ public:
                                            key_size.c_str()
                                           );
 
+       
+
       if ( reply->type != REDIS_REPLY_STRING ) return result;
 
 
@@ -67,8 +69,11 @@ public:
 
       cio.size = (size_t) f;
 
+      //debug
+      //std::cout << "SIZE OK" << std::endl;
+
       cio.values = (float*) malloc ( cio.size * sizeof(float) + 1  );
-      cio.timestamps = (int*) malloc ( cio.size * sizeof(int) + 1  );
+      cio.timestamps = (int*) malloc ( cio.size * sizeof(long) + 1  );
       cio.spreads = (float*) malloc ( cio.size * sizeof(float) + 1  );
 
       reply = (redisReply *) redisCommand(rdx, 
@@ -76,10 +81,14 @@ public:
                                            key_values.c_str()
                                           );
 
+      
       if ( reply->type != REDIS_REPLY_STRING ) return result;
 
       memcpy(cio.values,reply->str, reply->len);
       freeReplyObject(reply);
+ 
+      //debug
+      //std::cout << "VALUES OK" << std::endl;
 
       reply = (redisReply *) redisCommand(rdx, 
                                           "GET %s", 
@@ -88,8 +97,13 @@ public:
 
       if ( reply->type != REDIS_REPLY_STRING ) return result;
 
+      std::cout << "TSTAMPS REPL OK" << std::endl;
+
       memcpy(cio.timestamps,reply->str, reply->len);
       freeReplyObject(reply);
+
+      //debug
+      //std::cout << "TSTAMPS OK" << std::endl;
 
       reply = (redisReply *) redisCommand(rdx, 
                                           "GET %s", 
@@ -100,6 +114,9 @@ public:
 
       memcpy(cio.spreads,reply->str, reply->len);
       freeReplyObject(reply);
+
+      //debug
+      //std::cout << "SPREADS OK" << std::endl;
 
       from_cache(result,&cio);
       
