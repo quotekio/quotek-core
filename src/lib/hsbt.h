@@ -47,7 +47,10 @@ class hsbt: public tsEngine {
     inline void moneyman_();
     inline void execute_();
     int loadBacktestData_();
-    void run();
+    
+    qateresult* run();
+
+    void runNormal();
     void runGenetics();
     void runBatch();
 

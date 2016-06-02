@@ -545,7 +545,7 @@ void init_finalize(qateCfg* c, aep_ws_server* ws1) {
   //We finish BT initialization and start the run
   else if ( c->getMode() == QATE_MODE_BACKTEST ) {
     bte->init_finalize();
-    bte->run();
+    bte->runNormal();
 
     //we send last snap to AEP/WS
     if ( ws1 != nullptr ) ws1->broadcast("btsnap", aep_btsnap(bte) );
@@ -564,7 +564,7 @@ void init_finalize(qateCfg* c, aep_ws_server* ws1) {
   else if ( c->getMode() == QATE_MODE_BATCH  ) {
     bte->init_finalize();
     bte->runBatch();
-    
+
     //we send last snap to AEP/WS
     if ( ws1 != nullptr ) ws1->broadcast("btsnap", aep_btsnap(bte) );
     if (c->getBTExit()) exit(0);

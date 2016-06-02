@@ -442,7 +442,7 @@ void hsbt::execute_() {
 }
 
 
-void hsbt::run() {
+qateresult* hsbt::run() {
 
   qateresult* result = new qateresult();
 
@@ -521,25 +521,29 @@ void hsbt::run() {
  
   tse_mm->addStats(result);
 
+  return result;
+
+}
+
+
+void hsbt::runNormal() {
+
+  qateresult* result = this->run();
   this->qrh->entries.emplace_back(result);
   this->qrh->save();
 
-  return;
-
-
-}
-
-void hsbt::runGenetics() {
-  
-  return;
 }
 
 void hsbt::runBatch() {
-  
-
   return;
-
 }
+
+
+void hsbt::runGenetics() { 
+  return;
+}
+
+
 
 
 
