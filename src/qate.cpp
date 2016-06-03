@@ -395,33 +395,24 @@ int main(int argc,char** argv) {
 
   std::vector<strategyHandler*> sh_list;
 
-  if ( c->getMode() == QATE_MODE_GENETICS  ) {
-
-    genetics_params* gp = c->getGP();
-
-    ge = new genetics(gp->genetics_population,
+  /*
+  genetics_params* gp = c->getGP();
+  ge = new genetics(gp->genetics_population,
                                 gp->genetics_survivors,
                                 gp->genetics_children,
                                 gp->genetics_newcomers,
                                 gp->genetics_mutable_genes,
                                 gp->genetics_converge_thold,
                                 gp->genetics_max_generations,
-                                gp->genetics_recompute_winners);
+                                gp->genetics_recompute_winners);*/
 
-    sh_list.emplace_back( new strategyHandler(c->getStratsPath(), astrats[0], ge) );
 
-  }
-
-  else {
-
-    for (int i=0;i<astrats.size();i++) {
-      sh_list.emplace_back (new strategyHandler(c->getStratsPath(), astrats[i]) );
-    }
-
+  for (int i=0;i<astrats.size();i++) {
+    sh_list.emplace_back (new strategyHandler(c->getStratsPath(), astrats[i]) );
   }
 
   broker* b = load_broker(c->getBroker())();
-
+  
   backend* back;
 
   cache* cc_ = NULL;

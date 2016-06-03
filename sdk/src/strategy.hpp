@@ -29,7 +29,10 @@ class strategy {
 public:
 
 /** strategy constructor. */
-strategy() {}
+strategy() {
+  lock_iters = 0;
+  lock_counter = 0;
+}
 
 /**
  * strategy destructor
@@ -58,9 +61,20 @@ void set_env(quotek::data::records* recs,
  * @param order_data string representing the bot order to pass.
  */
  void order(std::string order_data) {
-   orders_queue.push(order_data);
+   if (lock_counter == 0) orders_queue.push(order_data);
  }
 
+ /**
+  * lock(nb_iters) is a useful method meant to block orders passing for 
+  * a certain number of evaluation cycles. It is useful because 
+  * it can very much simplify the structure of trading algorithms.
+  * @param nb_iters number of evaluate() cycles we want to prevent orders to be passed.
+  */
+
+  void lock(int nb_iters) {
+    lock_iters = nb_iters;
+  }
+  
 /**
 * log() is a method that allows the user algorithm to forward log data to qate.
 * @param log_string string to log.
@@ -107,6 +121,22 @@ void save(std::string tag, T val, const bool add_tstamp = true) {
  * This method is executed only once, before the first evaluation. 
  */
 virtual int initialize() { return 0; }
+
+/** evaluate() wrapper, adds some extra logic for orders locking. */
+virtual void __evaluate__() {
+
+  if (lock_iters != 0 ) {
+    if ( lock_counter == lock_iters ) {
+      lock_iters = 0;
+      lock_counter = 0;
+    }
+    else lock_counter++;  
+  }
+
+  evaluate();
+
+}
+
 
 /**
  * evaluate() method is the very core of the the strategy, this is where 
@@ -170,6 +200,10 @@ std::map<std::string, int> counters;
  * logging stringstream, to avoid using log(str);
  */
 stringstream logs;
+
+uint16_t lock_counter;
+uint16_t lock_iters;
+
 
 };
 

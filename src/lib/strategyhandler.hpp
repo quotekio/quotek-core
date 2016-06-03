@@ -10,7 +10,8 @@
 #include <stdlib.h>
 #include <dlfcn.h>
 #include "utils.h"
-#include "genetics.h"
+#include <quotek/utils.hpp> 
+
 #include <regex>
 
 
@@ -26,8 +27,6 @@ class strategyHandler {
   public:
 
     strategyHandler(string stpath, string name);
-    strategyHandler(string stpath, string name, genetics* ge);
-    void setGE(genetics* ge);
     int prepareCompile();
 
     std::string import_module(std::string module_name);
@@ -56,8 +55,10 @@ class strategyHandler {
     std::string classname;
     std::string asset_match;
     string strats_path;
-    genetics* genetics_engine;
     string language;
+
+    std::vector< std::vector<std::string> > batch_directives;
+    std::vector< std::vector<std::string> > gene_directives;
 
 };
 

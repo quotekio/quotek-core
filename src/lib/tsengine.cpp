@@ -499,7 +499,7 @@ void tsEngine::evaluate(strategy* s) {
     s->t = last_rec.timestamp;
 
     //user algo tick evaluation.
-    s->evaluate();
+    s->__evaluate__();
 
     while ( s->orders_queue.pop(order,false) ) {
       this->orders_queue.push(order);

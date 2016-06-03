@@ -10,8 +10,7 @@ strategyHandler::strategyHandler(string stpath, string n) {
   name = n;
   classname = n;
   asset_match = "(.*)";
-  genetics_engine = NULL;
-
+  
   if ( endswith(name,".py") ) {
     this->language = "python";
   }  
@@ -20,27 +19,6 @@ strategyHandler::strategyHandler(string stpath, string n) {
     this->language = "c++";
   }
 
-}
-
-strategyHandler::strategyHandler(string stpath, string n, genetics* ge) {
-  strats_path = stpath;
-  name = n;
-  classname = n;
-  asset_match = "(.*)";
-  genetics_engine = ge;
-
-  if ( endswith(name,".py") ) {
-    this->language = "python";
-  }  
-
-  else {
-    this->language = "c++";
-  }
-
-}
-
-void strategyHandler::setGE(genetics* ge) {
-  genetics_engine = ge;
 }
 
 int strategyHandler::prepareCompile() {
@@ -136,6 +114,24 @@ int strategyHandler::preprocess_python() {
 
 }
 
+
+void metavar_recursive_match(std::vector<std::string>* replacements,
+                             std::string line) {
+
+ std::regex metavar_regex ("(.*?)@(.*?)@(.*?)",std::regex::ECMAScript|std::regex::icase);
+
+ //finds metavars to replace
+    std::smatch sm;
+    if ( std::regex_match(line, sm, metavar_regex) ) {
+
+      replacements->emplace_back(sm[2]);      
+      metavar_recursive_match(replacements,sm[3]);
+   }
+   return;
+}
+
+
+
 int strategyHandler::preprocess_cpp() {
 
   std::vector<std::string> lines;
@@ -147,11 +143,15 @@ int strategyHandler::preprocess_cpp() {
   std::regex classname_regex("^class(.*)");
   std::regex asset_match_regex("^\\/\\/\\#asset_match(.*)");
   std::regex import_regex("^\\/\\/\\#import(.*)");
-  std::regex ex_eval_regex ("(.*)\\/\\/#ex_eval(.*)");
 
+  std::regex batch_regex("^\\/\\/\\#batch(.*)");
+  std::regex gene_regex("^\\/\\/\\#batch(.*)");
+
+  std::regex ex_eval_regex ("(.*)\\/\\/#ex_eval(.*)");
   std::regex macro_regex("^(\\s*)#undef(.*)", 
                          std::regex::ECMAScript|std::regex::icase );
 
+  std::smatch sm;
 
 
   wh << "#include <quotek/quotek.hpp>\n";
@@ -189,8 +189,21 @@ int strategyHandler::preprocess_cpp() {
   while(fh.good()){
     getline(fh,line);
 
-    lines.emplace_back(line);
+    //it is important that this block is before lines.emplace_back
+    //in order to be able to modify line before adding it to source content.
+    std::vector<std::string> mvr;
+    metavar_recursive_match(&mvr, line);
 
+    for (int i=0;i< mvr.size() ; i++ ) {
+
+      std::string s1 = "@" + mvr[i] + "@";
+      std::string s2 = "this->store->at(\"" + mvr[i] + "\")";
+      sreplaceAll(line,s1,s2);
+    }
+
+
+    lines.emplace_back(line);
+    
     //finding strategy class name.
     if ( std::regex_match(line,classname_regex) ) {
 
@@ -215,6 +228,18 @@ int strategyHandler::preprocess_cpp() {
       wh << this->import_module(modname);
     }
 
+    else if (std::regex_match(line, sm, batch_regex)) {
+      std::string bdirec = sm[1];
+      trim(bdirec);
+      this->batch_directives.emplace_back(quotek::core::utils::tokenise(bdirec));
+    }
+
+    else if (std::regex_match(line, sm, gene_regex)) {
+      std::string gdirec = sm[1];
+      trim(gdirec);
+      this->gene_directives.emplace_back(quotek::core::utils::tokenise(gdirec));
+    }
+
     //finding macro occurences and triggering error if found.
     else if ( std::regex_match(line,macro_regex) ) {
 
@@ -225,6 +250,7 @@ int strategyHandler::preprocess_cpp() {
       return 1;
 
     }
+
 
     else if ( std::regex_match(line,ex_eval_regex) ) {
       stringstream ss;

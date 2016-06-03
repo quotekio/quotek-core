@@ -11,6 +11,7 @@ Copyright 2013-2016 Quotek SAS
 #include <string>
 #include <sstream>
 #include <vector>
+#include <iterator> 
 
 #ifdef _WIN64
   #include <functionnal>
@@ -34,6 +35,8 @@ namespace quotek {
 
       std::vector<std::string> split(const std::string &s, 
                                      char delim);
+
+      std::vector<std::string> tokenise(std::string const& s);
 
       std::string &ltrim(std::string &s);
       std::string &rtrim(std::string &s);
