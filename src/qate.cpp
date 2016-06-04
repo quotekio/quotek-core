@@ -486,6 +486,11 @@ int main(int argc,char** argv) {
       bte = new hsbt(c,b,back,cc_,ilist,sh_list,mm,ge,mlist);
       break;
 
+    case QATE_MODE_BATCH:
+      cout << "starting Engine in batch backtest mode.." << endl;
+      bte = new hsbt(c,b,back,cc_,ilist,sh_list,mm,ge,mlist);
+      break;
+
     default:
       cerr << "*CRITICAL: Unknown/unsupported mode for QATE, closing program" << endl;
       exit(1);

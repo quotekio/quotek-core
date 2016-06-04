@@ -52,6 +52,21 @@ namespace quotek {
              return (max - min +1)*scaled + min;
       }
 
+      std::vector<int> range(int min, int max) {
+
+        std::vector<int> result;
+
+        for (int i=min;i < max;i++) {
+          result.emplace_back(i);
+        }
+        return result;
+      }
+      
+      std::vector<int> range(int r) {
+        return range(0,r);
+      }
+
+
     }
   }
 }

@@ -442,6 +442,18 @@ void hsbt::execute_() {
 }
 
 
+void hsbt::reset() {
+  
+  this->backtest_pos = 0;
+  this->progress_tstamp = 0;
+  this->backtest_progress = 0;
+
+  for ( int i=0; i<  this->inmem_records.Size() ; i++  )  {
+       this->inmem_records[i].get_data().clear();   
+  }
+
+}
+
 qateresult* hsbt::run() {
 
   qateresult* result = new qateresult();
@@ -464,10 +476,10 @@ qateresult* hsbt::run() {
     //move data from backtest_inmem to inmem
     //CAN BE HACKED/OPTIMIZED !!!
     for ( int j=0; j< nb_assets; j++  )  {
-      inmem_records[j].append(backtest_inmem_records[j][i]);
+      this->inmem_records[j].append(this->backtest_inmem_records[j][i]);
     }
 
-    progress_tstamp = backtest_inmem_records[0][backtest_pos].timestamp ;
+    this->progress_tstamp = this->backtest_inmem_records[0][this->backtest_pos].timestamp ;
 
     for (int k=0;k< nb_algos;k++) {
       evaluate_(strategies[k]);
@@ -476,14 +488,14 @@ qateresult* hsbt::run() {
     moneyman_();
     execute_();
  
-    backtest_pos++;
+    this->backtest_pos++;
 
     //Computes backtest Progress.
-    backtest_progress =  backtest_pos / bt_realsize * 100;
+    this->backtest_progress =  this->backtest_pos / bt_realsize * 100;
 
     /* We want disable this section of code that is in the critical path. (at least optimize ) */
-    if (backtest_progress % 10 == 0 && backtest_progress > bpp) {
-      bpp = backtest_progress;
+    if (this->backtest_progress % 10 == 0 && this->backtest_progress > bpp) {
+      bpp = this->backtest_progress;
       logger->log("Backtest Progress: " + int2string(backtest_progress) + "%", progress_tstamp);
       std::cout << "Backtest Progress: " << int2string(backtest_progress) << "%" << std::endl;
     
@@ -534,8 +546,63 @@ void hsbt::runNormal() {
 
 }
 
+
 void hsbt::runBatch() {
-  return;
+
+    qateresult* result;
+
+    AssocArray<std::vector<quotek::data::any> > universe;
+    
+    //we must generate the universe before using it !
+    this->createBatchUniverse(universe);
+
+  
+    std::vector<int> indices;
+    
+    //compute how many iters;
+    int total_iters = 0;
+    for (int i=0; i< universe.Size();i++  ){
+
+      indices.push_back(0);
+
+      if (total_iters == 0) total_iters = universe[i].size();
+      else total_iters *= universe[i].size();
+    }
+
+
+    for (int i=0;i< total_iters;i++) {
+
+      std::cout << "Batch testing with [";
+      //Here we place the correct values inside the strats store entry
+      for (int k = 0; k < indices.size(); k++) {
+
+        int tst  = universe[k][indices[k]];
+        std::cout << universe.GetItemName(k) << "=" << tst << ",";
+        tse_store[universe.GetItemName(k)] = universe[k][indices[k]];
+      }
+      std::cout << "]\n";
+
+      //HERE WE GO!!
+      result = this->run();
+
+      //Then we save result (temporary advancement)
+      this->qrh->entries.emplace_back(result);
+      this->qrh->save();
+
+      //then we reset hsbt for next iter
+      this->reset();
+
+      indices[ indices.size() -1 ] ++;
+      for ( int j= indices.size() -1; j > 0; j--  ) {
+        if (  indices[j] == universe[j].size() ) {
+          indices[j] = 0;
+          indices[j-1] ++;
+        }
+      }
+
+    }
+
+    return;
 }
 
 
@@ -658,5 +725,54 @@ void hsbt::addTradeStats(qateresult* result) {
   result->losing_trades = ts1.losing;
   result->profit_factor = ts1.profit_factor;
   result->max_drawdown = ts1.max_drawdown;
+
+}
+
+void hsbt::createBatchUniverse(AssocArray<std::vector<quotek::data::any> > &universe ) {
+
+  std::vector< std::vector<std::string> > batch_dirs = tse_strathandlers[0]->getBatchDirectives();
+
+  for ( int i= 0; i < batch_dirs.size(); i++  ) {
+  
+    if ( batch_dirs[i][0] == "int" ) {
+
+      if ( batch_dirs[i].size() ==  5 ) {
+        
+        int a = std::stoi(batch_dirs[i][2]);
+        int b = std::stoi(batch_dirs[i][3]);
+        int c = std::stoi(batch_dirs[i][4]);
+
+        for (int j= a; j < b; j= j+ c) {
+          universe[batch_dirs[i][1]].emplace_back(j);
+        }
+      }
+
+      else if (batch_dirs[i].size() == 4) {
+
+        int a = std::stoi(batch_dirs[i][2]);
+        int b = std::stoi(batch_dirs[i][3]);
+
+        for (int j= a; j < b; j++) {
+          universe[batch_dirs[i][1]].emplace_back(j);
+        }
+
+      }
+  
+      else if (batch_dirs[i].size() == 3) {
+
+        std::vector<std::string> intlist = split(batch_dirs[i][2],',');
+
+        for (auto lint_ : intlist) {
+          universe[batch_dirs[i][1]].emplace_back(std::stoi(lint_)); 
+        }
+
+      }
+
+
+    }
+
+
+  }  
+
 
 }

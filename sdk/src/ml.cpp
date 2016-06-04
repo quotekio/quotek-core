@@ -174,23 +174,6 @@ namespace quotek {
         }
 
 
-        //python range(m,n) C++ impl.
-        std::vector<int> range(int min, int max) {
-
-          std::vector<int> result;
-
-          for (int i=min;i < max;i++) {
-            result.emplace_back(i);
-          }
-          return result;
-        }
-
-        //python range(n) C++ impl.
-        std::vector<int> range(int r) {
-          return range(0,r);
-        }
-
-
         bool is_sorted(std::vector<int>& pool, std::vector<int>& comb) {
 
           int prev_idx = 0;
@@ -271,7 +254,7 @@ namespace quotek {
           //if not include bias, start = 1
           for (int i= 1;i< degree + 1; i++ ) {
             
-            std::vector<std::vector<int>> cbx = CWR(range( X.cols() ), i);
+            std::vector<std::vector<int>> cbx = CWR(quotek::core::utils::range( X.cols() ), i);
             combinations.insert(combinations.end(),cbx.begin(),cbx.end());
 
           }

@@ -44,6 +44,8 @@ namespace quotek {
       
       unsigned int randr(unsigned int min, unsigned int max);
 
+      std::vector<int> range(int min, int max);  
+      std::vector<int> range(int r);
 
     }
   }

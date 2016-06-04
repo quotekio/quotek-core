@@ -362,3 +362,12 @@ std::string strategyHandler::getAssetMatch() {
 std::string strategyHandler::getName() {
   return name;
 }
+
+
+std::vector< std::vector<std::string> > strategyHandler::getBatchDirectives() {
+  return batch_directives;
+}
+
+std::vector< std::vector<std::string> > strategyHandler::getGeneDirectives() {
+  return gene_directives;
+}

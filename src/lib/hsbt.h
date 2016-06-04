@@ -3,6 +3,7 @@
 
 #include "tsengine.h"
 #include <map>
+#include <quotek/any.hpp>
 
 #define REMPOS_STOP 0x01
 #define REMPOS_VSTOP 0x02
@@ -48,11 +49,14 @@ class hsbt: public tsEngine {
     inline void execute_();
     int loadBacktestData_();
     
+    void reset();
     qateresult* run();
 
     void runNormal();
     void runGenetics();
     void runBatch();
+
+    void createBatchUniverse(AssocArray<std::vector<quotek::data::any> > &universe );
 
     float getSpeed();
     int getBacktestPos();

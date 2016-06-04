@@ -42,7 +42,9 @@ class strategyHandler {
     std::string getAssetMatch();
     std::string getName();
 
-
+    std::vector< std::vector<std::string> > getBatchDirectives();
+    std::vector< std::vector<std::string> > getGeneDirectives();
+    
     static const string cc;
     static const string cflags;
     static const string dependencies;

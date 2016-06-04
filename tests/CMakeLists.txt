@@ -2,42 +2,27 @@ cmake_minimum_required(VERSION 2.6)
 
 project(tests)
 
-SET (CMAKE_CXX_COMPILER             "/usr/bin/g++")
-SET (CMAKE_CXX_FLAGS                "-std=c++11 -fPIC")
+SET (CMAKE_CXX_COMPILER     "/usr/bin/g++")
+SET (CMAKE_C_COMPILER		    "/usr/bib/gcc")
+SET (CMAKE_CXX_FLAGS        "-g -std=c++1y -fPIC")
 SET (CMAKE_LINKER_FLAGS    "-rdynamic")
 
-add_definitions(-QATE_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
+
+add_definitions(-DQATE_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
 
 add_executable(
-	test_utils
-	unit/test_utils.cpp
-    ../src/lib/utils.cpp
+	test_nloop
+	unit/test_nloop.cpp
 )
-
-
-add_executable(
-	test_records
-	unit/test_records.cpp
-        ../src/lib/records.cpp
-        ../src/lib/narrays.cpp
-)
-
-add_executable(
-	test_backend_influxdb
-	../src/lib/records.cpp
-	../src/lib/narrays.cpp
-	../src/lib/http.cpp
-	../src/lib/utils.cpp
-	unit/test_backend_influxdb.cpp
-)
-
-
-
 
 find_library (CURL curl)
+find_library (PTHREAD pthread)
+find_library (QUOTEK quotek)
 
 target_link_libraries(
-  test_backend_influxdb
+  test_nloop
+  quotek
+  pthread
   curl
 )
 
