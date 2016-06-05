@@ -29,6 +29,7 @@ class igmLogger {
     vector<log_entry> getLastEntries(int);
     vector<log_entry>* getAllEntries();
     void clear();
+    void reset();
   private:
   bool use_stdout;
   ofstream out;

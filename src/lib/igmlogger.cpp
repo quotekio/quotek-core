@@ -80,6 +80,10 @@ ofstream* igmLogger::getStream() {
   return &out;
 }
 
+void igmLogger::reset() {
+  clear();
+}
+
 void igmLogger::clear() {
   entries.clear();
 }

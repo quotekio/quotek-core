@@ -30,6 +30,10 @@ moneyManager::moneyManager(float cap,
 
 }
 
+void moneyManager::reset() {
+  clear();
+}
+
 void moneyManager::clear() {
 
   cur_pnl = 0;

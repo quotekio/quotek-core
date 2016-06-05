@@ -147,7 +147,7 @@ class qateResultsHandler {
       stringstream res;
 
       res << "{ \"type\":" << this->bt_type ;
-      res << "\", results\": [";
+      res << ", \"results\": [";
 
       for (int i=0;i<entries.size();i++) {
         res << entries[i]->json_encode();

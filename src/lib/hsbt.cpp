@@ -448,6 +448,11 @@ void hsbt::reset() {
   this->progress_tstamp = 0;
   this->backtest_progress = 0;
 
+  this->positions_history.clear();
+
+  this->tse_mm->reset();
+  this->logger->reset();
+
   for ( int i=0; i<  this->inmem_records.Size() ; i++  )  {
        this->inmem_records[i].get_data().clear();   
   }

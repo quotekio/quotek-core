@@ -101,6 +101,7 @@ class moneyManager {
     void displayStats();
 
     void clear();
+    void reset();
 
     void loadCPNL();
     void saveCPNL();

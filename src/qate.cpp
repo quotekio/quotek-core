@@ -519,7 +519,9 @@ int main(int argc,char** argv) {
       bc1 = new std::thread(ws_broadcast_real, tse, ws1);
     }
 
-    else if (c->getMode() == QATE_MODE_BACKTEST || c->getMode() == QATE_MODE_GENETICS) {
+    else if (c->getMode() == QATE_MODE_BACKTEST || 
+             c->getMode() == QATE_MODE_GENETICS || 
+             c->getMode() == QATE_MODE_BATCH ) {
       bc1 = new std::thread(ws_broadcast_bt, bte, ws1);
     }
   }
