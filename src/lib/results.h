@@ -56,6 +56,8 @@ class qateresult {
     int generation_id;
     int individual_id;
     vector<string> genes_repr;
+
+    std::vector<std::string> batch_repr;
     
     vector<string> loglines;
     vector<quotek::core::position> positions_history;
@@ -87,6 +89,16 @@ class qateresult {
         }
         ss << "],\n";
 
+      }
+
+      if ( batch_repr.size() > 0 ) {
+        ss << "\"batch\": [";
+        for(int i=0;i < batch_repr.size();i++) {
+          ss <<  "\"" << batch_repr[i] << "\"" ;
+          if (i < batch_repr.size()-1) ss << ",\n";
+          else ss << "\n";
+        }
+        ss << "],\n";
       }
 
       ss << "\"trades\": {";

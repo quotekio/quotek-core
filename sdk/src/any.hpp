@@ -20,7 +20,8 @@ namespace quotek {
   namespace data {
 
     template<class T>
-    using StorageType = typename decay<typename remove_reference<T>::type>::type;
+    using StorageType = typename decay<T>::type;
+    //using StorageType = typename decay<typename remove_reference<T>::type>::type;
 
     /**
      * any is a generic type able to store any kind of data. It is very useful for store

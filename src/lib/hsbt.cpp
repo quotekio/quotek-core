@@ -550,6 +550,7 @@ void hsbt::runNormal() {
 void hsbt::runBatch() {
 
     qateresult* result;
+    std::vector<std::string> representation;
 
     AssocArray<std::vector<quotek::data::any> > universe;
     
@@ -572,18 +573,24 @@ void hsbt::runBatch() {
 
     for (int i=0;i< total_iters;i++) {
 
-      std::cout << "Batch testing with [";
-      //Here we place the correct values inside the strats store entry
-      for (int k = 0; k < indices.size(); k++) {
+      representation.clear();
 
-        int tst  = universe[k][indices[k]];
-        std::cout << universe.GetItemName(k) << "=" << tst << ",";
+      
+      //Here we place the correct values inside the strats store entry
+      //and compute batch representation
+      for (int k = 0; k < indices.size(); k++) {
         tse_store[universe.GetItemName(k)] = universe[k][indices[k]];
+        representation.emplace_back( this->batch2string(universe.GetItemName(k),universe[k][indices[k]]) );
       }
+
+      std::cout << "Batch testing with [";
+      for (auto repr_ : representation) std::cout << repr_ << ",";
       std::cout << "]\n";
 
       //HERE WE GO!!
       result = this->run();
+
+      result->batch_repr = representation;
 
       //Then we save result (temporary advancement)
       this->qrh->entries.emplace_back(result);
@@ -728,6 +735,37 @@ void hsbt::addTradeStats(qateresult* result) {
 
 }
 
+
+std::string hsbt::batch2string(std::string bname, quotek::data::any value) {
+  
+  stringstream result;
+  
+  std::vector< std::vector<std::string> > batch_dirs = tse_strathandlers[0]->getBatchDirectives();
+
+  for (auto bdir: batch_dirs) {
+
+    if ( bdir[1]  == bname ) {
+      
+      if ( bdir[0] == "int" ) {
+        int tmp_ = value;
+        result << bdir[1] << "=" << tmp_;
+      }
+
+      else if (bdir[0] == "float") {
+        float tmp_ = value;
+        result << bdir[1] << "=" << tmp_;
+      }
+
+      else if (bdir[0] == "string") {
+        std::string tmp_ = value;
+        result << bdir[1] << "=" << tmp_ ;
+      }
+      break;
+    }
+  }
+  return result.str();
+}
+
 void hsbt::createBatchUniverse(AssocArray<std::vector<quotek::data::any> > &universe ) {
 
   std::vector< std::vector<std::string> > batch_dirs = tse_strathandlers[0]->getBatchDirectives();
@@ -771,6 +809,42 @@ void hsbt::createBatchUniverse(AssocArray<std::vector<quotek::data::any> > &univ
 
     }
 
+    else if ( batch_dirs[i][0] == "float" ) {
+
+      if ( batch_dirs[i].size() ==  5 ) {
+        
+        float a = std::stof(batch_dirs[i][2]);
+        float b = std::stof(batch_dirs[i][3]);
+        float c = std::stof(batch_dirs[i][4]);
+
+        for (float j= a; j < b; j= j+ c) {
+          universe[batch_dirs[i][1]].emplace_back(j);
+        }
+      }
+
+      else if (batch_dirs[i].size() == 3) {
+
+        std::vector<std::string> floatlist = split(batch_dirs[i][2],',');
+
+        for (auto lfloat_ : floatlist) {
+          universe[batch_dirs[i][1]].emplace_back(std::stof(lfloat_)); 
+        }
+
+      }
+    }
+
+    else if ( batch_dirs[i][0] == "string" ) {
+
+      if (batch_dirs[i].size() == 3) {
+
+        std::vector<std::string> strlist = split(batch_dirs[i][2],',');
+
+        for (auto lstring_ : strlist) {
+          universe[batch_dirs[i][1]].emplace_back(lstring_);
+        }
+
+      }
+    }
 
   }  
 

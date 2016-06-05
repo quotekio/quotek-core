@@ -57,6 +57,7 @@ class hsbt: public tsEngine {
     void runBatch();
 
     void createBatchUniverse(AssocArray<std::vector<quotek::data::any> > &universe );
+    std::string batch2string(std::string bname, quotek::data::any value);
 
     float getSpeed();
     int getBacktestPos();
