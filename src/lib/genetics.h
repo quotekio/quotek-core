@@ -46,7 +46,7 @@ class genetics {
     int getMaxGenerations();
     float getConvergeThold();
 
-  	void parseGene(string);
+  	void parseGene(std::vector<string>&);
     void newgen();
     void initPopulation();
   	void genPopulation(int);
@@ -60,10 +60,7 @@ class genetics {
 
     bool converges();
     bool mustCompute(individual*);
-
-
-    individual* getWinner();
-
+    
     std::vector <string> serializeIV(individual*);
 
     std::vector<individual> population;

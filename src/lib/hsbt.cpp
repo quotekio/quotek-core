@@ -559,10 +559,12 @@ void hsbt::runBatch() {
 
     AssocArray<std::vector<quotek::data::any> > universe;
     
+    //initalizes current iter
+    this->current_iter = 0;
+
     //we must generate the universe before using it !
     this->createBatchUniverse(universe);
 
-  
     std::vector<int> indices;
     
     //compute how many iters;
@@ -604,6 +606,9 @@ void hsbt::runBatch() {
       //then we reset hsbt for next iter
       this->reset();
 
+      this->current_iter++;
+      this->backtest_global_progress = ( (float) this->current_iter / (float) total_iters) * 100.0;
+
       indices[ indices.size() -1 ] ++;
       for ( int j= indices.size() -1; j > 0; j--  ) {
         if (  indices[j] == universe[j].size() ) {
@@ -620,22 +625,43 @@ void hsbt::runBatch() {
 
 void hsbt::runGenetics() {
 
+  this->backtest_global_progress = 0;
+  this->current_iter = 0;
+  int total_iters = 0; 
+
   qateresult* result;
+
+  //get //#gene directives and parse them.
+  std::vector< std::vector<std::string> > gene_dirs = tse_strathandlers[0]->getGeneDirectives();
+  for (auto gene_dir: gene_dirs) {
+    tse_ge->parseGene(gene_dir);
+  }
+
+  std::cout << "Initializing first genetics population.." << std::endl;
   tse_ge->initPopulation();
 
-  for (int i=0;i< tse_ge->getMaxGenerations();i++) {
+  total_iters = tse_ge->getMaxGenerations() * tse_ge->population.size();
+  std::cout << tse_ge->population.size() << "IVs generated." << std::endl;
 
+  for (int i=0;i< tse_ge->getMaxGenerations();i++) {
     
     for (int j=0; j< tse_ge->population.size();j++) {
 
-      individual iv = tse_ge->population[i];
+      individual* iv = &(tse_ge->population[j]);
 
-      for (int k=0; k < iv.attributes.Size(); k++  ) {
-        this->tse_store[ iv.attributes.GetItemName(k) ] = iv.attributes[k];
+      for (int k=0; k < iv->attributes.Size(); k++  ) {
+        this->tse_store[ iv->attributes.GetItemName(k) ] = iv->attributes[k];
       }
 
       //HERE WE GO!!
       result = this->run();
+
+      result->generation_id = i;
+      result->individual_id = j;
+
+      result->genes_repr = tse_ge->serializeIV(iv);
+
+      iv->result = result->pnl;
 
       //Then we save result (temporary advancement)
       this->qrh->entries.emplace_back(result);
@@ -644,12 +670,20 @@ void hsbt::runGenetics() {
       //then we reset hsbt for next iter
       this->reset();
 
-      //we are OK !
-      if (tse_ge->converges() ) break;
+      this->current_iter++;
+      this->backtest_global_progress = ( (float) this->current_iter / (float) total_iters) * 100.0;
 
-      tse_ge->newgen();
+      //we are OK !
+      if (tse_ge->converges() ) { 
+        backtest_global_progress = 100;
+        return;
+      }
 
     }
+
+    std::cout << "Population " << i << " tested, generating new one !" << std::endl;
+    tse_ge->newgen();
+
   }
 
 
@@ -726,7 +760,12 @@ std::string hsbt::snapshot() {
 
   std::stringstream ss;
 
-  ss << "{\"progress\":" << "\"" << backtest_progress << "\",";
+  //We send backtest progress if single BT
+  if ( tse_mode == QATE_MODE_BACKTEST  ) ss << "{\"progress\":" << "\"" << backtest_progress << "\",";
+
+  //Else we send backtest_global_progress
+  else ss << "{\"progress\":" << "\"" << backtest_global_progress << "\",";
+
   ss << "\"tradestats\":" << tradestats2json(ts1);
   ss << ",\"pnl\": \"" << ts1.pnl << "\",";
   ss << "\"histgraph\":[";

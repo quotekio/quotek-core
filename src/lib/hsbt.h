@@ -79,6 +79,8 @@ class hsbt: public tsEngine {
     int tse_mode;
     int backtest_pos;
     int backtest_progress;
+    float backtest_global_progress;
+    int current_iter;
     int progress_tstamp;
     int backtest_from;
     int backtest_to; 

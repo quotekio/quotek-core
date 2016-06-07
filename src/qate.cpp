@@ -355,6 +355,7 @@ int main(int argc,char** argv) {
   cout << "Loading configuration..." << endl;
 
   genetics* ge = NULL;
+  genetics_params* gp = NULL;
   strategyHandler* sh;
   qateCfg* c = new qateCfg();
 
@@ -394,18 +395,6 @@ int main(int argc,char** argv) {
   std::vector<std::string> astrats = c->getActiveStrats();
 
   std::vector<strategyHandler*> sh_list;
-
-  /*
-  genetics_params* gp = c->getGP();
-  ge = new genetics(gp->genetics_population,
-                                gp->genetics_survivors,
-                                gp->genetics_children,
-                                gp->genetics_newcomers,
-                                gp->genetics_mutable_genes,
-                                gp->genetics_converge_thold,
-                                gp->genetics_max_generations,
-                                gp->genetics_recompute_winners);*/
-
 
   for (int i=0;i<astrats.size();i++) {
     sh_list.emplace_back (new strategyHandler(c->getStratsPath(), astrats[i]) );
@@ -483,6 +472,17 @@ int main(int argc,char** argv) {
 
     case QATE_MODE_GENETICS:
       cout << "starting Engine in genetics mode.." << endl;
+
+      gp = c->getGP();
+      ge = new genetics(gp->genetics_population,
+                                    gp->genetics_survivors,
+                                    gp->genetics_children,
+                                    gp->genetics_newcomers,
+                                    gp->genetics_mutable_genes,
+                                    gp->genetics_converge_thold,
+                                    gp->genetics_max_generations,
+                                    gp->genetics_recompute_winners);
+
       bte = new hsbt(c,b,back,cc_,ilist,sh_list,mm,ge,mlist);
       break;
 

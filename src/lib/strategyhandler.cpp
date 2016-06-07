@@ -145,7 +145,7 @@ int strategyHandler::preprocess_cpp() {
   std::regex import_regex("^\\/\\/\\#import(.*)");
 
   std::regex batch_regex("^\\/\\/\\#batch(.*)");
-  std::regex gene_regex("^\\/\\/\\#batch(.*)");
+  std::regex gene_regex("^\\/\\/\\#gene(.*)");
 
   std::regex ex_eval_regex ("(.*)\\/\\/#ex_eval(.*)");
   std::regex macro_regex("^(\\s*)#undef(.*)", 

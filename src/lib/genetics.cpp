@@ -42,32 +42,36 @@ bool genetics::mustCompute(individual* iv) {
 }
 
 
-void genetics::parseGene(string gene_str) {
+void genetics::parseGene(std::vector<std::string> &gargs) {
 
-  vector<string> args = split(gene_str,0x20);
   gene g1; 
   int parse_err = 0;
 
-  if (args.size() >= 3) {
-    g1.name = args[1];  
-    g1.dataType = args[2];
-
-    if (args[2] == "int" || args[2] == "float") {
-      if (args.size() >= 5) {
-        g1.ilimit_inf = atoi( args[3].c_str() ); 
-        g1.ilimit_sup = atoi( args[4].c_str() );
-      } 
-      else parse_err = 1;
-    }
-
-    if (parse_err) {
-      cerr << "* UNABLE TO LOAD GENE " << gene_str << " : PARSING ERROR *" << endl;
-      return;
-    }
-
-    genes.push_back(g1);
+  if (gargs[0] == "randint" && gargs.size() == 4) {
+    g1.dataType = gargs[0];
+    g1.name = gargs[1];
+    g1.ilimit_inf = std::stoi(gargs[2]);
+    g1.ilimit_sup = std::stoi(gargs[3]);
 
   }
+
+  else if (gargs[0] == "randfloat" && gargs.size() == 4) {
+    g1.dataType = gargs[0];
+    g1.name = gargs[1];
+    g1.flimit_inf = std::stof(gargs[2]);
+    g1.flimit_sup = std::stof(gargs[3]);
+  }
+
+  else parse_err = 1;
+
+  if (parse_err) {
+    cerr << "* UNABLE TO LOAD GENE " << gargs[1] << " : PARSING ERROR *" << endl;
+    return;
+  }
+  
+
+  this->genes.emplace_back(g1);
+
 }
 
 
@@ -90,15 +94,11 @@ void genetics::genPopulation(int size) {
     individual iv;
     iv.result=0;
 
-    //store_init(&(iv.attributes));
-    char gname[512];
-
-    for(int j=0;j< genes.size();j++) {
-
-      strncpy(gname,genes[j].name.c_str(),512*sizeof(char));
-
+    for(int j=0;j< this->genes.size();j++) {
+      
       if ( genes[j].dataType == "randint" ) {
-        iv.attributes[genes[j].name] = randint(genes[j].ilimit_inf,genes[j].ilimit_sup);
+        int f = randint(genes[j].ilimit_inf,genes[j].ilimit_sup);
+        iv.attributes[genes[j].name] = f;
       }
 
       else if (genes[j].dataType == "randfloat") {
@@ -108,6 +108,7 @@ void genetics::genPopulation(int size) {
     population.push_back(iv);
 
   }
+
 }
 
 
@@ -115,8 +116,6 @@ void genetics::newgen() {
 
   vector <individual> newpop;
   select(&newpop);
-
-  cout << "POST SELECTION POP SIZE:" << newpop.size() <<  endl;
 
   reproduce(&newpop);
   mutate(&newpop);
@@ -126,26 +125,6 @@ void genetics::newgen() {
   generation++;
 
 }
-
-
-
-//Probleme ICI
-int genetics::getCurMaxResult() {
-
-  float max = -1000000;
-  int max_idx = -1;
-
-  for (int i=0;i<population.size();i++) {
-    if ( population.at(i).result >= max && ! vector_in(&survivors_indices,i) ) {
-      max = population.at(i).result;
-      max_idx = i;
-    }
-  }
-
-  survivors_indices.push_back(max_idx);
-  return max_idx;
-}
-
 
 void genetics::select(vector<individual>* p) {
 
@@ -157,6 +136,13 @@ void genetics::select(vector<individual>* p) {
     int s_idx = getCurMaxResult();
     p->push_back( population[s_idx]);
   }
+
+  std::cout << "Remaining Individuals:";
+  for (auto suri_: survivors_indices) {
+    std::cout << suri_ << "," ;
+  }
+  std::cout << std::endl;
+
 }
 
 
@@ -253,19 +239,20 @@ void genetics::mutate(vector<individual>* p) {
 
 }
 
-individual* genetics::getWinner() {
+int genetics::getCurMaxResult() {
 
-  //dirty, do not work in any case
-  float max_result = -1000000;
-  int w_idx = 0;
+  float max = -1000000;
+  int max_idx = -1;
 
   for (int i=0;i<population.size();i++) {
-    if (population[i].result >= max_result ) {
-      max_result = population[i].result;
-      w_idx = i;
+    if ( population.at(i).result >= max && ! vector_in(&survivors_indices,i) ) {
+      max = population.at(i).result;
+      max_idx = i;
     }
   }
-  return &( population[w_idx] );  
+
+  survivors_indices.push_back(max_idx);
+  return max_idx;
 }
 
 
@@ -275,19 +262,21 @@ vector <string> genetics::serializeIV(individual* iv) {
 
   gene* linked_gene;
   for(int i=0;i<iv->attributes.Size();i++) {
-    const char* gname = "bla";
-    //char* gname = store_item_at( &(iv->attributes), i);
-    //int gval = *( (int*) store_value_at( &(iv->attributes),i));
-    int gval = 0;
-    linked_gene = getGene( std::string(gname) );
+   
+    stringstream ss;
 
-    if ( linked_gene->dataType == "int"  ) {
-      result.push_back(linked_gene->name + " int " + int2string(gval));
+    linked_gene = getGene( iv->attributes.GetItemName(i) );
+
+    if ( linked_gene->dataType == "randint"  ) {
+      int f = iv->attributes[i];
+      ss << linked_gene->name << "=" << f;
     }
 
-    else if (linked_gene->dataType == "float") {
-      result.push_back(linked_gene->name + " float " + float2string((float)gval));
+    else if (linked_gene->dataType == "randfloat") {
+      float f = iv->attributes[i];
+      ss << linked_gene->name << "=" << f;
     }
+    result.emplace_back(ss.str());
   }
 
   return result;
