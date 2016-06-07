@@ -25,9 +25,6 @@ float genetics::getConvergeThold() {
   return converge_thold;
 }
 
-int genetics::getPopulationSize() {
-  return population.size();
-}
 
 bool genetics::converges() {
 
@@ -42,10 +39,6 @@ bool genetics::converges() {
 bool genetics::mustCompute(individual* iv) {
   if (recompute_winners == 0 && iv->result != 0) return false;
   else return true;
-}
-
-individual* genetics::getIndividualFromPopulation(int inum) {
-  return &( population[inum] );
 }
 
 
@@ -104,18 +97,12 @@ void genetics::genPopulation(int size) {
 
       strncpy(gname,genes[j].name.c_str(),512*sizeof(char));
 
-      if ( genes[j].dataType == "int" ) {
-
-
-        int* val = (int*) malloc(sizeof(int));
-        *val = randint(genes[j].ilimit_inf,genes[j].ilimit_sup);
-        //store_push( &(iv.attributes), gname, val);
+      if ( genes[j].dataType == "randint" ) {
+        iv.attributes[genes[j].name] = randint(genes[j].ilimit_inf,genes[j].ilimit_sup);
       }
 
-      else if (genes[j].dataType == "float") {
-        float* val  = (float*) malloc(sizeof(float));
-        *val = randfloat(genes[j].limit_inf,genes[j].limit_sup);
-        //store_push( &(iv.attributes), gname, val);
+      else if (genes[j].dataType == "randfloat") {
+        iv.attributes[genes[j].name] = randfloat(genes[j].flimit_inf,genes[j].flimit_sup);
       }
     }
     population.push_back(iv);
@@ -204,10 +191,8 @@ void genetics::reproduce(vector<individual>* p) {
       else giver = &p2;
 
       //mmhh, pr0n !
-      /*store_push( &(iv.attributes), 
-        	      store_item_at(&(giver->attributes), j),
-        	      store_value_at(&(giver->attributes), j) );
-      */
+      iv.attributes[j] = giver->attributes[j];
+
 
     }      
    p->push_back(iv);
@@ -231,25 +216,14 @@ void genetics::mutateGene(individual* iv,gene* g) {
 
   gene* gene_ref = g;
 
-  char gname[512];
-
-
   if (gene_ref != NULL) {
 
-  	strncpy(gname,gene_ref->name.c_str(), 512*sizeof(char) );
-
-    if (gene_ref->dataType == "int") {
-          int* val = (int*) malloc(sizeof(int));
-  	  *val = gene_ref->ilimit_inf + rand() % gene_ref->ilimit_sup ;
-  	  //store_push ( &(iv->attributes) , gname , val );
+    if (gene_ref->dataType == "randint") {
+  	  iv->attributes[gene_ref->name] = randint(gene_ref->ilimit_inf,gene_ref->ilimit_sup);
     }  
 
-    else if (gene_ref->dataType == "float") {
-   
-      float* val = (float*) malloc(sizeof(float));
-
-      *val =  gene_ref->limit_inf + (float) rand() / ((float)RAND_MAX/(gene_ref->limit_sup - gene_ref->limit_inf ));
-      //store_push ( &(iv->attributes) , gname , val );
+    else if (gene_ref->dataType == "randfloat") {
+     iv->attributes[gene_ref->name] = randfloat(gene_ref->flimit_inf,gene_ref->flimit_sup);
     }
   }
 }
@@ -300,7 +274,7 @@ vector <string> genetics::serializeIV(individual* iv) {
   vector <string> result;
 
   gene* linked_gene;
-  for(int i=0;i<iv->attributes.size;i++) {
+  for(int i=0;i<iv->attributes.Size();i++) {
     const char* gname = "bla";
     //char* gname = store_item_at( &(iv->attributes), i);
     //int gval = *( (int*) store_value_at( &(iv->attributes),i));

@@ -11,22 +11,27 @@
 #include <time.h>
 #include <sys/stat.h>
 
+#include "assoc.h"
+#include <quotek/any.hpp>
+
 
 #define GDUMP_DIR "/tmp/qate/genetics"
 
 using namespace std;
 
 typedef struct gene {
-    string name;
-    string dataType;
-    float limit_inf;
-    float limit_sup;
+    std::string name;
+    std::string dataType;
+    float flimit_inf;
+    float flimit_sup;
     int ilimit_inf;
     int ilimit_sup;
 } gene;
 
 typedef struct individual {
-  store attributes;
+
+  AssocArray<quotek::data::any> attributes;
+
   float result;
 } individual;
 
@@ -53,17 +58,15 @@ class genetics {
   	void reproduce(vector<individual>*);
     void savePopulation();
 
-    int getPopulationSize();
-    individual* getIndividualFromPopulation(int);
-
     bool converges();
     bool mustCompute(individual*);
 
 
     individual* getWinner();
-    
 
-    vector <string> serializeIV(individual*);
+    std::vector <string> serializeIV(individual*);
+
+    std::vector<individual> population;
 
     
     
@@ -71,8 +74,6 @@ class genetics {
   
    int getCurMaxResult();
 
-   vector<individual> population;
-   vector<gene> genes;
    farray results;
    int population_size;
    int survivors;
@@ -84,6 +85,7 @@ class genetics {
    int max_generations;
    int recompute_winners;
 
+   std::vector<gene> genes;
    vector <int> survivors_indices;
 
    string ddir;

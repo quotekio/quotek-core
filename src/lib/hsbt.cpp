@@ -618,7 +618,41 @@ void hsbt::runBatch() {
 }
 
 
-void hsbt::runGenetics() { 
+void hsbt::runGenetics() {
+
+  qateresult* result;
+  tse_ge->initPopulation();
+
+  for (int i=0;i< tse_ge->getMaxGenerations();i++) {
+
+    
+    for (int j=0; j< tse_ge->population.size();j++) {
+
+      individual iv = tse_ge->population[i];
+
+      for (int k=0; k < iv.attributes.Size(); k++  ) {
+        this->tse_store[ iv.attributes.GetItemName(k) ] = iv.attributes[k];
+      }
+
+      //HERE WE GO!!
+      result = this->run();
+
+      //Then we save result (temporary advancement)
+      this->qrh->entries.emplace_back(result);
+      this->qrh->save();
+
+      //then we reset hsbt for next iter
+      this->reset();
+
+      //we are OK !
+      if (tse_ge->converges() ) break;
+
+      tse_ge->newgen();
+
+    }
+  }
+
+
   return;
 }
 
