@@ -81,6 +81,17 @@ void hsbt::init_finalize() {
     exit(1);
   }
 
+  //initializes btfilter
+  btfilter = false;
+  btfilter_from = 0;
+  btfilter_to = 0;
+
+  btf b_ = tse_strathandlers[0]->getBTFilter();
+  btfilter = b_.enable;
+  btfilter_from = b_.from;
+  btfilter_to = b_.to;
+  btfilter_skip = b_.skip;
+
   //std::thread tload( [this] {} );
 
   //initializes logger
@@ -486,6 +497,17 @@ qateresult* hsbt::run() {
 
     this->progress_tstamp = this->backtest_inmem_records[0][this->backtest_pos].timestamp ;
 
+    if ( btfilter ) {
+      
+      if ( this->progress_tstamp % btfilter_skip != 0 ) goto skipexec;
+
+      int chour = quotek::core::time::timeint(this->progress_tstamp)[0];
+      if ( chour < btfilter_from || chour >= btfilter_to ) {
+        goto skipexec;
+      }
+
+    }
+
     for (int k=0;k< nb_algos;k++) {
       evaluate_(strategies[k]);
     }
@@ -493,8 +515,8 @@ qateresult* hsbt::run() {
     moneyman_();
     execute_();
  
-    this->backtest_pos++;
 
+skipexec: this->backtest_pos++;
     //Computes backtest Progress.
     this->backtest_progress =  this->backtest_pos / bt_realsize * 100;
 

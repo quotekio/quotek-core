@@ -19,6 +19,11 @@ strategyHandler::strategyHandler(string stpath, string n) {
     this->language = "c++";
   }
 
+  btfilt.enable = false;
+  btfilt.from = 0;
+  btfilt.to = 0;
+  btfilt.skip = 1;
+
 }
 
 int strategyHandler::prepareCompile() {
@@ -147,6 +152,8 @@ int strategyHandler::preprocess_cpp() {
   std::regex batch_regex("^\\/\\/\\#batch(.*)");
   std::regex gene_regex("^\\/\\/\\#gene(.*)");
 
+  std::regex btfilter_regex("^\\/\\/\\#btfilter(.*)");
+
   std::regex ex_eval_regex ("(.*)\\/\\/#ex_eval(.*)");
   std::regex macro_regex("^(\\s*)#undef(.*)", 
                          std::regex::ECMAScript|std::regex::icase );
@@ -239,6 +246,19 @@ int strategyHandler::preprocess_cpp() {
       trim(gdirec);
       this->gene_directives.emplace_back(quotek::core::utils::tokenise(gdirec));
     }
+
+    else if (std::regex_match(line, sm, btfilter_regex)) {
+      std::string btfargs_raw = sm[1];
+      trim(btfargs_raw);
+      std::vector<std::string> btfargs = quotek::core::utils::tokenise(btfargs_raw);
+
+      this->btfilt.enable = true;
+      this->btfilt.from = std::stoi(btfargs[0]);
+      this->btfilt.to = std::stoi(btfargs[1]);
+      this->btfilt.skip = std::stoi(btfargs[2]);
+
+    }
+
 
     //finding macro occurences and triggering error if found.
     else if ( std::regex_match(line,macro_regex) ) {
@@ -361,6 +381,11 @@ std::string strategyHandler::getAssetMatch() {
 
 std::string strategyHandler::getName() {
   return name;
+}
+
+
+btf strategyHandler::getBTFilter() {
+  return btfilt;
 }
 
 

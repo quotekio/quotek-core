@@ -2,7 +2,9 @@
 #define BTENGINE_H
 
 #include "tsengine.h"
+#include "btf.hpp"
 #include <map>
+#include <quotek/timeutils.hpp>
 #include <quotek/any.hpp>
 
 #define REMPOS_STOP 0x01
@@ -92,6 +94,12 @@ class hsbt: public tsEngine {
     int si_size;
 
     qateResultsHandler* qrh;
+
+    bool btfilter;
+    uint8_t btfilter_from;
+    uint8_t btfilter_to;
+    uint8_t btfilter_skip;
+
 
 };
 

@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <dlfcn.h>
 #include "utils.h"
+#include "btf.hpp"
 #include <quotek/utils.hpp> 
 
 #include <regex>
@@ -44,6 +45,9 @@ class strategyHandler {
 
     std::vector< std::vector<std::string> > getBatchDirectives();
     std::vector< std::vector<std::string> > getGeneDirectives();
+    btf getBTFilter();
+
+
     
     static const string cc;
     static const string cflags;
@@ -61,6 +65,8 @@ class strategyHandler {
 
     std::vector< std::vector<std::string> > batch_directives;
     std::vector< std::vector<std::string> > gene_directives;
+
+    btf btfilt;
 
 };
 
