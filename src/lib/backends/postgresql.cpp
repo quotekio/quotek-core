@@ -1,9 +1,9 @@
-#include "backend.h"
 #include "../utils.h"
-
 #include <pqxx/pqxx>
 #include <sstream>
 #include <stdlib.h>
+
+#include <quotek/backend.hpp>
 #include <quotek/json.hpp>
 
 class postgresql : public backend {

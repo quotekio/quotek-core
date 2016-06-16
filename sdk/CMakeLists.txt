@@ -116,6 +116,7 @@ install (TARGETS quotek DESTINATION lib)
 
 install (FILES "src/alchemy.hpp" DESTINATION include/quotek)
 install (FILES "src/any.hpp" DESTINATION include/quotek)
+install (FILES "src/backend.hpp" DESTINATION include/quotek)
 install (FILES "src/blackscholes.hpp" DESTINATION include/quotek)
 install (FILES "src/broker.hpp" DESTINATION include/quotek)
 install (FILES "src/core.hpp" DESTINATION include/quotek)

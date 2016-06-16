@@ -760,6 +760,7 @@ void tsEngine::init_finalize(qateCfg* conf) {
     
     //To Add later on.
     st->portfolio = this->getMoneyManager()->getPositionsPtr();
+	st->back = tse_back;
     st->asset_name = algos[i].eval_name;
     st->identifier = algos[i].strategy + "@" + algos[i].eval_name;
     st->store = &tse_store;

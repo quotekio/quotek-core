@@ -1,14 +1,19 @@
+/*
+Quotek Strategies SDK 3.0
+Copyright 2013-2016 Quotek SAS
+http://www.quotek.io
+*/
 
-#ifndef BACKEND_H
-#define BACKEND_H
+#ifndef BACKEND_HPP
+#define BACKEND_HPP
 
 #include <vector>
 #include <string>
 #include <iostream>
 
-#include <quotek/cvector.hpp>
-#include <quotek/position.hpp>
-#include <quotek/record.hpp>
+#include "cvector.hpp"
+#include "position.hpp"
+#include "record.hpp"
 
 using namespace std;
 

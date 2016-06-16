@@ -11,6 +11,7 @@ http://www.quotek.io
 #include <map>
 
 #include "any.hpp"
+#include "backend.hpp"
 #include "cqueue.hpp"
 #include "cvector.hpp"
 #include "position.hpp"
@@ -48,11 +49,13 @@ strategy() {
  */
 void set_env(quotek::data::records* recs,
            std::map<std::string, quotek::data::any>* store,
-           quotek::data::cvector<quotek::core::position>*portfolio) {
+           quotek::data::cvector<quotek::core::position>*portfolio,
+		   backend* backend_) {
 
   this->recs = recs;
   this->store = store;
-  this->portfolio = portfolio;  
+  this->portfolio = portfolio;
+  this->back = backend_;  
 
 }
 
@@ -191,6 +194,12 @@ std::map<std::string, quotek::data::any>* store;
  * portfolio contains the current list of running positions.
  */
 quotek::data::cvector<quotek::core::position>* portfolio;
+
+/**
+ * backend reference, to query prices from it.
+ */
+backend* back;
+
 /**
  * counters allow to maintain a series of variables to count and keep various steps across ticks.
  */

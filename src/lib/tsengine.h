@@ -5,7 +5,6 @@
 #include <unistd.h>
 #include <dlfcn.h>
 #include <string>
-#include "backends/backend.h"
 #include "caches/cache.h"
 #include "queue_c.h"
 
@@ -29,6 +28,7 @@
 #include <iostream>
 #include <fstream>
 #include <thread>
+#include <quotek/backend.hpp>
 #include <quotek/cvector.hpp>
 #include <quotek/cqueue.hpp>
 #include <quotek/quant.hpp>

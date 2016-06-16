@@ -73,7 +73,6 @@ endif()
 if (PQXX)
   add_library(
       postgresqlbe SHARED
-      src/lib/backends/backend.h
       src/lib/backends/postgresql.cpp
   )
   target_link_libraries(
@@ -89,7 +88,6 @@ endif()
 
 add_library(
        influxdbbe SHARED
-       src/lib/backends/backend.h
        src/lib/backends/influxdb.cpp
 )
 
@@ -101,7 +99,6 @@ target_link_libraries(
 
 add_library(
        influxdbbe13 SHARED
-       src/lib/backends/backend.h
        src/lib/backends/influxdb13.cpp
 )
 

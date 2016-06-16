@@ -128,6 +128,7 @@ void hsbt::init_finalize() {
 
     st->recs = &this->getAssetRecords(algos[i].eval_name);
     st->portfolio = this->getMoneyManager()->getPositionsPtr();
+	st->back = tse_back;
     st->asset_name = algos[i].eval_name;
     st->identifier = algos[i].strategy + "@" + algos[i].eval_name;
     st->store = &tse_store;
