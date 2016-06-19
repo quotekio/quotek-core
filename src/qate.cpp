@@ -396,8 +396,12 @@ int main(int argc,char** argv) {
 
   std::vector<strategyHandler*> sh_list;
 
+
+  //Tells strathandler if qate is in btmode or not ! ( to add __backtest__ define)
+  bool btmode = (c->getMode() > 1 && c->getMode() < 5  ) ? true : false;
+
   for (int i=0;i<astrats.size();i++) {
-    sh_list.emplace_back (new strategyHandler(c->getStratsPath(), astrats[i]) );
+    sh_list.emplace_back (new strategyHandler(c->getStratsPath(), astrats[i], btmode ));
   }
 
   broker* b = load_broker(c->getBroker())();
