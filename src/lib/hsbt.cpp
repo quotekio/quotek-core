@@ -621,6 +621,7 @@ void hsbt::runBatch() {
       result = this->run();
 
       result->batch_repr = representation;
+      result->individual_id = i;
 
       //Then we save result (temporary advancement)
       this->qrh->entries.emplace_back(result);
