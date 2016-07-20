@@ -7,10 +7,12 @@ QATE_PID="/tmp/qate/qate.pid"
 case $1 in
 
   start)
+    ulimit -n 64000
     start-stop-daemon --chuid $QATE_USER --start --quiet --background --oknodo --make-pidfile --pidfile $QATE_PID --exec $QATE_BIN
   ;;
 
   startfg)
+    ulimit -n 64000
     start-stop-daemon --chuid $QATE_USER --start --quiet --oknodo --make-pidfile --pidfile $QATE_PID --exec $QATE_BIN
   ;;
 
