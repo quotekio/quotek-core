@@ -27,7 +27,7 @@ class strategyHandler {
 
   public:
 
-    strategyHandler(string stpath, string name);
+    strategyHandler(string stpath, string name,bool bt);
     int prepareCompile();
 
     std::string import_module(std::string module_name);
@@ -62,7 +62,8 @@ class strategyHandler {
     std::string asset_match;
     string strats_path;
     string language;
-
+    bool bt;
+    
     std::vector< std::vector<std::string> > batch_directives;
     std::vector< std::vector<std::string> > gene_directives;
 

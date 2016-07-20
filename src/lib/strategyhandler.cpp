@@ -5,12 +5,14 @@ const string strategyHandler::cflags = "-std=c++11 -g -shared -rdynamic -fPIC";
 const string strategyHandler::dependencies = "-lcurl -lpthread -lquotek";
 const string strategyHandler::cpath = "/tmp/qate/cenv";
 
-strategyHandler::strategyHandler(string stpath, string n) {
+strategyHandler::strategyHandler(string stpath, string n, bool bt) {
   strats_path = stpath;
   name = n;
   classname = n;
   asset_match = "(.*)";
-  
+  this->bt = bt;
+
+
   if ( endswith(name,".py") ) {
     this->language = "python";
   }  
@@ -192,6 +194,11 @@ int strategyHandler::preprocess_cpp() {
   wh << "#define execle " << randfct  << std::endl;
   wh << "#define execv " << randfct  << std::endl;
   wh << "#define execvp " << randfct  << std::endl;
+
+  if (this->bt ) {
+    wh << "#define __backtest__" << std::endl; 
+  }
+
 
   while(fh.good()){
     getline(fh,line);
