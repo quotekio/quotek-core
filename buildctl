@@ -2,6 +2,24 @@
 
 PREFIX="/usr/local/qate"
 
+
+function bctl_init() {
+
+  apt-get install libasio-dev libcurl4-openssl-dev
+  git clone https://github.com/quotekio/rapidjson
+  git clone https://github.com/quotekio/rapidxml
+  git clone https://github.com/quotekio/websocketpp
+
+  cp -r rapidjson/include/rapidjson /usr/include/
+  cp -r rapidxml /usr/include/
+
+  pushd websocketpp
+  cmake .
+  make && make install
+
+}
+
+
 function bctl_cleanup() {
   make clean
   if  [ -f install_manifest.txt ] ;then
@@ -80,6 +98,10 @@ then
 fi
 
 case $1 in
+
+  init)
+    bctl_init
+  ;;
 
   cleanup)
     bctl_cleanup
