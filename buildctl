@@ -11,6 +11,7 @@ function bctl_qwc() {
 
 function bctl_igconnector() {
   pushd ../igconnector
+  git checkout master
   cmake . && make && make install
   popd
 }
@@ -18,9 +19,8 @@ function bctl_igconnector() {
 
 function bctl_initdb() {
 
-
   git clone https://github.com/quotekio/db-archive
-  pushd db-archive
+  pushd ./db-archive
 
   case $1 in
 
@@ -197,12 +197,10 @@ case $1 in
     fi
 
     bctl_init
-    echo 'Which DB would you like to use ? [influx08,influx013,postgres]'
-    read $dbname
-    bctl_initdb $dbname
+    bctl_initdb $2
     $0 buildall    
     make install
-    bctl_qwc
+    bctl_qwc $3
     bctl_igconnector
     bctl_finish
   ;;
