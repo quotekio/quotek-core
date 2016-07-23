@@ -2,6 +2,38 @@
 
 PREFIX="/usr/local/qate"
 
+function bctl_initdb() {
+
+
+  git clone https://github.com/quotekio/db-archive
+  pushd db-archive
+
+  case $1 in
+
+    influx08)
+      dpkg -i influxdb_0.8.8_amd64.deb
+      apt-get -f install
+      /etc/init.d/influxdb start
+    ;;
+
+    influx013)
+      dpkg -i influxdb_0.13.0_amd64.deb
+      apt-get -f install
+      /etc/init.d/influxdb start
+    ;;
+
+    postgres)
+      apt-get -y update
+      apt-get -y install postgresql-9.5 libpqxx-dev      
+    ;;
+  esac
+
+  popd
+  rm -rf db-archive
+
+}
+
+
 
 function bctl_init() {
 
@@ -21,7 +53,7 @@ function bctl_init() {
   make && make install
   popd  
 
-
+  rm -rf websocketpp rapidjson rapidxml
 
 }
 
@@ -107,6 +139,10 @@ case $1 in
 
   init)
     bctl_init
+  ;;
+
+  initdb)
+    bctl_initdb $2
   ;;
 
   cleanup)
