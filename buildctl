@@ -3,8 +3,9 @@
 PREFIX="/usr/local/qate"
 
 function bctl_qwc() {
+  echo "Installing QWC With $1"
   pushd ../qwc
-  ./init.sh nginx
+  ./init.sh $1
   ./install.sh
   popd
 }
@@ -182,6 +183,11 @@ case $1 in
     #bctl_release
     #bctl_install_SDK
     #bctl_package_SDK
+  ;;
+
+
+  qwc)
+    bctl_qwc $2
   ;;
 
   universe)
