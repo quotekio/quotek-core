@@ -2,6 +2,20 @@
 
 PREFIX="/usr/local/qate"
 
+function bctl_qwc() {
+  pushd ../qwc
+  ./init.sh nginx
+  ./install.sh
+  popd
+}
+
+function bctl_igconnector() {
+  pushd ../igconnector
+  cmake . && make && make install
+  popd
+}
+
+
 function bctl_initdb() {
 
 
@@ -168,6 +182,29 @@ case $1 in
     #bctl_release
     #bctl_install_SDK
     #bctl_package_SDK
+  ;;
+
+  universe)
+
+    if [ ! -d ../qwc ]; then
+      echo '[ERROR] qwc not present, leaving..'
+      exit
+    fi
+    
+    if [ ! -d ../igconnector ]; then
+      echo '[ERROR] igconnector not present, leaving..'
+      exit
+    fi
+
+    bctl_init
+    echo 'Which DB would you like to use ? [influx08,influx013,postgres]'
+    read $dbname
+    bctl_initdb $dbname
+    $0 buildall    
+    make install
+    bctl_qwc
+    bctl_igconnector
+    bctl_finish
   ;;
 
   buildall-debug)
