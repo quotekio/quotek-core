@@ -16,6 +16,7 @@ function bctl_init() {
   pushd websocketpp
   cmake .
   make && make install
+  popd  
 
 }
 
