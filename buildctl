@@ -5,7 +5,8 @@ PREFIX="/usr/local/qate"
 
 function bctl_init() {
 
-  apt-get -y install libasio-dev libcurl4-openssl-dev
+  apt-get -y update
+  apt-get -y install build-essential g++ cmake libasio-dev libcurl4-openssl-dev
   git clone https://github.com/quotekio/rapidjson
   git clone https://github.com/quotekio/rapidxml
   git clone https://github.com/quotekio/websocketpp
@@ -13,10 +14,14 @@ function bctl_init() {
   cp -r rapidjson/include/rapidjson /usr/include/
   cp -r rapidxml /usr/include/
 
+  ln -s `pwd`/sdk/src/eigen3/Eigen /usr/include/Eigen
+
   pushd websocketpp
   cmake .
   make && make install
   popd  
+
+
 
 }
 
