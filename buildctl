@@ -57,6 +57,14 @@ function bctl_init() {
 
 }
 
+function bctl_finish() {
+  mkdir /tmp/qate
+  chown -R www-data /tmp/qate
+  echo '/usr/local/qate/lib' >> /etc/ld.so.conf.d/qate.conf
+  chmod +x /etc/init.d/qate
+  ldconfig
+}
+
 
 function bctl_cleanup() {
   make clean
@@ -147,6 +155,10 @@ case $1 in
 
   cleanup)
     bctl_cleanup
+  ;;
+
+  finish)
+    bctl_finish
   ;;
 
   buildall)
