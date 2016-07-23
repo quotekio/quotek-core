@@ -5,7 +5,7 @@ PREFIX="/usr/local/qate"
 
 function bctl_init() {
 
-  apt-get install libasio-dev libcurl4-openssl-dev
+  apt-get -y install libasio-dev libcurl4-openssl-dev
   git clone https://github.com/quotekio/rapidjson
   git clone https://github.com/quotekio/rapidxml
   git clone https://github.com/quotekio/websocketpp
