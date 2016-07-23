@@ -74,7 +74,9 @@ function bctl_init() {
 
 function bctl_finish() {
   mkdir /tmp/qate
+  touch /var/log/qate.log
   chown -R www-data /tmp/qate
+  chown www-data /var/log/qate.log
   echo '/usr/local/qate/lib' >> /etc/ld.so.conf.d/qate.conf
   chmod +x /etc/init.d/qate
   ldconfig
