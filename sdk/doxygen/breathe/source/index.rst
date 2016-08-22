@@ -3,10 +3,11 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Quotek SDK documentation!
-====================================
+Welcome to the Quotek SDK documentation!
+========================================
 
-Quotek SDK is a set of C++ classes and functions which was created in order to help algo-traders to code fast and efficient strategies in a short amount of time. 
+Quotek SDK is a set of C++ classes and functions which aims to provide quants with the most useful functions,
+to develop fast and efficient strategies in a short amount of time. 
 
 What's in it ?
 --------------
@@ -16,7 +17,7 @@ data source fetching classes, statistical analysis and financial modeling functi
 
 The scheme below shows the distribution of functionalities among the namespaces of the SDK: 
 
-.. image:: _static/img/quotek_sdk_ns.png
+.. image:: _static/img/quotek_namespace.png
     :align: center
     :width: 600px
     :class: qimg
@@ -31,30 +32,31 @@ The scheme below shows the distribution of functionalities among the namespaces 
    start
    data_struct
    quant
-   ml
-   data_sources
    ta
+   ml
+   nlp
+   data_sources
    broker
    samples
 
-
+|
+|
 Now we'll make a short description of each important namespace and what they contain.
 
-Data structures (quotek::data)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Core (quotek::core)
+^^^^^^^^^^^^^^^^^^^
 
- This is a set of classes which are meant to store structured data, and especially time-series ones.
+  Embedds the strategy and portfolio management classes, plus some extra non finance related functions like HTTP and client, JSON Parser, time data manipulation functions.. 
 
 Qunatitative Analysis (quotek::quant)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
  The most important category of all, it regroups all the classes and functions needed to process assets historical data from a quantitative perspective.
 
-Machine Learning (quotek::ml)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Data structures (quotek::data)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-  This namespace regroups all the classes and functions related to machine learning / deep learning.
-  Since this aspect of algo-trading is really promising, expect it to be much deeper in the future.
+ This is a set of classes which are meant to store and manipulate structured data, and especially time-series ones.
 
 Data Sources (quotek::datasource)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -62,10 +64,17 @@ Data Sources (quotek::datasource)
   quotek::datasource regroups all the classes which purpose is to fetch data from remote datasources.
   We can for instance think of Yahoo! finance historical data, RSS feeds, etc..
 
-Technical Analysis (quotek::ta)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Machine Learning (quotek::ml)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-  quotek::ta contains some functions that are meant to compute technical indicators (MACD, RSI, etc..) from historical data.
+  This namespace regroups all the classes and functions related to machine learning / deep learning.
+  Since this aspect of algo-trading is really promising, expect it to be much deeper in the future.
+
+Natural Language Processing (quotek::nlp)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  quotek::nlp gives the needed tools to perform Natural Language Processing on financial news/reports, etc..
+  With these tools, you can classify text data, extract meaning, etc..
 
 Broker Interractions (quotek::broker)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

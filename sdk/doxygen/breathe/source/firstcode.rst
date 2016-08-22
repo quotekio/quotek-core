@@ -1,74 +1,70 @@
-First Program
-=============
+Hello World
+============
 
 The following section will get you started width the Quotek SDK with a very simple code, 
-exactly like an hello world if you want.
+WHich will print a string along with the SDK version. This will both make a first contact with the SDK, and 
+also ensure that your toolchain is working correctly with our SDK.
 
 Let's begin
 -----------
 
-First we start by generating some fake yet realistic prices data for an asset, say the DOW JONES index. We will assume a full day of quotation, meaning ~ 25000 values if we'd get 1 tick per second.
-
-To do that with quotek there's nothing more simple, we'll just call the quotek::rand::generators::normal function:
-
-.. code-block:: c++
-  
-  //we generate a sample of 25000 ticks with mean 17000 and standard deviation 25
-  std::vector<quotek::data::record> dow_data = quotek::rand::generators::normal(25000,17000,25);
-
-Once we have our fake data sample, what we'll do is to extract some properties from it. 
-We will compute the minimum value, the maximum value, the mean and finally the standard deviation of the series. To do that, we'll make call to the functions located inside the quotek::quant namespace:
+Ok, so to start we will need to include the main quotek header:
 
 .. code-block:: c++
 
-  float dow_min = quotek::quant::min(dow_data);
-  float dow_max = quotek::quant::max(dow_data);
-  float dow_mean = quotek::quant::AVG(dow_data);
-  float dow_sigma = quotek::quant::SIGMA(dow_data, false);
+  #include <quotek/quotek.hpp>
 
-
-Finally, we will display all the computed value of the series on the standard output:
-
+Next, we will write the main function that will print the SDK version, with the help of quotek::core::version().
 
 .. code-block:: c++
-
-  /* We display all the results */
-  std::cout << "DOW MIN:" << dow_min << std::endl ;
-  std::cout << "DOW MAX:" << dow_max << std::endl;
-  std::cout << "DOW MEAN:" << dow_mean << std::endl;
-  std::cout << "DOW SIGMA:" << dow_sigma << std::endl;
-
-
-Full source code
-----------------
-
-You'll find below the full, merged source code which can be compiled as is:
-
-
-.. code-block:: c++
-
-  #include <quotek/generators.hpp>
-  #include <quotek/quant.hpp>
-  #include <iostream>
 
   int main(int argc, char** argv) {
-
-    /* We generate a random sample of values to simulate our Dow Jones Data */
-    std::vector<quotek::data::record> dow_data = quotek::rand::generators::normal(25000,17000,25);
-
-    /* We compute all the properties we want from the asset data */
-    float dow_min = quotek::quant::min(dow_data);
-    float dow_max = quotek::quant::max(dow_data);
-    float dow_mean = quotek::quant::AVG(dow_data);
-    float dow_sigma = quotek::quant::SIGMA(dow_data, false);
-
-    /* We display all the results */
-    std::cout << "DOW MIN:" << dow_min << std::endl ;
-    std::cout << "DOW MAX:" << dow_max << std::endl;
-    std::cout << "DOW MEAN:" << dow_mean << std::endl;
-    std::cout << "DOW SIGMA:" << dow_sigma << std::endl;
-
+    std::cout << "Hello World, version is :" << quotek::core::version() << std::endl;
   }
+
+
+Full Code
+---------
+
+.. code-block:: c++
+
+  //File hello.cpp
+  #include <quotek/quotek.hpp>
+
+  int main(int argc, char** argv) {
+    std::cout << "Hello World, Version is: " << quotek::core::version() << std::endl;
+  }
+
+
+Compilation
+-----------
+
+Now let's try to compile this. If You're using linux, remember that the correct call to the compilation toolchain is the following:
+
+``g++ -std=c++11 -I/opt/quotek/include -L/opt/quotek/lib -o hello_world hello.cpp -lpthread -lcurl -lquotek``
+
+Otherwise, just use the 'Compile' fnction of your IDE.
+
+
+Execution
+---------
+
+Then if you run the freshly compiled binary, you should see the following output:
+
+``Hello World, version is: Quotek SDK v3.0``
+
+|
+|
+|
+|
+
+
+
+
+
+
+
+
 
 
 

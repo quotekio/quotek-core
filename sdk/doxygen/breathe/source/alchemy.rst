@@ -5,7 +5,7 @@ Alchemy API
     :align: left
     :width: 200px
     :class: qimg
-    :alt: Quandl data service Logo.
+    :alt: Alchemy API service Logo.
 |
 |
 |
@@ -20,13 +20,13 @@ Alchemy API
 |
 |
 
-You will find below the documentation of the QUotek Alchemy API client. With it you will be able to 
+You will find below the documentation of the Quotek Alchemy API client. With it you will be able to 
 perform on text content advanced sentiment analysis, categorization or relations finding, these tools being the key factors for accurately analysing financial news. You can register for a free API key at the following URL: http://www.alchemyapi.com/api/register.html
 
 |
 |
 
-.. doxygenclass:: quotek::ml::alchemy
+.. doxygenclass:: quotek::nlp::alchemy
   :members:
   :protected-members:
   :private-members:

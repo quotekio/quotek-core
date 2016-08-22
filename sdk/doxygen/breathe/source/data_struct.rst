@@ -9,7 +9,6 @@ This section explains how to import and store structured financial data with wit
    record
    records
    history
-   marray
    news
 
 Time Series Data
