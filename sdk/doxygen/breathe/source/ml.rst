@@ -38,7 +38,6 @@ Machine Learning Table of Content
    ml_linreg
    ml_logreg
    ml_utils
-   ml_struct
    
 |
 |

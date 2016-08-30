@@ -74,35 +74,8 @@ This is why these functions were implemented in Quotek SDK, and they work as fol
 Multi-Dimentional Arrays
 ------------------------
 
-Quotek SDK embedds a series of classes which were created to instanciate and manipulate multi-dimentional
-arrays. This is the original work of Pramod Gupta from University of Washington, and it was designed for
-maximum performance and ease of use.
-
-quotek::data::array{n}d
-^^^^^^^^^^^^^^^^^^^^^^^
-This is the main set of classes for handling multi-dimentional arrays. the {n} parameter depends 
-of the number of dimensions you want to create for your array.
-
-.. code-block:: c++
-
-  #include <quotek/marray.hpp>  
-  int main() {
-
-    //instanciates a 3 dimensions array
-    quotek::data::array3d<float> a1(3,3,3);
-    //assigns a value to array coord(1,1,1)
-    a1.at(1,1,1) = 1.618;
-
-    //instanciates a 7 dimensions array
-    quotek::data::array<float> a2(23,38,50,61,100,123,138);
-    //assigns a value to array coord(7,7,7,7,7,7,7)
-    a2.at(7,7,7,7,7,7,7) = 1.618;
-
-    //retrieves value we just set
-    float golden = a2.at(7,7,7,7,7,7,7);
-
-  }
-
+The quotek SDK embedds the `Eigen Linear Algebra Library <http://eigen.tuxfamily.org/>`_ and at this regard, it benefits from the multiple containers usable in Eigen. For more informations, please visit `http://eigen.tuxfamily.org/dox/ <http://eigen.tuxfamily.org/dox/>`_
+ 
 
 Text Data
 ---------

@@ -108,6 +108,7 @@ font-family: "Open Sans",Arial,sans-serif!important;
   background:white;
   padding:20px;
   box-shadow: 0px 1px 3px 0px #cccccc;
+  margin-bottom:10px;
 }
 
 
@@ -284,7 +285,7 @@ font-family: "Open Sans",Arial,sans-serif!important;
   width:100%;
   padding-top:40px;
   padding-bottom:40px;
-  background:rgb(247,152,56);
+  background:#006680;
 }
 
 
@@ -421,7 +422,7 @@ font-family: "Open Sans",Arial,sans-serif!important;
 }
 
 .rst-content h2 {
-  color: rgb(247,152,56);
+  color: #00ccff;
 
 }
 
@@ -481,3 +482,21 @@ font-family: "Open Sans",Arial,sans-serif!important;
 .doc-nav li.active a, .doc-nav li.active a:hover {
   background:rgb(247,152,56);
 }
+
+
+#doc-leftmenu > ul > li {
+  padding:10px;
+  border-radius: 4px;
+  background:#FAFAFA;
+  margin-bottom:5px;
+}
+
+#doc-leftmenu ul li:hover {
+  background:#F1F1F1;
+}
+
+#doc-leftmenu ul li a {
+  color:#00ccff;
+}
+
+
