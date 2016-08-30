@@ -3,7 +3,7 @@ Install
 
 Using Quotek SDK in your C++ code is fairy easy, since it only consists of a library and header files.
 Please note that if you're using our Quotek SaaS solution, this section doesn't concern 
-you because everything is already setup for your inside your server environment.
+you because everything is already setup for you inside your server environment.
 
 Windows Install
 ---------------

@@ -83,8 +83,7 @@ Text Data
 Along with time series, text information can be vital to assess market contexts, especially financial news.
 That's why the quotek::data::news class was created, and every news datasource class in the SDK uses it to return news content.
 
-
-Namespace Documentation
------------------------
-
-.. doxygennamespace:: quotek::data
+|
+|
+|
+|

@@ -2,7 +2,7 @@ Hello World
 ============
 
 The following section will get you started width the Quotek SDK with a very simple code, 
-WHich will print a string along with the SDK version. This will both make a first contact with the SDK, and 
+Which will print a string along with the SDK version. This will both make a first contact with the SDK, and 
 also ensure that your toolchain is working correctly with our SDK.
 
 Let's begin
@@ -41,7 +41,7 @@ Compilation
 
 Now let's try to compile this. If You're using linux, remember that the correct call to the compilation toolchain is the following:
 
-``g++ -std=c++11 -I/opt/quotek/include -L/opt/quotek/lib -o hello_world hello.cpp -lpthread -lcurl -lquotek``
+``g++ -std=c++11 -I/opt/quotek/include -L/opt/quotek/lib -o hello_world hello.cpp -lpthread -lquotek -lcurl``
 
 Otherwise, just use the 'Compile' fnction of your IDE.
 

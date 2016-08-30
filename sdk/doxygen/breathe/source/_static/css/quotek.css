@@ -107,8 +107,9 @@ font-family: "Open Sans",Arial,sans-serif!important;
 .header-common {
   background:white;
   padding:20px;
-  box-shadow: 0px 1px 3px 0px #cccccc;
-  margin-bottom:10px;
+  box-shadow: 0px 1px 3px 0px #333333;
+  position:relative;
+
 }
 
 
@@ -493,6 +494,14 @@ font-family: "Open Sans",Arial,sans-serif!important;
 
 #doc-leftmenu ul li:hover {
   background:#F1F1F1;
+}
+
+#doc-leftmenu ul {
+  list-style-type: none;
+}
+
+#doc-leftmenu ul li {
+  padding-top:10px;
 }
 
 #doc-leftmenu ul li a {

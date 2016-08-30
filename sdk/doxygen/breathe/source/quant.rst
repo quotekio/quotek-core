@@ -4,7 +4,7 @@ Quant Functions
 Preamble
 --------
 
-.. image:: _static/img/quotek_square.png
+.. image:: _static/img/quotek_bot.png
     :align: left
     :width: 130px
     :class: qimg

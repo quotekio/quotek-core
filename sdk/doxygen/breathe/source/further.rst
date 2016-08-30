@@ -85,7 +85,7 @@ Compilation
 
 Before being able to test, we must compile our program. If You're using linux, remember that the correct call to the compilation toolchain is the following:
 
-``g++ -std=c++11 -I/opt/quotek/include -L/opt/quotek/lib -o tsa tsa.cpp -lpthread -lcurl -lquotek``
+``g++ -std=c++11 -I/opt/quotek/include -L/opt/quotek/lib -o tsa tsa.cpp -lpthread -lquotek -lcurl``
 
 Otherwise, just use the 'Compile' fnction of your IDE.
 
