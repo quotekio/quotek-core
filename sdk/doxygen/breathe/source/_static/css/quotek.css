@@ -99,26 +99,26 @@ body {
 font-family: "Open Sans",Arial,sans-serif!important;
 }
 
-.header {
-  background:white;
-  padding-top:30px;
-  padding-bottom:30px;
-}
-
 .header-menu  {
   text-align:right;
   padding-top:5px;
 }
 
-.header-menu a {
+.header-common {
+  background:white;
+  padding:20px;
+  box-shadow: 0px 1px 3px 0px #cccccc;
+}
 
+
+.header-menu-common a {
   color:#333333;
   font-size:18px;
   margin-left:20px;
 }
 
-.header-menu a:hover {
-  color:rgb(247,152,56);
+.header-menu-common a:hover {
+  color:#006680;
   text-decoration: none;
 }
 
