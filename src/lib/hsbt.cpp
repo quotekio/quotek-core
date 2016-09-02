@@ -809,8 +809,8 @@ std::string hsbt::snapshot(bool add_logs) {
   if (add_logs) {
 
     vector<log_entry>* lentries = logger->getAllEntries();
-    ss << ",\n\"logs\": \"" <<  
-    for(int i=0; i< lentries.size(); i++ ) ss << lentries.at(i).entry << "\n";
+    ss << ",\n\"logs\": \"";
+    for(int i=0; i< lentries->size(); i++ ) ss << lentries->at(i).entry << "\n";
     ss << "\"";
   }
 
