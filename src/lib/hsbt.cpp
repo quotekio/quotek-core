@@ -809,12 +809,12 @@ std::string hsbt::snapshot(bool add_logs) {
   if (add_logs) {
 
     vector<log_entry>* lentries = logger->getAllEntries();
-    ss << ",\n\"logs\": \"";
+    ss << ",\n\"logs\": [";
     for(int i=0; i< lentries->size(); i++ ) {
-      ss << lentries->at(i).entry;
-      if (i < lentries->size()-1) ss << "\n";
+      ss << "\"" << lentries->at(i).entry << "\"";
+      if (i < lentries->size()-1) ss << ",";
     }
-    ss << "\"";
+    ss << "]";
   }
 
 
