@@ -218,10 +218,10 @@ std::string aep_btprogress(tsEngine* t0) {
   return ret;
 }
 
-std::string aep_btsnap(hsbt* t0) {
+std::string aep_btsnap(hsbt* t0, bool add_logs) {
 
   std::string ret;
-  ret = t0->snapshot();
+  ret = t0->snapshot(add_logs);
   
   return ret;
   

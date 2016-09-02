@@ -324,7 +324,7 @@ void ws_broadcast_bt(hsbt* bte,aep_ws_server* ws1) {
 
   while(1) {
 
-    std::string btsnap = aep_btsnap(bte);
+    std::string btsnap = aep_btsnap(bte,false);
 
     ws1->broadcast("btsnap", btsnap);
     usleep(1000000);
@@ -550,7 +550,7 @@ void init_finalize(qateCfg* c, aep_ws_server* ws1) {
     bte->runNormal();
 
     //we send last snap to AEP/WS
-    if ( ws1 != nullptr ) ws1->broadcast("btsnap", aep_btsnap(bte) );
+    if ( ws1 != nullptr ) ws1->broadcast("btsnap", aep_btsnap(bte,true) );
     if (c->getBTExit()) exit(0);
   }
 
@@ -559,7 +559,7 @@ void init_finalize(qateCfg* c, aep_ws_server* ws1) {
     bte->runGenetics();
 
     //we send last snap to AEP/WS
-    if ( ws1 != nullptr ) ws1->broadcast("btsnap", aep_btsnap(bte) );
+    if ( ws1 != nullptr ) ws1->broadcast("btsnap", aep_btsnap(bte,true) );
     if (c->getBTExit()) exit(0);
   }
 
@@ -568,7 +568,7 @@ void init_finalize(qateCfg* c, aep_ws_server* ws1) {
     bte->runBatch();
 
     //we send last snap to AEP/WS
-    if ( ws1 != nullptr ) ws1->broadcast("btsnap", aep_btsnap(bte) );
+    if ( ws1 != nullptr ) ws1->broadcast("btsnap", aep_btsnap(bte,true) );
     if (c->getBTExit()) exit(0);
   }
 

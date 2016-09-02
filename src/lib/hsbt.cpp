@@ -777,7 +777,7 @@ tradestats hsbt::compute_tradestats() {
 
 
 
-std::string hsbt::snapshot() {
+std::string hsbt::snapshot(bool add_logs) {
 
   //makes a snapshot of the trade statistics
   tradestats ts1 = compute_tradestats();
@@ -804,6 +804,16 @@ std::string hsbt::snapshot() {
   }
 
   ss << "]";
+
+
+  if (add_logs) {
+
+    vector<log_entry>* lentries = logger->getAllEntries();
+    ss << ",\n\"logs\": \"" <<  
+    for(int i=0; i< lentries.size(); i++ ) ss << lentries.at(i).entry << "\n";
+    ss << "\"";
+  }
+
 
   ss << "}";  
 

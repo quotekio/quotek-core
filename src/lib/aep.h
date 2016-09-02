@@ -30,7 +30,7 @@ std::string aep_poslist(tsEngine*);
 std::string aep_lastlogs(tsEngine*,int);
 std::string aep_btprogress(tsEngine*);
 std::string aep_wstoken(networkSession*, tsEngine*);
-std::string aep_btsnap(hsbt*);
+std::string aep_btsnap(hsbt*,bool add_logs);
 std::string aep_version(tsEngine*);
 std::string aep_algos(tsEngine*);
 

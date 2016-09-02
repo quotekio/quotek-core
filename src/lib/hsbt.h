@@ -73,7 +73,7 @@ class hsbt: public tsEngine {
     /* Creates a snapshot of the trade statistics so far */
     tradestats compute_tradestats();
 
-    std::string snapshot();
+    std::string snapshot(bool add_logs);
 
     
   protected:
