@@ -812,7 +812,7 @@ std::string hsbt::snapshot(bool add_logs) {
     ss << ",\n\"logs\": \"";
     for(int i=0; i< lentries->size(); i++ ) {
       ss << lentries->at(i).entry;
-      if (i < lentries.size()-1) ss << "\n";
+      if (i < lentries->size()-1) ss << "\n";
     }
     ss << "\"";
   }
