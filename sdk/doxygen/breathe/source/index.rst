@@ -37,6 +37,7 @@ The scheme below shows the distribution of functionalities among the namespaces 
    nlp
    data_sources
    broker
+   extras
    samples
 
 |

@@ -21,7 +21,8 @@ http://www.quotek.io
 
 /**
 * strategy class is one of the most important of quotek qate bot.
-* When a strategy is created by an user, it inherits from it.
+* This is mostly an interface class: When a strategy is created by an user, 
+* it must implement this class.
 * strategy class also handles the execution of the strat through the run() method.
 */
 
