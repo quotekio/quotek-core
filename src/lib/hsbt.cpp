@@ -583,6 +583,9 @@ void hsbt::runBatch() {
 
     AssocArray<std::vector<quotek::data::any> > universe;
     
+    //initializes bt global progress
+    this->backtest_global_progress = 0;
+    
     //initalizes current iter
     this->current_iter = 0;
 
