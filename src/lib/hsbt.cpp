@@ -17,6 +17,7 @@ std::string tradestats2json(tradestats& s) {
   ss << "\"losing\":" << "\"" << s.losing << "\",";
   ss << "\"winning\":" << "\"" << s.winning << "\",";
   ss << "\"max_drawdown\":" << "\"" << s.max_drawdown << "\",";
+  ss << "\"sharpe_ratio\":" << "\"" << s.sharpe_ratio << "\",";
   ss << "\"profit_factor\":" << "\"" << s.profit_factor << "\"";
   ss << "}";
 
