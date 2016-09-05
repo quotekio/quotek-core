@@ -19,6 +19,8 @@ qateCfg::qateCfg() {
 
   backtest_result_path = "";
 
+  mmp.safe_rate = 1.5;
+
 }
 
 string qateCfg::getBroker() {
