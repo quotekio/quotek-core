@@ -33,6 +33,7 @@ Table of Content
    install
    firstcode
    further
+   strategy
 
 |
 |
