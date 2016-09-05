@@ -15,6 +15,7 @@ using namespace std;
 
 typedef struct mm_params {
   float mm_capital;
+  float safe_rate;
   int mm_max_openpos;
   int mm_max_openpos_per_epic;
   float mm_max_loss_percentage_per_trade;

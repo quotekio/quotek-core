@@ -25,6 +25,7 @@ class qateresult {
       this->pnl = 0;
       this->remainingpos = 0;
       this->max_drawdown = 0;
+      this->sharpe_ratio = 0;
       this->profit_factor = 0;
       this->winning_trades = 0;
       this->losing_trades = 0;
@@ -45,6 +46,7 @@ class qateresult {
 
     float max_drawdown;
     float profit_factor;
+    float sharpe_ratio;
 
     int winning_trades;
     int losing_trades;
@@ -76,6 +78,7 @@ class qateresult {
       ss << "\"pnl\": " << pnl << ",\n";
       ss << "\"returns_percent\": " << returns_percent << ",\n";
       ss <<  "\"max_drawdown\": " << max_drawdown << ",\n";
+      ss << "\"sharpe_ratio\": " << sharpe_ratio << ",\n";
       ss <<  "\"profit_factor\": " << profit_factor << ",\n";
       ss <<  "\"remainingpos\": " << remainingpos << ",\n";
 

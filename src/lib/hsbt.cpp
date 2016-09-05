@@ -768,6 +768,9 @@ tradestats hsbt::compute_tradestats() {
   if (positions_history.size() > 0) {
     result.max_drawdown = cmax - cmin ;
     result.profit_factor = total_gains / fabs(total_losses);
+    result.sharpe_ratio = sharpe_ratio();
+
+
   }
 
   result.pnl = ctpnl;
@@ -847,6 +850,7 @@ void hsbt::addTradeStats(qateresult* result) {
   result->losing_trades = ts1.losing;
   result->profit_factor = ts1.profit_factor;
   result->max_drawdown = ts1.max_drawdown;
+  result->sharpe_ratio = ts1.sharpe_ratio;
 
 }
 
@@ -963,5 +967,23 @@ void hsbt::createBatchUniverse(AssocArray<std::vector<quotek::data::any> > &univ
 
   }  
 
+}
+
+float hsbt::sharpe_ratio() {
+
+  float cap = cfg->getMMP()->mm_capital;
+  float safe_rate = cfg->getMMP()->safe_rate;
+
+  quotek::data::records excess_returns;
+
+  //First, we translate returns into percentage of the capital.
+  for (int i=0;i< positions_history.size(); i++) {
+    
+    //Here we may need to add pnl to cap !!
+
+    excess_returns.append( (positions_history[i].pnl / cap * 100 ) -  safe_rate );
+  }
+  
+  return quotek::quant::average(excess_returns) / quotek::quant::standard_deviation(excess_returns, false);
 
 }

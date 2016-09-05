@@ -19,6 +19,7 @@ typedef struct tradestats {
   int winning;
   float max_drawdown;
   float profit_factor;
+  float sharpe_ratio;
   float pnl;
 
 } tradestats;
@@ -75,7 +76,9 @@ class hsbt: public tsEngine {
 
     std::string snapshot(bool add_logs);
 
-    
+    /* Computes the sharpe ratio of the BT */
+    float sharpe_ratio();
+
   protected:
 
     int tse_mode;

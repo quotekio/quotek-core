@@ -223,6 +223,7 @@ int qateCfg::read() {
 
         else if (param == "strats_path") strats_path = arg;
         else if (param == "mm_capital") mmp.mm_capital = atof(arg.c_str());
+        else if (param == "safe_rate") mmp.mm_capital = atof(arg.c_str());
         else if (param == "mm_max_openpos") mmp.mm_max_openpos = atoi(arg.c_str());
         else if (param == "mm_max_openpos_per_epic") mmp.mm_max_openpos_per_epic = atoi(arg.c_str());
         else if (param == "mm_max_loss_percentage_per_trade" ) mmp.mm_max_loss_percentage_per_trade = atof(arg.c_str());
