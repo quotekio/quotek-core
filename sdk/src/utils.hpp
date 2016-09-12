@@ -14,7 +14,7 @@ Copyright 2013-2016 Quotek SAS
 #include <iterator> 
 
 #ifdef _WIN64
-  #include <functionnal>
+  #include <functional>
   #include <cctype>
   #include <locale>
 #endif

@@ -5,7 +5,7 @@ Copyright 2013-2016 Quotek SAS
 
 #include "imap.hpp"
 
-size_t curl_writehandle(void *ptr,
+size_t imap_curl_writehandle(void *ptr,
 	                      size_t size,
 	                      size_t nmemb,
 	                      std::string& stream) {
@@ -70,7 +70,7 @@ namespace quotek {
 
     curl_easy_setopt(ch, CURLOPT_URL, cur_url.str().c_str() );
 
-    curl_easy_setopt(ch,CURLOPT_WRITEFUNCTION,curl_writehandle);
+    curl_easy_setopt(ch,CURLOPT_WRITEFUNCTION,imap_curl_writehandle);
     curl_easy_setopt(ch,CURLOPT_WRITEDATA,&wdata);
 
     curl_easy_perform(ch);

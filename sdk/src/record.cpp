@@ -299,6 +299,8 @@ namespace quotek {
         result.row(i) << this->data[i].to_vector(add_timestamps);
       }
 
+	  return result;
+
     }
 
 
