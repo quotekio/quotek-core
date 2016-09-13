@@ -22,10 +22,13 @@ rm -rf ./include/quotek
 rm -rf ./doc/html
 rm -rf ./samples
 rm -rf ./tests
+rm -rf ./benchmarks
+
 cp -r /usr/local/include/quotek ./include/
+
+cp -r ../benchmarks ./
 cp -r ../tests ./
 cp -r ../samples ./
 cp -r ../doxygen/breathe/build/html ./doc/
 cp /usr/local/lib/libquotek.a ./lib/linux/
 cd ..
-

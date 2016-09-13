@@ -88,7 +88,7 @@ int strategyHandler::preprocess_python() {
   ofstream wh (std::string(strategyHandler::cpath + "/" + name + ".py").c_str());
 
   std::regex asset_match_regex("^\\#asset_match(.*)");
-  std::regex classname_regex("^class(.*)");
+  std::regex classname_regex("^class(.*)\\(strategy\\)");
 
   while(fh.good()){
     getline(fh,line);
@@ -147,7 +147,7 @@ int strategyHandler::preprocess_cpp() {
   ifstream fh (std::string(strats_path + "/" + name).c_str());
   ofstream wh (std::string(strategyHandler::cpath + "/" + name + ".cpp").c_str());
 
-  std::regex classname_regex("^class(.*)");
+  std::regex classname_regex("^class(.*): public strategy");
   std::regex asset_match_regex("^\\/\\/\\#asset_match(.*)");
   std::regex import_regex("^\\/\\/\\#import(.*)");
 
