@@ -147,7 +147,7 @@ int strategyHandler::preprocess_cpp() {
   ifstream fh (std::string(strats_path + "/" + name).c_str());
   ofstream wh (std::string(strategyHandler::cpath + "/" + name + ".cpp").c_str());
 
-  std::regex classname_regex("^class(.*):\\spublic\\sstrategy");
+  std::regex classname_regex("^class(.*): public strategy \\{");
   std::regex asset_match_regex("^\\/\\/\\#asset_match(.*)");
   std::regex import_regex("^\\/\\/\\#import(.*)");
 
