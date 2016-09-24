@@ -28,6 +28,13 @@ typedef struct gene {
     int ilimit_sup;
 } gene;
 
+typedef struct gene_constraint {
+  std::string gene1;
+  std::string operator_;
+  std::string gene2;
+} gene_constraint;
+
+
 typedef struct individual {
 
   AssocArray<quotek::data::any> attributes;
@@ -47,12 +54,15 @@ class genetics {
     float getConvergeThold();
 
   	void parseGene(std::vector<string>&);
+    void appendConstraint(std::vector<string>& gconst);
     void newgen();
     void initPopulation();
   	void genPopulation(int);
     void select(vector<individual>*);
     gene* getGene(string);
     void mutateGene(individual*,gene*);
+
+    bool checkConstraints(individual& iv);
 
   	void mutate(vector<individual>*);
   	void reproduce(vector<individual>*);
@@ -83,6 +93,7 @@ class genetics {
    int recompute_winners;
 
    std::vector<gene> genes;
+   std::vector<gene_constraint> gene_constraints;
    vector <int> survivors_indices;
 
    string ddir;

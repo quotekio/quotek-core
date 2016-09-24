@@ -45,6 +45,7 @@ class strategyHandler {
 
     std::vector< std::vector<std::string> > getBatchDirectives();
     std::vector< std::vector<std::string> > getGeneDirectives();
+    std::vector< std::vector<std::string> > getGeneConstraints();
     btf getBTFilter();
 
 
@@ -66,6 +67,7 @@ class strategyHandler {
     
     std::vector< std::vector<std::string> > batch_directives;
     std::vector< std::vector<std::string> > gene_directives;
+    std::vector< std::vector<std::string> > gene_constraints;
 
     btf btfilt;
 

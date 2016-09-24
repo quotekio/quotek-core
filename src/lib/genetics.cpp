@@ -74,6 +74,18 @@ void genetics::parseGene(std::vector<std::string> &gargs) {
 
 }
 
+void genetics::appendConstraint(std::vector<string>& gconst) {
+  
+  if (gconst.size() >= 3) {
+    gene_constraint c1;
+    c1.gene1 = gconst[0];
+    c1.operator_ = gconst[1];
+    c1.gene2 = gconst[2];
+    this->gene_constraints.push_back(c1);
+  }
+}
+
+
 
 void genetics::savePopulation() {
 
@@ -89,7 +101,7 @@ void genetics::genPopulation(int size) {
 
   if (size == -1) size = population_size;
 
-  for (int i=0;i<size;i++) {
+  while( population.size() < size ) {
 
     individual iv;
     iv.result=0;
@@ -105,8 +117,8 @@ void genetics::genPopulation(int size) {
         iv.attributes[genes[j].name] = randfloat(genes[j].flimit_inf,genes[j].flimit_sup);
       }
     }
-    population.push_back(iv);
 
+    if ( checkConstraints(iv) ) population.push_back(iv);
   }
 
 }
@@ -281,4 +293,34 @@ vector <string> genetics::serializeIV(individual* iv) {
 
   return result;
 }
+
+bool genetics::checkConstraints(individual& iv) {
+
+
+  for (int i=0; i < gene_constraints.size(); i++) {
+    
+    double g1 = iv.attributes[gene_constraints[i].gene1];
+    double g2 = iv.attributes[gene_constraints[i].gene2];
+
+    if ( gene_constraints[i].operator_ == "lt" ) {
+      if ( g1 >= g2 ) return false;
+    }
+    
+    else if ( gene_constraints[i].operator_ == "gt" ) {
+      if ( g1 <= g2) return false;
+    }
+
+    else if ( gene_constraints[i].operator_ == "lte" ) {
+      if ( g1 > g2 ) return false;
+    }
+
+    else if ( gene_constraints[i].operator_ == "gte" ) {
+      if ( g1 < g2 ) return false;
+    }
+  }
+
+  return true;
+
+}
+
 

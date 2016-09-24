@@ -154,6 +154,9 @@ int strategyHandler::preprocess_cpp() {
   std::regex batch_regex("^\\/\\/\\#batch(.*)");
   std::regex gene_regex("^\\/\\/\\#gene(.*)");
 
+  std::regex gene_constraint_regex("^\\/\\/\\#gene_constraint(.*)");
+
+
   std::regex btfilter_regex("^\\/\\/\\#btfilter(.*)");
 
   std::regex ex_eval_regex ("(.*)\\/\\/#ex_eval(.*)");
@@ -252,6 +255,12 @@ int strategyHandler::preprocess_cpp() {
       std::string gdirec = sm[1];
       trim(gdirec);
       this->gene_directives.emplace_back(quotek::core::utils::tokenise(gdirec));
+    }
+
+    else if (std::regex_match(line, sm, gene_constraint_regex)) {
+      std::string gconstraint = sm[1];
+      trim(gconstraint);
+      this->gene_constraints.emplace_back(quotek::core::utils::tokenise(gconstraint));
     }
 
     else if (std::regex_match(line, sm, btfilter_regex)) {
@@ -402,4 +411,8 @@ std::vector< std::vector<std::string> > strategyHandler::getBatchDirectives() {
 
 std::vector< std::vector<std::string> > strategyHandler::getGeneDirectives() {
   return gene_directives;
+}
+
+std::vector< std::vector<std::string> > strategyHandler::getGeneConstraints() {
+  return gene_constraints;
 }

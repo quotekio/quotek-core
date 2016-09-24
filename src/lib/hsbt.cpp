@@ -661,8 +661,14 @@ void hsbt::runGenetics() {
 
   //get //#gene directives and parse them.
   std::vector< std::vector<std::string> > gene_dirs = tse_strathandlers[0]->getGeneDirectives();
+  std::vector< std::vector<std::string> > gconstraints = tse_strathandlers[0]->getGeneConstraints();
+
   for (auto gene_dir: gene_dirs) {
     tse_ge->parseGene(gene_dir);
+  }
+  
+  for (auto gconst: gconstraints) {
+    tse_ge->appendConstraint(gconst);
   }
 
   std::cout << "Initializing first genetics population.." << std::endl;
