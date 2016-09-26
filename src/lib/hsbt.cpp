@@ -683,26 +683,30 @@ void hsbt::runGenetics() {
 
       individual* iv = &(tse_ge->population[j]);
 
-      for (int k=0; k < iv->attributes.Size(); k++  ) {
-        this->tse_store[ iv->attributes.GetItemName(k) ] = iv->attributes[k];
+      if ( tse_ge->mustCompute(iv) ) {
+
+        for (int k=0; k < iv->attributes.Size(); k++  ) {
+          this->tse_store[ iv->attributes.GetItemName(k) ] = iv->attributes[k];
+        }
+
+        //HERE WE GO!!
+        result = this->run();
+
+        result->generation_id = i;
+        result->individual_id = j;
+
+        result->genes_repr = tse_ge->serializeIV(iv);
+
+        iv->result = result->pnl;
+
+        //Then we save result (temporary advancement)
+        this->qrh->entries.emplace_back(result);
+        this->qrh->save();
+
+        //then we reset hsbt for next iter
+        this->reset();
+
       }
-
-      //HERE WE GO!!
-      result = this->run();
-
-      result->generation_id = i;
-      result->individual_id = j;
-
-      result->genes_repr = tse_ge->serializeIV(iv);
-
-      iv->result = result->pnl;
-
-      //Then we save result (temporary advancement)
-      this->qrh->entries.emplace_back(result);
-      this->qrh->save();
-
-      //then we reset hsbt for next iter
-      this->reset();
 
       this->current_iter++;
       this->backtest_global_progress = ( (float) this->current_iter / (float) total_iters) * 100.0;
