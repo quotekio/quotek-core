@@ -35,6 +35,7 @@ namespace quotek {
     #define OLS linear_regression
     #define PLR polynomial_regression
     #define RRR risk_reward_ratio
+    #define DIFF differenciate
 
     #define N(_a) normal_cumulative_distribution(_a)
     #define PHI(_a) normal_cumulative_distribution(_a)
@@ -304,6 +305,19 @@ namespace quotek {
      * @param periods the number of dataset values that must be aggregated together to compute a single point of the SMA.
      * @return a vector of floats containing the graph values of the moving average for the dataset.
      */
+
+
+
+    /**
+     * differenciate takes a time series and computes 
+     * the difference of values between each point. It is useful to convert a 
+     * non stationary time series into a stationary one.
+     * @param recs dataset to differenciate
+     * @param order order at which to perform defferenciating (order 2 is the difference of difference)
+     */
+    quotek::data::records differenciate(quotek::data::records& recs, int order);
+
+
     std::vector<float> moving_average(quotek::data::records& recs,
                                       int  periods);
 

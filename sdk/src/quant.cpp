@@ -226,6 +226,21 @@ namespace quotek {
       return ( (v1 - v0) / v0 ) * 100 ;
     }
 
+    quotek::data::records differenciate(quotek::data::records& recs, int order) {
+ 
+      quotek::data::records buff[order + 1];
+      
+      buff[0] = recs;
+
+      for (int i = 1; i < order + 1 ;i++) {
+        for ( int j = 1; j < buff[i-1].size(); j++ ) {
+          float val = buff[i-1][j].value - buff[i-1][j-1].value;
+          buff[i].append( 0, val , 0 );
+        }
+      }
+      return buff[order];
+    }
+
    
     std::vector<float> moving_average(quotek::data::records& recs,
                                       int periods) {

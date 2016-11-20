@@ -167,6 +167,22 @@ void test_aurocorrelation(quotek::data::records& recs) {
 
 }
 
+void test_differenciate() {
+
+  std::vector<float> one_diff = { 2, 3, 2,1,0,-1,-2,-1, 0, 1,2,3,4,5,6 };
+  quotek::data::records od = quotek::data::records(one_diff);
+
+  quotek::data::records res = quotek::quant::differenciate(od,1);
+
+  assert(res.size() == 14 );
+
+  for (int i=0; i< res.size();i++) {
+    assert( res[i].value == 1 || res[i].value == -1  );
+  }
+
+
+}
+
 
 int main() {
 
@@ -209,6 +225,7 @@ int main() {
   test_linear_regression(r1);
   test_trend_percentage(r1);
   test_aurocorrelation(r1);
+  test_differenciate();
 
   exit(0);
 
