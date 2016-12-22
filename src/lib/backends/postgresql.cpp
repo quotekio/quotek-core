@@ -105,7 +105,7 @@ public:
       if (tinf >= 0) {
         qstream << "SELECT timestamp, value, spread FROM " << indice <<
                    " WHERE timestamp > " << tinf << 
-                   "s AND timestamp <" << tsup << " ORDER BY timestamp ASC";
+                   " AND timestamp <" << tsup << " ORDER BY timestamp ASC";
       }
 
       else  {
