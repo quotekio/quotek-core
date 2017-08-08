@@ -73,21 +73,29 @@ function bctl_init() {
 
   apt-get -y update
   apt-get -y install build-essential g++ cmake libasio-dev libcurl4-openssl-dev
-  git clone https://github.com/quotekio/rapidjson
-  git clone https://github.com/quotekio/rapidxml
-  git clone https://github.com/quotekio/websocketpp
 
-  cp -r rapidjson/include/rapidjson /usr/include/
-  cp -r rapidxml /usr/include/
+  if [ ! -d /usr/include/rapidjson ] then
+     git clone https://github.com/quotekio/rapidjson
+     cp -r rapidjson/include/rapidjson /usr/include/
+  fi
 
-  ln -s `pwd`/sdk/src/eigen3/Eigen /usr/include/Eigen
+  if [ ! -d /usr/include/rapidxml ] then
+     git clone https://github.com/quotekio/rapidxml
+     cp -r rapidxml /usr/include/
+  fi
 
-  pushd websocketpp
-  cmake .
-  make && make install
-  popd  
+  if [ ! -d /usr/local/include/websocketpp ] then
+     git clone https://github.com/quotekio/websocketpp
+
+     #builds websocketpp
+     pushd websocketpp
+     cmake .
+     make && make install
+     popd 
+  fi
 
   rm -rf websocketpp rapidjson rapidxml
+
 }
 
 # Performs the ultimate post-install tasks for qate and qwc.
