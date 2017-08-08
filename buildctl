@@ -78,7 +78,7 @@ function bctl_initdb() {
 function bctl_init() {
 
   apt-get -y update
-  apt-get -y install build-essential g++ cmake libasio-dev libcurl4-openssl-dev
+  apt-get -y install build-essential g++ cmake libasio-dev libcurl4-openssl-dev git
 
   if [ ! -d /usr/include/rapidjson ] ;then
      git clone https://github.com/quotekio/rapidjson
