@@ -1,7 +1,8 @@
 #!/bin/bash
 
 PREFIX="/usr/local/qate"
-
+QSQL=""
+QPASS=""
 
 function usage() {
 
@@ -59,12 +60,17 @@ function bctl_initdb() {
 
     postgres)
       apt-get -y update
-      apt-get -y install postgresql-9.5 libpqxx-dev      
+      apt-get -y install postgresql-9.5 libpqxx-dev 
+
+      ./tools/init_pgsql.sh
+
     ;;
   esac
 
   popd
   rm -rf db-archive
+  return passwd
+
 }
 
 # Installs the build toolchain along 
@@ -110,6 +116,19 @@ function bctl_finish() {
   echo '/usr/local/qate/lib' >> /etc/ld.so.conf.d/qate.conf
   chmod +x /etc/init.d/qate
   ldconfig
+
+  if [ -f /tmp/quotek_dbpasswd ] ;then
+
+    dbpass=`cat /tmp/quotek_dbpasswd`
+
+    echo "********************************************"
+    echo "PASSWORD FOR QUOTEK DB: $dbpass"
+    echo "********************************************"
+
+    rm /tmp/quotek_dbpasswd
+
+  fi
+
 }
 
 # Cleans all the binaries object and intermediary build files.
@@ -256,3 +275,4 @@ case $1 in
   ;;
 
 esac
+
