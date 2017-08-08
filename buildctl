@@ -186,7 +186,7 @@ function bctl_install() {
 echo -e "\nQATE SOLUTION BUILDER V2.1 -- Copyright 2013-2017, Quotek"
 echo    "========================================================="
 
-if [ $# -lt 2 ]
+if [ $# -lt 1 ]
 then
   usage 
   exit 1
