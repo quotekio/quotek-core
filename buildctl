@@ -1,8 +1,6 @@
 #!/bin/bash
 
 PREFIX="/usr/local/qate"
-QSQL=""
-QPASS=""
 
 function usage() {
 
@@ -62,14 +60,13 @@ function bctl_initdb() {
       apt-get -y update
       apt-get -y install postgresql-9.5 libpqxx-dev 
 
-      ./tools/init_pgsql.sh
+      ./../tools/init_pgsql.sh
 
     ;;
   esac
 
   popd
   rm -rf db-archive
-  return passwd
 
 }
 
