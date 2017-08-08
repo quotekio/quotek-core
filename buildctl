@@ -97,6 +97,9 @@ function bctl_init() {
      popd 
   fi
 
+  # Creates symlink to make quotek SDK compile correctly
+  ln -s `pwd`/sdk/src/eigen3/Eigen /usr/include/Eigen
+
   rm -rf websocketpp rapidjson rapidxml
 
 }
