@@ -100,7 +100,10 @@ function bctl_init() {
 
 # Performs the ultimate post-install tasks for qate and qwc.
 function bctl_finish() {
-  mkdir /tmp/qate
+  if [ ! -d /tmp/qate ] ;then
+    mkdir /tmp/qate
+  fi
+
   touch /var/log/qate.log
   chown -R www-data /tmp/qate
   chown www-data /var/log/qate.log
