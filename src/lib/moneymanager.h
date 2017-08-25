@@ -13,6 +13,8 @@
 #include "utils.h"
 #include "indice.h"
 #include "results.h"
+#include "igmlogger.h"
+
 #include <quotek/cvector.hpp>
 #include <quotek/position.hpp>
 
@@ -32,6 +34,8 @@
 #define MM_ERR_REVERSE_POS_LOCK_STR "An opposite position is already open"
 
 #define CPNL_FILE "/tmp/qate/qate.cpnl"
+#define POSCACHE_FILE "/tmp/qate/qate.poscache"
+
 
 using namespace std;
 
@@ -62,7 +66,16 @@ class moneyManager {
 
   public:
 
-  	moneyManager(float,int,int,int,int,float,float,float,AssocArray<indice*>);
+  	moneyManager(float capital,
+                           int max_openpos, 
+                           int max_openpos_per_epic, 
+                           int reverse_pos_lock,
+                           int reverse_pos_force_close,
+                           float max_loss_percentage_per_trade,
+                           float critical_loss_percentage,
+                           float max_var,
+                           AssocArray<indice*> indices_list,
+                           igmLogger* logger );
 
   	float computeVAR();
   	void computePNLs(string,float);
@@ -106,6 +119,11 @@ class moneyManager {
     void loadCPNL();
     void saveCPNL();
 
+    std::vector<quotek::core::position> loadPosCache();
+    void savePosCache();
+    void verifyPosCache(std::vector<quotek::core::position>& pos_real_list, 
+                        std::vector<quotek::core::position>& pos_cache_list );
+
     /* heartbeat checks if the algos are not making foolish things
        and therefore losing shitloads of money. */
     bool heartbeat();
@@ -127,6 +145,8 @@ class moneyManager {
     int reverse_pos_force_close;
 
     bool healthy;
+
+    igmLogger* logger;
 
 };
 

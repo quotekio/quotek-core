@@ -43,7 +43,8 @@ class hsbt: public tsEngine {
              std::vector<strategyHandler*> sh_list,
              moneyManager*,
              genetics*,
-             vector<string>);
+             vector<string>,
+             igmLogger* logger);
 
     void init_finalize();
 

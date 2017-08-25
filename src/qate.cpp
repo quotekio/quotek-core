@@ -375,7 +375,9 @@ int main(int argc,char** argv) {
   
   AssocArray<indice*> ilist = c->getIndicesList();
 
-
+  //logger
+  igmLogger* logger = new igmLogger();
+  
   //moneymanager
   mm_params* mmp = c->getMMP();
   moneyManager* mm = new moneyManager(mmp->mm_capital,
@@ -386,7 +388,8 @@ int main(int argc,char** argv) {
                                       mmp->mm_max_loss_percentage_per_trade,
                                       mmp->mm_critical_loss_percentage, 
                                       mmp->mm_max_var,
-                                      ilist);
+                                      ilist,
+                                      logger);
 
   //getting Extra Modules List
   vector<string> mlist = c->getModulesList();
@@ -467,11 +470,11 @@ int main(int argc,char** argv) {
 
     case QATE_MODE_REAL:
       cout << "starting Engine in real mode.." << endl;
-      tse = new tsEngine(c,b,back,NULL,ilist,sh_list,mm,ge,mlist);
+      tse = new tsEngine(c,b,back,NULL,ilist,sh_list,mm,ge,mlist,logger);
       break;
     case QATE_MODE_BACKTEST:
       cout << "starting Engine in backtest mode.." << endl;
-      bte = new hsbt(c,b,back,cc_,ilist,sh_list,mm,ge,mlist);
+      bte = new hsbt(c,b,back,cc_,ilist,sh_list,mm,ge,mlist,logger);
       break;
 
     case QATE_MODE_GENETICS:
@@ -487,12 +490,12 @@ int main(int argc,char** argv) {
                                     gp->genetics_max_generations,
                                     gp->genetics_recompute_winners);
 
-      bte = new hsbt(c,b,back,cc_,ilist,sh_list,mm,ge,mlist);
+      bte = new hsbt(c,b,back,cc_,ilist,sh_list,mm,ge,mlist,logger);
       break;
 
     case QATE_MODE_BATCH:
       cout << "starting Engine in batch backtest mode.." << endl;
-      bte = new hsbt(c,b,back,cc_,ilist,sh_list,mm,ge,mlist);
+      bte = new hsbt(c,b,back,cc_,ilist,sh_list,mm,ge,mlist,logger);
       break;
 
     default:

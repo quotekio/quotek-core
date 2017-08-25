@@ -34,7 +34,8 @@ hsbt::hsbt(qateCfg* conf,
                    std::vector<strategyHandler*> sh_list,
                    moneyManager* mm,
                    genetics* ge,
-                   vector<string> mlist) {
+                   vector<string> mlist,
+                   igmLogger* logger) {
 
 
   tse_broker = b;
@@ -53,6 +54,9 @@ hsbt::hsbt(qateCfg* conf,
   backtest_to = conf->getBTo();
   backtest_pos = 0;
   backtest_progress = 0;
+
+  this->logger = logger;
+
 
   if (tse_back == NULL) {
     cout << "*ERROR: Cannot run qate in Backtest/Backtest Batch/Genetics mode without a working backend, leaving ! *" << endl;
@@ -94,9 +98,6 @@ void hsbt::init_finalize() {
   btfilter_skip = b_.skip;
 
   //std::thread tload( [this] {} );
-
-  //initializes logger
-  this->logger = new igmLogger();
   
   std::cout << "loading evaluators.." << std::endl;
 

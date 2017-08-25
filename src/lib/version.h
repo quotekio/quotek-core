@@ -1,4 +1,4 @@
 #ifndef VERSIONING_H
 #define VERSIONING_H
-  #define QATE_VERSION "6.7 release 'Mark III' -- build 3925"
+  #define QATE_VERSION "6.8 release 'Mark IV' -- build 3934"
 #endif

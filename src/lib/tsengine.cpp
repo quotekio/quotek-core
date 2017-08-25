@@ -650,7 +650,8 @@ tsEngine::tsEngine(qateCfg* conf,
                    std::vector<strategyHandler*> sh_list,
                    moneyManager* mm,
                    genetics* ge,
-                   vector<string> mlist) {
+                   vector<string> mlist,
+                   igmLogger* logger) {
 
   cout << "Initializing TS Engine.." << endl;
 
@@ -668,7 +669,9 @@ tsEngine::tsEngine(qateCfg* conf,
   indices_list = ilist;
   modules_list = mlist;
 
-  logger = new igmLogger();
+  this->logger = logger;
+
+  
 
   vector<string> si = iGetNames(indices_list);
 

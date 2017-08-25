@@ -62,7 +62,8 @@ class tsEngine{
              std::vector<strategyHandler*>,
              moneyManager*,
              genetics*,
-             vector<string>);
+             vector<string>,
+             igmLogger* logger);
 
     void init_finalize(qateCfg* conf);
 

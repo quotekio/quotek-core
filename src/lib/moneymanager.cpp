@@ -1,32 +1,31 @@
 #include "moneymanager.h"
 
-moneyManager::moneyManager(float cap,
-                           int max_open, 
-                           int max_open_pe, 
-                           int rpl,
-                           int rpfc,
-                           float mlppt,
-                           float clp,
-                           float mvar,
-                           AssocArray<indice*> ilist ) {
+moneyManager::moneyManager(float capital,
+                           int max_openpos, 
+                           int max_openpos_per_epic, 
+                           int reverse_pos_lock,
+                           int reverse_pos_force_close,
+                           float max_loss_percentage_per_trade,
+                           float critical_loss_percentage,
+                           float max_var,
+                           AssocArray<indice*> indices_list,
+                           igmLogger* logger ) {
   
-  capital = cap;
-  max_openpos = max_open;
-  max_openpos_per_epic = max_open_pe;
-  max_loss_percentage_per_trade = mlppt;
-  critical_loss_percentage = clp;
-  max_var = mvar;
+  this->capital = capital;
+  this->max_openpos = max_openpos;
+  this->max_openpos_per_epic = max_openpos_per_epic;
+  this->reverse_pos_lock = reverse_pos_lock;
+  this->reverse_pos_force_close = reverse_pos_force_close; 
+  this->max_loss_percentage_per_trade = max_loss_percentage_per_trade;
+  this->critical_loss_percentage = critical_loss_percentage;  
+  this->max_var = max_var;
+  this->indices_list = indices_list;
+  this->logger = logger;
 
-  reverse_pos_lock = rpl;
-  reverse_pos_force_close = rpfc; 
-
-
-  indices_list = ilist;
-  cur_pnl = 0;
-  var = 0;
-  cumulative_pnl = 0;
-
-  healthy = true;
+  this->cur_pnl = 0;
+  this->var = 0;
+  this->cumulative_pnl = 0;
+  this->healthy = true;
 
 }
 
@@ -517,6 +516,85 @@ void moneyManager::displayStats() {
   }
 
 }
+
+
+
+/** Checks if positions in poscache still exist, bèy comparing with the account's portfolio. 
+ *  If the pos does not exist anymore, chances are it has been automatically closed (SL/TP reached).*/
+void moneyManager::verifyPosCache(std::vector<quotek::core::position>& pos_real_list, 
+                        std::vector<quotek::core::position>& pos_cache_list ) {
+
+  for (int i=0;i< pos_cache_list.size();i++) {
+
+    bool found_in_real = false;
+    for (int j=0;j< pos_real_list.size();j++) {
+     if (pos_cache_list[i].ticket_id == pos_real_list[j].ticket_id) {
+       pos_real_list[j].identifier = pos_cache_list[i].identifier;
+       found_in_real = true;
+       break;
+     }
+    }
+
+    if ( ! found_in_real) {
+
+      std::stringstream verify_errstr ;
+      verify_errstr << "[CRITICAL] Position cache mismatches with real positions list, Position ID" 
+                    << pos_cache_list[i].ticket_id << "is missing!";
+      this->logger->log(verify_errstr.str());
+
+    }
+  }
+}
+
+
+std::vector<quotek::core::position> moneyManager::loadPosCache(){
+
+  std::vector<quotek::core::position> result;
+
+  ifstream fh (POSCACHE_FILE);
+  std::string content;
+  std::string line;
+
+  if (fh.is_open()) {
+
+    while(getline(fh,line)) {
+
+      std::vector<std::string> fields = split(line,'|');
+
+      quotek::core::position pos;
+      pos.ticket_id = fields[0];
+      pos.identifier = fields[1];
+      result.emplace_back(pos);
+    }
+
+  }
+  return result;
+}
+
+void moneyManager::savePosCache() {
+
+  ofstream fh (POSCACHE_FILE);
+  std::string cache_content = "";
+  std::stringstream ss;
+  
+  if (fh.is_open()) {
+
+    for (int i=0;i<this->positions.size();i++) {
+
+      ss << positions[i].ticket_id << "|" << positions[i].identifier << std::endl;
+      cache_content += ss.str();
+    
+      ss.str("");
+      ss.clear();
+    } 
+
+    fh << cache_content ;
+    fh.close();
+  }
+
+}
+
+
 
 //loads a previous state of Cumulative PNL
 void moneyManager::loadCPNL() {
