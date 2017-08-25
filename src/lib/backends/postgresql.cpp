@@ -102,18 +102,14 @@ public:
       std::string outp;
       quotek::data::record r;
 
-      if (tinf >= 0) {
-        qstream << "SELECT timestamp, value, spread FROM " << indice <<
+      if (tinf < 0) {
+        tinf = time(NULL) - abs(tinf);
+        tsup = time(NULL) - abs(tsup);
+      }
+
+      qstream << "SELECT timestamp, value, spread FROM " << indice <<
                    " WHERE timestamp > " << tinf << 
                    " AND timestamp <" << tsup << " ORDER BY timestamp ASC";
-      }
-
-      else  {
-
-        qstream << "SELECT timestamp, value, spread FROM " << indice <<
-                   " WHERE to_timestamp(timestamp) > CURRENT_TIMESTAMP - INTERVAL '" << abs(tinf) << " seconds'" <<
-                   " AND to_timestamp(timestamp) < CURRENT_TIMESTAMP - INTERVAL '" << abs(tsup) << " seconds' ORDER BY timestamp ASC";
-      }
 
       pqxx::work w(*dbh);
       pqxx::result res;
