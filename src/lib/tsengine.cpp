@@ -189,6 +189,11 @@ void tsEngine::broker_sync_start() {
       }    
     }
   }
+
+  /* Verify position cache */
+  quotek::data::cvector<quotek::core::position>* poscache = mm->loadPosCache();
+  mm->verifyPosCache(poscache);
+
 }
 
 void tsEngine::aclock() {
@@ -315,6 +320,18 @@ void tsEngine::moneyman() {
 
 }
 
+
+
+/** Saves current positions as cache */
+void tsEngine::savePosCache() {
+
+  moneyManager* mm = this->getMoneyManager();
+
+  while(1) {  
+    mm->savePosCache();
+    sleep(10);
+  }
+}
 
 
 void tsEngine::saveToBackend2() {
@@ -787,11 +804,16 @@ void tsEngine::init_finalize(qateCfg* conf) {
   broker_sync_start();
 
 
+  printf ("Initializing positions cache saving thread..\n");
+  backsaveth = new std::thread( [this] { savePosCache(); }  );
+
   printf ("Initializing backend I/O Thread..\n");
   backioth = new std::thread( [this] { saveToBackend(); }  );
 
   printf ("Initializing backend saving Thread..\n");
   backsaveth = new std::thread( [this] { saveToBackend2(); }  );
+
+
 
 }
 

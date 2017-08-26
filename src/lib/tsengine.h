@@ -148,6 +148,9 @@ class tsEngine{
      */
     void aclock();
     
+    /** savePosCache is a thread callback to save the positions cache every 10secs. */
+    void savePosCache();
+
     /**
      * saveToBackend is the thread callback handling interactions
      * with backend and specially saving data. 
