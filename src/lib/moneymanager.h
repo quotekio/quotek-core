@@ -119,10 +119,9 @@ class moneyManager {
     void loadCPNL();
     void saveCPNL();
 
-    std::vector<quotek::core::position> loadPosCache();
+    quotek::data::cvector<quotek::core::position>* loadPosCache();
     void savePosCache();
-    void verifyPosCache(std::vector<quotek::core::position>& pos_real_list, 
-                        std::vector<quotek::core::position>& pos_cache_list );
+    void verifyPosCache(quotek::data::cvector<quotek::core::position>* pos_cache_list );
 
     /* heartbeat checks if the algos are not making foolish things
        and therefore losing shitloads of money. */

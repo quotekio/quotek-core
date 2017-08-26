@@ -519,17 +519,17 @@ void moneyManager::displayStats() {
 
 
 
-/** Checks if positions in poscache still exist, bèy comparing with the account's portfolio. 
+/** Checks if positions in poscache still exist, by comparing with the account's portfolio. 
  *  If the pos does not exist anymore, chances are it has been automatically closed (SL/TP reached).*/
-void moneyManager::verifyPosCache(std::vector<quotek::core::position>& pos_real_list, 
-                        std::vector<quotek::core::position>& pos_cache_list ) {
+void moneyManager::verifyPosCache(quotek::data::cvector<quotek::core::position>* pos_cache_list ) {
 
-  for (int i=0;i< pos_cache_list.size();i++) {
+  for (int i=0;i< pos_cache_list->size();i++) {
 
     bool found_in_real = false;
-    for (int j=0;j< pos_real_list.size();j++) {
-     if (pos_cache_list[i].ticket_id == pos_real_list[j].ticket_id) {
-       pos_real_list[j].identifier = pos_cache_list[i].identifier;
+
+    for (int j=0;j< this->positions.size();j++) {
+     if (pos_cache_list->at(i).ticket_id == this->positions[j].ticket_id) {
+       this->positions[j].identifier = pos_cache_list->at(i).identifier;
        found_in_real = true;
        break;
      }
@@ -539,7 +539,7 @@ void moneyManager::verifyPosCache(std::vector<quotek::core::position>& pos_real_
 
       std::stringstream verify_errstr ;
       verify_errstr << "[CRITICAL] Position cache mismatches with real positions list, Position ID" 
-                    << pos_cache_list[i].ticket_id << "is missing!";
+                    << pos_cache_list->at(i).ticket_id << "is missing!";
       this->logger->log(verify_errstr.str());
 
     }
@@ -547,9 +547,9 @@ void moneyManager::verifyPosCache(std::vector<quotek::core::position>& pos_real_
 }
 
 
-std::vector<quotek::core::position> moneyManager::loadPosCache(){
+quotek::data::cvector<quotek::core::position>* moneyManager::loadPosCache(){
 
-  std::vector<quotek::core::position> result;
+  quotek::data::cvector<quotek::core::position>* result = new quotek::data::cvector<quotek::core::position>();
 
   ifstream fh (POSCACHE_FILE);
   std::string content;
@@ -564,7 +564,7 @@ std::vector<quotek::core::position> moneyManager::loadPosCache(){
       quotek::core::position pos;
       pos.ticket_id = fields[0];
       pos.identifier = fields[1];
-      result.emplace_back(pos);
+      result->emplace_back(pos);
     }
 
   }
