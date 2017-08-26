@@ -538,7 +538,7 @@ void moneyManager::verifyPosCache(quotek::data::cvector<quotek::core::position>*
     if ( ! found_in_real) {
 
       std::stringstream verify_errstr ;
-      verify_errstr << "[CRITICAL] Position cache mismatches with real positions list, Position ID" 
+      verify_errstr << "[moneyman] CRITICAL: Position cache mismatches with real positions list, Position ID " 
                     << pos_cache_list->at(i).ticket_id << "is missing!";
       this->logger->log(verify_errstr.str());
 
