@@ -530,6 +530,7 @@ void moneyManager::verifyPosCache(quotek::data::cvector<quotek::core::position>*
     for (int j=0;j< this->positions.size();j++) {
      if (pos_cache_list->at(i).ticket_id == this->positions[j].ticket_id) {
        this->positions[j].identifier = pos_cache_list->at(i).identifier;
+       this->positions[j].stats->pnl_peak = pos_cache_list->at(i).stats->pnl_peak;
        found_in_real = true;
        break;
      }
@@ -564,6 +565,7 @@ quotek::data::cvector<quotek::core::position>* moneyManager::loadPosCache(){
       quotek::core::position pos;
       pos.ticket_id = fields[0];
       pos.identifier = fields[1];
+      pos.stats->pnl_peak = atof(fields[2].c_str());
       result->emplace_back(pos);
     }
 
@@ -581,7 +583,7 @@ void moneyManager::savePosCache() {
 
     for (int i=0;i<this->positions.size();i++) {
 
-      ss << positions[i].ticket_id << "|" << positions[i].identifier << std::endl;
+      ss << positions[i].ticket_id << "|" << positions[i].identifier <<  "|" << positions[i].stats->pnl_peak << std::endl;
       cache_content += ss.str();
     
       ss.str("");
