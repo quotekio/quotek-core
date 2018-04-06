@@ -1,6 +1,6 @@
 #!/bin/bash
 
-QATE_BIN=/usr/local/qate/bin/qate
+QATE_BIN=/usr/local/quotek/bin/qate
 QATE_USER=www-data
 QATE_PID="/tmp/qate/qate.pid"
 

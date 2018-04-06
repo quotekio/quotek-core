@@ -125,5 +125,5 @@ install (TARGETS qate DESTINATION bin)
 install (DIRECTORY "install/etc" DESTINATION .)
 
 #init script
-install (FILES "install/etc/init.d/qate" DESTINATION /etc/init.d/)
+install (FILES "install/etc/init.d/quotek" DESTINATION /etc/init.d/)
 
