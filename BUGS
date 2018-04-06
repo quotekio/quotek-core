@@ -1,3 +1,0 @@
-* Backtests: sometimes it crashes at 90% (see promotheus algorithm)
-* log output at start: sometimes they don't display correctly inside VH.
-
