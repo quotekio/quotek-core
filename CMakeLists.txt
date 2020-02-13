@@ -113,6 +113,7 @@ install (TARGETS influxdbbe DESTINATION lib)
 
 target_link_libraries(
         qate
+        n3rv
         quotek
         pthread
         dl

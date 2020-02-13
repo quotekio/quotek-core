@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <getopt.h>
 
+
 #include "lib/constants.h"
 #include "lib/broker.hpp"
 #include "lib/strategyhandler.hpp"

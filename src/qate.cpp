@@ -164,29 +164,6 @@ void parse_cmdline(qateCfg* conf,int argc,char** argv) {
 }
 
 
-create_t* load_broker(string bname)  {
-
-  cout << "loading broker module..." << endl;
-  string lib_broker = "lib" + bname + ".so";
-  void* handle = dlopen(lib_broker.c_str(),RTLD_LAZY);
-
-  if(handle == NULL){
-    cerr << dlerror() << endl;
-    exit(1);
-  }
-
-  create_t* create_broker = (create_t*) dlsym(handle, "create");
-
-  const char* dlsym_error = dlerror();
-    if (dlsym_error) {
-        cerr << "Cannot load symbol create: " << dlsym_error << endl;
-        exit(1);
-  }
-
-  return create_broker;
-}
-
-
 create_cc* load_cache(string cachename) {
 
   cout << "loading cache module..." << endl;
@@ -331,8 +308,6 @@ void ws_broadcast_bt(hsbt* bte,aep_ws_server* ws1) {
 
   }
 
-
-
 }
 
 
@@ -371,9 +346,11 @@ int main(int argc,char** argv) {
   if (! has_cf_option ) c->read();
   
   parse_cmdline(c,argc,argv);
-
   
   AssocArray<indice*> ilist = c->getIndicesList();
+
+  //**** START N3RV NODES HERE ****/
+
 
   //logger
   igmLogger* logger = new igmLogger();
