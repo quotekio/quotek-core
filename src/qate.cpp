@@ -187,30 +187,6 @@ create_cc* load_cache(string cachename) {
 
 }
 
-
-create_be* load_backend(string bename) {
-
-  cout << "loading backend module..." << endl;
-  string lib_backend = "lib" + bename + ".so";
-  void* handle = dlopen(lib_backend.c_str(),RTLD_LAZY);
-
-  if(handle == NULL){
-    cerr << dlerror() << endl;
-    exit(1);
-  }
-
-  create_be* create_backend = (create_be*) dlsym(handle, "create");
-
-  const char* dlsym_error = dlerror();
-    if (dlsym_error) {
-        cerr << "Cannot load symbol create: " << dlsym_error << endl;
-        exit(1);
-  }
-
-  return create_backend;
-}
-
-
 void aep_loop(std::string laddr, int port) {
   
   network* net = new network();

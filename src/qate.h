@@ -31,7 +31,6 @@
 #endif
 
 
-create_t* load_broker(string);
 create_be* load_backend(string);
 
 void panic(const char *fmt, ...);
