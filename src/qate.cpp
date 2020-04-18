@@ -1,5 +1,6 @@
 #include "qate.h"
 #include "lib/version.h"
+#include "lib/broker.hpp"
 
 tsEngine* tse;
 hsbt* bte;
@@ -292,7 +293,7 @@ int main(int argc,char** argv) {
 
   extern tsEngine* t;
 
-  cout << "QATE TRADING BOT " << QATE_VERSION << endl << "(c) 2013-2016 Clément Gamé" << endl;
+  cout << "QATE TRADING BOT " << QATE_VERSION << endl << "(c) 2013-2020 Clément Gamé" << endl;
 
   //init signals
   struct sigaction sigact;
@@ -323,27 +324,9 @@ int main(int argc,char** argv) {
   
   parse_cmdline(c,argc,argv);
   
-  AssocArray<indice*> ilist = c->getIndicesList();
-
   //**** START N3RV NODES HERE ****/
 
-
-  //logger
-  igmLogger* logger = new igmLogger();
   
-  //moneymanager
-  mm_params* mmp = c->getMMP();
-  moneyManager* mm = new moneyManager(mmp->mm_capital,
-                                      mmp->mm_max_openpos, 
-                                      mmp->mm_max_openpos_per_epic, 
-                                      mmp->mm_reverse_pos_lock, 
-                                      mmp->mm_reverse_pos_force_close, 
-                                      mmp->mm_max_loss_percentage_per_trade,
-                                      mmp->mm_critical_loss_percentage, 
-                                      mmp->mm_max_var,
-                                      ilist,
-                                      logger);
-
   //getting Extra Modules List
   vector<string> mlist = c->getModulesList();
   
@@ -359,11 +342,7 @@ int main(int argc,char** argv) {
   for (int i=0;i<astrats.size();i++) {
     sh_list.emplace_back (new strategyHandler(c->getStratsPath(), astrats[i], btmode ));
   }
-
-  broker* b = load_broker(c->getBroker())();
   
-  backend* back;
-
   cache* cc_ = NULL;
 
   if (c->getRedisHost() != "") {
@@ -373,46 +352,6 @@ int main(int argc,char** argv) {
   }
 
 
-  if (c->getBackend() != "none" && c->getBackend() != "" ) {
-    back = load_backend(c->getBackend())();
-  }
-
-  else  {
-    cout << "* WARNING: No backend is configured: cannot save history, cannot perform backtests ! *" << endl;
-    back = NULL;
-  }
-
-  if (back != NULL) {
-    cout << "initializing backend connection.." << endl;
-    back->init(c->getBackendParams());
-    back->connect();
-  }
-
-  for (int i=0;i<sh_list.size();i++) {
-
-    cout << "preparing strategy compilation for algo " << sh_list[i]->getName() << endl;
-    int pres = sh_list[i]->prepareCompile();
-    int cerr = 0;
-
-    if (pres == 0) {
-      cout << "compiling algo " << sh_list[i]->getName() << endl;
-      cerr = sh_list[i]->compile(0);
-    }
-    else {
-      std::cout << "[CRITICAL] Compile prepare failed, shutting down robot" << std::endl;
-      exit(1);
-    }
-
-
-    if (cerr > 0) {
-      std::cout << "[CRITICAL] Strategy "<< sh_list[i]->getName() << " failed to compile !" << std::endl;
-      exit(1);
-    }
-
-    cout << "loading compiled algo " << sh_list[i]->getName() << endl;
-    sh_list[i]->dlibOpen(0);
-
-  }
 
   switch (c->getMode()) {
 

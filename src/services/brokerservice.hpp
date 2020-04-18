@@ -34,7 +34,6 @@ class brokerservice: public n3rv::service {
       void hkloop() {
         
         //Publishes fetched prices to stream.
-
       }
       
       static void* process_orders(void* objref, zmq::message_t* zmsg) {

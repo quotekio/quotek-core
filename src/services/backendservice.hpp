@@ -12,7 +12,6 @@
 #include "../lib/qatecfg.h"
 #include <dlfcn.h>
 
-
 class backendservice: public n3rv::service {
   using n3rv::service::service;
   public:
@@ -24,14 +23,27 @@ class backendservice: public n3rv::service {
 
         this->cfg = cfg;
 
-        this-back = this->load_backend(c->getBackend());
 
+        this->back = (backend*) this->load_backend(this->cfg->getBackend());
+        if (this->cfg->getBackend() != "none" && this->cfg->getBackend() != "" ) {
+          this->back = load_backend(this->cfg->getBackend())();
+        }
+
+        else  {
+          cout << "* WARNING: No backend is configured: cannot save history, cannot perform backtests ! *" << endl;
+          back = NULL;
+        }
+
+        if (back != NULL) {
+          cout << "initializing backend connection.." << endl;
+          back->init(this->cfg->getBackendParams());
+          back->connect();
+        }
 
         //Sets a global identifier for service node.
         this->set_uid(("qate.backend." + std::string(node_name)).c_str());
 
         //instanciates broker object
-        //this->broker = this->load_backend(this->cfg->getBroker())();
         this->prices = this->connect("qate.broker.*.prices",ZMQ_SUB);
         this->data = this->bind("data","127.0.0.1", ZMQ_REP);
         //this->attach(this->orders, process_orders);
