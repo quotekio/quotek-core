@@ -14,7 +14,6 @@ class brokerservice : public n3rv::service
   using n3rv::service::service;
 
 public:
-
   n3rv::qhandler *prices;
   n3rv::qhandler *orders;
   AssocArray<indice *> ilist;
@@ -33,6 +32,28 @@ public:
 
     //instanciates broker object
     this->broker_ = this->load_broker(this->cfg->getBroker())();
+
+    //initializes and connect to broker;
+    this->broker_->initialize(this->cfg->getBrokerParams(),
+                              true,
+                              true,
+                              this->cfg->getBrokerMode());
+
+    if (this->broker_->requiresIndicesList() == 1)
+    {
+      this->broker_->setIndicesList(iGetEpics(this->ilist));
+    }
+    int conn_status = this->broker_->connect();
+
+    if (conn_status != 0)
+    {
+      this->ll->log(n3rv::LOGLV_CRIT, "Can't connect to broker, please check your credentials/ API availability");
+      exit(1);
+    }
+    else
+    {
+      this->ll->log(n3rv::LOGLV_INFO, "Connection to Broker successful");
+    }
 
     this->prices = this->bind("prices", "127.0.0.1", ZMQ_PUB);
     this->orders = this->bind("orders", "127.0.0.1", ZMQ_REP);
@@ -59,7 +80,6 @@ public:
 
     while (1)
     {
-
       //perf profiling
       auto tthis = std::chrono::high_resolution_clock::now();
       values = self->broker_->getValues();
@@ -72,7 +92,9 @@ public:
         {
 
           epic = values[i].epic;
+
           indice *idx = iResolve(self->ilist, epic);
+
           float unit_coef = 1.0 / idx->pip_value;
 
           quotek::data::record r;
@@ -115,11 +137,94 @@ public:
 
     brokerservice *self = (brokerservice *)objref;
     n3rv::message msg = n3rv::parse_msg(zmsg);
-    // msg.
+
+    if (msg.action == "OPEN")
+    {
+       
+       std::string id = msg.args[0];
+       std::string epic = msg.args[1];
+       std::string way = msg.args[2];
+       int nbc = atoi(msg.args[3].c_str());
+       int stop = atoi(msg.args[4].c_str());
+       int limit = atoi(msg.args[4].c_str());
+
+       self->openPosition(id,epic,way,nbc,stop,limit);
+
+    }
+
+    else if (msg.action == "CLOSE")
+    {
+      std::string dealid = msg.args[0];
+      int size = atoi(msg.args[1].c_str());
+      self->closePosition(dealid,size);
+    }
+  }
+
+  void closePosition(string dealid, int size) {
+
+    //API Performance profiling.
+    auto tt0 = std::chrono::high_resolution_clock::now();
+
+    string result = this->broker_->closePos(dealid, size);
+
+    if (result == "ACCEPTED:SUCCESS")
+    {
+
+      auto tt1 = std::chrono::high_resolution_clock::now();
+      auto elapsed_t = tt1 - tt0;
+      uint64_t elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed_t).count();
+      this->ll->log(n3rv::LOGLV_INFO, "Position Closed: " + dealid + " (" + int2string(elapsed) + "ms)");
+    }
+
+    else
+    {
+      this->ll->log(n3rv::LOGLV_INFO, "[broker] Error closing position:" + result);
+    }
+  }
+
+    quotek::core::position openPosition(string id, string epic, string way, int nbc, int stop, int limit)
+  {
+
+    //API Performance profiling.
+    auto tt0 = std::chrono::high_resolution_clock::now();
+
+    bpex ex1;
+    indice *idx = iResolve(this->ilist, epic);
+    ex1 = this->broker_->openPos(epic, way, nbc, stop, limit);
+
+    if (ex1.status == "ACCEPTED")
+    {
+
+      quotek::core::position p;
+      p.identifier = id;
+      p.asset_id = epic;
+      p.asset_name = idx->name;
+      p.ticket_id = ex1.dealid;
+      p.open = ex1.open;
+      p.stop = ex1.stop;
+      p.set_vstop(ex1.stop);
+      p.set_vlimit(ex1.limit);
+
+      p.limit = ex1.limit;
+      p.size = ex1.size;
+      p.pnl = 0;
+      //p.status = POS_OPEN;
+      p.open_date = time(0);
+
+      auto tt1 = std::chrono::high_resolution_clock::now();
+      auto elapsed_t = tt1 - tt0;
+      uint64_t elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed_t).count();
+
+      this->ll->log(n3rv::LOGLV_INFO, "New Position Opened: " + ex1.dealid + " (" + int2string(elapsed) + "ms)");
+    }
+
+    else
+    {
+      this->ll->log(n3rv::LOGLV_ERR, "[broker] Error opening position:" + ex1.reason);
+    }
   }
 
 protected:
-
   qateCfg *cfg;
   broker *broker_;
 

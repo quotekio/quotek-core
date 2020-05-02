@@ -147,7 +147,7 @@ int main(int argc, char **argv)
   n3rv::start_controller("0.0.0.0", 10001, ll);
 
   //**** START N3RV NODES HERE ****/
-  brokerservice *bs1 = new brokerservice("127.0.0.1", 10001);
+  brokerservice *bs1 = new brokerservice("127.0.0.1", 10001, ll);
   bs1->initialize("broker1", c);
 
   //starts prices fetching loop
