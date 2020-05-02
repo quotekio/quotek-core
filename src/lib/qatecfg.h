@@ -9,6 +9,8 @@
 #include "assoc.h"
 #include "indice.h"
 #include "constants.h"
+#include <n3rv/n3rvlogger.hpp>
+
 
 
 using namespace std;
@@ -142,6 +144,8 @@ class qateCfg {
     void setStratsPath(std::string);
 
     void setBTExit(bool tv); 
+
+    n3rv::logger* ll;
 
 
   private:

@@ -262,7 +262,7 @@ int qateCfg::read() {
   }
 
   else {
-    cout << "ERROR: Unable to open qate config file" << endl;
+    this->ll->log(n3rv::LOGLV_CRIT, "ERROR: Unable to open qate config file" );
     exit(0);
   }
   return 0;

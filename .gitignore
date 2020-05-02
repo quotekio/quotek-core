@@ -13,3 +13,7 @@ modules/vstore/libvstore.so
 SDK.tgz
 sdk/doxygen/breathe/build/
 sdk/doc/
+.vscode
+src/qate.aep.cpp
+src/qate.chunks.cpp
+src/qate.signals.cpp

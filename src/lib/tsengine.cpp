@@ -204,121 +204,7 @@ void tsEngine::aclock() {
   }
 }
 
-void tsEngine::moneyman() {
 
-  moneyManager* mm = this->getMoneyManager();
-  AssocArray<indice*> ilist = this->getIndicesList();
-  vector<string> si = iGetNames(ilist);
-  igmLogger* logger = this->getLogger();
-  quotek::data::cqueue<std::string> *orders_queue = this->getOrdersQueue();
-  std::vector<strategyHandler*> sh_list = this->getStratHandlers();
-
-  quotek::data::cvector<quotek::core::position>& poslist = mm->getPositions();
-
-  //pnl-needed vars
-  float v;
-  float cval;
-  quotek::data::record r;
-
-  int inc = 0;
-
-  while (1) {
-
-    //checks STOPS & LIMIT and cleans positions if needed.
-    for(int i=0;i< poslist.size();i++ ) {
-
-      quotek::core::position& p = poslist[i];
-
-      if ( this->getAssetRecords(p.asset_name).size() == 0 ) continue;
-
-      r = this->getAssetRecords(p.asset_name).last();
-      cval = r.value;
-
-      //checking of Real Stops
-    
-      if ( p.size < 0  &&  cval >= p.stop ) {
-        mm->remPosition(p.ticket_id);
-        logger->log("Position " +  p.ticket_id + " closed ! (STOP)");
-        continue;
-      }
-
-      else if ( p.size > 0  &&  cval <= p.stop ) {
-        mm->remPosition(p.ticket_id);
-        logger->log("Position " +  p.ticket_id + " closed ! (STOP)");
-        continue;
-      }
-
-      //checking of virtual Stops
-
-      float vstop = p.get_vstop();
-
-      if ( vstop != p.stop ) {
-
-        if (p.size < 0 && cval >= vstop) {
-         closePosition(p.ticket_id);
-         logger->log("Position " +  p.ticket_id + " closed ! (VSTOP)");
-         continue;
-        }
-
-        else if (p.size > 0 && cval <= vstop) {
-         closePosition(p.ticket_id);
-         logger->log("Position " +  p.ticket_id + " closed ! (VSTOP)");
-         continue;
-        }
-      }
-
-      if (p.limit > 0) {
-
-        if ( p.size < 0  &&  cval < p.limit ) {
-          mm->remPosition(p.ticket_id);
-          logger->log("Position " +  p.ticket_id + " closed ! (LIMIT)");
-          continue;
-        }
-
-        else if ( p.size > 0  &&  cval > p.limit ) {
-          mm->remPosition(p.ticket_id);
-          logger->log("Position " +  p.ticket_id + " closed ! (LIMIT)");
-          continue;
-        }
-      }
-    }
-
-    //plays tradelife callback inside strategy.
-    //STUBBED
-
-    for(int j=0;j<si.size();j++) {
-      
-      quotek::data::records& mrecs = this->getAssetRecords(si.at(j));
-        if ( mrecs.size() > 0 ) {
-          quotek::data::record& mr = mrecs.last();
-          v = mr.value;
-          //cout << v << endl;
-          mm->computePNLs(si.at(j),v);
-      }
-    }
-
-    if (inc == 10) {
-      //logger->log("Current PNL:" + float2string(mm->computeWholePNL()) );
-      float cp = mm->computeWholePNL();
-  
-      //The shit just hit the fan !
-      if ( ! mm->heartbeat() ) {
-        
-        cerr << "* CRITICAL LOSS, BLOCKING MONEY MANAGER!*" << std::endl;
-        logger->log("* CRITICAL LOSS, BLOCKING MONEY MANAGER! *");
-
-      }
-
-      mm->saveCPNL();
-      inc = 0;
-    }
-    
-    inc++;
-
-    usleep(1000000);
-  } 
-
-}
 
 
 
@@ -417,69 +303,6 @@ void tsEngine::saveToBackend() {
 
   }
 }
-
-
-void tsEngine::poll() {
-
-  vector<bvex> values;
-
-  AssocArray<indice*> ilist = this->getIndicesList();
-  igmLogger* logger = this->getLogger();
-
-  ticks_t ticks = this->getTicks();
-
-  uint32_t time_ms;
-  string epic;
-  string mepic; 
-  float buy;
-  float sell;
-  float spread;
-
-  while(1) {
-
-    //perf profiling
-    auto tthis = std::chrono::high_resolution_clock::now();
-    values = this->getBroker()->getValues();
-
-    time_ms = time(0);
-    
-    if (values.size() != 0 ) {
-
-      for (int i=0;i<values.size();i++) {
-
-        epic = values[i].epic;
-
-        indice* idx = iResolve(ilist, epic);
-        float unit_coef = 1.0 / idx->pip_value;
-
-        quotek::data::record r;
-        buy = values[i].offer;
-        sell = values[i].bid;
-
-        r.timestamp = time_ms;
-        r.value = (buy + sell) / 2;
-        r.spread =  roundfloat( (buy - sell) * unit_coef, 0.1 ) ;
-        
-        if (idx != NULL) {
-          mepic = idx->name;
-          this->pushRecord(mepic,r);
-
-        }
-      }
-    }
-
-    auto tt1 = std::chrono::high_resolution_clock::now();
-    auto elapsed_t = tt1 - tthis;
-    uint64_t elapsed = std::chrono::duration_cast<std::chrono::microseconds>(elapsed_t).count();
-    
-    if (elapsed < ticks.getval) {  
-      usleep(ticks.getval - elapsed);
-    }
-
-  }
-
-}
-
 
 void tsEngine::evaluate(strategy* s) {
 
@@ -780,7 +603,7 @@ void tsEngine::init_finalize(qateCfg* conf) {
     
     //To Add later on.
     st->portfolio = this->getMoneyManager()->getPositionsPtr();
-	st->back = tse_back;
+	  st->back = tse_back;
     st->asset_name = algos[i].eval_name;
     st->identifier = algos[i].strategy + "@" + algos[i].eval_name;
     st->store = &tse_store;

@@ -16,24 +16,15 @@ add_executable(
   src/lib/qatecfg.h
   src/lib/qatecfg.cpp
 	src/lib/tsengine.h
-	src/lib/tsengine.cpp
-  src/lib/hsbt.cpp
   src/lib/utils.cpp
   src/lib/broker.hpp
   src/lib/strategyhandler.cpp
   src/lib/narrays.h
   src/lib/narrays.cpp
-  src/lib/moneymanager.cpp
-  src/lib/igmlogger.cpp
   src/lib/queue_c.cpp
   src/lib/indice.cpp
-  src/lib/results.h
   src/lib/genetics.cpp
   src/lib/network.cpp
-  src/lib/aep.cpp
-  src/lib/narrays.cpp
-  src/lib/aep_ws.cpp
-  
 )
 
 
@@ -49,6 +40,9 @@ find_library (FAAN fann)
 find_library (QUOTEK quotek)
 find_library (PQXX pqxx)
 find_library (HIREDIS hiredis)
+find_library (N3RV n3rv)
+find_library(ZMQ zmq)
+
 
 if (HIREDIS) 
 
@@ -114,6 +108,7 @@ install (TARGETS influxdbbe DESTINATION lib)
 target_link_libraries(
         qate
         n3rv
+        zmq
         quotek
         pthread
         dl
