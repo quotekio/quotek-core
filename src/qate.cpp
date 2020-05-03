@@ -4,6 +4,7 @@
 #include <n3rv/n3rvlogger.hpp>
 #include <n3rv/n3rvservicecontroller.hpp>
 #include "services/brokerservice.hpp"
+#include "services/backendservice.hpp"
 
 int so_iter = 0;
 
@@ -152,8 +153,12 @@ int main(int argc, char **argv)
 
   //starts prices fetching loop
   new std::thread([bs1] { brokerservice::fetchPrices((void *)bs1); });
-
   bs1->run_async();
+
+  backendservice *back1 = new backendservice("127.0.0.1",10001,ll);
+  back1->initialize("back1",c);
+  back1->run_async();
+
 
   while (1)
   {
