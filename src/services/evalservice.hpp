@@ -25,8 +25,10 @@ class evalservice : public n3rv::service
   using n3rv::service::service;
 
 public:
+
   n3rv::qhandler *prices;
   n3rv::qhandler *moneyman;
+  std::vector<strategy> strategies_pool;
 
   int initialize(const char *node_name, qateCfg *cfg)
   {
@@ -35,7 +37,6 @@ public:
     //Sets a global identifier for service node.
     this->set_uid(("qate.eval." + std::string(node_name)).c_str());
 
-    //Sets a global identifier for service node.
     this->prices = this->connect("qate.broker.*.prices", ZMQ_SUB);
     this->attach(this->prices, pricesReceiveCallback);
   }
@@ -61,6 +62,7 @@ public:
     for (int j = 0; j < this->strategy_handlers.size(); j++)
     {
 
+      
       void *strat_ptr = this->strategy_handlers[j]->getExportFct();
       std::regex asset_match(this->strategy_handlers[j]->getAssetMatch());
 
@@ -90,7 +92,7 @@ public:
       create_st *c_strat = (create_st *)algos[i].eval_ptr;
       strategy *st = c_strat();
 
-      st->recs = &this->getAssetRecords(algos[i].eval_name);
+      //st->recs = &this->getAssetRecords(algos[i].eval_name);
 
       //To Add later on.
       //st->portfolio = this->getMoneyManager()->getPositionsPtr();
@@ -228,20 +230,28 @@ public:
     n3rv::message msg = n3rv::parse_msg(zmsg);
     quotek::data::record r;
     std::vector<std::string> splitp = split(msg.payload, ' ');
-    self->ll->log(n3rv::LOGLV_DEBUG, "received price payload:" + msg.payload);
+    self->ll->log(n3rv::LOGLV_INFO, "received price payload:" + msg.payload);
+
+    std::string asset_name = msg.args[0];
     r.timestamp = atoi(splitp[0].c_str());
     r.value = atof(splitp[1].c_str());
     r.spread = atof(splitp[2].c_str());
-    //self->back->store(msg.args[0], r);
+    
+    /*for (auto strat: self->strategies_pool) {
 
-    //Launch eval for concerned threads
+       if (strat.asset_name == asset_name) {
+
+       }
+    }*/
+
+    //Launch eval for concerned strats
+
   }
 
 protected:
   qateCfg *cfg;
   std::vector<std::string> active_strats;
   std::vector<strategyHandler *> strategy_handlers;
-  std::vector<strategy> stragies_pool;
   std::vector<algov2> algos;
 
   quotek::data::cqueue<std::string> orders_queue;

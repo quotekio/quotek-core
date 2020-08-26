@@ -5,6 +5,7 @@
 #include <n3rv/n3rvservicecontroller.hpp>
 #include "services/brokerservice.hpp"
 #include "services/backendservice.hpp"
+#include "services/evalservice.hpp"
 
 int so_iter = 0;
 
@@ -112,7 +113,7 @@ int main(int argc, char **argv)
   std::cout << "QATE TRADING BOT " << QATE_VERSION << endl
             << "(c) 2013-2020 Clément Gamé" << endl;
 
-  n3rv::logger *ll = new n3rv::logger(n3rv::LOGLV_DEBUG);
+  n3rv::logger *ll = new n3rv::logger(n3rv::LOGLV_INFO);
   ll->add_dest("stdout");
   ll->add_dest("file:///var/log/qatem5.log");
 
@@ -158,6 +159,15 @@ int main(int argc, char **argv)
   backendservice *back1 = new backendservice("127.0.0.1",10001,ll);
   back1->initialize("back1",c);
   back1->run_async();
+
+  evalservice *ev1 = new evalservice("127.0.0.1",10001,ll);
+  ev1->initialize("eval1",c);
+  ev1->initStrats();
+  ev1->compileStrats();
+
+  ev1->initAlgos();
+  ev1->run_async();
+
 
 
   while (1)
