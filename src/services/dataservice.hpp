@@ -1,5 +1,5 @@
-#ifndef BACKENDSERVICE_H
-#define BACKENDSERVICE_H
+#ifndef DATASERVICE_H
+#define DATASERVICE_H
 
 #include <string>
 #include <cstdio>
@@ -13,7 +13,7 @@
 #include "../lib/utils.h"
 #include <dlfcn.h>
 
-class backendservice : public n3rv::service
+class dataservice : public n3rv::service
 {
   using n3rv::service::service;
 
@@ -40,13 +40,13 @@ public:
 
     if (back != NULL)
     {
-      this->ll->log(n3rv::LOGLV_INFO, "Initializing Backend Connection..");
+      this->ll->log(n3rv::LOGLV_INFO, "Initializing Data Service Connection..");
       back->init(this->cfg->getBackendParams());
       back->connect();
     }
 
     //Sets a global identifier for service node.
-    this->set_uid(("qate.backend." + std::string(node_name)).c_str());
+    this->set_uid(("qate.data." + std::string(node_name)).c_str());
 
     //instanciates broker object
     this->prices = this->connect("qate.broker.*.prices", ZMQ_SUB);
@@ -58,14 +58,14 @@ public:
   /** Distributes data to requester service */
   static void *dist_data(void *objref, zmq::message_t *zmsg)
   {
-    backendservice *self = (backendservice *)objref;
+    dataservice *self = (dataservice *)objref;
     n3rv::message msg = n3rv::parse_msg(zmsg);
   }
 
   /** Receives prices coming from broker and stores'em in database. */
   static void *prices_receive(void *objref, zmq::message_t *zmsg)
   {
-    backendservice *self = (backendservice *)objref;
+    dataservice *self = (dataservice *)objref;
     n3rv::message msg = n3rv::parse_msg(zmsg);
 
     quotek::data::record r;

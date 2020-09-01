@@ -27,6 +27,11 @@ add_executable(
   src/lib/network.cpp
 )
 
+add_library(
+  dummybroker SHARED
+  src/lib/broker.cpp
+  src/lib/brokers/dummy.cpp     
+)
 
 #add_executable(
 #  nntrain
@@ -101,7 +106,6 @@ target_link_libraries(
     quotek
     curl
 )
-
 
 install (TARGETS influxdbbe DESTINATION lib)
 
