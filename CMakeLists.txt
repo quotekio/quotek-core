@@ -4,7 +4,7 @@ project(qate)
 
 SET (CMAKE_CXX_COMPILER     "/usr/bin/g++")
 SET (CMAKE_C_COMPILER		    "/usr/bib/gcc")
-SET (CMAKE_CXX_FLAGS        "-g -std=c++1y -fPIC")
+SET (CMAKE_CXX_FLAGS        "-g -std=c++17 -fPIC")
 SET (CMAKE_LINKER_FLAGS    "-rdynamic")
 
 add_definitions(-DQATE_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
@@ -70,6 +70,9 @@ endif()
 
 
 if (PQXX)
+
+  set_source_files_properties(src/lib/backends/postgresql.cpp PROPERTIES COMPILE_FLAGS "-std=c++1y" )
+
   add_library(
       postgresqlbe SHARED
       src/lib/backends/postgresql.cpp

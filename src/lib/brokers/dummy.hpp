@@ -3,6 +3,9 @@
 
 #include "../broker.hpp"
 #include "../brokerio.hpp"
+#include <random>
+#include <map>
+#include <iostream>
 
 /**
  * Dummy Broker, generates random walks for given indices.
@@ -27,7 +30,13 @@ public:
 protected:
    vector<bvex> values;
    vector<string> ilist;
+   default_random_engine generator;
+   std::map<string, void*> distributions;
+   std::map<string, string> disttypes;
+   uint32_t nticks;   
 
+   float nextval(string); 
+   
 };
 
 

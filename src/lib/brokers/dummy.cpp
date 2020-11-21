@@ -10,7 +10,7 @@ int dummybroker::connect() {
 
 int dummybroker::initialize(string, bool, bool, string) {
 
-     srand(time(NULL));
+     this->nticks = 1000000;
      return 0;
 }
 
@@ -32,7 +32,29 @@ int dummybroker::requiresIndicesList() {
 
 int dummybroker::setIndicesList(vector<string> il) {
   this->ilist = il;
+
+  for (auto idx: this->ilist) {
+      this->distributions[idx] =  (void*) new std::binomial_distribution<int>(500 * 10,0.5);
+      this->disttypes[idx] = "binom";
+  }
+
   return 0;
+}
+
+
+
+float dummybroker::nextval(string idx) {
+
+    float n = 0;
+
+    if ( this->disttypes[idx] == "binom" ) {
+       
+        std::binomial_distribution<float>* dist = static_cast<std::binomial_distribution<float>*>(this->distributions[idx]);
+        n = (float) dist->operator() / 10;
+    }
+
+    return n;
+
 }
 
 vector<bvex> dummybroker::getValues() {
@@ -40,7 +62,7 @@ vector<bvex> dummybroker::getValues() {
     this->values.clear();
     for (auto idx: this->ilist) {
 
-         float n = rand() % 10000 + 1;
+         float n = this->nextval(idx);
          bvex e;
          e.epic = idx;
          e.bid = n-1;
